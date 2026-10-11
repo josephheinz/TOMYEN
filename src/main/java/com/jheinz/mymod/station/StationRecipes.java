@@ -1,0 +1,148 @@
+package com.jheinz.mymod.station;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+
+import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.station.StationRecipe.Cost;
+
+/** Everything the Weapon Station can make. Built from code, so client and server always agree. */
+public final class StationRecipes {
+	public static final List<StationRecipe> ALL = List.of(
+			recipe(ModItems.BULLET_CASING_556, 8, cost(Items.COPPER_NUGGET, 2), cost(Items.GOLD_NUGGET, 1)),
+			recipe(ModItems.BULLET_556_FMJ, 4,
+					cost(ModItems.BULLET_CASING_556, 4), cost(Items.GUNPOWDER, 1), cost(Items.COPPER_NUGGET, 1)),
+			recipe(ModItems.BULLET_556_GREEN_TIP, 4,
+					cost(ModItems.BULLET_CASING_556, 4), cost(Items.GUNPOWDER, 1), cost(Items.IRON_NUGGET, 1)),
+			// The diamond stands in for a tungsten carbide penetrator.
+			recipe(ModItems.BULLET_556_AP, 8,
+					cost(ModItems.BULLET_CASING_556, 8), cost(Items.GUNPOWDER, 2), cost(Items.DIAMOND, 1)),
+			// Soft gold for the expanding tip.
+			recipe(ModItems.BULLET_556_HOLLOW_POINT, 4,
+					cost(ModItems.BULLET_CASING_556, 4), cost(Items.GUNPOWDER, 1), cost(Items.GOLD_NUGGET, 1)),
+			// 9mm: smaller cases, less powder per round.
+			recipe(ModItems.BULLET_CASING_9MM, 12, cost(Items.COPPER_INGOT, 1), cost(Items.GOLD_NUGGET, 1)),
+			recipe(ModItems.BULLET_9MM_FMJ, 8,
+					cost(ModItems.BULLET_CASING_9MM, 8), cost(Items.GUNPOWDER, 1), cost(Items.COPPER_NUGGET, 1)),
+			recipe(ModItems.BULLET_9MM_HOLLOW_POINT, 8,
+					cost(ModItems.BULLET_CASING_9MM, 8), cost(Items.GUNPOWDER, 1), cost(Items.GOLD_NUGGET, 1)),
+			// 7.62x39: copper-washed steel cases, like surplus Russian ammo.
+			recipe(ModItems.BULLET_CASING_762, 8, cost(Items.IRON_NUGGET, 2), cost(Items.COPPER_NUGGET, 1)),
+			recipe(ModItems.BULLET_762_FMJ, 4,
+					cost(ModItems.BULLET_CASING_762, 4), cost(Items.GUNPOWDER, 1), cost(Items.COPPER_NUGGET, 1)),
+			recipe(ModItems.BULLET_762_AP, 8,
+					cost(ModItems.BULLET_CASING_762, 8), cost(Items.GUNPOWDER, 2), cost(Items.DIAMOND, 1)),
+			// .45 ACP: fat straight brass.
+			recipe(ModItems.BULLET_CASING_45, 10,
+					cost(Items.COPPER_INGOT, 1), cost(Items.GOLD_NUGGET, 1), cost(Items.IRON_NUGGET, 1)),
+			recipe(ModItems.BULLET_45_FMJ, 8,
+					cost(ModItems.BULLET_CASING_45, 8), cost(Items.GUNPOWDER, 1), cost(Items.COPPER_NUGGET, 1)),
+			recipe(ModItems.BULLET_45_HOLLOW_POINT, 8,
+					cost(ModItems.BULLET_CASING_45, 8), cost(Items.GUNPOWDER, 1), cost(Items.GOLD_NUGGET, 1)),
+			// .357 Magnum: long revolver brass, more powder per round.
+			recipe(ModItems.BULLET_CASING_357, 8, cost(Items.COPPER_INGOT, 1), cost(Items.COPPER_NUGGET, 2)),
+			recipe(ModItems.BULLET_357_FMJ, 6,
+					cost(ModItems.BULLET_CASING_357, 6), cost(Items.GUNPOWDER, 1), cost(Items.COPPER_NUGGET, 1)),
+			recipe(ModItems.BULLET_357_HOLLOW_POINT, 6,
+					cost(ModItems.BULLET_CASING_357, 6), cost(Items.GUNPOWDER, 1), cost(Items.GOLD_NUGGET, 1)),
+			// .338 Lapua Magnum: big, expensive, and powder-hungry.
+			recipe(ModItems.BULLET_CASING_338, 6, cost(Items.COPPER_INGOT, 1), cost(Items.GOLD_INGOT, 1)),
+			recipe(ModItems.BULLET_338_FMJ, 4,
+					cost(ModItems.BULLET_CASING_338, 4), cost(Items.GUNPOWDER, 2), cost(Items.COPPER_NUGGET, 1)),
+			recipe(ModItems.BULLET_338_AP, 4,
+					cost(ModItems.BULLET_CASING_338, 4), cost(Items.GUNPOWDER, 2), cost(Items.DIAMOND, 1)),
+			recipe(ModItems.STANAG_MAGAZINE, 1, cost(Items.IRON_NUGGET, 7)),
+			recipe(ModItems.GLOCK_MAGAZINE, 1, cost(Items.IRON_NUGGET, 3), cost(Items.INK_SAC, 1)),
+			recipe(ModItems.AK_MAGAZINE, 1, cost(Items.IRON_INGOT, 1), cost(Items.IRON_NUGGET, 4)),
+			recipe(ModItems.GLOCK_DRUM_MAGAZINE, 1,
+					cost(Items.IRON_INGOT, 2), cost(Items.IRON_NUGGET, 4), cost(Items.INK_SAC, 1)),
+			// Copper for the drum's wound feed spring.
+			recipe(ModItems.AK_DRUM_MAGAZINE, 1,
+					cost(Items.IRON_INGOT, 3), cost(Items.IRON_NUGGET, 4), cost(Items.COPPER_INGOT, 1)),
+			recipe(ModItems.AWP_MAGAZINE, 1, cost(Items.IRON_INGOT, 2), cost(Items.STRING, 1)),
+			recipe(ModItems.GALIL_MAGAZINE, 1, cost(Items.IRON_NUGGET, 6), cost(Items.STICK, 1)),
+			recipe(ModItems.SPEEDLOADER_357, 1, cost(Items.IRON_NUGGET, 3), cost(Items.LEATHER, 1)),
+			recipe(ModItems.MP5_MAGAZINE, 1, cost(Items.IRON_NUGGET, 6), cost(Items.TRIPWIRE_HOOK, 1)),
+			recipe(ModItems.MAC10_MAGAZINE, 1, cost(Items.IRON_NUGGET, 6), cost(Items.COAL, 1)),
+			recipe(ModItems.M1911_MAGAZINE, 1, cost(Items.IRON_NUGGET, 3), cost(Items.GOLD_NUGGET, 1)),
+			recipe(ModItems.M4_UPPER_RECEIVER, 1, cost(Items.IRON_INGOT, 4)),
+			recipe(ModItems.M4_LOWER_RECEIVER, 1, cost(Items.IRON_INGOT, 3), cost(Items.TRIPWIRE_HOOK, 1)),
+			recipe(ModItems.M4, 1, cost(ModItems.M4_UPPER_RECEIVER, 1), cost(ModItems.M4_LOWER_RECEIVER, 1)),
+			// Ink sacs stand in for the Glock's black polymer and nitride finish.
+			recipe(ModItems.GLOCK_SLIDE, 1, cost(Items.IRON_INGOT, 2), cost(Items.INK_SAC, 1)),
+			recipe(ModItems.GLOCK_FRAME, 1, cost(Items.INK_SAC, 2), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.IRON_NUGGET, 2)),
+			recipe(ModItems.GLOCK, 1, cost(ModItems.GLOCK_SLIDE, 1), cost(ModItems.GLOCK_FRAME, 1)),
+			// Sticks for the wood furniture.
+			recipe(ModItems.AK_RECEIVER, 1, cost(Items.IRON_INGOT, 3), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.STICK, 2)),
+			recipe(ModItems.AK_BARREL, 1, cost(Items.IRON_INGOT, 3), cost(Items.STICK, 2)),
+			recipe(ModItems.AKM, 1, cost(ModItems.AK_RECEIVER, 1), cost(ModItems.AK_BARREL, 1)),
+			// The spyglass becomes the scope; slime balls stand in for the green polymer stock.
+			recipe(ModItems.AWP_ACTION, 1, cost(Items.IRON_INGOT, 5), cost(Items.SPYGLASS, 1), cost(Items.TRIPWIRE_HOOK, 1)),
+			recipe(ModItems.AWP_STOCK, 1, cost(Items.IRON_INGOT, 2), cost(Items.SLIME_BALL, 2)),
+			recipe(ModItems.AWP, 1, cost(ModItems.AWP_ACTION, 1), cost(ModItems.AWP_STOCK, 1)),
+			recipe(ModItems.GALIL_RECEIVER, 1, cost(Items.IRON_INGOT, 3), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.IRON_NUGGET, 1)),
+			recipe(ModItems.GALIL_BARREL, 1, cost(Items.IRON_INGOT, 2), cost(Items.STICK, 1), cost(Items.IRON_NUGGET, 1)),
+			recipe(ModItems.GALIL, 1, cost(ModItems.GALIL_RECEIVER, 1), cost(ModItems.GALIL_BARREL, 1)),
+			// Leather-wrapped grip.
+			recipe(ModItems.REVOLVER_FRAME, 1, cost(Items.IRON_INGOT, 2), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.LEATHER, 1)),
+			recipe(ModItems.REVOLVER_CYLINDER, 1, cost(Items.IRON_INGOT, 2), cost(Items.COPPER_NUGGET, 3)),
+			recipe(ModItems.REVOLVER_357, 1, cost(ModItems.REVOLVER_FRAME, 1), cost(ModItems.REVOLVER_CYLINDER, 1)),
+			recipe(ModItems.MP5_RECEIVER, 1, cost(Items.IRON_INGOT, 3), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.INK_SAC, 1)),
+			recipe(ModItems.MP5_LOWER, 1, cost(Items.IRON_INGOT, 2), cost(Items.COAL, 2)),
+			recipe(ModItems.MP5, 1, cost(ModItems.MP5_RECEIVER, 1), cost(ModItems.MP5_LOWER, 1)),
+			recipe(ModItems.MAC10_UPPER, 1, cost(Items.IRON_INGOT, 3), cost(Items.COAL, 1), cost(Items.IRON_NUGGET, 1)),
+			recipe(ModItems.MAC10_LOWER, 1, cost(Items.IRON_INGOT, 2), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.COAL, 1)),
+			recipe(ModItems.MAC10, 1, cost(ModItems.MAC10_UPPER, 1), cost(ModItems.MAC10_LOWER, 1)),
+			recipe(ModItems.M1911_SLIDE, 1, cost(Items.IRON_INGOT, 2), cost(Items.IRON_NUGGET, 1), cost(Items.GOLD_NUGGET, 1)),
+			recipe(ModItems.M1911_FRAME, 1, cost(Items.IRON_INGOT, 2), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.COPPER_NUGGET, 1)),
+			recipe(ModItems.M1911, 1, cost(ModItems.M1911_SLIDE, 1), cost(ModItems.M1911_FRAME, 1)),
+			recipe(ModItems.PLATE_CARRIER, 1, cost(Items.LEATHER, 5), cost(Items.STRING, 2), cost(Items.IRON_NUGGET, 2)),
+			// Soft panel: woven string standing in for aramid fiber.
+			recipe(ModItems.ARMOR_PLATE_LEVEL_1, 1, cost(Items.STRING, 6), cost(Items.LEATHER, 2)),
+			// Leather strap backing keeps this from sharing the upper receiver's all-iron inputs.
+			recipe(ModItems.ARMOR_PLATE_LEVEL_2, 1, cost(Items.IRON_INGOT, 5), cost(Items.LEATHER, 1)),
+			// Ceramic strike face on a steel backer.
+			recipe(ModItems.ARMOR_PLATE_LEVEL_3, 1, cost(Items.CLAY_BALL, 4), cost(Items.IRON_INGOT, 2), cost(Items.DIAMOND, 1)));
+
+	static {
+		// Matching is by ingredient set, so two recipes with the same set would make the later one uncraftable.
+		Set<Set<Item>> seen = new HashSet<>();
+		for (StationRecipe recipe : ALL) {
+			Set<Item> ingredients = recipe.costs().stream().map(StationRecipe.Cost::item).collect(Collectors.toSet());
+			if (!seen.add(ingredients)) {
+				throw new IllegalStateException("Weapon Station recipes share ingredients " + ingredients
+						+ "; " + recipe.resultItem() + " could never be crafted");
+			}
+		}
+	}
+
+	private StationRecipes() {
+	}
+
+	/** Loads the list at startup so the duplicate check above fails fast. */
+	public static void initialize() {
+	}
+
+	public static StationRecipe find(Container inputs) {
+		for (StationRecipe recipe : ALL) {
+			if (recipe.matches(inputs)) {
+				return recipe;
+			}
+		}
+		return null;
+	}
+
+	private static StationRecipe recipe(Item result, int count, Cost... costs) {
+		return new StationRecipe(result, count, List.of(costs));
+	}
+
+	private static Cost cost(Item item, int count) {
+		return new Cost(item, count);
+	}
+}

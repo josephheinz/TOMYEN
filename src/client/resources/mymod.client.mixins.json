@@ -1,0 +1,19 @@
+{
+	"required": true,
+	"package": "com.jheinz.mymod.client.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"AbstractClientPlayerScopeMixin",
+		"AvatarGunPoseMixin",
+		"FirstPersonGunArmsMixin",
+		"FirstPersonHandsAndItemsMixin",
+		"MinecraftAttackMixin",
+		"MinecraftSemiAutoMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

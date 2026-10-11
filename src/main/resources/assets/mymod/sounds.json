@@ -1,0 +1,104 @@
+{
+  "m4_shot": {
+    "subtitle": "subtitles.mymod.m4_shot",
+    "sounds": [
+      "mymod:m4_shot"
+    ]
+  },
+  "glock_shot": {
+    "subtitle": "subtitles.mymod.glock_shot",
+    "sounds": [
+      "mymod:glock_shot"
+    ]
+  },
+  "akm_shot": {
+    "subtitle": "subtitles.mymod.akm_shot",
+    "sounds": [
+      "mymod:akm_shot"
+    ]
+  },
+  "awp_shot": {
+    "subtitle": "subtitles.mymod.awp_shot",
+    "sounds": [
+      "mymod:awp_shot"
+    ]
+  },
+  "galil_shot": {
+    "subtitle": "subtitles.mymod.galil_shot",
+    "sounds": [
+      "mymod:galil_shot"
+    ]
+  },
+  "magnum_shot": {
+    "subtitle": "subtitles.mymod.magnum_shot",
+    "sounds": [
+      "mymod:magnum_shot"
+    ]
+  },
+  "mp5_shot": {
+    "subtitle": "subtitles.mymod.mp5_shot",
+    "sounds": [
+      "mymod:mp5_shot"
+    ]
+  },
+  "mac10_shot": {
+    "subtitle": "subtitles.mymod.mac10_shot",
+    "sounds": [
+      "mymod:mac10_shot"
+    ]
+  },
+  "m1911_shot": {
+    "subtitle": "subtitles.mymod.m1911_shot",
+    "sounds": [
+      "mymod:m1911_shot"
+    ]
+  },
+  "rack_back": {
+    "subtitle": "subtitles.mymod.rack_back",
+    "sounds": [
+      "mymod:rack_back"
+    ]
+  },
+  "rack_forward": {
+    "subtitle": "subtitles.mymod.rack_forward",
+    "sounds": [
+      "mymod:rack_forward"
+    ]
+  },
+  "bolt_up": {
+    "subtitle": "subtitles.mymod.bolt_up",
+    "sounds": [
+      "mymod:bolt_up"
+    ]
+  },
+  "bolt_back": {
+    "subtitle": "subtitles.mymod.bolt_back",
+    "sounds": [
+      "mymod:bolt_back"
+    ]
+  },
+  "bolt_forward": {
+    "subtitle": "subtitles.mymod.bolt_forward",
+    "sounds": [
+      "mymod:bolt_forward"
+    ]
+  },
+  "bolt_down": {
+    "subtitle": "subtitles.mymod.bolt_down",
+    "sounds": [
+      "mymod:bolt_down"
+    ]
+  },
+  "mag_out": {
+    "subtitle": "subtitles.mymod.mag_out",
+    "sounds": [
+      "mymod:mag_out"
+    ]
+  },
+  "mag_in": {
+    "subtitle": "subtitles.mymod.mag_in",
+    "sounds": [
+      "mymod:mag_in"
+    ]
+  }
+}

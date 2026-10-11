@@ -1,0 +1,213 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "mymod:gun_animation",
+    "entries": [
+      {
+        "threshold": 0.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_f1"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag_f1"
+          }
+        }
+      },
+      {
+        "threshold": 1.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_f2"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag_f2"
+          }
+        }
+      },
+      {
+        "threshold": 2.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_f3"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag_f3"
+          }
+        }
+      },
+      {
+        "threshold": 3.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_f4"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag_f4"
+          }
+        }
+      },
+      {
+        "threshold": 4.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_f5"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag_f5"
+          }
+        }
+      },
+      {
+        "threshold": 5.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_f6"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag_f6"
+          }
+        }
+      },
+      {
+        "threshold": 6.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_m1"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag"
+          }
+        }
+      },
+      {
+        "threshold": 7.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_m2"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag"
+          }
+        }
+      },
+      {
+        "threshold": 8.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_m3"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag"
+          }
+        }
+      },
+      {
+        "threshold": 9.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_m4"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag"
+          }
+        }
+      },
+      {
+        "threshold": 10.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_m5"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag"
+          }
+        }
+      },
+      {
+        "threshold": 11.5,
+        "model": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "mymod:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_m6"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "mymod:item/m1911_no_mag"
+          }
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:condition",
+      "property": "minecraft:has_component",
+      "component": "mymod:loaded_magazine",
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "mymod:item/m1911"
+      },
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "mymod:item/m1911_no_mag"
+      }
+    }
+  }
+}

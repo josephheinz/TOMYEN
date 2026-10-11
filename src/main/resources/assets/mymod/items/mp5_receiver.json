@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mymod:item/mp5_receiver"
+  }
+}

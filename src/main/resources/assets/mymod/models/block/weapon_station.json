@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "mymod:block/weapon_station_top",
+    "side": "mymod:block/weapon_station_side",
+    "bottom": "minecraft:block/oak_planks"
+  }
+}

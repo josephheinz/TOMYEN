@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mymod:item/glock_drum_magazine_loaded"
+  }
+}
