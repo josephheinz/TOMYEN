@@ -15,16 +15,23 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import com.jheinz.mymod.armor.ArmorPlateItem;
 import com.jheinz.mymod.attachment.AttachmentItem;
+import com.jheinz.mymod.holy.CrucifixItem;
+import com.jheinz.mymod.neuralink.NeuralinkItem;
+import com.jheinz.mymod.neuralink.NeuralinkModule;
+import com.jheinz.mymod.neuralink.NeuralinkModuleItem;
 import com.jheinz.mymod.attachment.AttachmentSlot;
 import com.jheinz.mymod.armor.PlateCarrierItem;
 
@@ -156,14 +163,14 @@ public final class ModItems {
 			new GunStats(ModSounds.MAGNUM_SHOT, 4.0f, 64, 40, List.of(FireMode.SEMI)).withCycleTicks(5)
 					.withSingleRoundLoading().withSpread(0.6f, 2.0f),
 			List.of(SPEEDLOADER_357), AMMO_357);
-	// Three rounds per auto cycle: about 900 rpm.
+	// A round every other tick in full-auto: 600 rpm.
 	public static final Item MP5 = gun("mp5", 1000,
 			new GunStats(ModSounds.MP5_SHOT, 0.9f, 64, 30, List.of(FireMode.AUTO, FireMode.BURST, FireMode.SEMI))
-					.withShotsPerCycle(3).withSpread(0.8f, 0.35f),
+					.withAutoTicks(2).withSpread(0.8f, 0.35f),
 			List.of(MP5_MAGAZINE), AMMO_9MM);
 	// One round every tick in full-auto (about 1200 rpm): it empties a magazine in a second and a half.
 	public static final Item MAC10 = gun("mac10", 700,
-			new GunStats(ModSounds.MAC10_SHOT, 1.0f, 40, 25, List.of(FireMode.AUTO, FireMode.SEMI)).withShotsPerCycle(4).withSpread(1.5f, 0.45f),
+			new GunStats(ModSounds.MAC10_SHOT, 1.0f, 40, 25, List.of(FireMode.AUTO, FireMode.SEMI)).withAutoTicks(1).withSpread(1.5f, 0.45f),
 			List.of(MAC10_MAGAZINE), AMMO_45);
 	public static final Item M1911 = gun("m1911", 800,
 			new GunStats(ModSounds.M1911_SHOT, 2.8f, 48, 25, List.of(FireMode.SEMI)).withSpread(0.8f, 1.2f),
@@ -208,10 +215,39 @@ public final class ModItems {
 	public static final Item KOBRA_SIGHT = attachment("kobra_sight", AttachmentSlot.OPTIC,
 			List.of(M4, GLOCK, AKM, GALIL, REVOLVER_357, MP5, MAC10, M1911),
 			stats -> stats.withScope(KOBRA_ZOOM));
-	/** Converts the Glock to full-auto: three rounds a cycle, about 900 rpm, and harder to keep on target. */
+	/** Converts the Glock to full-auto: a round every tick (1200 rpm), and harder to keep on target. */
 	public static final Item GLOCK_SWITCH = attachment("glock_switch", AttachmentSlot.FIRE_CONTROL, List.of(GLOCK),
-			stats -> stats.withFireModes(withAuto(stats.fireModes())).withShotsPerCycle(3)
+			stats -> stats.withFireModes(withAuto(stats.fireModes())).withAutoTicks(1)
 					.withSpread(stats.spreadDegrees(), stats.bloomPerShot() * 1.3f));
+
+	/** Foregrips: a second hand on the gun steadies it. They go on the rail behind any laser, so both fit. */
+	private static final List<Item> GRIP_GUNS = List.of(M4, AKM, AWP, GALIL, MP5, MAC10);
+	/** A straight grip to pull the gun into the shoulder: the most recoil control. */
+	public static final Item VERTICAL_GRIP = attachment("vertical_grip", AttachmentSlot.GRIP, GRIP_GUNS,
+			stats -> stats.withRecoil(stats.recoilDegrees() * 0.7f));
+	/** Angled grip: a bit less recoil control than a vertical one, but steadier in sustained fire. */
+	public static final Item ANGLED_GRIP = attachment("angled_grip", AttachmentSlot.GRIP, GRIP_GUNS,
+			stats -> stats.withRecoil(stats.recoilDegrees() * 0.8f).withSpread(stats.spreadDegrees(), stats.bloomPerShot() * 0.8f));
+	/** Stubby grip: a short grip that also tightens hip fire. */
+	public static final Item STUBBY_GRIP = attachment("stubby_grip", AttachmentSlot.GRIP, GRIP_GUNS,
+			stats -> stats.withRecoil(stats.recoilDegrees() * 0.85f).withSpread(stats.spreadDegrees() * 0.85f, stats.bloomPerShot()));
+	/** Handstop: a nub the hand pushes against, keeping long bursts on target. */
+	public static final Item HANDSTOP = attachment("handstop", AttachmentSlot.GRIP, GRIP_GUNS,
+			stats -> stats.withRecoil(stats.recoilDegrees() * 0.9f).withSpread(stats.spreadDegrees(), stats.bloomPerShot() * 0.7f));
+
+	/** Punch for orbs of light, hold use to charge a beam. Holy light only hurts the undead. */
+	/** Salvaged circuitry: what sights and lasers are built from. */
+	public static final Item TECH_SCRAP = item("tech_scrap");
+	/** Refined in the Foundry from quartz and sand. */
+	public static final Item SILICON = item("silicon");
+	/** Silicon and tech scrap: the next tier of electronics after scrap. */
+	public static final Item COMPUTER_CHIP = item("computer_chip");
+	public static final Item NEURALINK = register("neuralink", NeuralinkItem::new,
+			new Item.Properties().stacksTo(1).rarity(Rarity.RARE).equippable(EquipmentSlot.HEAD));
+	public static final Item ESP_MODULE = module("esp_module", NeuralinkModule.ESP);
+	public static final Item NIGHT_VISION_MODULE = module("night_vision_module", NeuralinkModule.NIGHT_VISION);
+	public static final Item XRAY_MODULE = module("xray_module", NeuralinkModule.XRAY);
+	public static final Item CRUCIFIX = register("crucifix", CrucifixItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
 
 	// Vanilla keeps its tab keys private, so rebuild the key from its id.
 	private static final ResourceKey<CreativeModeTab> COMBAT_TAB =
@@ -240,6 +276,11 @@ public final class ModItems {
 
 	private static Item attachment(String name, AttachmentSlot slot, List<Item> guns, UnaryOperator<GunStats> effect) {
 		return register(name, properties -> new AttachmentItem(properties, slot, guns, effect), new Item.Properties().stacksTo(16));
+	}
+
+	private static Item module(String name, NeuralinkModule module) {
+		return register(name, properties -> new NeuralinkModuleItem(properties, module),
+				new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
 	}
 
 	private static List<FireMode> withAuto(List<FireMode> modes) {
@@ -274,8 +315,15 @@ public final class ModItems {
 	}
 
 	public static void initialize() {
+		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS).register(output -> {
+			output.accept(TECH_SCRAP);
+			output.accept(SILICON);
+			output.accept(COMPUTER_CHIP);
+		});
 		CreativeModeTabEvents.modifyOutputEvent(COMBAT_TAB)
 				.register(output -> {
+					output.insertAfter(Items.TRIDENT, CRUCIFIX);
+					output.insertAfter(Items.TURTLE_HELMET, NEURALINK, ESP_MODULE, NIGHT_VISION_MODULE, XRAY_MODULE);
 					output.insertAfter(Items.NETHERITE_BOOTS, PLATE_CARRIER, ARMOR_PLATE_LEVEL_1, ARMOR_PLATE_LEVEL_2,
 							ARMOR_PLATE_LEVEL_3);
 					output.insertAfter(Items.CROSSBOW, M4, M4_UPPER_RECEIVER, M4_LOWER_RECEIVER, AKM, AK_RECEIVER,
@@ -283,7 +331,7 @@ public final class ModItems {
 							MP5_LOWER, MAC10, MAC10_UPPER, MAC10_LOWER, GLOCK, GLOCK_SLIDE, GLOCK_FRAME, M1911,
 							M1911_SLIDE, M1911_FRAME, REVOLVER_357, REVOLVER_FRAME, REVOLVER_CYLINDER, SUPPRESSOR,
 							OIL_CAN_SUPPRESSOR, MUZZLE_BRAKE, FLASH_HIDER, LASER_SIGHT, GREEN_LASER_SIGHT, RED_DOT_SIGHT,
-							HOLOGRAPHIC_SIGHT, KOBRA_SIGHT, GLOCK_SWITCH);
+							HOLOGRAPHIC_SIGHT, KOBRA_SIGHT, VERTICAL_GRIP, ANGLED_GRIP, STUBBY_GRIP, HANDSTOP, GLOCK_SWITCH);
 					List<ItemStack> ammo = new ArrayList<>();
 					ammo.addAll(ammoEntries(BULLET_CASING_556, AMMO_556, STANAG_MAGAZINE, GALIL_MAGAZINE));
 					ammo.addAll(ammoEntries(BULLET_CASING_762, AMMO_762, AK_MAGAZINE, AK_DRUM_MAGAZINE));

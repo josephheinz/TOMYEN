@@ -29,7 +29,8 @@ import com.jheinz.mymod.client.LaserBeams;
 
 /**
  * Draws the player's own arms, with their skin and sleeves, holding a gun in first person: main hand on
- * the grip, off hand on the handguard (or cupping a pistol grip). The hands ride on the gun's pose (equip,
+ * the grip, off hand on the handguard (or cupping a pistol grip). With an item in the off hand, only the
+ * main hand holds the gun and the off hand shows its item as usual. The hands ride on the gun's pose (equip,
  * swing, bob, plus a little idle sway) while the shoulders stay fixed on screen.
  */
 @Mixin(FirstPersonHandsAndItemsRenderer.class)
@@ -77,7 +78,7 @@ public abstract class FirstPersonGunArmsMixin {
 		GunHands.applyRecoil(poseStack, anchors, 1.0f - 0.8f * aim);
 		GunAnimation.applyGunPose(poseStack, stack, anchors, mirrored);
 		LaserBeams.recordFirstPerson(poseStack.last().pose(), mymod$viewPose, stack, mirrored);
-		if (anchors == null || !state.offHandItem.isEmpty() || !Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+		if (anchors == null || !Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
 			return;
 		}
 
@@ -101,6 +102,11 @@ public abstract class FirstPersonGunArmsMixin {
 		renderPlayerHand(poseStack, collector, light, mainArm, playerState);
 		poseStack.popPose();
 
+		// Something in the off hand: it holds that instead (drawn by vanilla where an off-hand item always is),
+		// and the gun is held one-handed.
+		if (!state.offHandItem.isEmpty()) {
+			return;
+		}
 		poseStack.pushPose();
 		GunHands.poseArm(poseStack, mymod$viewPose, mainArm.getOpposite(), false, support, mirrored);
 		renderPlayerHand(poseStack, collector, light, mainArm.getOpposite(), playerState);

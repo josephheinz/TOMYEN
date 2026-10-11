@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
 import com.jheinz.mymod.ModSounds;
+import com.jheinz.mymod.vampire.BloodScent;
 
 /**
  * A sentient shopping cart. It rolls aimlessly around dark forests and deserts, day or night, until a
@@ -68,7 +69,9 @@ public class ShoppingCart extends Monster {
 		goalSelector.addGoal(8, new RandomStrollGoal(this, 0.8, 20, false));
 		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0f));
 		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
-		targetSelector.addGoal(2, new NoticePlayerGoal(this));
+		// The smell of blood carries much further than it can see.
+		targetSelector.addGoal(2, new BloodScent.Goal<>(this, Player.class));
+		targetSelector.addGoal(3, new NoticePlayerGoal(this));
 	}
 
 	/** Spots players only within NOTICE_RANGE, but keeps chasing out to the full follow range. */

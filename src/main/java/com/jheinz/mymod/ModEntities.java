@@ -22,6 +22,8 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import com.jheinz.mymod.cart.ShoppingCart;
+import com.jheinz.mymod.holy.LightOrb;
+import com.jheinz.mymod.vampire.Vampire;
 
 public final class ModEntities {
 	public static final EntityType<ShoppingCart> SHOPPING_CART = register("shopping_cart",
@@ -31,7 +33,21 @@ public final class ModEntities {
 					.clientTrackingRange(8)
 					.notInPeaceful());
 
+	public static final EntityType<Vampire> VAMPIRE = register("vampire",
+			EntityType.Builder.of(Vampire::new, MobCategory.MONSTER)
+					.sized(0.6f, 1.95f)
+					.eyeHeight(1.74f)
+					.clientTrackingRange(8)
+					.notInPeaceful());
+	public static final EntityType<LightOrb> LIGHT_ORB = register("light_orb",
+			EntityType.Builder.<LightOrb>of(LightOrb::new, MobCategory.MISC)
+					.noLootTable()
+					.sized(0.4f, 0.4f)
+					.clientTrackingRange(6)
+					.updateInterval(10));
+
 	public static final Item SHOPPING_CART_SPAWN_EGG = spawnEgg("shopping_cart_spawn_egg", SHOPPING_CART);
+	public static final Item VAMPIRE_SPAWN_EGG = spawnEgg("vampire_spawn_egg", VAMPIRE);
 
 	private ModEntities() {
 	}
@@ -48,11 +64,14 @@ public final class ModEntities {
 
 	public static void initialize() {
 		FabricDefaultAttributeRegistry.register(SHOPPING_CART, ShoppingCart.createAttributes());
+		FabricDefaultAttributeRegistry.register(VAMPIRE, Vampire.createAttributes());
+		SpawnPlacements.register(VAMPIRE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Vampire::checkSpawnRules);
+		BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(), MobCategory.MONSTER, VAMPIRE, 15, 1, 2);
 		SpawnPlacements.register(SHOPPING_CART, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 				ShoppingCart::checkSpawnRules);
 		BiomeModifications.addSpawn(BiomeSelectors.includeByKey(Biomes.DARK_FOREST, Biomes.DESERT), MobCategory.MONSTER,
 				SHOPPING_CART, 40, 1, 2);
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS)
-				.register(output -> output.insertAfter(Items.SHEEP_SPAWN_EGG, SHOPPING_CART_SPAWN_EGG));
+				.register(output -> output.insertAfter(Items.SHEEP_SPAWN_EGG, SHOPPING_CART_SPAWN_EGG, VAMPIRE_SPAWN_EGG));
 	}
 }

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "E": "minecraft:ender_pearl",
+    "N": "minecraft:gold_nugget",
+    "C": "mymod:computer_chip"
+  },
+  "pattern": [
+    "NCN",
+    "CEC",
+    "NCN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:neuralink"
+  }
+}

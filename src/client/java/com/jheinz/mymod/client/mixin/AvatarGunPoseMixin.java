@@ -15,7 +15,8 @@ import com.jheinz.mymod.GunItem;
 
 /**
  * Players hold guns up in both hands, aimed where they look, using the loaded-crossbow pose. The
- * guns' third-person display transforms are fitted to this pose.
+ * guns' third-person display transforms are fitted to this pose. With something in the off hand the gun
+ * is held one-handed instead.
  */
 @Mixin(AvatarRenderer.class)
 public abstract class AvatarGunPoseMixin {
@@ -24,7 +25,8 @@ public abstract class AvatarGunPoseMixin {
 	private static void mymod$aimGuns(Avatar avatar, ItemStack stack, InteractionHand hand,
 			CallbackInfoReturnable<HumanoidModel.ArmPose> cir) {
 		if (stack.getItem() instanceof GunItem) {
-			cir.setReturnValue(HumanoidModel.ArmPose.CROSSBOW_HOLD);
+			// One-handed, the off arm is left free to hold its item; HumanoidGunAimMixin raises the gun arm.
+			cir.setReturnValue(GunItem.isOneHanded(avatar) ? HumanoidModel.ArmPose.ITEM : HumanoidModel.ArmPose.CROSSBOW_HOLD);
 		}
 	}
 }

@@ -11,6 +11,7 @@ public enum AttachmentSlot {
 	// Listed in the order an empty-handed right-click takes them off: outermost first.
 	OPTIC(ModComponents.OPTIC_ATTACHMENT),
 	UNDERBARREL(ModComponents.UNDERBARREL_ATTACHMENT),
+	GRIP(ModComponents.GRIP_ATTACHMENT),
 	MUZZLE(ModComponents.MUZZLE_ATTACHMENT),
 	FIRE_CONTROL(ModComponents.FIRE_CONTROL_ATTACHMENT);
 

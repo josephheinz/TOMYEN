@@ -9,17 +9,18 @@ TEX = os.path.join(ASSETS, "textures")
 
 # Red dot positions are mirrored in GunAim (window centre and eye distance), so move both together.
 # Mount points in each gun's model space (pixels; muzzle toward -z, x centred on 8):
-#   muzzle (z, y) and suppressor length, laser (front z, underside y), optic (front z, top y)
+#   muzzle (z, y) and suppressor length, laser (front z, underside y), optic (front z, top y),
+#   grip (centre z, underside y: on the rail behind the laser, clear of the magazine)
 GUNS = {
     "glock":        dict(muzzle=(0.0, 10.1), sup=5.5, laser=(0.4, 8.0),  optic=(9.8, 11.2), switch=True),
     "m1911":        dict(muzzle=(-8.5, 10.0), sup=5.5, laser=(-6.0, 8.0), optic=(1.8, 11.0)),
     "revolver_357": dict(muzzle=None, laser=(-8.6, 8.5), optic=(-0.6, 11.7)),
-    "mac10":        dict(muzzle=(-9.0, 8.6), sup=6.0, laser=(-8.8, 8.15), optic=(-0.5, 10.4)),
-    "mp5":          dict(muzzle=(-13.0, 8.75), sup=6.5, laser=(-7.5, 6.5), optic=(3.0, 10.3)),
-    "m4":           dict(muzzle=(-14.0, 8.0), sup=7.5, laser=(-6.5, 6.1), optic=(5.0, 10.4)),
-    "akm":          dict(muzzle=(-13.0, 8.2), sup=7.5, laser=(-1.0, 6.6), optic=(10.0, 10.2)),
-    "galil":        dict(muzzle=(-15.0, 8.2), sup=7.5, laser=(-2.0, 6.6), optic=(3.3, 10.2)),
-    "awp":          dict(muzzle=(-16.0, 8.9), sup=9.0, laser=(-6.5, 6.5), optic=None),
+    "mac10":        dict(muzzle=(-9.0, 8.6), sup=6.0, laser=(-8.8, 8.15), optic=(-0.5, 10.4), grip=(-5.0, 7.0)),
+    "mp5":          dict(muzzle=(-13.0, 8.75), sup=6.5, laser=(-7.5, 6.5), optic=(3.0, 10.3), grip=(-2.5, 6.5)),
+    "m4":           dict(muzzle=(-14.0, 8.0), sup=7.5, laser=(-6.5, 6.1), optic=(5.0, 10.4), grip=(-1.5, 6.1)),
+    "akm":          dict(muzzle=(-13.0, 8.2), sup=7.5, laser=(-1.0, 6.6), optic=(10.0, 10.2), grip=(3.2, 6.6)),
+    "galil":        dict(muzzle=(-15.0, 8.2), sup=7.5, laser=(-2.0, 6.6), optic=(3.3, 10.2), grip=(1.8, 6.6)),
+    "awp":          dict(muzzle=(-16.0, 8.9), sup=9.0, laser=(-6.5, 6.5), optic=None, grip=(-2.5, 6.5)),
 }
 # Iron sights (by element name) taken off a gun while an optic is fitted, and parts cut down to sit flush instead.
 IRON_SIGHTS = {
@@ -33,8 +34,8 @@ IRON_SIGHTS = {
     "galil": ["front_sight_post", "front_sight_ears", "carry_handle", "carry_handle~l", "carry_handle~r", "carry_handle~bpp",
               "carry_handle~bnp", "rear_sight"],
 }
-# The AK's rear sight block also carries the gas tube, so it stays, cut down to the dust cover's height.
-IRON_SIGHT_TRIMS = {"akm": {"rear_sight_base": 10.2}}
+# The AK's rear sight block also carries the gas tube, so it stays, cut down to just under the dust cover's top.
+IRON_SIGHT_TRIMS = {"akm": {"rear_sight_base": 10.18}}
 
 # Pistols whose optic (and switch) sit on the slide: how far back the slide is in each racking frame
 # (the mymod:gun_animation frames 1-6), so those parts ride along with it.
@@ -52,6 +53,7 @@ OILCAN_BODY, OILCAN_CAP, BRAKE, FLASH = cell(0, 1), cell(1, 1), cell(2, 1), cell
 GREEN_LASER_BODY, GREEN_LASER_FRONT, KOBRA_BODY, EOTECH_BODY = cell(4, 1), cell(5, 1), cell(6, 1), cell(7, 1)
 GLASS_BLUE, GLASS_AMBER, RETICLE, BOLT = cell(0, 2), cell(1, 2), cell(2, 2), cell(3, 2)
 RUBBER, OPTIC_BODY, KOBRA_DIAL, EOTECH_BUTTON = cell(4, 2), cell(5, 2), cell(6, 2), cell(7, 2)
+GRIP_BODY, GRIP_SIDE, GRIP_CAP = cell(0, 3), cell(1, 3), cell(2, 3)
 
 
 def box(x0, y0, z0, x1, y1, z1, swatch, only=None, emit=False, rot=None, **faces):
@@ -90,8 +92,9 @@ def glow(x, y, z, size):
 def suppressor(z, y, length):
     z0 = z - length
     return [
-        box(7.2, y - 0.6, z0, 8.8, y + 0.6, z, SUP_BODY, north=SUP_CAP, south=SUP_CAP),
-        box(7.4, y - 0.8, z0, 8.6, y + 0.8, z, SUP_BODY, north=SUP_CAP, south=SUP_CAP),
+        # Two crossed boxes round it off; their ends are staggered so the end caps don't z-fight.
+        box(7.2, y - 0.6, z0, 8.8, y + 0.6, z - 0.02, SUP_BODY, north=SUP_CAP, south=SUP_CAP),
+        box(7.4, y - 0.8, z0 + 0.04, 8.6, y + 0.8, z - 0.04, SUP_BODY, north=SUP_CAP, south=SUP_CAP),
         # Mount collar where it threads onto the muzzle.
         box(7.1, y - 0.7, z - 0.8, 8.9, y + 0.7, z, MOUNT),
     ]
@@ -102,7 +105,7 @@ def oil_can(z, y):
         # Adapter threaded onto the muzzle, then the fat filter can.
         box(7.5, y - 0.5, z - 1.0, 8.5, y + 0.5, z, MOUNT),
         box(6.8, y - 0.9, z - 5.5, 9.2, y + 0.9, z - 1.0, OILCAN_BODY, north=OILCAN_CAP, south=OILCAN_CAP),
-        box(7.1, y - 1.2, z - 5.5, 8.9, y + 1.2, z - 1.0, OILCAN_BODY, north=OILCAN_CAP, south=OILCAN_CAP),
+        box(7.1, y - 1.2, z - 5.46, 8.9, y + 1.2, z - 1.04, OILCAN_BODY, north=OILCAN_CAP, south=OILCAN_CAP),
     ]
 
 
@@ -175,7 +178,7 @@ def holographic(zf, ytop):
     return [
         box(7.35, ytop - 0.05, zf + 0.2, 8.65, ytop + 0.12, zf + 2.7, MOUNT),
         box(7.1, ytop - 0.02, zf + 1.7, 7.35, ytop + 0.22, zf + 2.5, MOUNT),
-        box(7.03, ytop + 0.04, zf + 1.1, 7.13, ytop + 0.17, zf + 2.5, BOLT),
+        box(7.03, ytop + 0.04, zf + 1.1, 7.13, ytop + 0.17, zf + 2.45, BOLT),
         box(7.3, ytop + 0.12, zf + 0.1, 8.7, ytop + 0.5, zf + 2.8, EOTECH_BODY),
         box(7.6, ytop + 0.15, zf - 0.1, 8.4, ytop + 0.45, zf + 0.1, RUBBER),
         box(7.55, ytop + 0.18, zf + 2.8, 7.85, ytop + 0.42, zf + 2.9, EOTECH_BUTTON),
@@ -197,7 +200,7 @@ def holographic(zf, ytop):
 def kobra(zf, ytop):
     """Kobra: the reticle housing down the right side with its dial, post frames, amber glass (window centre ytop+1.05, zf+1.2)."""
     cy = ytop + 1.05
-    chevron = [glow(8 + side * i * 0.05, cy - i * 0.05, zf + 0.18, 0.045) for i in range(6) for side in (-1, 1)]
+    chevron = [glow(8, cy, zf + 0.18, 0.045)] + [glow(8 + side * i * 0.05, cy - i * 0.05, zf + 0.18, 0.045) for i in range(1, 6) for side in (-1, 1)]
     return [
         box(7.4, ytop - 0.05, zf, 8.6, ytop + 0.3, zf + 2.4, MOUNT),
         box(7.15, ytop, zf + 0.9, 7.4, ytop + 0.25, zf + 1.5, BOLT),
@@ -211,6 +214,51 @@ def kobra(zf, ytop):
         box(7.2, ytop + 1.8, zf + 2.1, 9.05, ytop + 2.05, zf + 2.4, KOBRA_BODY),
         glass(7.45, ytop + 0.3, 8.45, ytop + 1.8, zf + 0.15, GLASS_AMBER),
         *chevron,
+    ]
+
+
+def vertical_grip(zc, yt):
+    """A straight grip on a rail clamp: two crossed boxes make a rounded body, finger grooves on the front, a wider end cap."""
+    return [
+        box(7.35, yt - 0.45, zc - 1.0, 8.65, yt, zc + 1.0, MOUNT),
+        box(7.3, yt - 0.3, zc - 0.7, 7.35, yt - 0.1, zc + 0.7, BOLT),
+        box(7.5, yt - 3.8, zc - 0.6, 8.5, yt - 0.45, zc + 0.6, GRIP_BODY, east=GRIP_SIDE, west=GRIP_SIDE),
+        box(7.4, yt - 3.7, zc - 0.5, 8.6, yt - 0.5, zc + 0.5, GRIP_BODY, east=GRIP_SIDE, west=GRIP_SIDE),
+        *[box(7.55, yt - 1.15 - i * 0.75, zc - 0.68, 8.45, yt - 0.85 - i * 0.75, zc - 0.6, GRIP_CAP) for i in range(4)],
+        box(7.42, yt - 4.05, zc - 0.68, 8.58, yt - 3.8, zc + 0.68, GRIP_CAP),
+    ]
+
+
+def angled_grip(zc, yt):
+    """An angled foregrip: a long low wedge, deepest at the front, its face sloping up toward the shooter."""
+    return [
+        box(7.35, yt - 0.4, zc - 1.7, 8.65, yt, zc + 1.5, MOUNT),
+        box(7.45, yt - 1.2, zc - 1.6, 8.55, yt - 0.4, zc + 1.3, GRIP_BODY, east=GRIP_SIDE, west=GRIP_SIDE),
+        box(7.45, yt - 2.3, zc - 1.6, 8.55, yt - 1.2, zc - 0.7, GRIP_BODY, east=GRIP_SIDE, west=GRIP_SIDE),
+        box(7.45, yt - 1.85, zc - 0.7, 8.55, yt - 1.2, zc + 0.15, GRIP_BODY, east=GRIP_SIDE, west=GRIP_SIDE),
+        box(7.45, yt - 1.45, zc + 0.15, 8.55, yt - 1.2, zc + 0.8, GRIP_BODY, east=GRIP_SIDE, west=GRIP_SIDE),
+        # The sloped face, hinged at its top rear corner.
+        box(7.46, yt - 1.2, zc - 0.9, 8.54, yt - 0.9, zc + 1.4, GRIP_BODY, rot=("x", -22.5, (8, yt - 0.9, zc + 1.4))),
+        box(7.4, yt - 2.45, zc - 1.65, 8.6, yt - 2.2, zc - 0.65, GRIP_CAP),
+    ]
+
+
+def stubby_grip(zc, yt):
+    """A short, fat vertical grip."""
+    return [
+        box(7.35, yt - 0.45, zc - 0.95, 8.65, yt, zc + 0.95, MOUNT),
+        box(7.45, yt - 2.1, zc - 0.7, 8.55, yt - 0.45, zc + 0.7, GRIP_BODY, east=GRIP_SIDE, west=GRIP_SIDE),
+        box(7.35, yt - 2.0, zc - 0.6, 8.65, yt - 0.5, zc + 0.6, GRIP_BODY, east=GRIP_SIDE, west=GRIP_SIDE),
+        box(7.33, yt - 2.4, zc - 0.8, 8.67, yt - 2.1, zc + 0.8, GRIP_CAP),
+    ]
+
+
+def handstop(zc, yt):
+    """A small clamp with a nub at its front for the hand to brace against."""
+    return [
+        box(7.4, yt - 0.35, zc - 1.0, 8.6, yt, zc + 0.6, MOUNT),
+        box(7.48, yt - 1.15, zc - 1.0, 8.52, yt - 0.35, zc - 0.45, GRIP_BODY, east=GRIP_SIDE, west=GRIP_SIDE,
+            rot=("x", 22.5, (8, yt - 0.35, zc - 0.7))),
     ]
 
 
@@ -342,6 +390,11 @@ for gun, spec in GUNS.items():
             case("muzzle_brake", muzzle_brake(z, y)), case("flash_hider", flash_hider(z, y))]))
     layers.append(select("mymod:underbarrel_attachment", [
         case("laser_sight", laser(*spec["laser"])), case("green_laser_sight", green_laser(*spec["laser"]))]))
+    if spec.get("grip"):
+        gz, gy = spec["grip"]
+        layers.append(select("mymod:grip_attachment", [
+            case("vertical_grip", vertical_grip(gz, gy)), case("angled_grip", angled_grip(gz, gy)),
+            case("stubby_grip", stubby_grip(gz, gy)), case("handstop", handstop(gz, gy))]))
     if spec.get("optic"):
         o = spec["optic"]
         layers.append(on_slide("mymod:optic_attachment", [
@@ -418,6 +471,9 @@ fill(*RUBBER, lambda x, y: rgb(0x151517 if (x + y) % 2 else 0x1C1C1F))
 fill(*OPTIC_BODY, lambda x, y: rgb(0x2A2C30 if y > 0 else 0x3C3F44, jitter=2))
 fill(*KOBRA_DIAL, lambda x, y: rgb(0x1C1F18 if x % 2 else 0x2A2E24))
 fill(*EOTECH_BUTTON, lambda x, y: rgb(0x4A4D52 if y > 0 else 0x5C6066, jitter=2))
+fill(*GRIP_BODY, lambda x, y: rgb(0x1E1F21 if x % 2 else 0x26272A, jitter=2))
+fill(*GRIP_SIDE, lambda x, y: rgb(0x151517 if (x + y) % 2 else 0x232427))
+fill(*GRIP_CAP, lambda x, y: rgb(0x303236 if y == 0 else 0x2A2B2E, jitter=2))
 png(os.path.join(TEX, "item/attachment_parts.png"), W, W, px)
 
 
@@ -549,6 +605,20 @@ for x in range(4, 11):
 kb += [(7, 6, 0xFF2A1E), (6, 7, 0xFF2A1E), (8, 7, 0xFF2A1E), (5, 8, 0xFF2A1E), (9, 8, 0xFF2A1E)]
 icon("kobra_sight", kb)
 
+# Grips: black polymer shapes hanging from a rail clamp along the top.
+def grip_icon(name, body):
+    pixels = []
+    for x in range(3, 13):
+        pixels += [(x, 3, 0x6A6E74), (x, 4, 0x45484D)]
+    for x, y in body:
+        edge = (x - 1, y) not in body
+        pixels.append((x, y, 0x3A3C40 if edge else 0x232427 if (x + y) % 2 else 0x1A1B1D))
+    icon(name, pixels)
+grip_icon("vertical_grip", {(x, y) for x in range(6, 10) for y in range(5, 14)} | {(x, 14) for x in range(5, 11)})
+grip_icon("angled_grip", {(x, y) for x in range(3, 13) for y in range(5, 7)} | {(x, y) for y in range(7, 12) for x in range(3, 12 - (y - 7) * 2)})
+grip_icon("stubby_grip", {(x, y) for x in range(5, 11) for y in range(5, 10)} | {(x, 10) for x in range(4, 12)})
+grip_icon("handstop", {(x, 5) for x in range(4, 12)} | {(x, y) for y in range(6, 9) for x in range(4 + (y - 6), 7 + (y - 6))})
+
 # Laser dot particles: soft red and green dots.
 def dot_texture(name, core, mid, edge):
     dot = []
@@ -562,7 +632,7 @@ dot_texture("green_laser_dot", 0x9AFFA0, 0x40FF50, 0x18C028)
 
 # Item models for the attachment items.
 for name in ["suppressor", "laser_sight", "red_dot_sight", "glock_switch", "oil_can_suppressor", "muzzle_brake", "flash_hider",
-             "green_laser_sight", "holographic_sight", "kobra_sight"]:
+             "green_laser_sight", "holographic_sight", "kobra_sight", "vertical_grip", "angled_grip", "stubby_grip", "handstop"]:
     with open(os.path.join(MODELS, f"{name}.json"), "w") as f:
         json.dump(OrderedDict([("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0=f"mymod:item/{name}"))]), f, indent=2)
         f.write("\n")

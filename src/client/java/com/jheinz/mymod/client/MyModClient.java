@@ -26,6 +26,14 @@ import com.jheinz.mymod.ModParticles;
 import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.client.cart.ShoppingCartModel;
 import com.jheinz.mymod.client.cart.ShoppingCartRenderer;
+import com.jheinz.mymod.client.holy.HolyBeams;
+import com.jheinz.mymod.client.holy.LightOrbRenderer;
+import com.jheinz.mymod.client.vampire.VampireCloakModel;
+import com.jheinz.mymod.client.vampire.VampireModel;
+import com.jheinz.mymod.client.vampire.VampireRenderer;
+import com.jheinz.mymod.client.neuralink.NeuralinkScreen;
+import com.jheinz.mymod.client.neuralink.NeuralinkVision;
+import com.jheinz.mymod.client.neuralink.OreScanner;
 import com.jheinz.mymod.station.ModMenus;
 
 public class MyModClient implements ClientModInitializer {
@@ -49,6 +57,7 @@ public class MyModClient implements ClientModInitializer {
 			GunRecoil.tick(client.player);
 			GunAnimation.tick(client.player);
 			LaserSights.tick(client);
+			OreScanner.tick(client);
 			while (FIRE_MODE_KEY.consumeClick()) {
 				if (client.player != null && client.player.getMainHandItem().getItem() instanceof GunItem) {
 					ClientPlayNetworking.send(ModNetworking.CycleFireMode.INSTANCE);
@@ -59,11 +68,20 @@ public class MyModClient implements ClientModInitializer {
 			}
 		});
 		MenuScreens.register(ModMenus.WEAPON_STATION, WeaponStationScreen::new);
+		MenuScreens.register(ModMenus.NEURALINK, NeuralinkScreen::new);
+		MenuScreens.register(ModMenus.FOUNDRY, FoundryScreen::new);
 		EntityRendererRegistry.register(ModEntities.SHOPPING_CART, ShoppingCartRenderer::new);
 		ModelLayerRegistry.registerModelLayer(ShoppingCartModel.LAYER, ShoppingCartModel::createBodyLayer);
+		EntityRendererRegistry.register(ModEntities.VAMPIRE, VampireRenderer::new);
+		ModelLayerRegistry.registerModelLayer(VampireModel.LAYER, VampireModel::createBodyLayer);
+		ModelLayerRegistry.registerModelLayer(VampireCloakModel.LAYER, VampireCloakModel::createBodyLayer);
+		EntityRendererRegistry.register(ModEntities.LIGHT_ORB, LightOrbRenderer::new);
+		ClientPlayNetworking.registerGlobalReceiver(ModNetworking.LightBeam.TYPE, (payload, context) -> HolyBeams.receive(payload));
+		LevelRenderEvents.COLLECT_SUBMITS.register(HolyBeams::submit);
 		ParticleProviderRegistry.getInstance().register(ModParticles.LASER_DOT, LaserDotParticle.Provider::new);
 		ParticleProviderRegistry.getInstance().register(ModParticles.GREEN_LASER_DOT, LaserDotParticle.Provider::new);
 		LevelRenderEvents.COLLECT_SUBMITS.register(LaserBeams::submit);
+		LevelRenderEvents.COLLECT_SUBMITS.register(NeuralinkVision::submit);
 		RangeSelectItemModelProperties.ID_MAPPER.put(MyMod.id("gun_animation"), GunAnimationProperty.MAP_CODEC);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, MyMod.id("ammo"), AmmoHud::extract);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, MyMod.id("scope"), GunScope::extract);

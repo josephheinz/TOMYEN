@@ -274,6 +274,44 @@
         "fallback": {
           "type": "minecraft:empty"
         }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:grip_attachment",
+        "cases": [
+          {
+            "when": "mymod:vertical_grip",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/awp_vertical_grip"
+            }
+          },
+          {
+            "when": "mymod:angled_grip",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/awp_angled_grip"
+            }
+          },
+          {
+            "when": "mymod:stubby_grip",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/awp_stubby_grip"
+            }
+          },
+          {
+            "when": "mymod:handstop",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/awp_handstop"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
       }
     ]
   }

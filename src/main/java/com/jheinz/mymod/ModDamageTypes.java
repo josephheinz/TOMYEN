@@ -13,6 +13,8 @@ public final class ModDamageTypes {
 	public static final ResourceKey<DamageType> PENETRATOR_BULLET = key("penetrator_bullet");
 	public static final ResourceKey<DamageType> ARMOR_PIERCING_BULLET = key("armor_piercing_bullet");
 	public static final ResourceKey<DamageType> HOLLOW_POINT_BULLET = key("hollow_point_bullet");
+	public static final ResourceKey<DamageType> BLEEDING = key("bleeding");
+	public static final ResourceKey<DamageType> HOLY_LIGHT = key("holy_light");
 
 	/** Armor stops bullets better than melee: armor and toughness count this much more against them. */
 	private static final float BULLET_ARMOR_BONUS = 1.5f;

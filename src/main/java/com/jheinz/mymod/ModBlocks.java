@@ -1,5 +1,6 @@
 package com.jheinz.mymod;
 
+import java.util.Set;
 import java.util.function.Function;
 
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -15,14 +16,24 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
+import com.jheinz.mymod.foundry.FoundryBlock;
+import com.jheinz.mymod.foundry.FoundryBlockEntity;
 import com.jheinz.mymod.station.WeaponStationBlock;
 
 public final class ModBlocks {
 	public static final Block WEAPON_STATION = register("weapon_station", WeaponStationBlock::new,
 			BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f).sound(SoundType.METAL));
+
+	/** A lava-fuelled furnace for refining tech materials. Lit, it glows like lava. */
+	public static final Block FOUNDRY = register("foundry", FoundryBlock::new,
+			BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops()
+					.lightLevel(state -> state.getValue(FoundryBlock.LIT) ? 13 : 0));
+	public static final BlockEntityType<FoundryBlockEntity> FOUNDRY_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
+			MyMod.id("foundry"), new BlockEntityType<>(FoundryBlockEntity::new, Set.of(FOUNDRY)));
 
 	private static final ResourceKey<CreativeModeTab> FUNCTIONAL_BLOCKS_TAB =
 			ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace("functional_blocks"));
@@ -42,6 +53,6 @@ public final class ModBlocks {
 
 	public static void initialize() {
 		CreativeModeTabEvents.modifyOutputEvent(FUNCTIONAL_BLOCKS_TAB)
-				.register(output -> output.insertAfter(Items.CRAFTING_TABLE, WEAPON_STATION));
+				.register(output -> output.insertAfter(Items.CRAFTING_TABLE, WEAPON_STATION, FOUNDRY));
 	}
 }

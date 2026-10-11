@@ -10,6 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.ItemContainerContents;
 
 public final class ModComponents {
 	/** On a magazine item: the rounds it holds. Absent means the magazine is empty. */
@@ -31,11 +32,16 @@ public final class ModComponents {
 	// On a gun: the attachment fitted in each slot (see AttachmentSlot). Absent means the slot is empty.
 	public static final DataComponentType<Holder<Item>> MUZZLE_ATTACHMENT = register("muzzle_attachment", Item.CODEC, Item.STREAM_CODEC);
 	public static final DataComponentType<Holder<Item>> UNDERBARREL_ATTACHMENT = register("underbarrel_attachment", Item.CODEC, Item.STREAM_CODEC);
+	public static final DataComponentType<Holder<Item>> GRIP_ATTACHMENT = register("grip_attachment", Item.CODEC, Item.STREAM_CODEC);
 	public static final DataComponentType<Holder<Item>> OPTIC_ATTACHMENT = register("optic_attachment", Item.CODEC, Item.STREAM_CODEC);
 	public static final DataComponentType<Holder<Item>> FIRE_CONTROL_ATTACHMENT = register("fire_control_attachment", Item.CODEC, Item.STREAM_CODEC);
 
 	/** On a plate carrier: the inserted armor plate item. Absent means no plate. */
 	public static final DataComponentType<Holder<Item>> ARMOR_PLATE = register("armor_plate", Item.CODEC, Item.STREAM_CODEC);
+
+	/** On a Neuralink: the modules in its sockets. */
+	public static final DataComponentType<ItemContainerContents> NEURALINK_MODULES =
+			register("neuralink_modules", ItemContainerContents.CODEC, ItemContainerContents.STREAM_CODEC);
 
 	private ModComponents() {
 	}

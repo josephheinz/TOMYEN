@@ -35,7 +35,7 @@ public final class GunCrosshair {
 			return true;
 		}
 
-		float spread = GunSpread.clientSpread(gun.stats(minecraft.player.getMainHandItem()), minecraft.player);
+		float spread = GunSpread.clientSpread(gun.stats(minecraft.player.getMainHandItem(), minecraft.player), minecraft.player);
 		float halfFov = (float) Math.toRadians(minecraft.options.fov().get() / 2.0);
 		int gap = Math.round((float) (Math.tan(Math.toRadians(spread)) / Math.tan(halfFov)) * graphics.guiHeight() / 2.0f);
 		gap = Math.max(MIN_GAP, Math.min(MAX_GAP, gap));

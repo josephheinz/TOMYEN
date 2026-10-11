@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mymod:tech_scrap",
+    "mymod:tech_scrap",
+    "minecraft:glass_pane",
+    "minecraft:golden_carrot"
+  ],
+  "result": {
+    "id": "mymod:night_vision_module"
+  }
+}

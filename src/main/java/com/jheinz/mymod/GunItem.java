@@ -20,6 +20,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.inventory.ClickAction;
@@ -40,9 +41,10 @@ import com.jheinz.mymod.attachment.AttachmentItem;
 import com.jheinz.mymod.attachment.Attachments;
 
 /**
- * A magazine-fed hitscan firearm. Each use fires one round from the inserted magazine; holding use
- * repeats at vanilla's right-click rate (every 4 ticks) in full-auto; semi and burst need a fresh
- * click. Punching with an empty gun reloads it.
+ * A magazine-fed hitscan firearm. Each use fires one round from the inserted magazine (a burst fires the rest
+ * on the following ticks). In full-auto, holding use repeats it every {@link GunStats#autoTicks()} ticks (the
+ * client shortens vanilla's right-click repeat to match); semi and burst need a fresh click. Punching with an
+ * empty gun reloads it.
  */
 public class GunItem extends Item {
 	/** How long thumbing a single round into a cylinder blocks firing. */
@@ -77,6 +79,30 @@ public class GunItem extends Item {
 			fitted = attachment.apply(fitted);
 		}
 		return fitted;
+	}
+
+	/**
+	 * How it handles in this holder's hands. With something in the off hand it's fired one-handed: more kick
+	 * and wider shots, much more so for a long gun than a handgun.
+	 */
+	public GunStats stats(ItemStack gun, LivingEntity holder) {
+		GunStats fitted = stats(gun);
+		if (!isOneHanded(holder)) {
+			return fitted;
+		}
+		boolean handgun = isHandgun();
+		return fitted.withRecoil(fitted.recoilDegrees() * (handgun ? 1.2f : 1.6f))
+				.withSpread(fitted.spreadDegrees() * (handgun ? 1.25f : 1.8f), fitted.bloomPerShot() * (handgun ? 1.1f : 1.4f));
+	}
+
+	/** Holding a gun with something in the off hand, so the gun is held in one hand. */
+	public static boolean isOneHanded(LivingEntity holder) {
+		return holder.getMainHandItem().getItem() instanceof GunItem && !holder.getOffhandItem().isEmpty();
+	}
+
+	/** Small enough to shoot well one-handed. */
+	public boolean isHandgun() {
+		return this == ModItems.GLOCK || this == ModItems.M1911 || this == ModItems.REVOLVER_357 || this == ModItems.MAC10;
 	}
 
 	public List<MagazineItem> magazines() {
@@ -142,13 +168,9 @@ public class GunItem extends Item {
 			return InteractionResult.FAIL;
 		}
 
-		GunStats fitted = stats(gun);
+		GunStats fitted = stats(gun, player);
 		FireMode mode = fireMode(gun);
-		int shots = switch (mode) {
-			case BURST -> Math.min(FireMode.BURST_SIZE, available);
-			case AUTO -> Math.min(fitted.shotsPerCycle(), available);
-			default -> 1;
-		};
+		int shots = mode == FireMode.BURST ? Math.min(FireMode.BURST_SIZE, available) : 1;
 		if (level.isClientSide()) {
 			GunRecoil.queue(player, shots, fitted);
 			return InteractionResult.CONSUME;
@@ -175,7 +197,7 @@ public class GunItem extends Item {
 			return false;
 		}
 
-		float spread = player instanceof ServerPlayer serverPlayer ? GunSpread.serverShot(serverPlayer, stats(gun)) : 0.0f;
+		float spread = player instanceof ServerPlayer serverPlayer ? GunSpread.serverShot(serverPlayer, stats(gun, player)) : 0.0f;
 		boolean suppressed = Attachments.suppressed(gun);
 		fire(level, player, round, spread, Attachments.hidesMuzzleSmoke(gun), suppressed);
 		// Suppressed: a muffled crack instead of the full report.

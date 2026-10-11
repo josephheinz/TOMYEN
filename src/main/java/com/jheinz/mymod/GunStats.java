@@ -11,7 +11,7 @@ import net.minecraft.sounds.SoundEvent;
  * @param range          hitscan distance in blocks
  * @param reloadTicks    how long a reload blocks firing
  * @param fireModes      modes the fire-mode key cycles through; the first is the default
- * @param shotsPerCycle  rounds fired per full-auto cycle, one per tick (vanilla repeats use every 4 ticks, so 4 is continuous fire)
+ * @param autoTicks      ticks between rounds in full-auto: 4 is about 300 rpm, 2 is 600, 1 (every tick) is 1200
  * @param cycleTicks     minimum ticks between trigger pulls, e.g. working a bolt; 0 for none
  * @param scopeZoom      field-of-view multiplier while sneaking, or 1 for no scope
  * @param singleRounds   fed from an internal cylinder that takes loose rounds one at a time (a loaded
@@ -20,38 +20,38 @@ import net.minecraft.sounds.SoundEvent;
  * @param bloomPerShot   extra spread each shot adds while firing rapidly; it recovers between shots
  */
 public record GunStats(SoundEvent sound, float recoilDegrees, double range, int reloadTicks, List<FireMode> fireModes,
-		int shotsPerCycle, int cycleTicks, float scopeZoom, boolean singleRounds, float spreadDegrees,
+		int autoTicks, int cycleTicks, float scopeZoom, boolean singleRounds, float spreadDegrees,
 		float bloomPerShot) {
 	public GunStats(SoundEvent sound, float recoilDegrees, double range, int reloadTicks, List<FireMode> fireModes) {
-		this(sound, recoilDegrees, range, reloadTicks, fireModes, 1, 0, 1.0f, false, 0.5f, 0.6f);
+		this(sound, recoilDegrees, range, reloadTicks, fireModes, 4, 0, 1.0f, false, 0.5f, 0.6f);
 	}
 
 	public GunStats withRecoil(float degrees) {
-		return new GunStats(sound, degrees, range, reloadTicks, fireModes, shotsPerCycle, cycleTicks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
+		return new GunStats(sound, degrees, range, reloadTicks, fireModes, autoTicks, cycleTicks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
 	}
 
 	public GunStats withFireModes(List<FireMode> modes) {
-		return new GunStats(sound, recoilDegrees, range, reloadTicks, modes, shotsPerCycle, cycleTicks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
+		return new GunStats(sound, recoilDegrees, range, reloadTicks, modes, autoTicks, cycleTicks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
 	}
 
-	public GunStats withShotsPerCycle(int shots) {
-		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, shots, cycleTicks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
+	public GunStats withAutoTicks(int ticks) {
+		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, ticks, cycleTicks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
 	}
 
 	public GunStats withCycleTicks(int ticks) {
-		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, shotsPerCycle, ticks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
+		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, autoTicks, ticks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
 	}
 
 	public GunStats withScope(float zoom) {
-		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, shotsPerCycle, cycleTicks, zoom, singleRounds, spreadDegrees, bloomPerShot);
+		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, autoTicks, cycleTicks, zoom, singleRounds, spreadDegrees, bloomPerShot);
 	}
 
 	public GunStats withSingleRoundLoading() {
-		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, shotsPerCycle, cycleTicks, scopeZoom, true, spreadDegrees, bloomPerShot);
+		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, autoTicks, cycleTicks, scopeZoom, true, spreadDegrees, bloomPerShot);
 	}
 
 	public GunStats withSpread(float degrees, float bloom) {
-		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, shotsPerCycle, cycleTicks, scopeZoom,
+		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, autoTicks, cycleTicks, scopeZoom,
 				singleRounds, degrees, bloom);
 	}
 

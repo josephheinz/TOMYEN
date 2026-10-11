@@ -8,8 +8,10 @@
 		"FirstPersonGunArmsMixin",
 		"FirstPersonHandsAndItemsMixin",
 		"GameRendererAimBobMixin",
+		"HumanoidGunAimMixin",
 		"MinecraftAttackMixin",
-		"MinecraftSemiAutoMixin"
+		"MinecraftSemiAutoMixin",
+		"GunAutoFireMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
