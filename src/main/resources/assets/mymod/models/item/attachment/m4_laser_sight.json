@@ -1,0 +1,265 @@
+{
+  "textures": {
+    "parts": "mymod:item/attachment_parts",
+    "particle": "mymod:item/attachment_parts"
+  },
+  "elements": [
+    {
+      "from": [
+        7.5,
+        5.1,
+        -6.5
+      ],
+      "to": [
+        8.5,
+        5.95,
+        -4.1
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            8,
+            0,
+            10,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "east": {
+          "uv": [
+            6,
+            0,
+            8,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "south": {
+          "uv": [
+            6,
+            0,
+            8,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "west": {
+          "uv": [
+            6,
+            0,
+            8,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "up": {
+          "uv": [
+            6,
+            0,
+            8,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "down": {
+          "uv": [
+            6,
+            0,
+            8,
+            2
+          ],
+          "texture": "#parts"
+        }
+      }
+    },
+    {
+      "from": [
+        7.65,
+        5.9,
+        -6.0
+      ],
+      "to": [
+        8.35,
+        6.15,
+        -4.6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "south": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "up": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "down": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        }
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        1.01,
+        -1.23
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        1.01,
+        -1.23
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -8,
+        0
+      ],
+      "translation": [
+        0,
+        4,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -8,
+        0
+      ],
+      "translation": [
+        0,
+        4,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        0,
+        1.25,
+        0
+      ],
+      "scale": [
+        0.38,
+        0.38,
+        0.38
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.35,
+        0.35,
+        0.35
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        0,
+        1.5,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  }
+}

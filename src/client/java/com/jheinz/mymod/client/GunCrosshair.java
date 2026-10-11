@@ -10,7 +10,8 @@ import com.jheinz.mymod.GunSpread;
 
 /**
  * With a gun out, the crosshair is four ticks around an open centre whose gap matches the current shot
- * spread: it opens up as bloom builds during rapid fire, and tightens when sneaking.
+ * spread: it opens up as bloom builds during rapid fire, and tightens when sneaking. Aiming down a
+ * scope or optic hides it; the sight has its own reticle.
  */
 public final class GunCrosshair {
 	private static final int ARM_LENGTH = 4;
@@ -30,10 +31,11 @@ public final class GunCrosshair {
 			return false;
 		}
 		if (GunScope.zoom(minecraft.player) > 0.0f) {
-			return false;  // the scope keeps vanilla's dot as its reticle
+			// Aiming: the scope's or optic's own reticle is the crosshair.
+			return true;
 		}
 
-		float spread = GunSpread.clientSpread(gun.stats(), minecraft.player);
+		float spread = GunSpread.clientSpread(gun.stats(minecraft.player.getMainHandItem()), minecraft.player);
 		float halfFov = (float) Math.toRadians(minecraft.options.fov().get() / 2.0);
 		int gap = Math.round((float) (Math.tan(Math.toRadians(spread)) / Math.tan(halfFov)) * graphics.guiHeight() / 2.0f);
 		gap = Math.max(MIN_GAP, Math.min(MAX_GAP, gap));

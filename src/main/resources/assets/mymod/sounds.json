@@ -100,5 +100,166 @@
     "sounds": [
       "mymod:mag_in"
     ]
+  },
+  "shopping_cart_rattle": {
+    "subtitle": "subtitles.mymod.shopping_cart_rattle",
+    "sounds": [
+      {
+        "name": "minecraft:block/chain/step1",
+        "pitch": 1.35,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/chain/step2",
+        "pitch": 1.35,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/chain/step3",
+        "pitch": 1.35,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/chain/step4",
+        "pitch": 1.35,
+        "volume": 0.7
+      }
+    ]
+  },
+  "shopping_cart_growl": {
+    "subtitle": "subtitles.mymod.shopping_cart_growl",
+    "sounds": [
+      {
+        "name": "minecraft:mob/wolf/angry/growl1",
+        "pitch": 0.75,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/wolf/angry/growl2",
+        "pitch": 0.75,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/wolf/angry/growl3",
+        "pitch": 0.75,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:block/chain/step1",
+        "pitch": 0.8,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/chain/step2",
+        "pitch": 0.8,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/chain/step3",
+        "pitch": 0.8,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/chain/step4",
+        "pitch": 0.8,
+        "volume": 0.6
+      }
+    ]
+  },
+  "shopping_cart_roll": {
+    "sounds": [
+      {
+        "name": "minecraft:block/chain/step1",
+        "pitch": 1.7,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/chain/step2",
+        "pitch": 1.7,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/chain/step3",
+        "pitch": 1.7,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/chain/step4",
+        "pitch": 1.7,
+        "volume": 0.5
+      }
+    ]
+  },
+  "shopping_cart_chomp": {
+    "subtitle": "subtitles.mymod.shopping_cart_chomp",
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_trapdoor/close1",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close2",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close3",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close4",
+        "pitch": 1.2
+      }
+    ]
+  },
+  "shopping_cart_hurt": {
+    "subtitle": "subtitles.mymod.shopping_cart_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/hit1",
+        "pitch": 1.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/irongolem/hit2",
+        "pitch": 1.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/irongolem/hit3",
+        "pitch": 1.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/irongolem/hit4",
+        "pitch": 1.6,
+        "volume": 0.8
+      }
+    ]
+  },
+  "shopping_cart_death": {
+    "subtitle": "subtitles.mymod.shopping_cart_death",
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_land",
+        "pitch": 1.5,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/chain/break1",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:block/chain/break2",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:block/chain/break3",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:block/chain/break4",
+        "pitch": 0.9
+      }
+    ]
   }
 }

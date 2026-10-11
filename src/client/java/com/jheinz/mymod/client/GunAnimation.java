@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.jheinz.mymod.GunItem;
+import com.jheinz.mymod.GunRecoil;
 import com.jheinz.mymod.MagazineContents;
 import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.ModItems;
@@ -26,7 +27,9 @@ import com.jheinz.mymod.ModSounds;
  * <li>racking a gun when it's drawn or after an empty reload (pistol slide, rifle charging handle),</li>
  * <li>working the AWP's bolt (lift, back, forward, down),</li>
  * <li>magazine reloads (the old magazine slides out, the hand fetches a new one and seats it),</li>
- * <li>loading the revolver, a round at a time or from a speedloader.</li>
+ * <li>loading the revolver, a round at a time or from a speedloader,</li>
+ * <li>inspecting the gun on demand: turned to show its left side, rolled over to show the ejection side, a
+ * press check of the slide, charging handle or bolt, then back.</li>
  * </ul>
  *
  * <p>Three things move together. Moving parts step through model frames chosen by the mymod:gun_animation
@@ -41,7 +44,7 @@ public final class GunAnimation {
 	private static final Vector3f FETCH_OFFSET = new Vector3f(-0.08f, -0.45f, 0.2f);
 
 	private enum Kind {
-		RACK, BOLT, RELOAD, LOAD_ROUND, SPEEDLOAD
+		RACK, BOLT, RELOAD, LOAD_ROUND, SPEEDLOAD, INSPECT
 	}
 
 	/** How far a gun turns toward the working hand: degrees of roll (top to the left), yaw (muzzle left), pitch, and lift. */
@@ -74,6 +77,10 @@ public final class GunAnimation {
 
 	private record Cue(float at, SoundEvent sound, float pitch) {
 	}
+
+	private static final long INSPECT_MILLIS = 3200;
+	/** How far the action is drawn back for a press check, in frames. */
+	private static final float PRESS_CHECK_TRAVEL = 2.5f;
 
 	private static final Pose RIFLE_RELOAD = new Pose(-18, 8, 12, 0.04f);
 	private static final Pose PISTOL_RELOAD = new Pose(-10, 10, 18, 0.05f);
@@ -181,10 +188,15 @@ public final class GunAnimation {
 		lastBoltOpen = boltOpen;
 		lastRounds = rounds;
 
+		// Firing or raising the scope puts an inspection away.
+		if (running != null && running.kind() == Kind.INSPECT && (GunRecoil.kick() > 0.01f || GunScope.zoom(player) > 0.0f)) {
+			running = null;
+		}
+
 		Running now = current(item);
 		float p = now == null ? -1.0f : now.progress();
 		if (now != null) {
-			for (Cue cue : cues(now.kind())) {
+			for (Cue cue : cues(now)) {
 				if (cue.at() > lastTickProgress && cue.at() <= p) {
 					player.level().playLocalSound(player.getX(), player.getEyeY(), player.getZ(), cue.sound(), SoundSource.PLAYERS,
 							0.9f, now.motion().soundPitch() * cue.pitch() * (0.95f + player.getRandom().nextFloat() * 0.1f), false);
@@ -192,6 +204,23 @@ public final class GunAnimation {
 			}
 		}
 		lastTickProgress = p;
+	}
+
+	/** Whether this stack is in the middle of an animation (drawing, reloading, working the action, inspecting). */
+	public static boolean busy(ItemStack stack) {
+		return current(stack.getItem()) != null;
+	}
+
+	/** Starts inspecting the held gun, unless it's busy with another animation. */
+	public static void inspect(LocalPlayer player) {
+		if (player == null || GunScope.zoom(player) > 0.0f) {
+			return;
+		}
+		Item item = player.getMainHandItem().getItem();
+		Motion motion = motion(item);
+		if (motion != null && current(item) == null && queued == null) {
+			start(Kind.INSPECT, motion, item, INSPECT_MILLIS);
+		}
 	}
 
 	private static long duration(Kind kind) {
@@ -218,14 +247,21 @@ public final class GunAnimation {
 		return running != null && running.item() == item ? running : null;
 	}
 
-	private static Cue[] cues(Kind kind) {
-		return switch (kind) {
+	private static Cue[] cues(Running run) {
+		return switch (run.kind()) {
 			case RACK -> new Cue[] {new Cue(0.22f, ModSounds.RACK_BACK, 1.0f), new Cue(0.58f, ModSounds.RACK_FORWARD, 1.0f)};
 			case BOLT -> new Cue[] {new Cue(0.14f, ModSounds.BOLT_UP, 1.0f), new Cue(0.22f, ModSounds.BOLT_BACK, 1.0f),
 					new Cue(0.44f, ModSounds.BOLT_FORWARD, 1.0f), new Cue(0.6f, ModSounds.BOLT_DOWN, 1.0f)};
 			case RELOAD -> new Cue[] {new Cue(0.15f, ModSounds.MAG_OUT, 1.0f), new Cue(0.66f, ModSounds.MAG_IN, 1.0f)};
 			case LOAD_ROUND -> new Cue[] {new Cue(0.45f, ModSounds.MAG_IN, 1.5f)};
 			case SPEEDLOAD -> new Cue[] {new Cue(0.45f, ModSounds.MAG_IN, 1.15f), new Cue(0.75f, ModSounds.RACK_FORWARD, 1.3f)};
+			case INSPECT -> run.motion().work() == Kind.BOLT
+					? new Cue[] {new Cue(0.6f, ModSounds.BOLT_UP, 1.1f), new Cue(0.66f, ModSounds.BOLT_BACK, 1.2f),
+							new Cue(0.74f, ModSounds.BOLT_FORWARD, 1.2f), new Cue(0.78f, ModSounds.BOLT_DOWN, 1.1f)}
+					: run.motion().work() == Kind.RACK
+							? new Cue[] {new Cue(0.6f, ModSounds.RACK_BACK, 1.2f), new Cue(0.75f, ModSounds.RACK_FORWARD, 1.25f)}
+							// The revolver's cylinder gets a spin instead.
+							: new Cue[] {new Cue(0.6f, ModSounds.MAG_IN, 1.7f), new Cue(0.66f, ModSounds.MAG_IN, 1.9f)};
 		};
 	}
 
@@ -257,6 +293,23 @@ public final class GunAnimation {
 	}
 
 	/**
+	 * Slide or bolt position during an inspection's press check: drawn back just far enough to see the
+	 * chamber (0.6-0.68), held a beat, then let go (0.74). A bolt is lifted first and turned down after.
+	 */
+	private static float pressCheckPosition(Motion motion, float p) {
+		if (motion.work() == Kind.RACK) {
+			return p < 0.6f ? 0.0f : p < 0.68f ? smooth(span(p, 0.6f, 0.68f)) * PRESS_CHECK_TRAVEL : p < 0.74f ? PRESS_CHECK_TRAVEL
+					: (1.0f - span(p, 0.74f, 0.76f)) * PRESS_CHECK_TRAVEL;
+		} else if (motion.work() == Kind.BOLT) {
+			return p < 0.6f ? 0.0f : p < 0.65f ? smooth(span(p, 0.6f, 0.65f)) * 2.0f
+					: p < 0.7f ? 2.0f + smooth(span(p, 0.65f, 0.7f)) * (PRESS_CHECK_TRAVEL + 0.5f)
+					: p < 0.74f ? 4.5f : p < 0.77f ? 4.5f - smooth(span(p, 0.74f, 0.77f)) * 2.5f
+					: 2.0f - smooth(span(p, 0.77f, 0.81f)) * 2.0f;
+		}
+		return 0.0f;
+	}
+
+	/**
 	 * Magazine position during a reload: 0 seated, 5 at the end of the well, 6 gone. It's pulled out (to 0.3),
 	 * gone while the hand fetches a new one, then pushed home (0.58-0.68).
 	 */
@@ -273,6 +326,7 @@ public final class GunAnimation {
 			case RELOAD -> smooth(span(p, 0.0f, 0.15f)) * (1.0f - smooth(span(p, 0.76f, 0.96f)));
 			case LOAD_ROUND -> smooth(span(p, 0.0f, 0.3f)) * (1.0f - smooth(span(p, 0.6f, 1.0f)));
 			case SPEEDLOAD -> smooth(span(p, 0.0f, 0.2f)) * (1.0f - smooth(span(p, 0.75f, 0.97f)));
+			case INSPECT -> smooth(span(p, 0.0f, 0.12f)) * (1.0f - smooth(span(p, 0.86f, 1.0f)));
 		};
 	}
 
@@ -284,6 +338,7 @@ public final class GunAnimation {
 			case RELOAD -> new float[][] {{0.16f, 0.3f}, {0.68f, 1.0f}};
 			case LOAD_ROUND -> new float[][] {{0.45f, 0.3f}};
 			case SPEEDLOAD -> new float[][] {{0.45f, 0.5f}, {0.75f, 0.8f}};
+			case INSPECT -> new float[][] {{0.76f, 0.45f}};
 		};
 		float total = 0.0f;
 		for (float[] hit : hits) {
@@ -310,6 +365,8 @@ public final class GunAnimation {
 		if (run.kind() == Kind.RELOAD) {
 			float m = magPosition(p);
 			return m < 0.5f ? 0.0f : FRAMES + Mth.clamp(Math.round(m), 1, MAG_FRAMES);
+		} else if (run.kind() == Kind.INSPECT) {
+			return Math.round(pressCheckPosition(run.motion(), p));
 		}
 		return Math.round(partPosition(run.kind(), p));
 	}
@@ -325,6 +382,10 @@ public final class GunAnimation {
 		}
 		float p = run.progress();
 		Motion motion = run.motion();
+		if (run.kind() == Kind.INSPECT) {
+			applyInspectPose(poseStack, run, anchors, mirrored);
+			return;
+		}
 		boolean working = run.kind() == Kind.RACK || run.kind() == Kind.BOLT;
 		Pose pose = working ? motion.workPose() : motion.reloadPose();
 		float engaged = engagement(run.kind(), p);
@@ -338,6 +399,32 @@ public final class GunAnimation {
 				(float) Math.toRadians(pose.pitch() * engaged + (working ? motion.pullPitch() * pull : 0.0f) + shake * 2.5f),
 				(float) Math.toRadians(pose.yaw() * engaged * side),
 				(float) Math.toRadians(pose.roll() * engaged * side + shake * 1.5f)),
+				pivot.x * side, pivot.y, pivot.z);
+	}
+
+	/**
+	 * Inspecting: the gun comes in toward the middle of the screen turned muzzle-left, showing its left
+	 * side, then rolls over to bring the ejection side up to the camera for the press check, and goes back.
+	 */
+	private static void applyInspectPose(PoseStack poseStack, Running run, GunHands.Anchors anchors, boolean mirrored) {
+		float p = run.progress();
+		float raised = engagement(Kind.INSPECT, p);
+		float flipped = smooth(span(p, 0.34f, 0.5f)) * (1.0f - smooth(span(p, 0.84f, 0.97f)));
+		float checking = smooth(span(p, 0.58f, 0.64f)) * (1.0f - smooth(span(p, 0.78f, 0.86f)));
+		float shake = jolt(run, p);
+		float side = mirrored ? -1.0f : 1.0f;
+		// A slow drift while it's held up, so it doesn't look frozen.
+		float t = (Util.getMillis() - run.startMillis()) / 1000.0f;
+		float drift = Mth.sin(t * 2.3f) * raised;
+
+		float roll = -14.0f * raised + 88.0f * flipped + drift * 2.0f + shake * 2.0f;
+		float yaw = 38.0f * raised - 14.0f * flipped + drift;
+		float pitch = 6.0f * raised + 8.0f * flipped + 5.0f * checking + shake * 2.0f;
+		Vector3f pivot = anchors.grip();
+
+		poseStack.translate(-0.1f * raised * side, 0.05f * raised + 0.03f * flipped, 0.07f * raised - shake * 0.01f);
+		poseStack.rotateAround(new Quaternionf().rotationXYZ(
+				(float) Math.toRadians(pitch), (float) Math.toRadians(yaw * side), (float) Math.toRadians(roll * side)),
 				pivot.x * side, pivot.y, pivot.z);
 	}
 
@@ -385,6 +472,18 @@ public final class GunAnimation {
 						: smooth(span(p, 0.3f, 0.45f)) * (1.0f - smooth(span(p, 0.55f, 0.7f)));
 				Vector3f target = new Vector3f(motion.magPoint()).add(0.0f, -0.02f * (1.0f - push), 0.05f - 0.05f * push);
 				yield new HandOverride(false, target, engagement(run.kind(), p));
+			}
+			case INSPECT -> {
+				if (motion.work() == null) {
+					yield null;
+				}
+				// The press check: the working hand goes to the slide or bolt and draws it back a little.
+				float blend = smooth(span(p, 0.54f, 0.6f)) * (1.0f - smooth(span(p, 0.8f, 0.87f)));
+				float position = pressCheckPosition(motion, p);
+				int lower = Mth.clamp((int) Math.floor(position), 0, FRAMES);
+				int upper = Math.min(lower + 1, FRAMES);
+				Vector3f target = new Vector3f(motion.workPoints()[lower]).lerp(motion.workPoints()[upper], position - lower);
+				yield new HandOverride(motion.mainHandWorks(), target, blend);
 			}
 		};
 	}

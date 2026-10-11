@@ -19,8 +19,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -32,6 +35,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import com.jheinz.mymod.attachment.AttachmentItem;
+import com.jheinz.mymod.attachment.Attachments;
 
 /**
  * A magazine-fed hitscan firearm. Each use fires one round from the inserted magazine; holding use
@@ -45,6 +51,7 @@ public class GunItem extends Item {
 	private static final int RACK_TICKS = 20;
 	/** How long working a bolt blocks firing. */
 	private static final int BOLT_TICKS = 18;
+	private static final float SUPPRESSED_PITCH = 1.15f;
 
 	private final GunStats stats;
 	private final List<MagazineItem> magazines;
@@ -58,8 +65,18 @@ public class GunItem extends Item {
 		this.ammo = ammo;
 	}
 
+	/** The gun's own stats, before attachments. */
 	public GunStats stats() {
 		return stats;
+	}
+
+	/** How this particular gun handles, with its attachments fitted. */
+	public GunStats stats(ItemStack gun) {
+		GunStats fitted = stats;
+		for (AttachmentItem attachment : Attachments.all(gun)) {
+			fitted = attachment.apply(fitted);
+		}
+		return fitted;
 	}
 
 	public List<MagazineItem> magazines() {
@@ -86,13 +103,14 @@ public class GunItem extends Item {
 	}
 
 	public FireMode fireMode(ItemStack gun) {
+		List<FireMode> modes = stats(gun).fireModes();
 		FireMode mode = gun.get(ModComponents.FIRE_MODE);
-		return mode != null && stats.fireModes().contains(mode) ? mode : stats.fireModes().getFirst();
+		return mode != null && modes.contains(mode) ? mode : modes.getFirst();
 	}
 
 	/** Switches to the gun's next fire mode, if it has more than one. */
 	public void cycleFireMode(ServerPlayer player, ItemStack gun) {
-		List<FireMode> modes = stats.fireModes();
+		List<FireMode> modes = stats(gun).fireModes();
 		if (modes.size() < 2) {
 			return;
 		}
@@ -124,14 +142,15 @@ public class GunItem extends Item {
 			return InteractionResult.FAIL;
 		}
 
+		GunStats fitted = stats(gun);
 		FireMode mode = fireMode(gun);
 		int shots = switch (mode) {
 			case BURST -> Math.min(FireMode.BURST_SIZE, available);
-			case AUTO -> Math.min(stats.shotsPerCycle(), available);
+			case AUTO -> Math.min(fitted.shotsPerCycle(), available);
 			default -> 1;
 		};
 		if (level.isClientSide()) {
-			GunRecoil.queue(player, shots, stats);
+			GunRecoil.queue(player, shots, fitted);
 			return InteractionResult.CONSUME;
 		}
 
@@ -156,10 +175,12 @@ public class GunItem extends Item {
 			return false;
 		}
 
-		float spread = player instanceof ServerPlayer serverPlayer ? GunSpread.serverShot(serverPlayer, stats) : 0.0f;
-		fire(level, player, round, spread);
+		float spread = player instanceof ServerPlayer serverPlayer ? GunSpread.serverShot(serverPlayer, stats(gun)) : 0.0f;
+		boolean suppressed = Attachments.suppressed(gun);
+		fire(level, player, round, spread, Attachments.hidesMuzzleSmoke(gun), suppressed);
+		// Suppressed: a muffled crack instead of the full report.
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), stats.sound(), SoundSource.PLAYERS,
-				1.0f, 0.95f + player.getRandom().nextFloat() * 0.1f);
+				Attachments.loudness(gun), (suppressed ? SUPPRESSED_PITCH : 1.0f) * (0.95f + player.getRandom().nextFloat() * 0.1f));
 		player.awardStat(Stats.ITEM_USED.get(this));
 
 		if (fireMode(gun) == FireMode.BOLT) {
@@ -318,8 +339,12 @@ public class GunItem extends Item {
 		player.getInventory().placeItemBackInInventory(spent, Prediction.SERVER_ONLY);
 	}
 
-	/** @param spread cone radius in degrees the shot strays within */
-	private void fire(ServerLevel level, Player shooter, Ammo round, float spread) {
+	/**
+	 * @param spread     cone radius in degrees the shot strays within
+	 * @param noSmoke    no smoke puff at the muzzle
+	 * @param suppressed no tracer either
+	 */
+	private void fire(ServerLevel level, Player shooter, Ammo round, float spread, boolean noSmoke, boolean suppressed) {
 		Vec3 eye = shooter.getEyePosition();
 		Vec3 look = shooter.getViewVector(1.0f);
 		if (spread > 0.0f) {
@@ -341,7 +366,9 @@ public class GunItem extends Item {
 				entity -> !entity.isSpectator() && entity.isPickable(), eye.distanceToSqr(end));
 
 		Vec3 muzzle = eye.add(look.scale(1.2)).add(0, -0.15, 0);
-		level.sendParticles(ParticleTypes.SMOKE, muzzle.x, muzzle.y, muzzle.z, 3, 0.03, 0.03, 0.03, 0.01);
+		if (!noSmoke) {
+			level.sendParticles(ParticleTypes.SMOKE, muzzle.x, muzzle.y, muzzle.z, 3, 0.03, 0.03, 0.03, 0.01);
+		}
 
 		if (entityHit != null) {
 			Entity target = entityHit.getEntity();
@@ -350,19 +377,22 @@ public class GunItem extends Item {
 			target.hurtServer(level, source, round.damage());
 			Vec3 hit = entityHit.getLocation();
 			level.sendParticles(ParticleTypes.CRIT, hit.x, hit.y, hit.z, 6, 0.1, 0.1, 0.1, 0.2);
-			drawTracer(level, muzzle, hit);
+			drawTracer(level, muzzle, hit, suppressed);
 		} else if (blockHit.getType() == HitResult.Type.BLOCK) {
 			Vec3 hit = blockHit.getLocation();
 			BlockParticleOption debris = new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(blockHit.getBlockPos()));
 			level.sendParticles(debris, hit.x, hit.y, hit.z, 8, 0.05, 0.05, 0.05, 0.1);
 			level.sendParticles(ParticleTypes.SMOKE, hit.x, hit.y, hit.z, 2, 0.02, 0.02, 0.02, 0.01);
-			drawTracer(level, muzzle, hit);
+			drawTracer(level, muzzle, hit, suppressed);
 		} else {
-			drawTracer(level, muzzle, end);
+			drawTracer(level, muzzle, end, suppressed);
 		}
 	}
 
-	private static void drawTracer(ServerLevel level, Vec3 from, Vec3 to) {
+	private static void drawTracer(ServerLevel level, Vec3 from, Vec3 to, boolean suppressed) {
+		if (suppressed) {
+			return;
+		}
 		Vec3 path = to.subtract(from);
 		int steps = (int) (path.length() / 2.0);
 		for (int i = 1; i < steps; i++) {
@@ -384,7 +414,10 @@ public class GunItem extends Item {
 		}
 		tooltip.accept(Component.translatable("item.mymod.gun.fire_mode", Component.translatable(fireMode(stack).translationKey()))
 				.withStyle(ChatFormatting.GRAY));
-		if (stats.fireModes().size() > 1) {
+		for (AttachmentItem attachment : Attachments.all(stack)) {
+			tooltip.accept(Component.translatable("item.mymod.gun.attachment", Component.translatable(attachment.getDescriptionId())).withStyle(ChatFormatting.BLUE));
+		}
+		if (stats(stack).fireModes().size() > 1) {
 			tooltip.accept(Component.translatable("item.mymod.gun.switch_fire_mode", Component.keybind("key.mymod.fire_mode"))
 					.withStyle(ChatFormatting.DARK_GRAY));
 		}
@@ -396,5 +429,47 @@ public class GunItem extends Item {
 		}
 		tooltip.accept(Component.translatable(stats.singleRounds() ? "item.mymod.gun.cylinder_hint" : "item.mymod.gun.hint")
 				.withStyle(ChatFormatting.DARK_GRAY));
+		if (!Attachments.all(stack).isEmpty()) {
+			tooltip.accept(Component.translatable("item.mymod.gun.remove_attachment_hint").withStyle(ChatFormatting.DARK_GRAY));
+		}
+	}
+
+	/**
+	 * Like a bundle: right-click an attachment onto the gun to fit it (swapping out whatever was in that
+	 * slot), or right-click the gun with an empty cursor to take its outermost attachment off.
+	 */
+	@Override
+	public boolean overrideOtherStackedOnMe(ItemStack gun, ItemStack carried, Slot slot, ClickAction action, Player player,
+			SlotAccess carriedAccess) {
+		if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
+			return false;
+		}
+		if (carried.isEmpty()) {
+			ItemStack removed = Attachments.detachOne(gun);
+			if (removed.isEmpty()) {
+				return false;
+			}
+			carriedAccess.set(removed);
+			player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 0.8f, 1.4f);
+			return true;
+		}
+		if (!(carried.getItem() instanceof AttachmentItem attachment)) {
+			return false;
+		}
+		if (!attachment.fits(this)) {
+			player.playSound(SoundEvents.DISPENSER_FAIL, 0.5f, 1.6f);
+			return true;
+		}
+		ItemStack previous = Attachments.attach(gun, attachment);
+		if (carried.getCount() == 1) {
+			carriedAccess.set(previous);
+		} else {
+			carried.shrink(1);
+			if (!previous.isEmpty()) {
+				player.getInventory().placeItemBackInInventory(previous, Prediction.PREDICTED);
+			}
+		}
+		player.playSound(SoundEvents.ARMOR_EQUIP_IRON.value(), 0.8f, 1.3f);
+		return true;
 	}
 }

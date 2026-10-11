@@ -15,12 +15,15 @@ public final class GunRecoil {
 	private static final float SETTLE_MS = 110.0f;
 	/** Kicks stack during rapid fire, up to this much. */
 	private static final float MAX_KICK = 3.5f;
+	/** How much less the view kicks when aiming down a sight. */
+	private static final float AIMED_REDUCTION = 0.6f;
 
 	private static int pendingKicks;
 	private static GunStats pendingStats;
 	private static float kickAtLastShot;
 	private static long lastShotMillis;
 	private static float roll;
+	private static float aiming;
 
 	private GunRecoil() {
 	}
@@ -40,8 +43,13 @@ public final class GunRecoil {
 		}
 	}
 
+	/** How far the player is aiming down a sight (0 to 1); a shouldered gun kicks less. Set by the client each frame. */
+	public static void setAiming(float amount) {
+		aiming = amount;
+	}
+
 	private static void kick(Player player, GunStats stats) {
-		float degrees = stats.recoilDegrees();
+		float degrees = stats.recoilDegrees() * (1.0f - AIMED_REDUCTION * aiming);
 		player.setXRot(player.getXRot() - degrees * VIEW_KICK);
 		player.setYRot(player.getYRot() + (player.getRandom().nextFloat() - 0.5f) * degrees * VIEW_KICK * 0.5f);
 		GunSpread.clientShot(stats);

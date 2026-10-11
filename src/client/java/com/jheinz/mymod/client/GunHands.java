@@ -68,19 +68,19 @@ public final class GunHands {
 		return new Anchors(new Vector3f(gx, gy, gz), new Vector3f(gx - 0.07f, gy - 0.03f, gz + 0.03f));
 	}
 
-	/** A slow breathing drift for the gun (and so the hands), applied to the item's pose. */
-	public static void applyIdleSway(PoseStack poseStack) {
+	/** A slow breathing drift for the gun (and so the hands), applied to the item's pose; {@code amount} scales it. */
+	public static void applyIdleSway(PoseStack poseStack, float amount) {
 		float t = (Util.getMillis() % 1_000_000L) / 1000.0f;
-		poseStack.translate(Mth.sin(t * 0.9f) * 0.004f, Mth.sin(t * 1.7f) * 0.005f, 0.0f);
-		poseStack.rotateDegrees(com.mojang.math.Axis.ZP, Mth.sin(t * 0.7f) * 0.6f);
+		poseStack.translate(Mth.sin(t * 0.9f) * 0.004f * amount, Mth.sin(t * 1.7f) * 0.005f * amount, 0.0f);
+		poseStack.rotateDegrees(com.mojang.math.Axis.ZP, Mth.sin(t * 0.7f) * 0.6f * amount);
 	}
 
 	/**
-	 * Kicks the gun back and up by the current recoil, pivoting at the grip (or the item origin) with a
-	 * little random twist. The hands ride along since they follow the gun's pose.
+	 * Kicks the gun back and up by the current recoil (scaled by {@code amount}), pivoting at the grip (or the
+	 * item origin) with a little random twist. The hands ride along since they follow the gun's pose.
 	 */
-	public static void applyRecoil(PoseStack poseStack, Anchors anchors) {
-		float kick = GunRecoil.kick();
+	public static void applyRecoil(PoseStack poseStack, Anchors anchors, float amount) {
+		float kick = GunRecoil.kick() * amount;
 		if (kick < 0.001f) {
 			return;
 		}

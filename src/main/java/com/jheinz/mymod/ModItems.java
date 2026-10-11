@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 
@@ -23,9 +24,16 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import com.jheinz.mymod.armor.ArmorPlateItem;
+import com.jheinz.mymod.attachment.AttachmentItem;
+import com.jheinz.mymod.attachment.AttachmentSlot;
 import com.jheinz.mymod.armor.PlateCarrierItem;
 
 public final class ModItems {
+	/** Field-of-view multiplier when aiming through a red dot sight. */
+	public static final float RED_DOT_ZOOM = 0.8f;
+	public static final float HOLOGRAPHIC_ZOOM = 0.75f;
+	public static final float KOBRA_ZOOM = 0.85f;
+
 	// Armor's effectiveness against each round is set per damage type in ModDamageTypes.
 
 	// 5.56x45mm NATO: M4
@@ -161,6 +169,50 @@ public final class ModItems {
 			new GunStats(ModSounds.M1911_SHOT, 2.8f, 48, 25, List.of(FireMode.SEMI)).withSpread(0.8f, 1.2f),
 			List.of(M1911_MAGAZINE), AMMO_45);
 
+	// Attachments. Each is right-clicked onto a gun (or combined with it in the Weapon Station).
+	private static final List<Item> ALL_GUNS = List.of(M4, GLOCK, AKM, AWP, GALIL, REVOLVER_357, MP5, MAC10, M1911);
+	/** Quieter shots with no smoke trail, and a little less kick. A revolver's cylinder gap can't be suppressed. */
+	public static final Item SUPPRESSOR = attachment("suppressor", AttachmentSlot.MUZZLE,
+			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911),
+			stats -> stats.withRecoil(stats.recoilDegrees() * 0.85f));
+	/** A cheap oil-filter can: as quiet as a suppressor and a little less kick, but the fat can throws shots wider. */
+	public static final Item OIL_CAN_SUPPRESSOR = attachment("oil_can_suppressor", AttachmentSlot.MUZZLE,
+			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911),
+			stats -> stats.withRecoil(stats.recoilDegrees() * 0.9f).withSpread(stats.spreadDegrees() * 1.15f, stats.bloomPerShot()));
+	/** Ports the gas sideways: much less recoil, but louder. */
+	public static final Item MUZZLE_BRAKE = attachment("muzzle_brake", AttachmentSlot.MUZZLE,
+			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911),
+			stats -> stats.withRecoil(stats.recoilDegrees() * 0.65f));
+	/** Hides the muzzle smoke and steadies rapid fire a little. */
+	public static final Item FLASH_HIDER = attachment("flash_hider", AttachmentSlot.MUZZLE,
+			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911),
+			stats -> stats.withSpread(stats.spreadDegrees(), stats.bloomPerShot() * 0.85f));
+	/** Tighter hip fire, and a red dot on whatever it's pointed at. */
+	public static final Item LASER_SIGHT = attachment("laser_sight", AttachmentSlot.UNDERBARREL, ALL_GUNS,
+			stats -> stats.withSpread(stats.spreadDegrees() * 0.6f, stats.bloomPerShot()));
+	/**
+	 * Sneaking aims through it: a slight zoom, a red dot reticle, and no resting spread (the same as a scope,
+	 * so the AWP's scope leaves no room for one).
+	 */
+	public static final Item RED_DOT_SIGHT = attachment("red_dot_sight", AttachmentSlot.OPTIC,
+			List.of(M4, GLOCK, AKM, GALIL, REVOLVER_357, MP5, MAC10, M1911),
+			stats -> stats.withScope(RED_DOT_ZOOM));
+	/** A green laser: brighter, so the dot shows twice as far, and a touch steadier than the red one. */
+	public static final Item GREEN_LASER_SIGHT = attachment("green_laser_sight", AttachmentSlot.UNDERBARREL, ALL_GUNS,
+			stats -> stats.withSpread(stats.spreadDegrees() * 0.55f, stats.bloomPerShot()));
+	/** EOTech holographic sight: aims like a red dot, a little more zoom, with a ring-and-dot reticle. */
+	public static final Item HOLOGRAPHIC_SIGHT = attachment("holographic_sight", AttachmentSlot.OPTIC,
+			List.of(M4, GLOCK, AKM, GALIL, REVOLVER_357, MP5, MAC10, M1911),
+			stats -> stats.withScope(HOLOGRAPHIC_ZOOM));
+	/** Kobra reflex sight: aims like a red dot, a little less zoom, with a chevron reticle. */
+	public static final Item KOBRA_SIGHT = attachment("kobra_sight", AttachmentSlot.OPTIC,
+			List.of(M4, GLOCK, AKM, GALIL, REVOLVER_357, MP5, MAC10, M1911),
+			stats -> stats.withScope(KOBRA_ZOOM));
+	/** Converts the Glock to full-auto: three rounds a cycle, about 900 rpm, and harder to keep on target. */
+	public static final Item GLOCK_SWITCH = attachment("glock_switch", AttachmentSlot.FIRE_CONTROL, List.of(GLOCK),
+			stats -> stats.withFireModes(withAuto(stats.fireModes())).withShotsPerCycle(3)
+					.withSpread(stats.spreadDegrees(), stats.bloomPerShot() * 1.3f));
+
 	// Vanilla keeps its tab keys private, so rebuild the key from its id.
 	private static final ResourceKey<CreativeModeTab> COMBAT_TAB =
 			ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace("combat"));
@@ -184,6 +236,16 @@ public final class ModItems {
 	private static MagazineItem magazine(String name, int capacity, List<Ammo> ammo, int extraReloadTicks) {
 		return (MagazineItem) register(name, properties -> new MagazineItem(properties, capacity, ammo, extraReloadTicks),
 				new Item.Properties().stacksTo(1));
+	}
+
+	private static Item attachment(String name, AttachmentSlot slot, List<Item> guns, UnaryOperator<GunStats> effect) {
+		return register(name, properties -> new AttachmentItem(properties, slot, guns, effect), new Item.Properties().stacksTo(16));
+	}
+
+	private static List<FireMode> withAuto(List<FireMode> modes) {
+		List<FireMode> all = new ArrayList<>(modes);
+		all.add(FireMode.AUTO);
+		return List.copyOf(all);
 	}
 
 	private static Item gun(String name, int durability, GunStats stats, List<MagazineItem> magazines, List<Ammo> ammo) {
@@ -219,7 +281,9 @@ public final class ModItems {
 					output.insertAfter(Items.CROSSBOW, M4, M4_UPPER_RECEIVER, M4_LOWER_RECEIVER, AKM, AK_RECEIVER,
 							AK_BARREL, GALIL, GALIL_RECEIVER, GALIL_BARREL, AWP, AWP_ACTION, AWP_STOCK, MP5, MP5_RECEIVER,
 							MP5_LOWER, MAC10, MAC10_UPPER, MAC10_LOWER, GLOCK, GLOCK_SLIDE, GLOCK_FRAME, M1911,
-							M1911_SLIDE, M1911_FRAME, REVOLVER_357, REVOLVER_FRAME, REVOLVER_CYLINDER);
+							M1911_SLIDE, M1911_FRAME, REVOLVER_357, REVOLVER_FRAME, REVOLVER_CYLINDER, SUPPRESSOR,
+							OIL_CAN_SUPPRESSOR, MUZZLE_BRAKE, FLASH_HIDER, LASER_SIGHT, GREEN_LASER_SIGHT, RED_DOT_SIGHT,
+							HOLOGRAPHIC_SIGHT, KOBRA_SIGHT, GLOCK_SWITCH);
 					List<ItemStack> ammo = new ArrayList<>();
 					ammo.addAll(ammoEntries(BULLET_CASING_556, AMMO_556, STANAG_MAGAZINE, GALIL_MAGAZINE));
 					ammo.addAll(ammoEntries(BULLET_CASING_762, AMMO_762, AK_MAGAZINE, AK_DRUM_MAGAZINE));

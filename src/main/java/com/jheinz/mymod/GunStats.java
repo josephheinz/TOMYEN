@@ -26,6 +26,14 @@ public record GunStats(SoundEvent sound, float recoilDegrees, double range, int 
 		this(sound, recoilDegrees, range, reloadTicks, fireModes, 1, 0, 1.0f, false, 0.5f, 0.6f);
 	}
 
+	public GunStats withRecoil(float degrees) {
+		return new GunStats(sound, degrees, range, reloadTicks, fireModes, shotsPerCycle, cycleTicks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
+	}
+
+	public GunStats withFireModes(List<FireMode> modes) {
+		return new GunStats(sound, recoilDegrees, range, reloadTicks, modes, shotsPerCycle, cycleTicks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
+	}
+
 	public GunStats withShotsPerCycle(int shots) {
 		return new GunStats(sound, recoilDegrees, range, reloadTicks, fireModes, shots, cycleTicks, scopeZoom, singleRounds, spreadDegrees, bloomPerShot);
 	}

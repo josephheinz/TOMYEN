@@ -28,6 +28,12 @@ public final class ModComponents {
 	/** On a bolt-action gun: the last shot left the bolt open, so it must be worked before firing again. */
 	public static final DataComponentType<Boolean> BOLT_OPEN = register("bolt_open", Codec.BOOL, ByteBufCodecs.BOOL);
 
+	// On a gun: the attachment fitted in each slot (see AttachmentSlot). Absent means the slot is empty.
+	public static final DataComponentType<Holder<Item>> MUZZLE_ATTACHMENT = register("muzzle_attachment", Item.CODEC, Item.STREAM_CODEC);
+	public static final DataComponentType<Holder<Item>> UNDERBARREL_ATTACHMENT = register("underbarrel_attachment", Item.CODEC, Item.STREAM_CODEC);
+	public static final DataComponentType<Holder<Item>> OPTIC_ATTACHMENT = register("optic_attachment", Item.CODEC, Item.STREAM_CODEC);
+	public static final DataComponentType<Holder<Item>> FIRE_CONTROL_ATTACHMENT = register("fire_control_attachment", Item.CODEC, Item.STREAM_CODEC);
+
 	/** On a plate carrier: the inserted armor plate item. Absent means no plate. */
 	public static final DataComponentType<Holder<Item>> ARMOR_PLATE = register("armor_plate", Item.CODEC, Item.STREAM_CODEC);
 

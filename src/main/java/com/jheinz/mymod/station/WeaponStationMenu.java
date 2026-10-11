@@ -16,8 +16,8 @@ import com.jheinz.mymod.ModBlocks;
 
 /**
  * Three input slots and a result slot, like a smithing table. The server matches the inputs
- * against {@link StationRecipes} and puts the result in the result slot; taking it consumes the
- * recipe's amounts from the inputs.
+ * against {@link StationRecipes} (or fits attachments to a gun, see {@link AttachmentFitting}) and puts
+ * the result in the result slot; taking it consumes the inputs.
  */
 public class WeaponStationMenu extends AbstractContainerMenu {
 	public static final int INPUT_COUNT = 3;
@@ -62,8 +62,9 @@ public class WeaponStationMenu extends AbstractContainerMenu {
 		if (container == inputs) {
 			// Only the server knows a real level/pos; the client gets the result slot synced.
 			access.execute((level, pos) -> {
-				StationRecipe recipe = StationRecipes.find(inputs);
-				result.setItem(0, recipe == null ? ItemStack.EMPTY : recipe.result());
+				ItemStack fitted = AttachmentFitting.result(inputs);
+				StationRecipe recipe = fitted == null ? StationRecipes.find(inputs) : null;
+				result.setItem(0, fitted != null ? fitted : recipe == null ? ItemStack.EMPTY : recipe.result());
 			});
 		}
 	}
@@ -135,9 +136,13 @@ public class WeaponStationMenu extends AbstractContainerMenu {
 
 		@Override
 		public void onTake(Player player, ItemStack stack) {
-			StationRecipe recipe = StationRecipes.find(inputs);
-			if (recipe != null) {
-				recipe.consume(inputs);
+			if (AttachmentFitting.result(inputs) != null) {
+				AttachmentFitting.consume(inputs);
+			} else {
+				StationRecipe recipe = StationRecipes.find(inputs);
+				if (recipe != null) {
+					recipe.consume(inputs);
+				}
 			}
 			access.execute((level, pos) -> level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 1.0f, 1.0f));
 			super.onTake(player, stack);

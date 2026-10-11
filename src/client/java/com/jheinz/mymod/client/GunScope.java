@@ -8,29 +8,40 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import com.jheinz.mymod.GunItem;
+import com.jheinz.mymod.GunStats;
+import com.jheinz.mymod.MyMod;
 
-/** Sneaking in first person with a scoped gun looks through the scope: zoomed view behind a scope mask. */
+/** Sneaking in first person with a scoped gun looks through the scope: zoomed view behind the scope and its reticle. */
 public final class GunScope {
-	private static final Identifier SCOPE_TEXTURE = Identifier.withDefaultNamespace("textures/misc/spyglass_scope.png");
+	private static final Identifier SCOPE_TEXTURE = MyMod.id("textures/misc/scope.png");
 	private static final int BLACK = 0xFF000000;
 
 	private GunScope() {
 	}
 
-	/** The field-of-view multiplier for this player's scope, or 0 if they aren't looking through one. */
+	/**
+	 * The field-of-view multiplier for the sight this player is aiming through (the gun's scope, or a red dot
+	 * sight), or 0 if they aren't aiming.
+	 */
 	public static float zoom(Player player) {
 		Minecraft minecraft = Minecraft.getInstance();
 		if (player != minecraft.player || !minecraft.options.getCameraType().isFirstPerson() || !player.isShiftKeyDown()
-				|| !(player.getMainHandItem().getItem() instanceof GunItem gun) || !gun.stats().scoped()) {
+				|| !(player.getMainHandItem().getItem() instanceof GunItem gun)) {
 			return 0.0f;
 		}
-		return gun.stats().scopeZoom();
+		GunStats stats = gun.stats(player.getMainHandItem());
+		return stats.scoped() ? stats.scopeZoom() : 0.0f;
 	}
 
-	/** Draws the spyglass mask, blacking out everything around a centred circle; the crosshair stays on top. */
+	/** Whether the player is looking through the gun's own scope (as opposed to a red dot sight). */
+	public static boolean throughScope(Player player) {
+		return zoom(player) > 0.0f && player.getMainHandItem().getItem() instanceof GunItem gun && gun.stats().scoped();
+	}
+
+	/** Draws the scope, blacking out everything around a centred circle; its reticle stands in for the crosshair. */
 	public static void extract(GuiGraphicsExtractor graphics, DeltaTracker delta) {
 		Minecraft minecraft = Minecraft.getInstance();
-		if (minecraft.player == null || zoom(minecraft.player) == 0.0f) {
+		if (minecraft.player == null || !throughScope(minecraft.player)) {
 			return;
 		}
 		int width = graphics.guiWidth();

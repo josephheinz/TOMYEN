@@ -1,0 +1,265 @@
+{
+  "textures": {
+    "parts": "mymod:item/attachment_parts",
+    "particle": "mymod:item/attachment_parts"
+  },
+  "elements": [
+    {
+      "from": [
+        7.5,
+        7.15,
+        -8.8
+      ],
+      "to": [
+        8.5,
+        8.0,
+        -6.4
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            10,
+            2,
+            12,
+            4
+          ],
+          "texture": "#parts"
+        },
+        "east": {
+          "uv": [
+            8,
+            2,
+            10,
+            4
+          ],
+          "texture": "#parts"
+        },
+        "south": {
+          "uv": [
+            8,
+            2,
+            10,
+            4
+          ],
+          "texture": "#parts"
+        },
+        "west": {
+          "uv": [
+            8,
+            2,
+            10,
+            4
+          ],
+          "texture": "#parts"
+        },
+        "up": {
+          "uv": [
+            8,
+            2,
+            10,
+            4
+          ],
+          "texture": "#parts"
+        },
+        "down": {
+          "uv": [
+            8,
+            2,
+            10,
+            4
+          ],
+          "texture": "#parts"
+        }
+      }
+    },
+    {
+      "from": [
+        7.65,
+        7.95,
+        -8.3
+      ],
+      "to": [
+        8.35,
+        8.2,
+        -6.9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "south": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "up": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        },
+        "down": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#parts"
+        }
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -0.0,
+        1.38,
+        5.1
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -0.0,
+        1.38,
+        5.1
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -6,
+        0
+      ],
+      "translation": [
+        -0.73,
+        3.71,
+        0.98
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -6,
+        0
+      ],
+      "translation": [
+        -0.73,
+        3.71,
+        0.98
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        -6.51,
+        2.93,
+        0
+      ],
+      "scale": [
+        0.824,
+        0.824,
+        0.824
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        -8.14,
+        3.66,
+        0
+      ],
+      "scale": [
+        1.03,
+        1.03,
+        1.03
+      ]
+    }
+  }
+}

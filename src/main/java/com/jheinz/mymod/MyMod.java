@@ -25,11 +25,14 @@ public class MyMod implements ModInitializer {
 
 		ModComponents.initialize();
 		ModSounds.initialize();
+		ModParticles.initialize();
 		ModItems.initialize();
 		ModBlocks.initialize();
+		ModEntities.initialize();
 		ModMenus.initialize();
 		ModNetworking.initialize();
 		BurstFire.initialize();
+		GunOffhand.initialize();
 	}
 
 	public static Identifier id(String path) {

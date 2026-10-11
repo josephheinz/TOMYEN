@@ -23,6 +23,12 @@ public final class ModSounds {
 	public static final SoundEvent BOLT_DOWN = register("bolt_down");
 	public static final SoundEvent MAG_OUT = register("mag_out");
 	public static final SoundEvent MAG_IN = register("mag_in");
+	public static final SoundEvent SHOPPING_CART_RATTLE = register("shopping_cart_rattle");
+	public static final SoundEvent SHOPPING_CART_GROWL = register("shopping_cart_growl");
+	public static final SoundEvent SHOPPING_CART_ROLL = register("shopping_cart_roll");
+	public static final SoundEvent SHOPPING_CART_CHOMP = register("shopping_cart_chomp");
+	public static final SoundEvent SHOPPING_CART_HURT = register("shopping_cart_hurt");
+	public static final SoundEvent SHOPPING_CART_DEATH = register("shopping_cart_death");
 
 	private ModSounds() {
 	}

@@ -1,395 +1,891 @@
 {
   "model": {
-    "type": "minecraft:range_dispatch",
-    "property": "mymod:gun_animation",
-    "entries": [
+    "type": "minecraft:composite",
+    "models": [
       {
-        "threshold": 0.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
+        "type": "minecraft:condition",
+        "property": "minecraft:has_component",
+        "component": "mymod:optic_attachment",
+        "on_true": {
+          "type": "minecraft:range_dispatch",
+          "property": "mymod:gun_animation",
+          "entries": [
+            {
+              "threshold": 0.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_f1"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_f1"
+                  }
+                },
+                "on_false": {
                   "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_f1"
+                  "model": "mymod:item/no_iron_sights/akm_no_mag_f1"
                 }
               }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_f1"
+            },
+            {
+              "threshold": 1.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_f2"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_f2"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag_f2"
+                }
+              }
+            },
+            {
+              "threshold": 2.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_f3"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_f3"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag_f3"
+                }
+              }
+            },
+            {
+              "threshold": 3.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_f4"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_f4"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag_f4"
+                }
+              }
+            },
+            {
+              "threshold": 4.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_f5"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_f5"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag_f5"
+                }
+              }
+            },
+            {
+              "threshold": 5.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_f6"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_f6"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag_f6"
+                }
+              }
+            },
+            {
+              "threshold": 6.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_m1"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_m1"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag"
+                }
+              }
+            },
+            {
+              "threshold": 7.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_m2"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_m2"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag"
+                }
+              }
+            },
+            {
+              "threshold": 8.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_m3"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_m3"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag"
+                }
+              }
+            },
+            {
+              "threshold": 9.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_m4"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_m4"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag"
+                }
+              }
+            },
+            {
+              "threshold": 10.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_m5"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_m5"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag"
+                }
+              }
+            },
+            {
+              "threshold": 11.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/no_iron_sights/akm_drum_m6"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_m6"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/no_iron_sights/akm_no_mag"
+                }
+              }
             }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag_f1"
+          ],
+          "fallback": {
+            "type": "minecraft:condition",
+            "property": "minecraft:has_component",
+            "component": "mymod:loaded_magazine",
+            "on_true": {
+              "type": "minecraft:select",
+              "property": "minecraft:component",
+              "component": "mymod:loaded_magazine_type",
+              "cases": [
+                {
+                  "when": "mymod:ak_drum_magazine",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/no_iron_sights/akm_drum"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mymod:item/no_iron_sights/akm"
+              }
+            },
+            "on_false": {
+              "type": "minecraft:model",
+              "model": "mymod:item/no_iron_sights/akm_no_mag"
+            }
+          }
+        },
+        "on_false": {
+          "type": "minecraft:range_dispatch",
+          "property": "mymod:gun_animation",
+          "entries": [
+            {
+              "threshold": 0.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_f1"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_f1"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag_f1"
+                }
+              }
+            },
+            {
+              "threshold": 1.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_f2"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_f2"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag_f2"
+                }
+              }
+            },
+            {
+              "threshold": 2.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_f3"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_f3"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag_f3"
+                }
+              }
+            },
+            {
+              "threshold": 3.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_f4"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_f4"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag_f4"
+                }
+              }
+            },
+            {
+              "threshold": 4.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_f5"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_f5"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag_f5"
+                }
+              }
+            },
+            {
+              "threshold": 5.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_f6"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_f6"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag_f6"
+                }
+              }
+            },
+            {
+              "threshold": 6.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_m1"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_m1"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag"
+                }
+              }
+            },
+            {
+              "threshold": 7.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_m2"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_m2"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag"
+                }
+              }
+            },
+            {
+              "threshold": 8.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_m3"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_m3"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag"
+                }
+              }
+            },
+            {
+              "threshold": 9.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_m4"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_m4"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag"
+                }
+              }
+            },
+            {
+              "threshold": 10.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_m5"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_m5"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag"
+                }
+              }
+            },
+            {
+              "threshold": 11.5,
+              "model": {
+                "type": "minecraft:condition",
+                "property": "minecraft:has_component",
+                "component": "mymod:loaded_magazine",
+                "on_true": {
+                  "type": "minecraft:select",
+                  "property": "minecraft:component",
+                  "component": "mymod:loaded_magazine_type",
+                  "cases": [
+                    {
+                      "when": "mymod:ak_drum_magazine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mymod:item/akm_drum_m6"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_m6"
+                  }
+                },
+                "on_false": {
+                  "type": "minecraft:model",
+                  "model": "mymod:item/akm_no_mag"
+                }
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:condition",
+            "property": "minecraft:has_component",
+            "component": "mymod:loaded_magazine",
+            "on_true": {
+              "type": "minecraft:select",
+              "property": "minecraft:component",
+              "component": "mymod:loaded_magazine_type",
+              "cases": [
+                {
+                  "when": "mymod:ak_drum_magazine",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/akm_drum"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mymod:item/akm"
+              }
+            },
+            "on_false": {
+              "type": "minecraft:model",
+              "model": "mymod:item/akm_no_mag"
+            }
           }
         }
       },
       {
-        "threshold": 1.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_f2"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_f2"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag_f2"
-          }
-        }
-      },
-      {
-        "threshold": 2.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_f3"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_f3"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag_f3"
-          }
-        }
-      },
-      {
-        "threshold": 3.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_f4"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_f4"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag_f4"
-          }
-        }
-      },
-      {
-        "threshold": 4.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_f5"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_f5"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag_f5"
-          }
-        }
-      },
-      {
-        "threshold": 5.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_f6"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_f6"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag_f6"
-          }
-        }
-      },
-      {
-        "threshold": 6.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_m1"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_m1"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag"
-          }
-        }
-      },
-      {
-        "threshold": 7.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_m2"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_m2"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag"
-          }
-        }
-      },
-      {
-        "threshold": 8.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_m3"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_m3"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag"
-          }
-        }
-      },
-      {
-        "threshold": 9.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_m4"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_m4"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag"
-          }
-        }
-      },
-      {
-        "threshold": 10.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_m5"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_m5"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag"
-          }
-        }
-      },
-      {
-        "threshold": 11.5,
-        "model": {
-          "type": "minecraft:condition",
-          "property": "minecraft:has_component",
-          "component": "mymod:loaded_magazine",
-          "on_true": {
-            "type": "minecraft:select",
-            "property": "minecraft:component",
-            "component": "mymod:loaded_magazine_type",
-            "cases": [
-              {
-                "when": "mymod:ak_drum_magazine",
-                "model": {
-                  "type": "minecraft:model",
-                  "model": "mymod:item/akm_drum_m6"
-                }
-              }
-            ],
-            "fallback": {
-              "type": "minecraft:model",
-              "model": "mymod:item/akm_m6"
-            }
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mymod:item/akm_no_mag"
-          }
-        }
-      }
-    ],
-    "fallback": {
-      "type": "minecraft:condition",
-      "property": "minecraft:has_component",
-      "component": "mymod:loaded_magazine",
-      "on_true": {
         "type": "minecraft:select",
         "property": "minecraft:component",
-        "component": "mymod:loaded_magazine_type",
+        "component": "mymod:muzzle_attachment",
         "cases": [
           {
-            "when": "mymod:ak_drum_magazine",
+            "when": "mymod:suppressor",
             "model": {
               "type": "minecraft:model",
-              "model": "mymod:item/akm_drum"
+              "model": "mymod:item/attachment/akm_suppressor"
+            }
+          },
+          {
+            "when": "mymod:oil_can_suppressor",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_oil_can_suppressor"
+            }
+          },
+          {
+            "when": "mymod:muzzle_brake",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_muzzle_brake"
+            }
+          },
+          {
+            "when": "mymod:flash_hider",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_flash_hider"
             }
           }
         ],
         "fallback": {
-          "type": "minecraft:model",
-          "model": "mymod:item/akm"
+          "type": "minecraft:empty"
         }
       },
-      "on_false": {
-        "type": "minecraft:model",
-        "model": "mymod:item/akm_no_mag"
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "mymod:laser_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_laser_sight"
+            }
+          },
+          {
+            "when": "mymod:green_laser_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_green_laser_sight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:optic_attachment",
+        "cases": [
+          {
+            "when": "mymod:red_dot_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_red_dot_sight"
+            }
+          },
+          {
+            "when": "mymod:holographic_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_holographic_sight"
+            }
+          },
+          {
+            "when": "mymod:kobra_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_kobra_sight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
       }
-    }
+    ]
   }
 }

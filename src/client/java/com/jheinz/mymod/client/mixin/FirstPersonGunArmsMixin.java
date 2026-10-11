@@ -21,8 +21,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.jheinz.mymod.GunItem;
+import com.jheinz.mymod.client.GunAim;
 import com.jheinz.mymod.client.GunAnimation;
 import com.jheinz.mymod.client.GunHands;
+import com.jheinz.mymod.client.GunScope;
+import com.jheinz.mymod.client.LaserBeams;
 
 /**
  * Draws the player's own arms, with their skin and sleeves, holding a gun in first person: main hand on
@@ -38,6 +41,15 @@ public abstract class FirstPersonGunArmsMixin {
 
 	/** The pose first-person rendering starts from: view space, turning with the camera. */
 	private PoseStack.Pose mymod$viewPose;
+
+	/** Looking through a scope, like the spyglass: only the scope view, no gun or hands in the way. */
+	@Inject(method = "submitHandsWithItems", at = @At("HEAD"), cancellable = true)
+	private void mymod$hideWhileScoped(float frameTime, PoseStack poseStack, SubmitNodeCollector collector,
+			PlayerRenderState playerState, FirstPersonHandsAndItemsRenderState state, CallbackInfo ci) {
+		if (Minecraft.getInstance().player != null && GunScope.throughScope(Minecraft.getInstance().player)) {
+			ci.cancel();
+		}
+	}
 
 	@Inject(method = "submitHandsWithItems", at = @At("HEAD"))
 	private void mymod$rememberViewPose(float frameTime, PoseStack poseStack, SubmitNodeCollector collector,
@@ -57,9 +69,14 @@ public abstract class FirstPersonGunArmsMixin {
 		// Sway and recoil move the gun itself; the hands follow it while the shoulders stay put.
 		HumanoidArm mainArm = playerState.avatarRenderState.mainArm;
 		boolean mirrored = mainArm == HumanoidArm.LEFT;
-		GunHands.applyIdleSway(poseStack);
-		GunHands.applyRecoil(poseStack, anchors);
+		// Aiming down a red dot brings the gun up to the eye; sway and recoil still move it from there.
+		float aim = GunAim.update(Minecraft.getInstance().player);
+		GunAim.apply(poseStack, mymod$viewPose, stack, mirrored, aim);
+		GunHands.applyIdleSway(poseStack, 1.0f - 0.85f * aim);
+		// A shouldered gun kicks less, so the sight stays usable between shots.
+		GunHands.applyRecoil(poseStack, anchors, 1.0f - 0.8f * aim);
 		GunAnimation.applyGunPose(poseStack, stack, anchors, mirrored);
+		LaserBeams.recordFirstPerson(poseStack.last().pose(), mymod$viewPose, stack, mirrored);
 		if (anchors == null || !state.offHandItem.isEmpty() || !Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
 			return;
 		}

@@ -102,6 +102,19 @@ public final class StationRecipes {
 			recipe(ModItems.M1911_SLIDE, 1, cost(Items.IRON_INGOT, 2), cost(Items.IRON_NUGGET, 1), cost(Items.GOLD_NUGGET, 1)),
 			recipe(ModItems.M1911_FRAME, 1, cost(Items.IRON_INGOT, 2), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.COPPER_NUGGET, 1)),
 			recipe(ModItems.M1911, 1, cost(ModItems.M1911_SLIDE, 1), cost(ModItems.M1911_FRAME, 1)),
+			// Attachments. Wool packs the suppressor's baffles; ink sacs blacken it.
+			recipe(ModItems.SUPPRESSOR, 1, cost(Items.IRON_INGOT, 3), cost(Items.WOOL.white(), 1), cost(Items.INK_SAC, 1)),
+			recipe(ModItems.LASER_SIGHT, 1, cost(Items.REDSTONE, 2), cost(Items.IRON_NUGGET, 3), cost(Items.GLASS_PANE, 1)),
+			recipe(ModItems.RED_DOT_SIGHT, 1, cost(Items.IRON_INGOT, 1), cost(Items.GLASS_PANE, 1), cost(Items.REDSTONE, 1)),
+			// An oil filter, as the name says: paper element, slime to seal it to the adapter.
+			recipe(ModItems.OIL_CAN_SUPPRESSOR, 1, cost(Items.IRON_INGOT, 2), cost(Items.PAPER, 2), cost(Items.SLIME_BALL, 1)),
+			recipe(ModItems.MUZZLE_BRAKE, 1, cost(Items.IRON_INGOT, 2), cost(Items.FLINT, 1)),
+			recipe(ModItems.FLASH_HIDER, 1, cost(Items.IRON_NUGGET, 6), cost(Items.FLINT, 1)),
+			recipe(ModItems.GREEN_LASER_SIGHT, 1, cost(Items.REDSTONE, 2), cost(Items.EMERALD, 1), cost(Items.IRON_NUGGET, 3)),
+			// Glowstone for the hologram.
+			recipe(ModItems.HOLOGRAPHIC_SIGHT, 1, cost(Items.IRON_INGOT, 2), cost(Items.GLASS_PANE, 1), cost(Items.GLOWSTONE_DUST, 1)),
+			recipe(ModItems.KOBRA_SIGHT, 1, cost(Items.IRON_INGOT, 1), cost(Items.GLASS_PANE, 1), cost(Items.COPPER_INGOT, 1)),
+			recipe(ModItems.GLOCK_SWITCH, 1, cost(Items.IRON_NUGGET, 4), cost(Items.REDSTONE, 1), cost(Items.TRIPWIRE_HOOK, 1)),
 			recipe(ModItems.PLATE_CARRIER, 1, cost(Items.LEATHER, 5), cost(Items.STRING, 2), cost(Items.IRON_NUGGET, 2)),
 			// Soft panel: woven string standing in for aramid fiber.
 			recipe(ModItems.ARMOR_PLATE_LEVEL_1, 1, cost(Items.STRING, 6), cost(Items.LEATHER, 2)),
