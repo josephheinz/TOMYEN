@@ -14,6 +14,8 @@ import net.minecraft.world.item.Item;
 
 import com.jheinz.mymod.GunRecoil;
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.client.launcher.LauncherAnimation;
+import com.jheinz.mymod.launcher.Launchers;
 
 /**
  * How the player's arms hold each gun in first person. The shoulders stay fixed just off the bottom of
@@ -46,6 +48,8 @@ public final class GunHands {
 			return rifle(-0.022f, 0.119f, 0.156f, 0.055f, 0.179f, -0.390f);
 		} else if (gun == ModItems.AKM) {
 			return rifle(-0.048f, 0.156f, 0.150f, 0.029f, 0.197f, -0.392f);
+		} else if (gun == Launchers.RPG7) {
+			return LauncherAnimation.anchors();
 		} else if (gun == ModItems.AWP) {
 			return rifle(-0.048f, 0.156f, 0.151f, 0.028f, 0.194f, -0.389f);
 		} else if (gun == ModItems.GALIL) {

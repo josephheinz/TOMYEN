@@ -20,6 +20,8 @@ import com.jheinz.mymod.MagazineContents;
 import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.ModSounds;
+import com.jheinz.mymod.client.launcher.LauncherAnimation;
+import com.jheinz.mymod.launcher.RocketLauncherItem;
 
 /**
  * First-person handling animations:
@@ -354,6 +356,10 @@ public final class GunAnimation {
 
 	/** The model frame for this stack, for the item model property (0 at rest). */
 	public static float frame(ItemStack stack, ItemOwner owner, LocalPlayer player) {
+		if (stack.getItem() instanceof RocketLauncherItem) {
+			// Whoever holds it: a launcher's handling is on its stack.
+			return LauncherAnimation.frame(stack);
+		}
 		if (player == null || owner != player || stack != player.getMainHandItem()) {
 			return 0.0f;
 		}

@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 import net.minecraft.world.item.Item;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.launcher.Launchers;
 
 /**
  * A gun's first-person display transform, copied from its item model (both hands use the same one;
@@ -33,6 +34,8 @@ public record GunDisplay(Vector3f translation, float yaw, float scale) {
 			return display(0.0f, 4.0f, -3.0f, -8, 0.6f);
 		} else if (gun == ModItems.GALIL) {
 			return display(-0.18f, 4.0f, -1.69f, -8, 0.6f);
+		} else if (gun == Launchers.RPG7) {
+			return display(-1.4f, 3.3f, -1.0f, -7, 0.65f);
 		} else if (gun == ModItems.AWP) {
 			return display(-0.35f, 3.85f, -0.53f, -8, 0.5f);
 		}

@@ -1,4 +1,22 @@
 {
+  "rpg_launch": {
+    "subtitle": "subtitles.mymod.rpg_launch",
+    "sounds": [
+      "mymod:rpg_launch"
+    ]
+  },
+  "lock_beep": {
+    "subtitle": "subtitles.mymod.lock_beep",
+    "sounds": [
+      "mymod:lock_beep"
+    ]
+  },
+  "lock_tone": {
+    "subtitle": "subtitles.mymod.lock_tone",
+    "sounds": [
+      "mymod:lock_tone"
+    ]
+  },
   "m4_shot": {
     "subtitle": "subtitles.mymod.m4_shot",
     "sounds": [

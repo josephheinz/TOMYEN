@@ -11,6 +11,8 @@ import com.jheinz.mymod.GunItem;
 import com.jheinz.mymod.MagazineContents;
 import com.jheinz.mymod.MagazineItem;
 import com.jheinz.mymod.ModComponents;
+import com.jheinz.mymod.client.launcher.LauncherClient;
+import com.jheinz.mymod.launcher.RocketLauncherItem;
 
 /** Rounds left in the held gun or magazine, drawn to the right of the hotbar. */
 public final class AmmoHud {
@@ -30,7 +32,9 @@ public final class AmmoHud {
 		int x = graphics.guiWidth() / 2 + 91 + 8;
 		int y = graphics.guiHeight() - 20;
 
-		if (held.getItem() instanceof GunItem gun) {
+		if (held.getItem() instanceof RocketLauncherItem) {
+			LauncherClient.extractAmmo(graphics, minecraft, held, x, y);
+		} else if (held.getItem() instanceof GunItem gun) {
 			MagazineContents loaded = held.get(ModComponents.LOADED_MAGAZINE);
 			if (loaded == null && !gun.stats().singleRounds()) {
 				graphics.text(minecraft.font, Component.translatable("hud.mymod.no_magazine"), x, y, RED, true);

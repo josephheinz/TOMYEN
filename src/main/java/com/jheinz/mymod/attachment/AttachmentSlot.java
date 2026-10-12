@@ -13,7 +13,9 @@ public enum AttachmentSlot {
 	UNDERBARREL(ModComponents.UNDERBARREL_ATTACHMENT),
 	GRIP(ModComponents.GRIP_ATTACHMENT),
 	MUZZLE(ModComponents.MUZZLE_ATTACHMENT),
-	FIRE_CONTROL(ModComponents.FIRE_CONTROL_ATTACHMENT);
+	FIRE_CONTROL(ModComponents.FIRE_CONTROL_ATTACHMENT),
+	/** The rocket launcher's homing seeker pod. */
+	GUIDANCE(ModComponents.GUIDANCE_ATTACHMENT);
 
 	private final DataComponentType<Holder<Item>> component;
 

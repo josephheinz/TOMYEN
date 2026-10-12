@@ -22,6 +22,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 
 import com.jheinz.mymod.ModDamageTypes;
 import com.jheinz.mymod.ModEffects;
+import com.jheinz.mymod.launcher.PG7Rocket;
 
 /**
  * The server side of the passive modules. (ESP and x-ray only draw on the wearer's screen.)
@@ -30,7 +31,7 @@ import com.jheinz.mymod.ModEffects;
  * <li>Bio-Monitor: bleeding runs out twice as fast (and does half damage, see BleedingEffect), and the wearer is
  * told which mobs within {@link #THREAT_RANGE} are hunting them so the HUD can point out the ones out of view.
  * <li>Recall: the wearer is told their last death and respawn point.
- * <li>Smart-Link: a hit marker for every bullet of the wearer's that lands.
+ * <li>Smart-Link: a hit marker for every bullet (or rocket blast) of the wearer's that lands.
  * <li>Mind Reader and Hive Mind: see their own classes.
  * </ul>
  */
@@ -51,7 +52,8 @@ public final class NeuralinkEffects {
 	public static void initialize() {
 		ServerTickEvents.END_SERVER_TICK.register(NeuralinkEffects::tick);
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
-			if (!blocked && source.getEntity() instanceof ServerPlayer shooter && ModDamageTypes.isBullet(source)
+			if (!blocked && source.getEntity() instanceof ServerPlayer shooter
+					&& (ModDamageTypes.isBullet(source) || source.getDirectEntity() instanceof PG7Rocket)
 					&& NeuralinkItem.isActive(shooter, NeuralinkModule.SMART_LINK)) {
 				ServerPlayNetworking.send(shooter, new NeuralNetworking.HitMarker(entity.isDeadOrDying()));
 			}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "mymod:computer_chip",
+    "D": "minecraft:diamond",
+    "P": "minecraft:glass_pane",
+    "R": "mymod:pg7_rocket"
+  },
+  "pattern": [
+    " P ",
+    "CRC",
+    " D "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:pg7_homing_rocket"
+  }
+}

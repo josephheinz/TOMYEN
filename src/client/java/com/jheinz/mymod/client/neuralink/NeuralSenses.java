@@ -25,12 +25,15 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.GunItem;
 import com.jheinz.mymod.MagazineContents;
 import com.jheinz.mymod.ModComponents;
+import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.launcher.RocketLauncherItem;
 import com.jheinz.mymod.neuralink.MindReader;
 import com.jheinz.mymod.neuralink.NeuralNetworking;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
@@ -252,8 +255,10 @@ public final class NeuralSenses {
 			return;
 		}
 		MagazineContents loaded = held.get(ModComponents.LOADED_MAGAZINE);
-		int rounds = loaded == null ? 0 : loaded.rounds();
-		int capacity = gun.loadedMagazine(held).capacity();
+		// A launcher holds a single rocket rather than a magazine.
+		Item rocket = gun instanceof RocketLauncherItem ? RocketLauncherItem.loadedRocket(held) : null;
+		int rounds = gun instanceof RocketLauncherItem ? (rocket == null ? 0 : 1) : loaded == null ? 0 : loaded.rounds();
+		int capacity = gun instanceof RocketLauncherItem ? 1 : gun.loadedMagazine(held).capacity();
 		Font font = minecraft.font;
 		int x = cx + 18, y = cy + 6;
 		boolean empty = rounds == 0;
@@ -261,7 +266,9 @@ public final class NeuralSenses {
 		int countColor = empty ? argb(Util.getMillis() % 500 < 250 ? 0xFF : 0x60, 0xFF3B30) : argb(0xFF, NeuralinkModule.SMART_LINK.color());
 		graphics.text(font, count, x, y, countColor, true);
 		graphics.text(font, "/" + capacity, x + font.width(count) + 1, y, DIM, true);
-		String mode = Component.translatable(gun.fireMode(held).translationKey() + ".short").getString().toUpperCase(Locale.ROOT);
+		String mode = Component.translatable(gun instanceof RocketLauncherItem
+				? rocket == Launchers.PG7_HOMING_ROCKET ? "hud.mymod.smart_link.homing" : "hud.mymod.smart_link.rocket"
+				: gun.fireMode(held).translationKey() + ".short").getString().toUpperCase(Locale.ROOT);
 		graphics.text(font, empty ? Component.translatable("hud.mymod.smart_link.reload").getString() : mode, x, y + 10,
 				empty ? argb(0xFF, 0xFF3B30) : DIM, true);
 		// A thin gauge of the magazine under it all.

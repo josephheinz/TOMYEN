@@ -40,6 +40,7 @@ import com.jheinz.mymod.client.neuralink.NeuralTrigger;
 import com.jheinz.mymod.client.neuralink.NeuralinkScreen;
 import com.jheinz.mymod.client.neuralink.NeuralinkVision;
 import com.jheinz.mymod.client.neuralink.OreScanner;
+import com.jheinz.mymod.client.launcher.LauncherClient;
 import com.jheinz.mymod.client.tank.TankClient;
 import com.jheinz.mymod.station.ModMenus;
 
@@ -106,6 +107,7 @@ public class MyModClient implements ClientModInitializer {
 			}
 		});
 		TankClient.initialize();
+		LauncherClient.initialize();
 		BankClient.initialize();
 	}
 }

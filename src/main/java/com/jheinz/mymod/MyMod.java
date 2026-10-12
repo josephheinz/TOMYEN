@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.jheinz.mymod.bank.Banking;
 import com.jheinz.mymod.neuralink.NeuralCore;
 import com.jheinz.mymod.neuralink.NeuralinkEffects;
+import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.tank.Tanks;
 import com.jheinz.mymod.station.ModMenus;
 
@@ -40,6 +41,7 @@ public class MyMod implements ModInitializer {
 		GunOffhand.initialize();
 		NeuralinkEffects.initialize();
 		Tanks.initialize();
+		Launchers.initialize();
 		Banking.initialize();
 		NeuralCore.initialize();
 	}

@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.station.StationRecipe.Cost;
 
 /** Everything the Weapon Station can make. Built from code, so client and server always agree. */
@@ -102,6 +103,11 @@ public final class StationRecipes {
 			recipe(ModItems.M1911_SLIDE, 1, cost(Items.IRON_INGOT, 2), cost(Items.IRON_NUGGET, 1), cost(Items.GOLD_NUGGET, 1)),
 			recipe(ModItems.M1911_FRAME, 1, cost(Items.IRON_INGOT, 2), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.COPPER_NUGGET, 1)),
 			recipe(ModItems.M1911, 1, cost(ModItems.M1911_SLIDE, 1), cost(ModItems.M1911_FRAME, 1)),
+			// RPG-7: two iron blocks of steel tube with stick-and-plank heat guards; the spyglass becomes the PGO-7 optic and
+			// leather its eyecup.
+			recipe(Launchers.RPG7_LAUNCH_TUBE, 1, cost(Items.IRON_BLOCK, 2), cost(Items.STICK, 4), cost(Items.OAK_PLANKS, 2)),
+			recipe(Launchers.RPG7_TRIGGER_GROUP, 1, cost(Items.IRON_INGOT, 4), cost(Items.SPYGLASS, 1), cost(Items.LEATHER, 1)),
+			recipe(Launchers.RPG7, 1, cost(Launchers.RPG7_LAUNCH_TUBE, 1), cost(Launchers.RPG7_TRIGGER_GROUP, 1)),
 			// Attachments; the electronic ones (sights and lasers) need tech scrap. Wool packs the suppressor's baffles; ink sacs blacken it.
 			recipe(ModItems.SUPPRESSOR, 1, cost(Items.IRON_INGOT, 3), cost(Items.WOOL.white(), 1), cost(Items.INK_SAC, 1)),
 			recipe(ModItems.LASER_SIGHT, 1, cost(ModItems.TECH_SCRAP, 1), cost(Items.IRON_NUGGET, 3), cost(Items.GLASS_PANE, 1)),
@@ -121,6 +127,10 @@ public final class StationRecipes {
 			recipe(ModItems.STUBBY_GRIP, 1, cost(Items.IRON_INGOT, 1), cost(Items.IRON_NUGGET, 2), cost(Items.LEATHER, 1)),
 			recipe(ModItems.HANDSTOP, 1, cost(Items.IRON_NUGGET, 4), cost(Items.STICK, 1), cost(Items.LEATHER, 1)),
 			recipe(ModItems.GLOCK_SWITCH, 1, cost(Items.IRON_NUGGET, 4), cost(Items.REDSTONE, 1), cost(Items.TRIPWIRE_HOOK, 1)),
+			// The homing guidance module: a Neuralink Smart-Link's targeting rebuilt as a seeker pod, with diamond optics and
+			// a stack of computer chips. Dearer than any gun.
+			recipe(Launchers.HOMING_GUIDANCE_MODULE, 1, cost(Items.DIAMOND, 4), cost(ModItems.COMPUTER_CHIP, 4),
+					cost(ModItems.SMART_LINK_MODULE, 1)),
 			recipe(ModItems.PLATE_CARRIER, 1, cost(Items.LEATHER, 5), cost(Items.STRING, 2), cost(Items.IRON_NUGGET, 2)),
 			// Soft panel: woven string standing in for aramid fiber.
 			recipe(ModItems.ARMOR_PLATE_LEVEL_1, 1, cost(Items.STRING, 6), cost(Items.LEATHER, 2)),

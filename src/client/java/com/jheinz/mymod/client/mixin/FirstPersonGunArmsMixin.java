@@ -26,12 +26,14 @@ import com.jheinz.mymod.client.GunAnimation;
 import com.jheinz.mymod.client.GunHands;
 import com.jheinz.mymod.client.GunScope;
 import com.jheinz.mymod.client.LaserBeams;
+import com.jheinz.mymod.client.launcher.LauncherAnimation;
 
 /**
  * Draws the player's own arms, with their skin and sleeves, holding a gun in first person: main hand on
  * the grip, off hand on the handguard (or cupping a pistol grip). With an item in the off hand, only the
  * main hand holds the gun and the off hand shows its item as usual. The hands ride on the gun's pose (equip,
- * swing, bob, plus a little idle sway) while the shoulders stay fixed on screen.
+ * swing, bob, plus a little idle sway) while the shoulders stay fixed on screen. A rocket launcher's hoisting and
+ * reloading (LauncherAnimation) move it too, and a rocket being loaded is drawn in the off hand.
  */
 @Mixin(FirstPersonHandsAndItemsRenderer.class)
 public abstract class FirstPersonGunArmsMixin {
@@ -75,8 +77,9 @@ public abstract class FirstPersonGunArmsMixin {
 		GunAim.apply(poseStack, mymod$viewPose, stack, mirrored, aim);
 		GunHands.applyIdleSway(poseStack, 1.0f - 0.85f * aim);
 		// A shouldered gun kicks less, so the sight stays usable between shots.
-		GunHands.applyRecoil(poseStack, anchors, 1.0f - 0.8f * aim);
+		GunHands.applyRecoil(poseStack, anchors, (1.0f - 0.8f * aim) * LauncherAnimation.recoilScale(stack));
 		GunAnimation.applyGunPose(poseStack, stack, anchors, mirrored);
+		LauncherAnimation.applyFirstPerson(poseStack, stack, anchors, mirrored);
 		LaserBeams.recordFirstPerson(poseStack.last().pose(), mymod$viewPose, stack, mirrored);
 		if (anchors == null || !Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
 			return;
@@ -87,6 +90,10 @@ public abstract class FirstPersonGunArmsMixin {
 		Vector3f gripAnchor = anchors.grip();
 		Vector3f supportAnchor = anchors.support();
 		GunAnimation.HandOverride working = GunAnimation.hand(stack);
+		if (working == null) {
+			// A launcher's off hand fetches and loads a rocket instead.
+			working = LauncherAnimation.hand(stack, anchors);
+		}
 		if (working != null) {
 			if (working.mainHand()) {
 				gripAnchor = new Vector3f(gripAnchor).lerp(working.target(), working.blend());
@@ -107,6 +114,7 @@ public abstract class FirstPersonGunArmsMixin {
 		if (!state.offHandItem.isEmpty()) {
 			return;
 		}
+		LauncherAnimation.submitRocket(poseStack, collector, light, stack, anchors, mirrored, Minecraft.getInstance().player);
 		poseStack.pushPose();
 		GunHands.poseArm(poseStack, mymod$viewPose, mainArm.getOpposite(), false, support, mirrored);
 		renderPlayerHand(poseStack, collector, light, mainArm.getOpposite(), playerState);

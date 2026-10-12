@@ -35,6 +35,7 @@ public final class ModComponents {
 	public static final DataComponentType<Holder<Item>> GRIP_ATTACHMENT = register("grip_attachment", Item.CODEC, Item.STREAM_CODEC);
 	public static final DataComponentType<Holder<Item>> OPTIC_ATTACHMENT = register("optic_attachment", Item.CODEC, Item.STREAM_CODEC);
 	public static final DataComponentType<Holder<Item>> FIRE_CONTROL_ATTACHMENT = register("fire_control_attachment", Item.CODEC, Item.STREAM_CODEC);
+	public static final DataComponentType<Holder<Item>> GUIDANCE_ATTACHMENT = register("guidance_attachment", Item.CODEC, Item.STREAM_CODEC);
 
 	/** On a plate carrier: the inserted armor plate item. Absent means no plate. */
 	public static final DataComponentType<Holder<Item>> ARMOR_PLATE = register("armor_plate", Item.CODEC, Item.STREAM_CODEC);
