@@ -15,6 +15,7 @@
 		"MobHijackMixin",
 		"PlayerPowerArmorMixin",
 		"PlayerTankMixin",
+		"ServerPunchWhipMixin",
 		"ServerPlayerDebtDeathMixin",
 		"ServerSwapHandsMixin",
 		"SlotGunOffhandMixin"

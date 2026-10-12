@@ -6,13 +6,17 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -30,7 +34,8 @@ import com.jheinz.mymod.MyMod;
 
 /**
  * The Schnozzle, a giant detached nose that floats about grassland and woods at night: its entity, the snot
- * rockets it fires from its nostrils, its drops (Giant Boogers, which can be thrown, and Nose Hair) and its sounds.
+ * rockets it fires from its nostrils, its drops (Giant Boogers, which can be thrown, and Nose Hair) and its sounds,
+ * and the Nose Hair Whip braided from those drops, with its crack, its sounds and the Slimed effect.
  *
  * <p>It's a rare elite, not a boss: spawn weight {@link #SPAWN_WEIGHT} (zombies are 95), alone, only at night, only
  * where it can see the sky, and never within {@link Schnozzle#CROWD_RADIUS} blocks of another one.
@@ -59,6 +64,7 @@ public final class Schnozzles {
 
 	public static final Item GIANT_BOOGER = item("giant_booger", GiantBoogerItem::new, new Item.Properties().stacksTo(16));
 	public static final Item NOSE_HAIR = item("nose_hair", Item::new, new Item.Properties());
+	public static final Item NOSE_HAIR_WHIP = item("nose_hair_whip", NoseHairWhipItem::new, NoseHairWhipItem.properties());
 	public static final Item SCHNOZZLE_SPAWN_EGG = item("schnozzle_spawn_egg", SpawnEggItem::new, new Item.Properties().spawnEgg(SCHNOZZLE));
 
 	public static final SoundEvent AMBIENT = sound("schnozzle_ambient");
@@ -73,6 +79,15 @@ public final class Schnozzles {
 	public static final SoundEvent HURT = sound("schnozzle_hurt");
 	public static final SoundEvent DEATH = sound("schnozzle_death");
 	public static final SoundEvent BOOGER_SPLAT = sound("booger_splat");
+	public static final SoundEvent WHIP_CRACK = sound("nose_hair_whip_crack");
+	public static final SoundEvent WHIP_SNAG = sound("nose_hair_whip_snag");
+
+	/** The shock ring where the whip's tip cracks. */
+	public static final SimpleParticleType WHIP_CRACK_PARTICLE =
+			Registry.register(BuiltInRegistries.PARTICLE_TYPE, MyMod.id("whip_crack"), FabricParticleTypes.simple(true));
+	/** Slowed and dripping, now and then, after a lash from the booger-gripped whip. */
+	public static final Holder<MobEffect> SLIMED = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, MyMod.id("slimed"),
+			new SlimedEffect());
 
 	private Schnozzles() {
 	}
