@@ -317,7 +317,7 @@ public final class ModItems {
 	public static final Item BIO_MONITOR_MODULE = module("bio_monitor_module", NeuralinkModule.BIO_MONITOR);
 	public static final Item HIVE_MIND_MODULE = module("hive_mind_module", NeuralinkModule.HIVE_MIND);
 	public static final Item RECALL_MODULE = module("recall_module", NeuralinkModule.RECALL);
-	/** A full-body frame worn in the chest slot that fills every armor slot (a Neuralink can still be worn). */
+	/** A full-body frame worn in the chest slot that fills every armor slot; armor and an elytra go in its sockets. */
 	public static final Item EXOSKELETON = register("exoskeleton", ExoskeletonItem::new, ExoskeletonItem.properties());
 	public static final Item REINFORCED_PLATING_MODULE = register("reinforced_plating_module",
 			properties -> new ExoModuleItem(properties, ExoModule.REINFORCED_PLATING), new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));

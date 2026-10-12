@@ -39,17 +39,17 @@ import com.jheinz.mymod.MyMod;
 /**
  * A powered exoskeleton: a frame over the whole body. It goes in the chest slot but takes up every armor slot,
  * so the head, legs and feet must be empty to put it on and nothing can go in them while it's worn (see
- * {@link #refusal}), not even a Neuralink. An exoskeleton with no modules is also the frame power armor is
- * worn over (see {@link com.jheinz.mymod.powerarmor.PowerArmor}), whose helmet has Neuralink sockets of its own.
+ * {@link #refusal}), not even a Neuralink. Armor goes in its sockets instead: {@link ExoSockets#COUNT} of
+ * them, each holding a module, or a piece of armor or an elytra that the frame wears for you (see
+ * {@link ExoSockets}). An exoskeleton with nothing socketed is also the frame power armor is worn over (see
+ * {@link com.jheinz.mymod.powerarmor.PowerArmor}), whose helmet has Neuralink sockets of its own.
  *
- * <p>Using it in hand opens its interface, where up to {@link #MODULE_SLOTS} modules are installed; sneak-use
- * puts it on. Its modules work only while it's worn. On its own it protects about as well as a full set of
- * armor between iron and diamond ({@link #ARMOR} armor, {@link #TOUGHNESS} toughness), shrugs off some
- * knockback, and its weight costs {@link #SPEED_PENALTY} of the wearer's speed.
+ * <p>Using it in hand opens its sockets; sneak-use puts it on. What's socketed works only while it's worn, and
+ * falls out if the suit breaks. On its own it protects about as well as a full set of armor between iron and
+ * diamond ({@link #ARMOR} armor, {@link #TOUGHNESS} toughness), shrugs off some knockback, and its weight
+ * costs {@link #SPEED_PENALTY} of the wearer's speed.
  */
 public class ExoskeletonItem extends Item {
-	public static final int MODULE_SLOTS = 4;
-
 	// A full iron set is 15 armor and no toughness, diamond 20 and 8.
 	public static final double ARMOR = 18.0;
 	public static final double TOUGHNESS = 3.0;
@@ -154,16 +154,31 @@ public class ExoskeletonItem extends Item {
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip,
 			TooltipFlag flag) {
-		Set<ExoModule> modules = modules(stack);
-		tooltip.accept(Component.translatable("item.mymod.exoskeleton.sockets", modules.size(), MODULE_SLOTS).withStyle(ChatFormatting.GOLD));
-		if (modules.isEmpty()) {
-			tooltip.accept(Component.translatable("item.mymod.exoskeleton.no_modules").withStyle(ChatFormatting.DARK_GRAY));
+		List<ItemStack> socketed = ExoSockets.contents(stack).stream().filter(item -> !item.isEmpty()).toList();
+		tooltip.accept(Component.translatable("item.mymod.exoskeleton.sockets", socketed.size(), ExoSockets.COUNT).withStyle(ChatFormatting.GOLD));
+		if (socketed.isEmpty()) {
+			tooltip.accept(Component.translatable("item.mymod.exoskeleton.nothing_socketed").withStyle(ChatFormatting.DARK_GRAY));
 		}
-		for (ExoModule module : modules) {
-			tooltip.accept(Component.literal("▪ ").append(module.displayName()).withColor(module.color()));
+		for (ItemStack item : socketed) {
+			if (item.getItem() instanceof ExoModuleItem module) {
+				tooltip.accept(Component.literal("▪ ").append(module.module().displayName()).withColor(module.module().color()));
+			} else {
+				tooltip.accept(Component.literal("▪ ").append(Component.translatable("item.mymod.exoskeleton.socketed", item.getHoverName(),
+						socketKind(item))).withStyle(ChatFormatting.GRAY));
+			}
 		}
 		tooltip.accept(Component.translatable("item.mymod.exoskeleton.full_body").withStyle(ChatFormatting.GRAY));
 		tooltip.accept(Component.translatable("item.mymod.exoskeleton.open").withStyle(ChatFormatting.GRAY));
 		tooltip.accept(Component.translatable("item.mymod.exoskeleton.wear").withStyle(ChatFormatting.GRAY));
+	}
+
+	/** What a socketed stack is there as: a module, an elytra, or the armor for one slot. */
+	public static Component socketKind(ItemStack socketed) {
+		EquipmentSlot slot = ExoSockets.armorSlot(socketed);
+		if (slot == null) {
+			return Component.translatable("container.mymod.exoskeleton.kind.module");
+		}
+		String kind = ExoSockets.isGlider(socketed) ? "elytra" : slot.getSerializedName();
+		return Component.translatable("container.mymod.exoskeleton.kind." + kind);
 	}
 }

@@ -50,16 +50,17 @@ import org.jspecify.annotations.Nullable;
 
 import com.jheinz.mymod.ModDamageTypes;
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.exoskeleton.ExoSockets;
 import com.jheinz.mymod.exoskeleton.ExoskeletonItem;
 
 /**
  * The server side of power armor: getting in and out, wearing it, flying it and running it dry.
  *
  * <p><b>Getting in.</b> A complete suit (six pieces and a fusion core) on a station or parked, and the player
- * wearing an exoskeleton with no modules as its frame: sneak-use the station with empty hands, or use the parked
- * suit. The suit leaves the rack (or the parked suit vanishes) and is on the player at once, but they're locked
- * in place for {@link #ENTER_TICKS} while it closes around them. Taking the exoskeleton off ejects them, leaving
- * the suit parked.
+ * wearing an exoskeleton with nothing socketed (no module, armor or elytra) as its frame: sneak-use the station
+ * with empty hands, or use the parked suit. The suit leaves the rack (or the parked suit vanishes) and is on the
+ * player at once, but they're locked in place for {@link #ENTER_TICKS} while it closes around them. Taking the
+ * exoskeleton off ejects them, leaving the suit parked.
  *
  * <p><b>Getting out.</b> Holding the Power Armor key asks to exit: the suit opens over {@link #EXIT_TICKS} and is
  * left parked where they stood, and they step out behind it. Using an empty station while wearing it docks
@@ -171,10 +172,10 @@ public final class PowerArmor {
 		return motion == null ? PowerArmorMotion.IDLE : motion;
 	}
 
-	/** Whether an entity wears an exoskeleton with no modules: what power armor needs as its frame. */
+	/** Whether an entity wears an exoskeleton with nothing socketed (no module, armor or elytra): power armor's frame. */
 	public static boolean hasEmptyFrame(LivingEntity entity) {
 		ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
-		return chest.getItem() instanceof ExoskeletonItem && ExoskeletonItem.modules(chest).isEmpty();
+		return chest.getItem() instanceof ExoskeletonItem && ExoSockets.isEmpty(chest);
 	}
 
 	/**
@@ -230,8 +231,8 @@ public final class PowerArmor {
 		if (!(chest.getItem() instanceof ExoskeletonItem)) {
 			return Component.translatable("power_armor.mymod.needs_frame");
 		}
-		if (!ExoskeletonItem.modules(chest).isEmpty()) {
-			return Component.translatable("power_armor.mymod.frame_has_modules");
+		if (!ExoSockets.isEmpty(chest)) {
+			return Component.translatable("power_armor.mymod.frame_not_empty");
 		}
 		List<Component> missing = new ArrayList<>();
 		for (PowerArmorPiece piece : PowerArmorPiece.values()) {

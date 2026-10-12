@@ -12,6 +12,7 @@ import com.jheinz.mymod.hogfire.Hogfires;
 import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.neuralink.NeuralCore;
 import com.jheinz.mymod.neuralink.NeuralinkEffects;
+import com.jheinz.mymod.exoskeleton.ExoSockets;
 import com.jheinz.mymod.exoskeleton.ExoskeletonEffects;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.lmg.MachineGuns;
@@ -51,6 +52,7 @@ public class MyMod implements ModInitializer {
 		GunOffhand.initialize();
 		NeuralinkEffects.initialize();
 		ExoskeletonEffects.initialize();
+		ExoSockets.initialize();
 		Tanks.initialize();
 		Launchers.initialize();
 		Shotguns.initialize();
