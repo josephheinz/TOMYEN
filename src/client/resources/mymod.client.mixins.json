@@ -20,7 +20,9 @@
 		"TankClimbPoseMixin",
 		"TankCrewHiddenMixin",
 		"TankHandsMixin",
+		"TankHiddenFromCrewMixin",
 		"TankMouseMixin",
+		"TankSightCameraMixin",
 		"TankSightZoomMixin"
 	],
 	"injectors": {

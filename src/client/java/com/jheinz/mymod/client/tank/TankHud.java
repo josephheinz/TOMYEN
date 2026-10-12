@@ -7,6 +7,7 @@ import org.joml.Vector2f;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -33,19 +34,20 @@ import static com.jheinz.mymod.client.neuralink.NeuralStyle.argb;
  * The view from a tank's gunner's seat, drawn under the rest of the HUD (which it mostly replaces).
  * <ul>
  * <li>The sight: a window in a black frame, edged with a vignette, a green reticle (white in thermal) with mil
- * ticks, a range ladder for the round the gun is laid for, the fall-of-shot ring where the gun will actually put
- * the round (it trails the reticle while the turret slews, and sits on it once it's caught up), the rangefinder's
- * last reading, and the magnification. Thermal darkens the view so living things glow white.
+ * ticks and a range ladder for the round the gun is laid for. The camera is on the sight and follows the gun, so
+ * the reticle is always where the gun will put the round; a ring shows where the gunner's mouse is asking the gun
+ * to go, running ahead while the turret slews. Also the rangefinder's last reading and the magnification. Thermal
+ * darkens the view so living things glow white.
  * <li>Above the window: a compass strip on the turret's heading, and top right an azimuth indicator: the
  * turret (gun up) over the hull outline turned as the hull lies under it, each part coloured by its condition.
  * <li>Below the window: the breech (empty, loading with its progress, loaded and with what), the next round and
  * what's left in the rack; speed, gear and throttle; hull integrity and the parts; smoke salvos and the coax's
  * heat; and the sneak-hold to climb out.
- * <li>From outside (F5), a single compact panel with the essentials and the fall-of-shot ring.
+ * <li>From outside (F5), a single compact panel with the essentials and a ring where the gun will put the round.
  * <li>Climbing in or out, the view fades through black between the world and the sight.
  * </ul>
- * Vanilla's hotbar, bars and crosshair are hidden in the sight, and the tank's (huge) health never shows as
- * mount hearts.
+ * Which view is up goes by {@link TankClient#sightTank}. Vanilla's hotbar, bars and crosshair are hidden in the
+ * sight, and the tank's (huge) health never shows as mount hearts.
  */
 public final class TankHud {
 	private static final int GREEN = 0x6CFF6C;
@@ -74,7 +76,7 @@ public final class TankHud {
 				VanillaHudElements.ARMOR_BAR, VanillaHudElements.AIR_BAR, VanillaHudElements.EXPERIENCE_LEVEL, VanillaHudElements.INFO_BAR,
 				VanillaHudElements.CROSSHAIR}) {
 			HudElementRegistry.replaceElement(element, vanilla -> (graphics, delta) -> {
-				if (!TankClient.inSight()) {
+				if (!TankClient.isCrewSightView()) {
 					vanilla.extractRenderState(graphics, delta);
 				}
 			});
@@ -105,13 +107,13 @@ public final class TankHud {
 			return;
 		}
 		trackBreech(tank);
-		if (firstPerson) {
+		if (TankClient.sightTank() == tank) {
 			sight(graphics, minecraft, player, tank, partial);
 			int fade = 255 - Math.min(255, (int) ((seatedTicks + partial) * 255 / FADE_TICKS));
 			if (fade > 0) {
 				graphics.fill(0, 0, graphics.guiWidth(), graphics.guiHeight(), argb(fade, 0));
 			}
-		} else {
+		} else if (!firstPerson) {
 			external(graphics, minecraft, tank, partial);
 		}
 	}
@@ -182,7 +184,7 @@ public final class TankHud {
 		int cy = (top + bottom) / 2;
 		graphics.enableScissor(left, top, right, bottom);
 		reticle(graphics, font, tank, cx, cy, windowWidth, windowHeight, height, ink);
-		fallOfShot(graphics, tank, partial, ink);
+		gunDemand(graphics, player, partial, cx, cy, windowWidth, windowHeight, ink);
 		graphics.disableScissor();
 
 		// Magnification and mode, top left in the window; range, bottom middle.
@@ -267,14 +269,36 @@ public final class TankHud {
 		}
 	}
 
-	/** A ring where the gun will put the round: on the reticle once the turret's caught up with the sight. */
-	private static void fallOfShot(GuiGraphicsExtractor graphics, Tank tank, float partial, int ink) {
-		Vec2 at = fallOfShotOnScreen(graphics, tank, partial);
-		if (at == null) {
+	/**
+	 * A ring where the gunner is asking the gun to go (where the mouse has put their view). The sight follows the gun,
+	 * so the ring runs ahead of the reticle while the turret slews and sits on it once the gun has caught up. Off the
+	 * window (or behind), it waits at the window's edge on that side.
+	 */
+	private static void gunDemand(GuiGraphicsExtractor graphics, LocalPlayer player, float partial, int cx, int cy, int windowWidth,
+			int windowHeight, int ink) {
+		Camera camera = Minecraft.getInstance().gameRenderer.mainCamera();
+		Vec3 wanted = Vec3.directionFromRotation(player.getViewXRot(partial), player.getViewYRot(partial));
+		Vector2f at = NeuralSenses.project(graphics, camera.position().add(wanted.scale(400.0)));
+		int halfWidth = windowWidth / 2 - 8;
+		int halfHeight = windowHeight / 2 - 8;
+		boolean inside = at != null && Math.abs(at.x - cx) <= halfWidth && Math.abs(at.y - cy) <= halfHeight;
+		float x;
+		float y;
+		if (inside) {
+			x = at.x;
+			y = at.y;
+		} else {
+			float dx = Mth.wrapDegrees(player.getViewYRot(partial) - camera.yRot());
+			float dy = player.getViewXRot(partial) - camera.xRot();
+			float scale = Math.min(halfWidth / Math.max(1.0e-3f, Math.abs(dx)), halfHeight / Math.max(1.0e-3f, Math.abs(dy)));
+			x = cx + dx * scale;
+			y = cy + dy * scale;
+		}
+		if (inside && Math.abs(x - cx) < 1.5f && Math.abs(y - cy) < 1.5f) {
 			return;
 		}
-		NeuralStyle.ring(graphics, at.x, at.y, 5.0f, 0.0f, 1.0f, argb(0xD0, ink));
-		NeuralStyle.ring(graphics, at.x, at.y, 6.0f, 0.0f, 1.0f, argb(0x50, ink));
+		NeuralStyle.ring(graphics, x, y, 5.0f, 0.0f, 1.0f, argb(inside ? 0xD0 : 0x80, ink));
+		NeuralStyle.ring(graphics, x, y, 6.0f, 0.0f, 1.0f, argb(0x50, ink));
 	}
 
 	private record Vec2(float x, float y) {

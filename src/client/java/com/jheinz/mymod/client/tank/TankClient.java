@@ -12,6 +12,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 
+import net.minecraft.client.Camera;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -57,8 +59,11 @@ import com.jheinz.mymod.tank.Tanks;
  * <li>Laser Rangefinder (X): range whatever's under the reticle; the fire control lays the gun for it.
  * <li>Sight Zoom (Y): wide, 3x and 8x. Thermal Sight (N): living things glow white against a dark scene.
  * <li>Smoke Launchers (K). Ammo Rack (I).
- * <li>Hold sneak: climb out. F5 (the perspective key): the view from outside, with a simpler readout.
+ * <li>Hold sneak: climb out. F5 (the perspective key): the view from outside, with a simpler readout, and
+ * again back to the sight.
  * </ul>
+ * In the sight the camera sits at the front of the turret and points where the gun points (see {@link #sightTank});
+ * the mouse picks where the gun should go, and the turret and gun slew there and take the view with them.
  */
 public final class TankClient {
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(MyMod.id("tank"));
@@ -123,16 +128,29 @@ public final class TankClient {
 		return tank != null && tank.isSeated(Minecraft.getInstance().player) ? tank : null;
 	}
 
-	/** Seated and looking through the sight (first person), rather than from outside. */
-	public static boolean inSight() {
-		return seatedTank() != null && Minecraft.getInstance().options.getCameraType().isFirstPerson();
+	/**
+	 * The tank whose gunner's sight the local player is looking through, or null. This is the one check everything
+	 * about the sight view goes by: the camera at the sight following the gun, the tank and its crew not drawn,
+	 * no hands, the sight's zoom and thermal, the mouse's damping, and the sight HUD in place of vanilla's. It
+	 * holds when the player is in the gunner's seat (climbed all the way in), the view is first person and the
+	 * camera is on the player (not spectating something else).
+	 */
+	public static @Nullable Tank sightTank() {
+		Minecraft minecraft = Minecraft.getInstance();
+		Tank tank = seatedTank();
+		return tank != null && minecraft.options.getCameraType().isFirstPerson() && minecraft.getCameraEntity() == minecraft.player
+				? tank : null;
+	}
+
+	public static boolean isCrewSightView() {
+		return sightTank() != null;
 	}
 
 	// --- Sight --------------------------------------------------------------------------------------------
 
 	/** The sight's magnification for this player, or 0 if they aren't looking through it. */
 	public static float sightZoom(Player player) {
-		return player == Minecraft.getInstance().player && inSight() ? ZOOMS[zoom] : 0.0f;
+		return player == Minecraft.getInstance().player && isCrewSightView() ? ZOOMS[zoom] : 0.0f;
 	}
 
 	public static float zoom() {
@@ -140,7 +158,7 @@ public final class TankClient {
 	}
 
 	public static boolean thermal() {
-		return thermal && inSight();
+		return thermal && isCrewSightView();
 	}
 
 	/** Whether the thermal sight shows this entity glowing. */
@@ -148,7 +166,7 @@ public final class TankClient {
 		if (!thermal() || !(entity instanceof LivingEntity) || entity instanceof Tank || entity == Minecraft.getInstance().player) {
 			return false;
 		}
-		Tank tank = seatedTank();
+		Tank tank = sightTank();
 		return tank != null && entity.distanceToSqr(tank) < THERMAL_RANGE * THERMAL_RANGE;
 	}
 
@@ -176,7 +194,7 @@ public final class TankClient {
 		if (tank.sequence() != Tank.SEQ_NONE) {
 			return 0.0;
 		}
-		return inSight() ? Math.pow(ZOOMS[zoom], -0.8) : 1.0;
+		return isCrewSightView() ? Math.pow(ZOOMS[zoom], -0.8) : 1.0;
 	}
 
 	/** The view's roll and pitch kick in degrees for the shake, or null when it's still. */
@@ -271,10 +289,18 @@ public final class TankClient {
 		minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.STONE_BUTTON_CLICK_ON, pitch, 0.4f));
 	}
 
-	/** Ranges whatever's under the reticle, and tells the fire control. */
+	/**
+	 * Ranges whatever's under the reticle, and tells the fire control. In the sight that's along the sight line
+	 * (the camera, which follows the gun); from outside, along where the player is looking.
+	 */
 	private static void lase(Minecraft minecraft, LocalPlayer player, Tank tank) {
 		Vec3 from = player.getEyePosition();
 		Vec3 look = player.getViewVector(1.0f);
+		if (isCrewSightView()) {
+			Camera camera = minecraft.gameRenderer.mainCamera();
+			from = camera.position();
+			look = new Vec3(camera.forwardVector().x(), camera.forwardVector().y(), camera.forwardVector().z());
+		}
 		Vec3 to = from.add(look.scale(LASE_RANGE));
 		HitResult block = player.level().clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		double range = block.getType() == HitResult.Type.MISS ? 0.0 : block.getLocation().distanceTo(from);
@@ -334,6 +360,10 @@ public final class TankClient {
 			shakeTicks--;
 		}
 		Tank tank = crewTank();
+		// F5 in a tank: the sight, then the view from outside, then back to the sight (no view from the front).
+		if (tank != null && minecraft.options.getCameraType() == CameraType.THIRD_PERSON_FRONT) {
+			minecraft.options.setCameraType(CameraType.FIRST_PERSON);
+		}
 		if (tank != null) {
 			float recoil = tank.recoil(0.0f);
 			if (recoil > lastRecoil + 0.5f) {

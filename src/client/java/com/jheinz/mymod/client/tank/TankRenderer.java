@@ -1,6 +1,5 @@
 package com.jheinz.mymod.client.tank;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -34,7 +33,7 @@ public class TankRenderer extends MobRenderer<Tank, TankRenderState, TankModel> 
 
 	@Override
 	public boolean shouldRender(Tank tank, Frustum culler, double camX, double camY, double camZ, float partialTicks) {
-		if (tank == TankClient.seatedTank() && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+		if (tank == TankClient.sightTank()) {
 			return false;
 		}
 		return super.shouldRender(tank, culler, camX, camY, camZ, partialTicks);

@@ -14,7 +14,7 @@ import com.jheinz.mymod.client.tank.TankClient;
 public abstract class TankHandsMixin {
 	@Inject(method = "submitHandsWithItems", at = @At("HEAD"), cancellable = true)
 	private void mymod$noHandsInTank(CallbackInfo ci) {
-		if (TankClient.seatedTank() != null) {
+		if (TankClient.isCrewSightView()) {
 			ci.cancel();
 		}
 	}

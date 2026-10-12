@@ -29,6 +29,11 @@ public final class TankCrew {
 	private static final Vec3 ON_ROOF = new Vec3(11.0 / 16.0, 14.0 / 16.0, -8.0 / 16.0);
 	/** The gunner's sight on the turret roof, front right (turret frame). */
 	private static final Vec3 SIGHT = new Vec3(11.5 / 16.0, 14.0 / 16.0, 20.0 / 16.0);
+	/**
+	 * The gunner's view (turret frame): on the face of the mantlet, just above the gun. The crew's own tank isn't
+	 * drawn for them in the sight, so nothing of it gets in the way.
+	 */
+	private static final Vec3 SIGHT_CAMERA = new Vec3(0.0, 11.0 / 16.0, 38.5 / 16.0);
 	/** How far below the roof a collector's feet are, standing in the hatch with its head and shoulders out. */
 	private static final double HATCH_STANDING_DEPTH = 1.25;
 
@@ -42,10 +47,18 @@ public final class TankCrew {
 		return framePoint(tank.position(), tank.getYRot(), right, up, forward);
 	}
 
-	/** A point in the turret's frame (up from the turret ring), in the world. */
+	/**
+	 * A point in the turret's frame (up from the turret ring), in the world, with the hull and turret where they
+	 * are {@code partialTicks} into the tick (1 for where they are now).
+	 */
 	public static Vec3 turretPoint(Tank tank, float partialTicks, double right, double up, double forward) {
-		Vec3 ring = hullPoint(tank, 0.0, RING_UP, RING_FORWARD);
+		Vec3 ring = framePoint(tank.getPosition(partialTicks), tank.getViewYRot(partialTicks), 0.0, RING_UP, RING_FORWARD);
 		return framePoint(ring, tank.turretYaw(partialTicks), right, up, forward);
+	}
+
+	/** Where the gunner's sight looks out from: the front of the turret, just above the gun. */
+	public static Vec3 sightPoint(Tank tank, float partialTicks) {
+		return turretPoint(tank, partialTicks, SIGHT_CAMERA.x, SIGHT_CAMERA.y, SIGHT_CAMERA.z);
 	}
 
 	/** {@code origin} plus an offset along a yaw's right, up and forward. */
