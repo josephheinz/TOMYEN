@@ -119,15 +119,6 @@ def ellipse(cx, cy, rx, ry, a0, a1, steps=90):
     return [(cx + rx * math.cos(a0 + (a1 - a0) * i / steps), cy + ry * math.sin(a0 + (a1 - a0) * i / steps)) for i in range(steps + 1)]
 
 
-def bezier(p0, p1, p2, p3, steps=40):
-    out = []
-    for i in range(steps + 1):
-        t = i / steps
-        out.append(tuple((1 - t) ** 3 * a + 3 * (1 - t) ** 2 * t * b + 3 * (1 - t) * t * t * c + t ** 3 * d
-                         for a, b, c, d in zip(p0, p1, p2, p3)))
-    return out
-
-
 icon = Canvas(16, 16)
 handle(icon, (1, 14), (4, 11))
 icon.outline(col(HAIR_LINE))
@@ -141,18 +132,15 @@ stroke(icon, inner[-1:] + [(9.5, 6.5), (8.5, 7.0)], 1, braid)
 stray_hairs(icon, 6, (3, 0, 16, 13))
 icon.save("item/nose_hair_whip.png")
 
-# In hand: held by the handle (lower left, as for a sword), the lash snaking up out of the grip and curling at the top.
+# In hand: just the handle, held at the lower left as a sword is, and its booger binding. The lash itself is drawn in the
+# world from the top of the binding (client/schnozzle/WhipHandles.TIP), hanging at rest and following every crack.
 held = Canvas(16, 16)
 handle(held, (1, 14), (5, 10))
 held.outline(col(HAIR_LINE))
-lash = bezier((6, 9), (12, 8.5), (5, 3), (12, 1.2)) + [(13, 1), (14, 2), (14, 3), (13, 3.6)]
-stroke(held, lash[:6], 2, braid)
-stroke(held, lash, 1, braid)
-stray_hairs(held, 5, (6, 0, 16, 10))
 held.save("item/nose_hair_whip_in_hand.png")
 
-# The lash as drawn in the world: 8 wide, the hand end at the top. A braided core down the middle half, wiry stray
-# hairs either side (cut out), a booger binding at the handle and a frayed tuft at the tip.
+# The lash as drawn in the world: 8 wide, the handle end at the top (the binding is on the handle sprite). A braided core
+# down the middle half, wiry stray hairs either side (cut out) and a frayed tuft at the tip.
 strip = Canvas(8, 64)
 for y in range(64):
     for x in range(2, 6):
@@ -161,9 +149,6 @@ for y in range(64):
     for x, chance in ((1, 0.3), (6, 0.3), (0, 0.08), (7, 0.08)):
         if rnd.random() < chance:
             strip.set(x, y, col(HAIR_HI if rnd.random() < 0.4 else HAIR, 1.0, 6))
-for y in range(4):
-    for x in range(1, 7):
-        strip.set(x, y, col(BOOGER_HI if (x + y) % 4 == 0 else BOOGER if y < 3 else BOOGER_DARK, 1.0, 5))
 for y in range(56, 64):
     for x in range(8):
         if rnd.random() < 0.35 + (y - 56) * 0.04:

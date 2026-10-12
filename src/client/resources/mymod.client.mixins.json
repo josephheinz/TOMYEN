@@ -23,7 +23,14 @@
 		"TankHiddenFromCrewMixin",
 		"TankMouseMixin",
 		"TankSightCameraMixin",
-		"TankSightZoomMixin"
+		"TankSightZoomMixin",
+		"ItemLayerRenderStateInvoker",
+		"ItemStackRenderStateAccessor",
+		"WhipArmPoseMixin",
+		"WhipFirstPersonMixin",
+		"WhipHeldItemMixin",
+		"WhipLevelEntitiesMixin",
+		"WhipViewBobMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
