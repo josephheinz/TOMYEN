@@ -747,5 +747,195 @@
       "mymod:nose_hair_whip_snag1",
       "mymod:nose_hair_whip_snag2"
     ]
+  },
+  "skullcrane_ambient": {
+    "subtitle": "subtitles.mymod.skullcrane_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:item/crossbow/loading_middle1",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle2",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle3",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle4",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:tile/piston/out",
+        "pitch": 1.9,
+        "volume": 0.3
+      }
+    ]
+  },
+  "skullcrane_chatter": {
+    "subtitle": "subtitles.mymod.skullcrane_chatter",
+    "sounds": [
+      {
+        "name": "minecraft:mob/skeleton/step1",
+        "pitch": 1.9
+      },
+      {
+        "name": "minecraft:mob/skeleton/step2",
+        "pitch": 1.9
+      },
+      {
+        "name": "minecraft:mob/skeleton/step3",
+        "pitch": 1.9
+      },
+      {
+        "name": "minecraft:mob/skeleton/step4",
+        "pitch": 1.9
+      },
+      {
+        "name": "minecraft:random/click",
+        "pitch": 1.8,
+        "volume": 0.4
+      }
+    ]
+  },
+  "skullcrane_scratch": {
+    "subtitle": "subtitles.mymod.skullcrane_scratch",
+    "sounds": [
+      {
+        "name": "minecraft:mob/sheep/shear",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/beehive/shear",
+        "pitch": 1.4
+      }
+    ]
+  },
+  "skullcrane_clamp": {
+    "subtitle": "subtitles.mymod.skullcrane_clamp",
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_trapdoor/close1",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close2",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close3",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close4",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_end",
+        "pitch": 1.3
+      }
+    ]
+  },
+  "skullcrane_lift": {
+    "subtitle": "subtitles.mymod.skullcrane_lift",
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/activate",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:block/conduit/activate",
+        "pitch": 1.4
+      }
+    ]
+  },
+  "skullcrane_release": {
+    "subtitle": "subtitles.mymod.skullcrane_release",
+    "sounds": [
+      {
+        "name": "minecraft:tile/piston/in",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open1",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open2",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open3",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open4",
+        "pitch": 1.5
+      }
+    ]
+  },
+  "skullcrane_hurt": {
+    "subtitle": "subtitles.mymod.skullcrane_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/skeleton/hurt1",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:mob/skeleton/hurt2",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:mob/skeleton/hurt3",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:mob/skeleton/hurt4",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/copper/break1",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:block/copper/break2",
+        "pitch": 1.6
+      }
+    ]
+  },
+  "skullcrane_death": {
+    "subtitle": "subtitles.mymod.skullcrane_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/skeleton/death",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:block/bone_block/break1",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:block/bone_block/break2",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:block/bone_block/break3",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:block/chain/break1",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:block/chain/break2",
+        "pitch": 1.3
+      }
+    ]
   }
 }

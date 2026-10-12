@@ -15,6 +15,7 @@
 		"MobHijackMixin",
 		"PlayerLongSwordMixin",
 		"PlayerPowerArmorMixin",
+		"PlayerSkullcraneGripMixin",
 		"PlayerTankMixin",
 		"ServerPunchWhipMixin",
 		"ServerPlayerDebtDeathMixin",

@@ -15,6 +15,7 @@
 		"MinecraftSemiAutoMixin",
 		"GunAutoFireMixin",
 		"MouseHandlerRadialMixin",
+		"SkullcraneCarriedPoseMixin",
 		"MinecraftTankMixin",
 		"TankCameraShakeMixin",
 		"TankClimbPoseMixin",

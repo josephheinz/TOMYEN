@@ -394,5 +394,5 @@ def shapeless(name, ingredient, result, count, category="misc"):
 shapeless("string_from_nose_hair", "mymod:nose_hair", "minecraft:string", 2)
 shapeless("slime_ball_from_giant_booger", "mymod:giant_booger", "minecraft:slime_ball", 2)
 
-write(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), {"values": ["mymod:vampire", "mymod:schnozzle"]})
+write(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), {"values": ["mymod:vampire", "mymod:schnozzle", "mymod:skullcrane"]})
 print("done")
