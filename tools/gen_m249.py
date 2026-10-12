@@ -1,23 +1,33 @@
 """Builds the M249 SAW, its Weapon Station parts and the M249 ammo box.
 
+Proportions follow a side-on photo of an M249 (about 41 photo pixels to a model pixel): a wide, slab-sided riveted
+receiver, a fat polymer stock with a hump and a ribbed buttplate, a chunky ribbed pistol grip, a feed cover hinged at
+its front with a full-length rail, the rear aperture sight fixed on the receiver behind it, a carry handle angled up and
+forward off to the left of the barrel, a grey perforated heat shield and a railed handguard with the bipod folded under
+them, the front sight post on its triangular base atop the gas block, a flash hider, and a tall ammo box under the
+receiver, wider than the receiver itself.
+
 The gun's item definition stacks layers, each picked by item model properties (see M249Animation):
   - the body, by mymod:gun_animation: 0 at rest, 1-6 the charging handle drawn back, 7-12 the feed cover swinging
-    open (12 fully open), 13-16 cover open while the box is changed;
+    open (its back end up, 12 fully open), 13-16 cover open while the box is changed;
   - the ammo box: seated, lowered (14, 15) or gone (16), only with one loaded;
   - the belt: from the box up the left side into the feed tray, with as many rounds as are left once fewer than
     nine remain (mymod:loaded_rounds), so it shortens as the box runs dry; lifted out and hanging from the box
     while the box is changed (13-15);
-  - the bipod, by mymod:bipod: folded along the handguard (0) through to deployed (3) as the holder crouches;
+  - the bipod, by mymod:bipod: folded under the handguard (0) through to deployed (3) as the holder crouches;
   - the muzzle flash, by mymod:muzzle_flash.
 
+The iron sights are a ghost ring and a post: the rear sight is an open octagonal ring the eye looks through (nothing
+in front of it rises above the rail), and the front post's tip sits on the ring's centre line, SIGHT_Y.
+
 Model space is in pixels: the bore runs along z at x = 8, y = 9 with the muzzle toward -z, +x is the gun's right.
-GunDisplay, GunHands and GunAim mirror the display transforms, grip points and sight line printed at the end, so move
-them together. Run tools/gen_attachments.py afterwards: it wraps the item definition with the attachment layers (and
-swings the optic up with the feed cover it's railed to)."""
+GunDisplay, GunHands, GunAim, LaserBeams and M249Animation mirror the display transforms, grip points, sight line and
+part positions printed or defined here, so move them together. Run tools/gen_attachments.py afterwards: it wraps the
+item definition with the attachment layers (and swings the optic up with the feed cover it's railed to)."""
 import math, os, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
-from gunkit import (Kit, FLASH, check, copy, move, rotate, rx, rz, write, model, ref, EMPTY, range_dispatch, composite,
+from gunkit import (Kit, FLASH, check, move, rotate, rx, rz, write, model, ref, EMPTY, range_dispatch, composite,
                     has_component, display, display_matrix, placed, centred, bounds_centre, DIAGONAL, sprite, flash_models,
                     with_flash)
 
@@ -29,57 +39,67 @@ FP_GRIP_TARGET = (-0.022 * 16, 0.119 * 16, 0.156 * 16)
 TP_GRIP_TARGET = (0.0, 1.01 + 0.65 * (4.507 - 8), -1.23 + 0.65 * (12.2 - 8))
 
 K = Kit("m249", "item/m249", seed=249)
-PARK, PARK_DARK, PARK_WORN = 0x34372F, 0x202219, 0x575B50
-POLY, POLY_DARK = 0x1E1F20, 0x121213
-OD, OD_DARK, OD_LIGHT = 0x535A35, 0x3B4125, 0x6C7446
+BLACK, BLACK_DARK, BLACK_WORN = 0x232523, 0x141514, 0x464943
+POLY, POLY_DARK = 0x1C1D1E, 0x101112
+GREY, GREY_DARK = 0x5B5E59, 0x3A3C38
+BOX, BOX_DARK, BOX_LIGHT = 0x46544B, 0x313B34, 0x5E6E63
 
-K.swatch("steel", 0, 0, 8, 2, lambda x, y, w, h: K.rgb(PARK_WORN if K.rnd.random() < 0.05 else PARK, jitter=3))
-K.swatch("steel_dark", 8, 0, 12, 2, lambda x, y, w, h: K.rgb(PARK_DARK, jitter=2))
-K.swatch("steel_worn", 12, 0, 16, 2, lambda x, y, w, h: K.rgb(PARK_WORN if K.rnd.random() < 0.6 else PARK, jitter=5))
+K.swatch("steel", 0, 0, 8, 2, lambda x, y, w, h: K.rgb(BLACK_WORN if K.rnd.random() < 0.05 else BLACK, jitter=3))
+K.swatch("steel_dark", 8, 0, 12, 2, lambda x, y, w, h: K.rgb(BLACK_DARK, jitter=2))
+K.swatch("steel_worn", 12, 0, 16, 2, lambda x, y, w, h: K.rgb(BLACK_WORN if K.rnd.random() < 0.6 else BLACK, jitter=5))
 K.swatch("poly", 0, 2, 4, 4, lambda x, y, w, h: K.rgb(POLY, jitter=2))
-K.swatch("ribs_u", 4, 2, 12, 4, lambda x, y, w, h: K.rgb(POLY_DARK if x % 4 == 0 else 0x2A2B2D if x % 4 == 1 else POLY))
-K.swatch("ribs_v", 12, 2, 14, 10, lambda x, y, w, h: K.rgb(POLY_DARK if y % 4 == 0 else 0x2A2B2D if y % 4 == 1 else POLY))
-K.swatch("checker", 14, 2, 16, 4, lambda x, y, w, h: K.rgb(POLY_DARK if (x + y) % 2 == 0 else 0x2C2D2F))
-# The soft ammo pouch: olive cloth with a weave and a stitched seam.
-K.swatch("pouch", 0, 4, 8, 6, lambda x, y, w, h: K.rgb(OD_DARK if (x * 3 + y * 5) % 7 == 0 else OD, jitter=4))
-K.swatch("pouch_seam", 8, 4, 12, 6, lambda x, y, w, h: K.rgb(0xC9C3A0 if y == 1 and x % 2 == 0 else OD_DARK if y == 0 else OD, jitter=3))
+# Ribs across the pistol grip and buttplate (stripes down v), and the handguard's grooves (stripes across u).
+K.swatch("ribs_v", 4, 2, 8, 4, lambda x, y, w, h: K.rgb(POLY_DARK if y % 3 == 0 else 0x2A2B2D if y % 3 == 1 else POLY))
+K.swatch("ribs_u", 8, 2, 12, 4, lambda x, y, w, h: K.rgb(POLY_DARK if x % 4 == 0 else 0x2A2B2D if x % 4 == 1 else POLY))
+K.swatch("grey", 12, 2, 16, 4, lambda x, y, w, h: K.rgb(GREY, jitter=3))
+# The heat shield's dotted panel.
+K.swatch("dots", 0, 4, 8, 6, lambda x, y, w, h: K.rgb(GREY_DARK if x % 3 == 1 and y % 3 == 1 else GREY, jitter=2))
+K.swatch("box", 8, 4, 12, 6, lambda x, y, w, h: K.rgb(BOX_DARK if K.rnd.random() < 0.03 else BOX, jitter=3))
+K.swatch("box_edge", 12, 4, 14, 6, lambda x, y, w, h: K.rgb(BOX_LIGHT if y == 0 else BOX, jitter=2))
 K.swatch("brass", 14, 4, 16, 6, lambda x, y, w, h: K.rgb(0xF2D27C if y == 0 else 0xCFA448, jitter=5))
 K.swatch("copper", 0, 6, 2, 8, lambda x, y, w, h: K.rgb(0xC0703A if y > 0 else 0xE08E52, jitter=4))
 K.swatch("link", 2, 6, 4, 8, lambda x, y, w, h: K.rgb(0x151515 if y % 2 else 0x262626))
-K.swatch("rubber", 4, 6, 6, 8, lambda x, y, w, h: K.rgb(0x101010 if y % 3 == 0 else 0x1B1B1B))
+K.swatch("rubber", 4, 6, 6, 8, lambda x, y, w, h: K.rgb(0x0E0E0E if y % 2 == 0 else 0x1B1B1B))
 K.swatch("bore", 6, 6, 8, 8, lambda x, y, w, h: K.rgb(0x050505 if math.hypot(x - 3.5, y - 3.5) < 3.0 else 0x2A2C26), picture=True)
-K.swatch("slots", 8, 6, 12, 8, lambda x, y, w, h: K.rgb(0x050505 if 3 <= y <= 12 and x % 4 == 1 else PARK, jitter=2))
-K.swatch("rail", 0, 8, 8, 10, lambda x, y, w, h: K.rgb(PARK_DARK if x % 3 == 0 else PARK, jitter=2))
-K.swatch("chamber", 8, 8, 10, 10, lambda x, y, w, h: K.rgb(0x08090A, jitter=1))
-K.swatch("aperture", 10, 8, 12, 10, lambda x, y, w, h: K.rgb(0x030303 if math.hypot(x - 3.5, y - 3.5) < 1.6 else PARK_DARK), picture=True)
-K.swatch("perforated", 0, 10, 8, 12, lambda x, y, w, h: K.rgb(0x050505 if x % 4 in (1, 2) and y % 4 in (1, 2) else PARK, jitter=2))
-K.swatch("pouch_mouth", 8, 10, 12, 12, lambda x, y, w, h: K.rgb(0x16180F if 1 <= x <= w - 2 and 1 <= y <= h - 2 else OD_DARK), picture=True)
+K.swatch("slots", 8, 6, 12, 8, lambda x, y, w, h: K.rgb(0x050505 if 3 <= y <= 12 and x % 4 == 1 else BLACK, jitter=2))
+K.swatch("rail", 12, 6, 16, 8, lambda x, y, w, h: K.rgb(BLACK_DARK if x % 3 == 0 else BLACK, jitter=2))
+K.swatch("chamber", 0, 8, 2, 10, lambda x, y, w, h: K.rgb(0x08090A, jitter=1))
+# Rivets and pins: bright heads with a dark rim.
+K.swatch("rivet", 2, 8, 4, 10, lambda x, y, w, h: K.rgb(0x8A8E88 if 2 <= x <= 5 and 2 <= y <= 5 else 0x2C2E2B), picture=True)
+# The sights: matt black, darker than the gun, so they read against the sky.
+K.swatch("sight", 4, 8, 6, 10, lambda x, y, w, h: K.rgb(0x070707, jitter=1))
+K.swatch("box_mouth", 6, 8, 10, 10, lambda x, y, w, h: K.rgb(0x101410 if 1 <= x <= w - 2 and 1 <= y <= h - 2 else BOX_DARK), picture=True)
 
 
-def stencil(x, y, w, h):
-    """Black stencilled 'CTG 5.56MM' lines on the pouch's side."""
-    if 3 <= y <= 5 and 4 <= x <= 27 and x % 4 != 3 and (y != 4 or x % 4 == 0):
-        return K.rgb(0x1E2012)
-    if y == 9 and 8 <= x <= 22 and x % 3 != 2:
-        return K.rgb(0x1E2012)
-    return K.rgb(OD, jitter=4)
+def box_stencil(x, y, w, h):
+    """Stencilled lot markings and a latch outline on the ammo box's side."""
+    if 3 <= y <= 4 and 3 <= x <= w - 4 and x % 3 != 2:
+        return K.rgb(0xE0DCC8)
+    if y == 7 and 3 <= x <= w // 2 and x % 2 == 0:
+        return K.rgb(0xD0CCB8)
+    if y in (1, h - 2) and 1 <= x <= w - 2:
+        return K.rgb(BOX_DARK)
+    return K.rgb(BOX, jitter=3)
 
 
-K.swatch("stencil", 0, 12, 8, 16, stencil, picture=True)
+K.swatch("box_stencil", 0, 10, 8, 14, box_stencil, picture=True)
 K.save(TEX)
 
 BX, BY = 8.0, 9.0
 MUZZLE = -15.9
-RECEIVER = (4.0, 17.2)
-HANDLE_TRAVEL = 4.2
-HINGE = (8.0, 10.9, 13.3)          # the feed cover's hinge
-COVER_OPEN = 75.0
-GRIP = (8.0, 4.4, 16.3)            # the shooting hand on the pistol grip
-SUPPORT = (8.0, 6.4, -0.8)         # the off hand under the handguard
-SIGHT = (8.0, 12.25, 11.95)        # the rear aperture, lined up with the front post
-BIPOD_PIVOT_Z = -5.6
+RECEIVER = (6.7, 20.4)
+HANDLE_TRAVEL = 4.0
+HINGE = (8.0, 10.6, 7.3)           # the feed cover's hinge, at its front
+COVER_OPEN = 75.0                   # its back end swings up this far
+SIGHT_Y = 11.95                     # the sight line: the rear ring's centre and the front post's tip
+REAR_SIGHT_Z = 18.1                 # the rear ring
+FRONT_SIGHT_Z = -5.7                # the front post
+GRIP = (8.0, 4.0, 16.4)             # the shooting hand on the pistol grip
+SUPPORT = (8.0, 6.1, 2.0)           # the off hand under the heat shield
+BIPOD_PIVOT_Z = -5.7
 BELT_PITCH = 0.46
 BELT_MAX = 9
+RAIL = (9.6, 16.4, 11.4)            # front, back and top of the cover's rail
 
 
 # ------------------------------------------------------------------------------------------------- barrel group
@@ -87,41 +107,51 @@ BELT_MAX = 9
 
 def barrel():
     out = []
-    K.rod(out, MUZZLE, -14.2, 0.55, "steel_dark", cx=BX, cy=BY, mark="slots", name="flash_hider")
-    K.sticker(out, BX - 0.4, BY - 0.4, MUZZLE - 0.03, BX + 0.4, BY + 0.4, MUZZLE - 0.02, "bore", "north")
-    K.rod(out, -14.2, RECEIVER[0] + 0.4, 0.45, "steel", cx=BX, cy=BY, name="barrel", caps=(False, False))
-    K.box(out, 7.55, 9.3, -13.4, 8.45, 10.0, -12.6, "steel_dark", name="front_sight_base")
-    K.box(out, 7.92, 10.0, -13.15, 8.08, SIGHT[1], -12.85, "steel_dark", name="front_sight_post")
-    # Gas block and regulator, with the bipod's mount under it.
-    K.chamfered(out, 7.4, 7.2, -6.6, 8.6, 9.5, -4.6, 0.25, "steel", name="gas_block")
-    K.box(out, 7.6, 7.4, -7.0, 8.4, 8.2, -6.6, "steel_worn", name="gas_regulator")
-    K.box(out, 7.25, 6.55, -6.2, 8.75, 7.2, -5.0, "steel_dark", name="bipod_mount")
-    K.box(out, 6.5, 6.5, -5.85, 9.5, 6.85, -5.35, "steel_dark", name="bipod_yoke")
-    # Handguard and the heat shield over the barrel.
-    K.chamfered(out, 6.95, 6.4, -4.6, 9.05, 8.6, 4.0, 0.5, "ribs_v", cap="poly", east="ribs_u", west="ribs_u", name="handguard")
-    K.box(out, 7.45, 9.55, -4.2, 8.55, 9.75, 0.4, "perforated", north="steel_dark", south="steel_dark", name="heat_shield")
-    # Carry handle, swung up and over to the left so it clears the sights.
-    K.rod(out, 0.6, 2.6, 0.62, "steel_dark", cx=BX, cy=BY, name="carry_handle_clamp")
-    arms = []
-    for z0 in (0.9, 1.9):
-        K.box(arms, 7.3, 9.3, z0, 7.7, 11.9, z0 + 0.4, "steel_dark", name="carry_handle_arm")
-    out += rotate(arms, rz(45), (7.5, 9.3, 1.6))
-    K.chamfered(out, 5.15, 10.55, -0.8, 6.3, 11.6, 4.4, 0.3, "poly", name="carry_handle")
+    K.rod(out, MUZZLE, -13.9, 0.5, "steel_dark", cx=BX, cy=BY, mark="slots", name="flash_hider")
+    K.sticker(out, BX - 0.36, BY - 0.36, MUZZLE - 0.03, BX + 0.36, BY + 0.36, MUZZLE - 0.02, "bore", "north")
+    K.rod(out, -13.9, RECEIVER[0] + 0.3, 0.38, "steel", cx=BX, cy=BY, name="barrel", caps=(False, False))
+    # Gas block and regulator; on it the front sight's triangular base, its protective ears, and the post.
+    K.chamfered(out, 7.35, 7.4, -6.6, 8.65, 9.6, -4.8, 0.2, "steel", name="gas_block")
+    K.box(out, 7.6, 7.0, -7.1, 8.4, 7.8, -6.6, "steel_worn", name="gas_regulator")
+    K.box(out, 7.55, 9.6, -6.5, 8.45, 10.2, -4.9, "steel_dark", name="front_sight_base")
+    for z_foot, lean in ((-6.45, 24.0), (-4.95, -24.0)):
+        leg = []
+        K.box(leg, 7.6, 9.9, z_foot - 0.25, 8.4, 11.3, z_foot + 0.25, "steel_dark", name="front_sight_base")
+        out += rotate(leg, rx(lean), (8.0, 9.9, z_foot))
+    for x0 in (7.25, 8.5):
+        K.box(out, x0, 10.6, FRONT_SIGHT_Z - 0.35, x0 + 0.25, SIGHT_Y + 0.1, FRONT_SIGHT_Z + 0.35, "sight", name="front_sight_ear")
+    K.box(out, 7.8, 10.7, FRONT_SIGHT_Z - 0.18, 8.2, SIGHT_Y, FRONT_SIGHT_Z + 0.18, "sight", name="front_sight_post")
+    # Bipod mount and yoke under the gas block.
+    K.box(out, 7.2, 6.6, -6.4, 8.8, 7.4, -5.0, "steel_dark", name="bipod_mount")
+    K.box(out, 6.6, 6.0, -6.0, 9.4, 6.6, -5.4, "steel_dark", name="bipod_yoke")
+    # Handguard: a railed front section, then the grey perforated heat shield back to the receiver.
+    K.chamfered(out, 6.6, 6.1, -3.0, 9.4, 9.0, 1.2, 0.45, "ribs_u", cap="poly", up="poly", down="poly", name="handguard")
+    K.chamfered(out, 6.6, 6.1, 1.2, 9.4, 9.0, RECEIVER[0], 0.45, "dots", cap="grey", up="grey", down="grey", name="heat_shield")
+    for x0 in (6.35, 9.4):
+        K.box(out, x0, 7.15, -2.4, x0 + 0.25, 7.85, 0.9, "rail", name="handguard_rail")
+    K.box(out, 9.4, 8.05, 1.6, 9.45, 8.55, 5.8, "steel_dark", name="heat_shield_slot")
+    # Carry handle: a clamp on the barrel, and the handle swung up and forward off to the left, clear of the sights.
+    K.rod(out, 4.6, 6.2, 0.55, "steel_dark", cx=BX, cy=BY, name="carry_handle_clamp")
+    handle = []
+    K.box(handle, 6.55, 9.0, 5.0, 6.95, 12.2, 5.4, "steel_dark", name="carry_handle_arm")
+    K.chamfered(handle, 6.35, 11.95, 1.9, 7.15, 12.75, 5.6, 0.25, "ribs_u", cap="poly", up="poly", down="poly", name="carry_handle")
+    rotate(handle, rx(-22), (6.75, 9.3, 5.2))
+    out += rotate(handle, rz(32), (6.75, 9.3, 5.2))
     return out
 
 
 def bipod(frac):
-    """The bipod's legs, folded back along the handguard's lower edges (0) or swung down and splayed (1)."""
+    """The bipod's legs, folded back under the handguard (0) or swung down and splayed (1)."""
     out = []
     for side in (-1, 1):
-        x0 = 6.55 if side < 0 else 9.1
+        x0 = 6.8 if side < 0 else 8.8
         leg = []
-        K.box(leg, x0, 6.45, BIPOD_PIVOT_Z - 0.2, x0 + 0.35, 6.8, 3.2, "steel", name="bipod_leg")
-        K.box(leg, x0 - 0.05, 6.4, 1.6, x0 + 0.4, 6.85, 3.1, "steel_worn")
-        K.box(leg, x0 - 0.08, 6.35, 3.0, x0 + 0.43, 6.9, 3.5, "rubber", name="bipod_foot")
-        pivot = (x0 + 0.175, 6.625, BIPOD_PIVOT_Z)
+        K.box(leg, x0, 5.65, BIPOD_PIVOT_Z - 0.2, x0 + 0.4, 6.05, 3.9, "steel", name="bipod_leg")
+        K.box(leg, x0 - 0.05, 5.6, 2.2, x0 + 0.45, 6.1, 3.95, "steel_worn")
+        K.box(leg, x0 - 0.08, 5.55, 3.95, x0 + 0.48, 6.15, 4.5, "rubber", name="bipod_foot")
+        pivot = (x0 + 0.2, 5.85, BIPOD_PIVOT_Z)
         rotate(leg, rx(90 * frac), pivot)
-        rotate(leg, rz(10 * frac * side), pivot)
+        rotate(leg, rz(12 * frac * side), pivot)
         out += leg
     return out
 
@@ -130,59 +160,90 @@ def bipod(frac):
 
 
 def cover(angle):
-    """The feed cover with its rail and rear sight, swung open by `angle` degrees about its hinge."""
+    """The feed cover and its rail, its back end swung up by `angle` degrees about the hinge at its front."""
     out = []
-    K.chamfered(out, 6.95, 10.55, 4.2, 9.05, 11.4, HINGE[2], 0.3, "steel", name="feed_cover")
-    K.box(out, 7.4, 11.4, 12.4, 8.6, 11.7, 13.2, "steel_worn", name="cover_latch")
-    K.box(out, 7.3, 11.4, 5.0, 8.7, 11.85, 11.0, "rail", name="cover_rail")
-    K.box(out, 7.45, 11.4, 11.2, 8.55, 11.85, 12.4, "steel_dark", name="rear_sight_base")
-    K.box(out, 7.55, 11.85, 11.8, 8.45, 12.65, 12.1, "steel_dark", name="rear_sight")
-    K.sticker(out, 7.95 - 0.2, SIGHT[1] - 0.2, 12.1, 8.05 + 0.2, SIGHT[1] + 0.2, 12.12, "aperture", "south", name="rear_sight_aperture")
-    return rotate(out, rx(angle), HINGE) if angle else out
+    K.chamfered(out, 6.6, 10.3, HINGE[2] - 0.1, 9.4, 10.9, 17.0, 0.25, "steel", name="feed_cover")
+    K.box(out, 7.4, 10.9, 16.45, 8.6, 11.2, 17.0, "steel_worn", name="cover_latch")
+    K.box(out, 7.25, 10.9, RAIL[0], 8.75, RAIL[2], RAIL[1], "rail", name="cover_rail")
+    K.rod(out, HINGE[2] - 0.35, HINGE[2] + 0.35, 0.3, "steel_worn", cx=9.45, cy=HINGE[1])
+    return rotate(out, rx(-angle), HINGE) if angle else out
+
+
+def rivets(out, x, face, points):
+    for y, z in points:
+        K.box(out, x - 0.08 if face == "west" else x, y - 0.17, z - 0.17, x + 0.08 if face == "east" else x, y + 0.17, z + 0.17,
+              "steel_worn", **{face: "rivet"})
 
 
 def receiver(handle):
     out = []
     z0, z1 = RECEIVER
-    K.chamfered(out, 6.9, 6.0, z0, 9.1, 10.4, z1, 0.45, "steel", name="receiver")
-    K.box(out, 6.95, 10.4, 4.3, 9.05, 10.55, 9.2, "steel_worn", name="feed_tray")
-    # Where the belt goes in on the left, and the charging handle in its slot on the right.
-    K.sticker(out, 6.87, 9.55, 4.6, 6.9, 10.35, 8.6, "chamber", "west", name="feed_opening")
-    K.sticker(out, 9.1, 8.45, 7.2, 9.13, 8.95, 12.6, "chamber", "east", name="charging_slot")
-    K.box(out, 9.13, 8.3, 7.4 + handle, 9.75, 9.1, 8.2 + handle, "steel_worn", name="charging_handle")
-    K.box(out, 9.75, 8.45, 7.5 + handle, 10.05, 8.95, 8.1 + handle, "steel_dark")
-    # Trigger guard, trigger, pistol grip.
-    K.box(out, 7.65, 3.9, 11.2, 8.35, 4.25, 14.4, "poly", name="trigger_guard")
-    K.box(out, 7.65, 4.25, 11.2, 8.35, 6.0, 11.55, "poly")
-    K.box(out, 7.84, 4.5, 12.3, 8.16, 6.0, 12.65, "steel_worn", rot=("x", -10, (8.0, 6.0, 12.5)), name="trigger")
-    K.box(out, 6.8, 5.4, 13.6, 9.2, 5.75, 13.95, "steel_dark", name="safety")
+    K.chamfered(out, 6.55, 6.0, z0, 9.45, 10.3, z1, 0.35, "steel", name="receiver")
+    K.chamfered(out, 6.85, 7.5, z0 - 0.5, 9.15, 10.0, z0 + 0.1, 0.27, "steel_worn", name="trunnion")
+    # The side plates: a raised strip along each, rivets and pins.
+    for x, face in ((9.45, "east"), (6.55, "west")):
+        K.box(out, min(x, x + (0.07 if face == "east" else -0.07)), 9.0, 7.2, max(x, x + (0.07 if face == "east" else -0.07)), 9.25, 19.8,
+              "steel_worn", name="side_strip")
+        rivets(out, x, face, [(9.7, 8.0), (9.7, 13.0), (9.7, 19.4), (7.9, 12.4), (6.7, 8.3), (6.7, 13.6), (6.7, 17.2),
+                              (7.6, 19.6), (8.4, 15.6)])
+    # The belt goes in on the left; the charging handle runs in a slot on the right.
+    K.sticker(out, 6.52, 9.5, 8.4, 6.55, 10.25, 11.2, "chamber", "west", name="feed_opening")
+    K.sticker(out, 9.45, 8.25, 7.0, 9.48, 8.95, 12.4, "chamber", "east", name="charging_slot")
+    K.box(out, 9.48, 8.2, 7.2 + handle, 10.05, 9.0, 8.1 + handle, "steel_worn", name="charging_handle")
+    K.box(out, 10.05, 8.35, 7.3 + handle, 10.35, 8.85, 8.0 + handle, "steel_dark")
+    # The rear sight, fixed on the receiver behind the cover: a block, two ears, and the open ghost ring between them.
+    K.box(out, 7.2, 10.3, 17.15, 8.8, 11.4, 19.4, "steel_dark", name="rear_sight_base")
+    for x0 in (6.95, 8.75):
+        K.box(out, x0, 11.4, REAR_SIGHT_Z - 0.5, x0 + 0.3, SIGHT_Y + 0.75, REAR_SIGHT_Z + 0.5, "sight", name="rear_sight_ear")
+    inner, thick = 0.3, 0.3
+    width = 2 * (inner + thick) * math.tan(math.pi / 8) + 0.02
+    for k in range(8):
+        K.box(out, BX - width / 2, SIGHT_Y + inner, REAR_SIGHT_Z - 0.15, BX + width / 2, SIGHT_Y + inner + thick, REAR_SIGHT_Z + 0.15,
+              "sight", rot=("z", k * 45.0, (BX, SIGHT_Y, REAR_SIGHT_Z)) if k else None, name="rear_sight_ring")
+    # Trigger guard and trigger.
+    K.box(out, 7.55, 4.0, 11.6, 8.45, 4.35, 14.7, "poly", name="trigger_guard")
+    K.box(out, 7.55, 4.35, 11.6, 8.45, 6.0, 11.95, "poly")
+    K.box(out, 7.82, 4.6, 12.7, 8.18, 6.0, 13.05, "steel_worn", rot=("x", -10, (8.0, 6.0, 12.9)), name="trigger")
+    K.box(out, 6.45, 6.6, 15.0, 9.55, 6.95, 15.35, "steel_dark", name="safety")
+    # The chunky ribbed pistol grip, raked back and flared at the bottom.
     grip = []
-    K.chamfered(grip, 7.15, 1.6, 14.4, 8.85, 6.0, 16.8, 0.45, "checker", cap="poly", name="pistol_grip")
-    K.box(grip, 7.1, 1.4, 14.3, 8.9, 1.7, 16.9, "poly")
-    out += rotate(grip, rx(-18), (8.0, 6.0, 15.6))
+    K.chamfered(grip, 7.0, 1.4, 14.6, 9.0, 6.0, 17.3, 0.5, "poly", cap="poly", north="ribs_v", south="ribs_v", name="pistol_grip")
+    K.chamfered(grip, 6.9, 1.0, 14.4, 9.1, 1.5, 17.6, 0.3, "poly", name="pistol_grip_base")
+    out += rotate(grip, rx(-18), (8.0, 6.0, 15.9))
     return out
 
 
 def stock():
+    """The fat polymer stock: a neck off the receiver, a dip, a humped comb, a deep belly down to the toe, and the
+    ribbed buttplate with its sling loop."""
     out = []
-    K.chamfered(out, 7.05, 6.9, 16.9, 8.95, 10.05, 30.3, 0.55, "poly", name="stock")
+    neck = []
+    K.chamfered(neck, 6.8, 5.6, 20.1, 9.2, 10.0, 23.6, 0.5, "poly", name="stock_neck")
+    out += rotate(neck, rx(14), (8.0, 10.0, 20.1))
+    K.chamfered(out, 6.8, 5.2, 22.4, 9.2, 9.05, 26.8, 0.5, "poly", name="stock")
+    K.chamfered(out, 6.75, 3.4, 26.5, 9.25, 9.6, 30.7, 0.6, "poly", name="stock_hump")
     belly = []
-    K.chamfered(belly, 7.1, 2.8, 17.8, 8.9, 7.0, 30.0, 0.5, "poly", name="stock_belly")
-    out += rotate(belly, rx(14.5), (8.0, 2.8, 30.0))
-    K.chamfered(out, 6.95, 2.4, 29.9, 9.05, 10.3, 31.2, 0.4, "rubber", cap="poly", name="butt_plate")
-    K.box(out, 7.7, 7.3, 22.0, 8.3, 7.9, 23.2, "steel_dark", rot=("x", 0.0, (8, 7.3, 22)), name="sling_mount")
+    K.chamfered(belly, 6.85, 3.4, 20.8, 9.15, 6.2, 27.2, 0.5, "poly", name="stock_belly")
+    out += rotate(belly, rx(21), (8.0, 3.4, 27.2))
+    K.chamfered(out, 6.7, 3.15, 30.6, 9.3, 9.85, 31.35, 0.3, "ribs_v", cap="rubber", south="rubber", name="buttplate")
+    K.box(out, 7.75, 9.85, 30.75, 8.25, 10.3, 31.2, "steel_worn", name="sling_loop")
     return out
 
 
 # --------------------------------------------------------------------------------------------- box and belt
 
 
+BOX_Z = (8.1, 11.4)
+
+
 def ammo_box(drop=0.0):
+    """The tall plastic box under the receiver, wider than the receiver."""
     out = []
-    K.chamfered(out, 5.7, 1.2, 4.7, 9.1, 5.95, 9.9, 0.5, "pouch", east="stencil", up="pouch", name="ammo_box")
-    K.box(out, 5.6, 5.4, 4.65, 9.2, 5.75, 9.95, "pouch_seam", up=None, down=None, name="ammo_box_flap")
-    K.sticker(out, 5.8, 5.95, 5.9, 6.75, 5.98, 8.1, "pouch_mouth", "up", name="ammo_box_mouth")
-    K.box(out, 7.3, 5.95, 5.6, 8.7, 6.0, 9.0, "steel_dark", name="ammo_box_clip")
+    z0, z1 = BOX_Z
+    K.chamfered(out, 5.55, -1.4, z0, 9.75, 5.6, z1, 0.6, "box", east="box_stencil", west="box_stencil", up="box", name="ammo_box")
+    K.chamfered(out, 5.45, 5.6, z0 - 0.05, 9.85, 5.95, z1 + 0.05, 0.3, "box_edge", name="ammo_box_lid")
+    K.sticker(out, 5.75, 5.95, z0 + 0.4, 6.65, 5.98, z1 - 0.3, "box_mouth", "up", name="ammo_box_mouth")
+    K.box(out, 7.3, 5.95, z0 + 0.6, 9.1, 6.0, z1 - 0.6, "steel_dark", name="ammo_box_clip")
     return move(out, dx=-0.4 * drop / 3.0, dy=-drop)
 
 
@@ -205,36 +266,40 @@ def along(p0, p1, p2, spacing, count):
     return out
 
 
+ROUND_Z = (8.4, 9.05, 10.95)        # bullet tip, case mouth, case head
+
+
 def cartridge(out, x, y, angle):
     """One linked 5.56 round lying along z (bullet forward), turned to the belt's run."""
+    tip, mouth, head = ROUND_Z
     r = []
-    K.box(r, x - 0.21, y - 0.21, 6.0, x + 0.21, y + 0.21, 7.95, "brass", name="round")
-    K.box(r, x - 0.14, y - 0.14, 5.35, x + 0.14, y + 0.14, 6.0, "copper")
-    K.box(r, x - 0.25, y - 0.25, 6.55, x + 0.25, y + 0.25, 6.85, "link", north=None, south=None)
-    K.box(r, x - 0.25, y - 0.25, 7.3, x + 0.25, y + 0.25, 7.6, "link", north=None, south=None)
-    out += rotate(r, rz(angle - 90), (x, y, 6.6))
+    K.box(r, x - 0.21, y - 0.21, mouth, x + 0.21, y + 0.21, head, "brass", name="round")
+    K.box(r, x - 0.14, y - 0.14, tip, x + 0.14, y + 0.14, mouth, "copper")
+    K.box(r, x - 0.25, y - 0.25, 9.6, x + 0.25, y + 0.25, 9.9, "link", north=None, south=None)
+    K.box(r, x - 0.25, y - 0.25, 10.35, x + 0.25, y + 0.25, 10.65, "link", north=None, south=None)
+    out += rotate(r, rz(angle - 90), (x, y, 9.6))
 
 
-FEED = (6.72, 10.12)
+FEED = (6.3, 10.0)
 MOUTH = (6.15, 6.05)
 
 
 def belt(n):
-    """The belt with n rounds still out of the box: the run up into the feed (rounds nearest the feed first) and the
-    round on the feed tray."""
+    """The belt with n rounds still out of the box, hugging the receiver's left side up into the feed (rounds nearest
+    the feed first), and the round on the feed tray."""
     out = []
-    for x, y, a in along(FEED, (5.25, 8.6), MOUTH, BELT_PITCH, n):
+    for x, y, a in along(FEED, (5.75, 8.1), MOUTH, BELT_PITCH, n):
         cartridge(out, x, y, a)
-    tray = []
-    K.box(tray, 7.35, 10.55, 6.0, 7.77, 10.97, 7.95, "brass", name="tray_round")
-    K.box(tray, 7.42, 10.62, 5.35, 7.7, 10.9, 6.0, "copper")
-    return out + tray
+    tip, mouth, head = ROUND_Z
+    K.box(out, 7.0, 10.3, mouth, 7.42, 10.72, head, "brass", name="tray_round")
+    K.box(out, 7.07, 10.37, tip, 7.35, 10.65, mouth, "copper")
+    return out
 
 
 def hanging_belt(drop):
     """Lifted off the tray: the belt's end hangs out of the box mouth where the hand holds it."""
     out = []
-    for x, y, a in along((4.7, 9.5), (4.9, 6.9), MOUTH, BELT_PITCH, 8):
+    for x, y, a in along((4.5, 9.4), (4.8, 6.8), MOUTH, BELT_PITCH, 8):
         cartridge(out, x, y, a)
     return move(out, dx=-0.4 * drop / 3.0, dy=-drop)
 
@@ -245,7 +310,7 @@ def hanging_belt(drop):
 def gun_displays(elements, fp_scale, gui_scale):
     fp_rot = [0, -8, 0]
     fp = display(fp_rot, placed(fp_rot, fp_scale, GRIP, FP_GRIP_TARGET), fp_scale)
-    tp = display([0, 0, 0], placed([0, 0, 0], 0.65, GRIP, TP_GRIP_TARGET), 0.65)
+    tp = display([0, 0, 0], placed([0, 0, 0], 0.62, GRIP, TP_GRIP_TARGET), 0.62)
     c = bounds_centre(elements)
     gui_rot = [0, -90, 0]
     return {
@@ -283,7 +348,7 @@ def body(handle=0.0, angle=0.0):
 
 
 everything = body() + ammo_box() + belt(BELT_MAX) + bipod(1.0) + bipod(0.0) + cover(COVER_OPEN) + hanging_belt(0)
-DISPLAYS = gun_displays(everything, 0.52, 0.31)
+DISPLAYS = gun_displays(everything, 0.5, 0.3)
 
 
 def out_model(name, elements):
@@ -320,22 +385,22 @@ write(os.path.join(ITEMS, "m249.json"), {"model": with_flash(gun, flashes, ("mym
 FLASH.save(TEX)
 
 # Weapon Station parts.
-for name, elements, scale in (("m249_receiver", receiver(0) + cover(0) + stock(), 0.45),
-                              ("m249_barrel", barrel() + bipod(0.0), 0.42)):
+for name, elements, scale in (("m249_receiver", receiver(0) + cover(0) + stock(), 0.42),
+                              ("m249_barrel", barrel() + bipod(0.0), 0.4)):
     check(name, elements)
     write(os.path.join(MODELS, name + ".json"), model(K, elements, part_displays(elements, scale)))
     write(os.path.join(ITEMS, name + ".json"), {"model": ref(name)})
 
 # The ammo box item: a flat sprite like the other magazines, with brass showing at the mouth once it's packed.
-PAL = {"o": K.rgb(OD), "d": K.rgb(OD_DARK), "l": K.rgb(OD_LIGHT), "s": K.rgb(0xC9C3A0), "k": K.rgb(0x1E2012),
-       "b": K.rgb(0xCFA448), "B": K.rgb(0xF2D27C), "c": K.rgb(0xC0703A), "x": K.rgb(0x262626), "m": K.rgb(0x16180F)}
-TOP_EMPTY = ["................", "................", "................", "...xx.......xx..", "..xddddddddddddx",
-             "..dmmmlllllllldd"]
-TOP_FULL = ["...cBc..........", "..cBbBc.........", "...BbB..........", "...BbBx......xx.", "..xBbddddddddddx",
-            "..dBbmlllllllldd"]
-BODY = ["..dlooooooooooodd", "..dossssssssssodd", "..doooooooooooodd", "..dokkkokkkoooodd", "..doooooooooooodd",
-        "..dookkkkkooooodd", "..doooooooooooodd", "..dddoooooooodddd", "...dddddddddddd.", "................"]
-BODY = [row[:16] for row in BODY]
+PAL = {"o": K.rgb(BOX), "d": K.rgb(BOX_DARK), "l": K.rgb(BOX_LIGHT), "s": K.rgb(0xE0DCC8), "k": K.rgb(0x101410),
+       "b": K.rgb(0xCFA448), "B": K.rgb(0xF2D27C), "c": K.rgb(0xC0703A), "x": K.rgb(0x262626), "m": K.rgb(0x101410)}
+TOP_EMPTY = ["................", "................", "................", "....xx....xx....", "...dllllllllld..",
+             "...dmmllllllld.."]
+TOP_FULL = ["....cBc.........", "...cBbBc........", "....BbB.........", "....BbBx...xx...", "...dBbllllllld..",
+            "...dBbmlllllld.."]
+BODY = ["...doooooooood..", "...dossssssood..", "...doooooooood..", "...dossssoooood.", "...doooooooood..",
+        "...doooooooood..", "...doooooooood..", "...dddooooodd...", "....ddddddddd...", "................"]
+BODY = [(row + "................")[:16] for row in BODY]
 for name, top in (("m249_ammo_box", TOP_EMPTY), ("m249_ammo_box_loaded", TOP_FULL)):
     sprite(os.path.join(TEX, f"item/{name}.png"), top + BODY, PAL)
     write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
@@ -344,4 +409,5 @@ write(os.path.join(ITEMS, "m249_ammo_box.json"), {"model": has_component("mymod:
 
 t = DISPLAYS["firstperson_righthand"]
 print(f"m249: {len(body())} elements; firstperson {t['translation']} rot {t['rotation']} scale {t['scale'][0]}")
-print(f"   grip {fp_point(DISPLAYS, GRIP)}  support {fp_point(DISPLAYS, SUPPORT)}  sight window {SIGHT}")
+print(f"   grip {fp_point(DISPLAYS, GRIP)}  support {fp_point(DISPLAYS, SUPPORT)}")
+print(f"   sight window (8, {SIGHT_Y}, {REAR_SIGHT_Z}); optic mount front {RAIL[0]} top {RAIL[2]}")

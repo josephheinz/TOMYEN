@@ -45,7 +45,7 @@ public final class LaserBeams {
 			Map.entry(ModItems.AKM, new Vector3f(8.0f, 6.025f, -1.0f)),
 			Map.entry(ModItems.GALIL, new Vector3f(8.0f, 6.025f, -2.0f)),
 			Map.entry(ModItems.AWP, new Vector3f(8.0f, 5.925f, -6.5f)),
-			Map.entry(ModItems.M249, new Vector3f(8.0f, 5.825f, -3.9f)),
+			Map.entry(ModItems.M249, new Vector3f(8.0f, 5.525f, -2.6f)),
 			Map.entry(ModItems.REMINGTON_870, new Vector3f(8.0f, 5.975f, -13.1f)),
 			Map.entry(ModItems.SPAS12, new Vector3f(8.0f, 6.375f, -12.85f)));
 	private static final float FADE_LENGTH = 10.0f;

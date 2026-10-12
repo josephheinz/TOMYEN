@@ -81,7 +81,7 @@ public final class GunAim {
 			return new Mount(3.3f, 10.2f, NO_LIMIT);
 		} else if (gun == ModItems.M249) {
 			// On the feed cover's rail (tools/gen_m249.py).
-			return new Mount(5.6f, 11.85f, NO_LIMIT);
+			return new Mount(9.6f, 11.4f, NO_LIMIT);
 		} else if (gun == ModItems.REMINGTON_870) {
 			return new Mount(7.4f, 10.1f, NO_LIMIT);
 		} else if (gun == ModItems.SPAS12) {
@@ -97,7 +97,8 @@ public final class GunAim {
 	 */
 	private static Optic ironSights(Item gun) {
 		if (gun == ModItems.M249) {
-			return new Optic(0.4f, 6.35f);
+			// The middle of the rear ghost ring; the front post's tip is on the same line.
+			return new Optic(0.55f, 8.5f);
 		} else if (gun == ModItems.REMINGTON_870) {
 			return new Optic(0.05f, 6.8f);
 		} else if (gun == ModItems.SPAS12) {

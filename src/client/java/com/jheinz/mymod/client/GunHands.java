@@ -59,7 +59,7 @@ public final class GunHands {
 		} else if (gun == ModItems.MAC10) {
 			return rifle(-0.020f, 0.037f, -0.181f, 0.008f, 0.191f, -0.444f);
 		} else if (gun == ModItems.M249) {
-			return rifle(-0.022f, 0.119f, 0.156f, 0.055f, 0.184f, -0.394f);
+			return rifle(-0.022f, 0.119f, 0.156f, 0.041f, 0.185f, -0.290f);
 		} else if (gun == ModItems.REMINGTON_870) {
 			// The shooting hand round the stock's wrist, the off hand under the fore-end (it rides the pump).
 			return rifle(-0.022f, 0.119f, 0.156f, 0.069f, 0.086f, -0.491f);

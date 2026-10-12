@@ -50,14 +50,15 @@ public final class M249Animation {
 	}
 
 	// Model points (pixels) from tools/gen_m249.py.
-	private static final Vector3f SUPPORT = new Vector3f(8.0f, 6.4f, -0.8f);
-	private static final Vector3f HINGE = new Vector3f(8.0f, 10.9f, 13.3f);
-	private static final Vector3f COVER_EDGE = new Vector3f(8.0f, 11.4f, 4.8f);
-	private static final Vector3f FEED = new Vector3f(6.7f, 10.1f, 6.6f);
-	private static final Vector3f BELT_END = new Vector3f(4.7f, 9.5f, 6.6f);
-	private static final Vector3f BOX = new Vector3f(5.6f, 3.6f, 7.3f);
-	private static final Vector3f HANDLE = new Vector3f(10.0f, 8.7f, 7.8f);
-	private static final float HANDLE_TRAVEL = 4.2f;
+	private static final Vector3f SUPPORT = new Vector3f(8.0f, 6.1f, 2.0f);
+	/** The feed cover hinges at its front; the hand lifts it by its back edge. */
+	private static final Vector3f HINGE = new Vector3f(8.0f, 10.6f, 7.3f);
+	private static final Vector3f COVER_EDGE = new Vector3f(8.0f, 11.0f, 16.8f);
+	private static final Vector3f FEED = new Vector3f(6.3f, 10.0f, 9.9f);
+	private static final Vector3f BELT_END = new Vector3f(4.5f, 9.4f, 9.9f);
+	private static final Vector3f BOX = new Vector3f(5.3f, 2.4f, 9.75f);
+	private static final Vector3f HANDLE = new Vector3f(10.2f, 8.6f, 7.65f);
+	private static final float HANDLE_TRAVEL = 4.0f;
 	private static final float COVER_OPEN = 75.0f;
 	private static final float BOX_DROP = 3.0f;
 	/** Where the off hand goes for a new box, relative to the old one (pixels: down off the screen). */
@@ -211,9 +212,9 @@ public final class M249Animation {
 		}
 	}
 
-	/** The front edge of the feed cover (model pixels), swung open by {@code open} (0 to 1). */
+	/** The back edge of the feed cover (model pixels), swung up by {@code open} (0 to 1). */
 	private static Vector3f coverEdge(float open) {
-		float a = (float) Math.toRadians(COVER_OPEN * open);
+		float a = (float) Math.toRadians(-COVER_OPEN * open);
 		float dy = COVER_EDGE.y - HINGE.y;
 		float dz = COVER_EDGE.z - HINGE.z;
 		return new Vector3f(COVER_EDGE.x, HINGE.y + dy * (float) Math.cos(a) - dz * (float) Math.sin(a),
