@@ -37,11 +37,13 @@ import com.jheinz.mymod.GunItem;
 import com.jheinz.mymod.ModDamageTypes;
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.ModSounds;
+import com.jheinz.mymod.tank.SmokeScreens;
 
 /**
  * A villager debt collector in a banker's suit, packing a Glock. It rides in a {@link com.jheinz.mymod.tank.Tank}'s
  * hatch, shooting at the debtor while the tank shells them; if the tank is destroyed it carries on on
- * foot. Its shots are hitscan like the player's guns, so plate carriers stop them the same way.
+ * foot. Its shots are hitscan like the player's guns, so plate carriers stop them the same way, and they go
+ * wide through a tank's smoke screen.
  */
 public class DebtCollector extends PathfinderMob implements RangedAttackMob, Collector {
 	private static final float BULLET_DAMAGE = 3.0f;
@@ -111,6 +113,10 @@ public class DebtCollector extends PathfinderMob implements RangedAttackMob, Col
 		Vec3 aim = target.position().add(0.0, target.getBbHeight() * 0.6, 0.0).subtract(eye);
 		float yaw = (float) Math.toDegrees(Math.atan2(-aim.x, aim.z));
 		float pitch = (float) -Math.toDegrees(Math.atan2(aim.y, aim.horizontalDistance()));
+		// Firing blind through a tank's smoke screen.
+		if (SmokeScreens.obscured(level, eye, target.getEyePosition())) {
+			spread *= 4.0f;
+		}
 		float radius = spread * (float) Math.sqrt(shooter.getRandom().nextFloat());
 		float angle = shooter.getRandom().nextFloat() * (float) (Math.PI * 2.0);
 		Vec3 look = Vec3.directionFromRotation(pitch + radius * (float) Math.sin(angle), yaw + radius * (float) Math.cos(angle));

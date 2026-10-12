@@ -14,7 +14,14 @@
 		"MinecraftAttackMixin",
 		"MinecraftSemiAutoMixin",
 		"GunAutoFireMixin",
-		"MouseHandlerRadialMixin"
+		"MouseHandlerRadialMixin",
+		"MinecraftTankMixin",
+		"TankCameraShakeMixin",
+		"TankClimbPoseMixin",
+		"TankCrewHiddenMixin",
+		"TankHandsMixin",
+		"TankMouseMixin",
+		"TankSightZoomMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

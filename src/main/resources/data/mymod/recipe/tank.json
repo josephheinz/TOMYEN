@@ -3,14 +3,16 @@
   "category": "misc",
   "key": {
     "B": "minecraft:iron_block",
+    "C": "mymod:computer_chip",
+    "P": "minecraft:piston",
     "F": "minecraft:blast_furnace",
     "M": "minecraft:minecart",
-    "R": "minecraft:redstone_block"
+    "S": "mymod:tech_scrap"
   },
   "pattern": [
-    "BBB",
-    "RFR",
-    "MMM"
+    "BCB",
+    "PFP",
+    "MSM"
   ],
   "result": {
     "count": 1,

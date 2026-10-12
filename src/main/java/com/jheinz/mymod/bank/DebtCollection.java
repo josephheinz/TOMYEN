@@ -262,6 +262,7 @@ public final class DebtCollection {
 			}
 			tank.snapTo(pos.x, pos.y, pos.z, level.getRandom().nextFloat() * 360.0f, 0.0f);
 			tank.setDebtor(player.getUUID());
+			tank.alignTurret();
 			crew.snapTo(pos.x, pos.y, pos.z, tank.getYRot(), 0.0f);
 			crew.setDebtor(player.getUUID());
 			crew.arm();
@@ -287,7 +288,10 @@ public final class DebtCollection {
 		return sent;
 	}
 
-	/** A spot on solid ground some way from the player, with room for the entity, or null if none turned up. */
+	/**
+	 * A spot on solid ground some way from the player, with room for the entity, or null if none turned up. Big
+	 * things (a tank) that find no room at random fall back to sweeping rings round the player, near to far.
+	 */
 	public static @Nullable Vec3 findSpawn(ServerLevel level, LivingEntity player, EntityType<?> type) {
 		RandomSource random = level.getRandom();
 		for (int attempt = 0; attempt < 24; attempt++) {
@@ -298,6 +302,20 @@ public final class DebtCollection {
 			Vec3 spot = groundAt(level, type, x, Mth.floor(player.getY()), z);
 			if (spot != null) {
 				return spot;
+			}
+		}
+		if (type.getWidth() > 2.0f) {
+			float start = random.nextFloat() * Mth.TWO_PI;
+			for (int distance = SPAWN_MIN_DISTANCE - 4; distance <= SPAWN_MAX_DISTANCE + 8; distance += 3) {
+				for (int step = 0; step < 16; step++) {
+					float angle = start + step * Mth.TWO_PI / 16.0f;
+					int x = Mth.floor(player.getX() + Mth.cos(angle) * distance);
+					int z = Mth.floor(player.getZ() + Mth.sin(angle) * distance);
+					Vec3 spot = groundAt(level, type, x, Mth.floor(player.getY()), z);
+					if (spot != null) {
+						return spot;
+					}
+				}
 			}
 		}
 		return null;
@@ -314,7 +332,7 @@ public final class DebtCollection {
 				BlockPos pos = column.above(dy * sign);
 				BlockPos below = pos.below();
 				if (level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)
-						&& level.getFluidState(pos).isEmpty()) {
+						&& level.getFluidState(pos).isEmpty() && footing(level, type, below)) {
 					AABB box = type.getSpawnAABB(x + 0.5, pos.getY(), z + 0.5);
 					if (level.noCollision(box)) {
 						return new Vec3(x + 0.5, pos.getY(), z + 0.5);
@@ -326,6 +344,24 @@ public final class DebtCollection {
 			}
 		}
 		return null;
+	}
+
+	/** Something wider than two blocks needs ground under most of its corners too, not just its middle. */
+	private static boolean footing(ServerLevel level, EntityType<?> type, BlockPos below) {
+		int reach = Mth.floor(type.getWidth() / 2.0f - 0.25f);
+		if (reach < 1) {
+			return true;
+		}
+		int sturdy = 0;
+		for (int dx : new int[] {-reach, reach}) {
+			for (int dz : new int[] {-reach, reach}) {
+				BlockPos corner = below.offset(dx, 0, dz);
+				if (level.getBlockState(corner).isFaceSturdy(level, corner, Direction.UP)) {
+					sturdy++;
+				}
+			}
+		}
+		return sturdy >= 3;
 	}
 
 	private static void updateBar(ServerPlayer player, int owed, int wave, int alive, int nextWave) {

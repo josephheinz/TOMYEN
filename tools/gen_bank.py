@@ -1,6 +1,5 @@
-"""Paints the banking and tank textures and writes their item/block models: credit and debit cards, the ATM (the
-banker's job site), the banker's villager outfit (suit, tie and a green eyeshade), the tank's entity
-texture (UVs match TankModel) and the tank and shell icons.
+"""Paints the banking textures and writes their item/block models: credit and debit cards, the ATM (the banker's job
+site) and the banker's villager outfit (suit, tie and a green eyeshade). The bank's tank is painted by gen_tank.py.
 
 Villager outfit UVs follow vanilla's VillagerModel: a box at (u, v) of size (w, h, d) puts its top face at
 (u+d, v), its front at (u+d, v+d), sides at (u, v+d) and (u+d+w, v+d), and its back at (u+2d+w, v+d)."""
@@ -101,47 +100,6 @@ DEBIT_CARD = CARD[:9] + [
 sprite(DEBIT_CARD, {"o": 0x14181E, "b": 0x323A44, "h": 0x1F9E58, "w": 0xD0D6DC, "g": 0xE8C25A, "G": 0xB8902E,
                     "e": 0x17DD62, "E": 0xB8FFD2}).save(os.path.join(TEX, "item", "debit_card.png"))
 
-# --- Tank and shell icons --------------------------------------------------------------------------------
-TANK_ICON = [
-    "................",
-    "................",
-    "................",
-    "................",
-    "......oooo......",
-    ".....oTTTTo.....",
-    ".....oTTTTooooo.",
-    "...ooHHHHHHHoo..",
-    "..oHHGGGGGGGGHo.",
-    "..oGGGGGGGGGGGo.",
-    ".okkkkkkkkkkkkko",
-    ".okwkkwkkwkkwkko",
-    ".okkkkkkkkkkkkko",
-    "..ooooooooooooo.",
-    "................",
-    "................",
-]
-sprite(TANK_ICON, {"o": 0x22261A, "T": 0x6B7A3C, "H": 0x8A9A52, "G": 0x5A6830, "k": 0x3A3A3A, "w": 0x8A8A8A}
-       ).save(os.path.join(TEX, "item", "tank.png"))
-SHELL = [
-    "................",
-    "............ss..",
-    "...........sSSs.",
-    "..........sSSs..",
-    ".........bbSs...",
-    "........bBBb....",
-    ".......bBBb.....",
-    "......bBBb......",
-    ".....bBBb.......",
-    "....bBBb........",
-    "...bBBb.........",
-    "...dBb..........",
-    "...dd...........",
-    "................",
-    "................",
-    "................",
-]
-sprite(SHELL, {"s": 0x4A4E56, "S": 0x9AA0AA, "b": 0x8A6420, "B": 0xD8A848, "d": 0x5A4010}).save(os.path.join(TEX, "item", "tank_shell.png"))
-
 # --- ATM -------------------------------------------------------------------------------------------------
 STEEL = rgba(0x8A9099)
 STEEL_LIGHT = rgba(0xB4BAC3)
@@ -200,7 +158,7 @@ write_json(os.path.join(ASSETS, "blockstates", "atm.json"), {"variants": {
     "facing=west": {"model": "mymod:block/atm", "y": 270},
 }})
 write_json(os.path.join(ASSETS, "items", "atm.json"), {"model": {"type": "minecraft:model", "model": "mymod:block/atm"}})
-for name in [*CARDS, "tank", "tank_shell"]:
+for name in CARDS:
     write_json(os.path.join(ASSETS, "models", "item", name + ".json"),
                {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
     write_json(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
@@ -271,75 +229,4 @@ def outfit():
 outfit().save(os.path.join(TEX, "entity", "villager", "profession", "banker.png"))
 outfit().save(os.path.join(TEX, "entity", "zombie_villager", "profession", "banker.png"))
 
-# --- Tank ------------------------------------------------------------------------------------------------
-OLIVE = rgba(0x5E6B34)
-OLIVE_LIGHT = rgba(0x7A8A46)
-OLIVE_DARK = rgba(0x434D24)
-TRACK = rgba(0x34363A)
-TRACK_LIGHT = rgba(0x5A5E64)
-METAL = rgba(0x6E737A)
-LAMP = rgba(0xFFF2B0)
-
-
-def tank():
-    c = Canvas(128, 128)
-    # Tracks: tread plates across the top and bottom, links along the sides with road wheels.
-    for face, (x0, y0, x1, y1) in box_faces(0, 0, 6, 10, 40).items():
-        c.rect(x0, y0, x1, y1, TRACK, 0.06)
-        if face in ("top", "bottom"):
-            for y in range(y0, y1, 2):
-                c.rect(x0, y, x1, y + 1, TRACK_LIGHT)
-        elif face in ("right", "left"):
-            for x in range(x0, x1, 2):
-                c.rect(x, y0, x + 1, y0 + 1, TRACK_LIGHT)
-                c.rect(x, y1 - 1, x + 1, y1, TRACK_LIGHT)
-            for x in range(x0 + 2, x1 - 3, 6):
-                c.rect(x, y0 + 3, x + 4, y0 + 7, METAL)
-                c.set(x + 1, y0 + 4, TRACK_LIGHT)
-        else:
-            c.rect(x0 + 1, y0 + 2, x1 - 1, y1 - 2, METAL)
-    # Hull: olive plate with panel lines, a bit of wear, and lighter edges on top.
-    for face, (x0, y0, x1, y1) in box_faces(0, 50, 20, 11, 36).items():
-        c.rect(x0, y0, x1, y1, OLIVE, 0.06)
-        if face == "top":
-            c.rect(x0, y0, x1, y0 + 1, OLIVE_LIGHT)
-            for y in range(y0 + 6, y1, 10):
-                c.rect(x0 + 1, y, x1 - 1, y + 1, OLIVE_DARK)
-        elif face in ("right", "left"):
-            c.rect(x0, y0, x1, y0 + 1, OLIVE_LIGHT)
-            for x in range(x0 + 8, x1, 9):
-                c.rect(x, y0 + 1, x + 1, y1, OLIVE_DARK)
-        else:
-            c.rect(x0, y0, x1, y0 + 1, OLIVE_LIGHT)
-            c.rect(x0 + 2, y0 + 4, x1 - 2, y0 + 5, OLIVE_DARK)
-    # Turret: olive, with a gold emerald (the bank's mark) on each side.
-    for face, (x0, y0, x1, y1) in box_faces(0, 97, 16, 7, 16).items():
-        c.rect(x0, y0, x1, y1, OLIVE, 0.06)
-        if face != "top":
-            c.rect(x0, y0, x1, y0 + 1, OLIVE_LIGHT)
-        if face in ("right", "left"):
-            mx, my = (x0 + x1) // 2, (y0 + y1) // 2
-            for dx, dy in ((0, -2), (-1, -1), (0, -1), (1, -1), (-1, 0), (0, 0), (1, 0), (0, 1)):
-                c.set(mx + dx, my + dy, rgba(0x17DD62) if (dx, dy) != (0, -1) else rgba(0x9BF5BE))
-        if face == "top":
-            # The hatch ring, round where the crew stands.
-            c.rect(x0 + 4, y0 + 4, x1 - 4, y1 - 4, OLIVE_DARK)
-            c.rect(x0 + 5, y0 + 5, x1 - 5, y1 - 5, rgba(0x1A1C14))
-    for face, (x0, y0, x1, y1) in box_faces(64, 97, 6, 5, 2).items():  # mantlet
-        c.rect(x0, y0, x1, y1, OLIVE_DARK, 0.05)
-    for face, (x0, y0, x1, y1) in box_faces(80, 97, 3, 3, 20).items():  # barrel
-        c.rect(x0, y0, x1, y1, OLIVE_DARK, 0.05)
-        if face == "front":
-            c.rect(x0, y0, x1, y1, rgba(0x101010))
-            c.rect(x0, y0, x1, y0 + 1, OLIVE_DARK)
-    for face, (x0, y0, x1, y1) in box_faces(92, 0, 6, 6, 1).items():  # hatch lid
-        c.rect(x0, y0, x1, y1, OLIVE, 0.05)
-    for face, (x0, y0, x1, y1) in box_faces(92, 8, 2, 2, 4).items():  # exhaust
-        c.rect(x0, y0, x1, y1, rgba(0x2A2A2A))
-    for face, (x0, y0, x1, y1) in box_faces(92, 16, 2, 2, 1).items():  # headlights
-        c.rect(x0, y0, x1, y1, LAMP if face == "front" else METAL)
-    return c
-
-
-tank().save(os.path.join(TEX, "entity", "tank", "tank.png"))
 print("ok")
