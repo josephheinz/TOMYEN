@@ -428,7 +428,7 @@ public class GunItem extends Item {
 		}
 	}
 
-	private static void drawTracer(ServerLevel level, Vec3 from, Vec3 to, boolean suppressed) {
+	public static void drawTracer(ServerLevel level, Vec3 from, Vec3 to, boolean suppressed) {
 		if (suppressed) {
 			return;
 		}

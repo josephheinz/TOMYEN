@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:iron_block",
+    "F": "minecraft:blast_furnace",
+    "M": "minecraft:minecart",
+    "R": "minecraft:redstone_block"
+  },
+  "pattern": [
+    "BBB",
+    "RFR",
+    "MMM"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:tank"
+  }
+}

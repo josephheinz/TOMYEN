@@ -1,0 +1,16 @@
+{
+  "additional_wants": {
+    "id": "minecraft:diamond",
+    "count": 2
+  },
+  "gives": {
+    "id": "mymod:platinum_credit_card"
+  },
+  "max_uses": 3,
+  "reputation_discount": 0.05,
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 48
+  },
+  "xp": 30
+}

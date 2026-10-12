@@ -1,0 +1,8 @@
+{
+  "amount": 2,
+  "random_sequence": "mymod:trade_set/banker/level_3",
+  "trades": [
+    "mymod:banker/3/emerald_and_gold_ingot_gold_credit_card",
+    "mymod:banker/3/emerald_clock"
+  ]
+}

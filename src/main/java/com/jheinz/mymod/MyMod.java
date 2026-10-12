@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jheinz.mymod.neuralink.NeuralCore;
+import com.jheinz.mymod.bank.Banking;
 import com.jheinz.mymod.neuralink.NeuralinkEffects;
+import com.jheinz.mymod.tank.Tanks;
 import com.jheinz.mymod.station.ModMenus;
 
 public class MyMod implements ModInitializer {
@@ -38,6 +40,8 @@ public class MyMod implements ModInitializer {
 		GunOffhand.initialize();
 		NeuralinkEffects.initialize();
 		NeuralCore.initialize();
+		Tanks.initialize();
+		Banking.initialize();
 	}
 
 	public static Identifier id(String path) {

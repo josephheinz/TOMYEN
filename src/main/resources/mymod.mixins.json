@@ -7,6 +7,10 @@
 		"LivingEntityBulletArmorMixin",
 		"MobAccessor",
 		"MobHijackMixin",
+		"MerchantMenuCreditCardMixin",
+		"MerchantOfferCreditCardMixin",
+		"MerchantResultSlotCreditCardMixin",
+		"ServerPlayerDebtDeathMixin",
 		"ServerSwapHandsMixin",
 		"SlotGunOffhandMixin"
 	],

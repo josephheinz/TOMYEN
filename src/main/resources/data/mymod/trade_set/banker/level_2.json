@@ -1,0 +1,8 @@
+{
+  "amount": 2,
+  "random_sequence": "mymod:trade_set/banker/level_2",
+  "trades": [
+    "mymod:banker/2/emerald_writable_book",
+    "mymod:banker/2/copper_ingot_emerald"
+  ]
+}

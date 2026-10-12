@@ -24,6 +24,7 @@ import com.jheinz.mymod.ModEntities;
 import com.jheinz.mymod.ModNetworking;
 import com.jheinz.mymod.ModParticles;
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.client.bank.BankClient;
 import com.jheinz.mymod.client.cart.ShoppingCartModel;
 import com.jheinz.mymod.client.cart.ShoppingCartRenderer;
 import com.jheinz.mymod.client.holy.HolyBeams;
@@ -39,6 +40,7 @@ import com.jheinz.mymod.client.neuralink.NeuralTrigger;
 import com.jheinz.mymod.client.neuralink.NeuralinkScreen;
 import com.jheinz.mymod.client.neuralink.NeuralinkVision;
 import com.jheinz.mymod.client.neuralink.OreScanner;
+import com.jheinz.mymod.client.tank.TankClient;
 import com.jheinz.mymod.station.ModMenus;
 
 public class MyModClient implements ClientModInitializer {
@@ -103,5 +105,7 @@ public class MyModClient implements ClientModInitializer {
 				vanilla.extractRenderState(graphics, delta);
 			}
 		});
+		TankClient.initialize();
+		BankClient.initialize();
 	}
 }

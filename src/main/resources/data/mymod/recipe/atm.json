@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": "minecraft:emerald",
+    "G": "minecraft:glass_pane",
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "III",
+    "IGI",
+    "IER"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:atm"
+  }
+}

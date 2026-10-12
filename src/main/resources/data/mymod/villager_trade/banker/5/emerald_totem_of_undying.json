@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "minecraft:totem_of_undying"
+  },
+  "max_uses": 1,
+  "reputation_discount": 0.05,
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 64
+  },
+  "xp": 30
+}
