@@ -937,5 +937,17 @@
         "pitch": 1.3
       }
     ]
+  },
+  "soul_vacuum_loop": {
+    "subtitle": "subtitles.mymod.soul_vacuum_loop",
+    "sounds": [
+      "mymod:soul_vacuum_loop"
+    ]
+  },
+  "soul_wail": {
+    "subtitle": "subtitles.mymod.soul_wail",
+    "sounds": [
+      "mymod:soul_wail"
+    ]
   }
 }

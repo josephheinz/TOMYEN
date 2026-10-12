@@ -5,6 +5,7 @@
 	"client": [
 		"AbstractClientPlayerScopeMixin",
 		"AvatarGunPoseMixin",
+		"AvatarSoulVacuumPoseMixin",
 		"AvatarRendererExoskeletonArmMixin",
 		"AvatarRendererPowerArmorMixin",
 		"FirstPersonGunArmsMixin",
