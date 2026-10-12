@@ -170,7 +170,7 @@ public class NeuralinkScreen extends AbstractContainerScreen<NeuralinkMenu> {
 
 		graphics.text(font, Component.translatable("container.mymod.neuralink.storage").getString(), NeuralinkMenu.INVENTORY_X - 1,
 				layout.inventoryY() - 11, DIM, false);
-		String hint = Component.translatable("container.mymod.neuralink.hint").getString();
+		String hint = Component.translatable(menu.isHelmet() ? "container.mymod.neuralink.hint_helmet" : "container.mymod.neuralink.hint").getString();
 		graphics.text(font, hint, imageWidth - 9 - font.width(hint), layout.inventoryY() - 11, DARK, false);
 	}
 

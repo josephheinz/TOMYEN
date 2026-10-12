@@ -12,6 +12,7 @@ import com.jheinz.mymod.neuralink.NeuralCore;
 import com.jheinz.mymod.neuralink.NeuralinkEffects;
 import com.jheinz.mymod.exoskeleton.ExoskeletonEffects;
 import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.powerarmor.PowerArmors;
 import com.jheinz.mymod.tank.Tanks;
 import com.jheinz.mymod.station.ModMenus;
 
@@ -46,6 +47,7 @@ public class MyMod implements ModInitializer {
 		Launchers.initialize();
 		Banking.initialize();
 		NeuralCore.initialize();
+		PowerArmors.initialize();
 	}
 
 	public static Identifier id(String path) {

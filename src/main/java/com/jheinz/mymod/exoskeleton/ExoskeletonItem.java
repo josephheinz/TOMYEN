@@ -35,12 +35,12 @@ import org.jspecify.annotations.Nullable;
 
 import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.MyMod;
-import com.jheinz.mymod.neuralink.NeuralinkItem;
 
 /**
  * A powered exoskeleton: a frame over the whole body. It goes in the chest slot but takes up every armor slot,
  * so the head, legs and feet must be empty to put it on and nothing can go in them while it's worn (see
- * {@link #refusal}), except a Neuralink on the head.
+ * {@link #refusal}), not even a Neuralink. An exoskeleton with no modules is also the frame power armor is
+ * worn over (see {@link com.jheinz.mymod.powerarmor.PowerArmor}), whose helmet has Neuralink sockets of its own.
  *
  * <p>Using it in hand opens its interface, where up to {@link #MODULE_SLOTS} modules are installed; sneak-use
  * puts it on. Its modules work only while it's worn. On its own it protects about as well as a full set of
@@ -124,9 +124,9 @@ public class ExoskeletonItem extends Item {
 		return null;
 	}
 
-	/** Whether a worn stack is allowed in a covered slot while the suit is on: nothing, or a Neuralink on the head. */
+	/** Whether a worn stack is allowed in a covered slot while the suit is on: only nothing. */
 	static boolean mayStayWithSuit(ItemStack stack, EquipmentSlot slot) {
-		return stack.isEmpty() || slot == EquipmentSlot.HEAD && stack.getItem() instanceof NeuralinkItem;
+		return stack.isEmpty();
 	}
 
 	static List<EquipmentSlot> coveredSlots() {

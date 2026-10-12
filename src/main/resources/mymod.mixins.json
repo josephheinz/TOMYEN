@@ -7,11 +7,13 @@
 		"EquippableExoskeletonMixin",
 		"LivingEntityExoskeletonMixin",
 		"LivingEntityBulletArmorMixin",
+		"LivingEntityPowerArmorMixin",
 		"MerchantMenuPaymentCardMixin",
 		"MerchantOfferPaymentCardMixin",
 		"MerchantResultSlotPaymentCardMixin",
 		"MobAccessor",
 		"MobHijackMixin",
+		"PlayerPowerArmorMixin",
 		"ServerPlayerDebtDeathMixin",
 		"ServerSwapHandsMixin",
 		"SlotGunOffhandMixin"

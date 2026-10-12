@@ -43,6 +43,7 @@ import com.jheinz.mymod.client.neuralink.OreScanner;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonRenderer;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonScreen;
 import com.jheinz.mymod.client.launcher.LauncherClient;
+import com.jheinz.mymod.client.powerarmor.PowerArmorClient;
 import com.jheinz.mymod.client.tank.TankClient;
 import com.jheinz.mymod.station.ModMenus;
 
@@ -113,5 +114,6 @@ public class MyModClient implements ClientModInitializer {
 		TankClient.initialize();
 		LauncherClient.initialize();
 		BankClient.initialize();
+		PowerArmorClient.initialize();
 	}
 }

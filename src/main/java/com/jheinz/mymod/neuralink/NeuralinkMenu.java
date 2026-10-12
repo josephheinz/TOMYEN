@@ -12,12 +12,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 
 import com.jheinz.mymod.ModComponents;
+import com.jheinz.mymod.powerarmor.PowerArmorPieceItem;
 import com.jheinz.mymod.station.ModMenus;
 
 /**
  * The module sockets of the Neuralink in the player's hand, over their inventory. The sockets are stored on
  * the Neuralink itself, so every change is written straight back to it; while the menu is open the Neuralink
- * can't be moved. A Mk II has five sockets to the original's three, so the panel grows to fit them.
+ * can't be moved. A Mk II has five sockets to the original's three, so the panel grows to fit them. A power
+ * armor helmet's built-in sockets (five, like a Mk II) open here too.
  */
 public class NeuralinkMenu extends AbstractContainerMenu {
 	// Slot positions, shared with the screen.
@@ -55,10 +57,10 @@ public class NeuralinkMenu extends AbstractContainerMenu {
 	private final int inventoryEnd;
 	private final SimpleContainer modules;
 
-	/** Client side: the server only opens this from a Neuralink in hand, the main hand if it holds one. */
+	/** Client side: the server only opens this from a socketed item in hand, the main hand if it holds one. */
 	public NeuralinkMenu(int containerId, Inventory inventory) {
 		this(containerId, inventory,
-				inventory.player.getMainHandItem().getItem() instanceof NeuralinkItem ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
+				NeuralinkItem.moduleSlots(inventory.player.getMainHandItem()) > 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
 	}
 
 	public NeuralinkMenu(int containerId, Inventory inventory, InteractionHand hand) {
@@ -75,7 +77,7 @@ public class NeuralinkMenu extends AbstractContainerMenu {
 			public void setChanged() {
 				super.setChanged();
 				ItemStack device = device();
-				if (device.getItem() instanceof NeuralinkItem) {
+				if (NeuralinkItem.moduleSlots(device) > 0) {
 					device.set(ModComponents.NEURALINK_MODULES, ItemContainerContents.fromItems(getItems()));
 				}
 			}
@@ -95,6 +97,11 @@ public class NeuralinkMenu extends AbstractContainerMenu {
 	/** Whether this is the upgraded, five-socket Neuralink. */
 	public boolean isMk2() {
 		return layout.sockets() > 3;
+	}
+
+	/** Whether the sockets being edited are a power armor helmet's rather than a Neuralink's. */
+	public boolean isHelmet() {
+		return PowerArmorPieceItem.isHelmet(device());
 	}
 
 	private ItemStack device() {
@@ -155,7 +162,7 @@ public class NeuralinkMenu extends AbstractContainerMenu {
 
 	@Override
 	public boolean stillValid(Player player) {
-		return device().getItem() instanceof NeuralinkItem;
+		return NeuralinkItem.moduleSlots(device()) > 0;
 	}
 
 	/** Takes one module, and not one the Neuralink already has in another socket. */

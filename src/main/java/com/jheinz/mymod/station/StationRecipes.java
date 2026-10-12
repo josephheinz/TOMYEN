@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -11,11 +12,12 @@ import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.powerarmor.PowerArmorRecipes;
 import com.jheinz.mymod.station.StationRecipe.Cost;
 
 /** Everything the Weapon Station can make. Built from code, so client and server always agree. */
 public final class StationRecipes {
-	public static final List<StationRecipe> ALL = List.of(
+	public static final List<StationRecipe> ALL = Stream.concat(Stream.of(
 			recipe(ModItems.BULLET_CASING_556, 8, cost(Items.COPPER_NUGGET, 2), cost(Items.GOLD_NUGGET, 1)),
 			recipe(ModItems.BULLET_556_FMJ, 4,
 					cost(ModItems.BULLET_CASING_556, 4), cost(Items.GUNPOWDER, 1), cost(Items.COPPER_NUGGET, 1)),
@@ -137,7 +139,9 @@ public final class StationRecipes {
 			// Leather strap backing keeps this from sharing the upper receiver's all-iron inputs.
 			recipe(ModItems.ARMOR_PLATE_LEVEL_2, 1, cost(Items.IRON_INGOT, 5), cost(Items.LEATHER, 1)),
 			// Ceramic strike face on a steel backer.
-			recipe(ModItems.ARMOR_PLATE_LEVEL_3, 1, cost(Items.CLAY_BALL, 4), cost(Items.IRON_INGOT, 2), cost(Items.DIAMOND, 1)));
+			recipe(ModItems.ARMOR_PLATE_LEVEL_3, 1, cost(Items.CLAY_BALL, 4), cost(Items.IRON_INGOT, 2), cost(Items.DIAMOND, 1))),
+			// The Mk I power armor torso.
+			PowerArmorRecipes.station().stream()).toList();
 
 	static {
 		// Matching is by ingredient set, so two recipes with the same set would make the later one uncraftable.

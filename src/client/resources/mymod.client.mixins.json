@@ -6,6 +6,7 @@
 		"AbstractClientPlayerScopeMixin",
 		"AvatarGunPoseMixin",
 		"AvatarRendererExoskeletonArmMixin",
+		"AvatarRendererPowerArmorMixin",
 		"FirstPersonGunArmsMixin",
 		"FirstPersonHandsAndItemsMixin",
 		"GameRendererAimBobMixin",

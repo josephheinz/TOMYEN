@@ -2,6 +2,7 @@
   "values": [
     "mymod:weapon_station",
     "mymod:foundry",
-    "mymod:atm"
+    "mymod:atm",
+    "mymod:power_armor_station"
   ]
 }

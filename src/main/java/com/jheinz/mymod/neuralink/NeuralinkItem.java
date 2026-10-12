@@ -22,11 +22,14 @@ import net.minecraft.world.level.Level;
 
 import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.ModEffects;
+import com.jheinz.mymod.powerarmor.PowerArmor;
+import com.jheinz.mymod.powerarmor.PowerArmorPieceItem;
 
 /**
  * Worn on the head. Using it in hand opens its interface, where up to {@link #moduleSlots()} modules are
  * installed (3 for the original, 5 for the Mk II); sneak-use puts it on. Its modules work only while it's worn,
- * and not at all while an EMP has knocked it out ({@link ModEffects#NEURAL_STATIC}).
+ * and not at all while an EMP has knocked it out ({@link ModEffects#NEURAL_STATIC}). A power armor helmet has the
+ * same five sockets built in, and its modules work the same way while the suit is worn.
  */
 public class NeuralinkItem extends Item {
 	private static final Component TITLE = Component.translatable("container.mymod.neuralink");
@@ -42,8 +45,14 @@ public class NeuralinkItem extends Item {
 		return moduleSlots;
 	}
 
-	/** The socket count of a Neuralink stack, 0 for anything else. */
+	/**
+	 * The socket count of anything with Neuralink sockets: a Neuralink, or a power armor helmet (a built-in Mk II).
+	 * 0 for anything else.
+	 */
 	public static int moduleSlots(ItemStack stack) {
+		if (PowerArmorPieceItem.isHelmet(stack)) {
+			return PowerArmorPieceItem.HELMET_SOCKETS;
+		}
 		return stack.getItem() instanceof NeuralinkItem neuralink ? neuralink.moduleSlots : 0;
 	}
 
@@ -70,10 +79,17 @@ public class NeuralinkItem extends Item {
 		return modules;
 	}
 
-	/** The modules in the Neuralink on an entity's head, working or not. */
+	/**
+	 * The modules in the Neuralink on an entity's head, working or not; inside power armor, those in the suit's
+	 * helmet. Works on both sides: the worn suit, helmet modules and all, is synced to every client.
+	 */
 	public static Set<NeuralinkModule> installedModules(LivingEntity entity) {
 		ItemStack head = entity.getItemBySlot(EquipmentSlot.HEAD);
-		return head.getItem() instanceof NeuralinkItem ? modules(head) : EnumSet.noneOf(NeuralinkModule.class);
+		if (head.getItem() instanceof NeuralinkItem) {
+			return modules(head);
+		}
+		ItemStack helmet = PowerArmor.wornHelmet(entity);
+		return helmet.isEmpty() ? EnumSet.noneOf(NeuralinkModule.class) : modules(helmet);
 	}
 
 	/** Whether the entity's Neuralink is knocked out by an EMP. */

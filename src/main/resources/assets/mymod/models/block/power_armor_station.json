@@ -1,0 +1,796 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mymod:block/power_armor_station_frame",
+    "frame": "mymod:block/power_armor_station_frame",
+    "base": "mymod:block/power_armor_station_base",
+    "hazard": "mymod:block/power_armor_station_hazard",
+    "hydraulic": "mymod:block/power_armor_station_hydraulic"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        3,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            13,
+            16,
+            16
+          ],
+          "texture": "#hazard"
+        },
+        "south": {
+          "uv": [
+            0,
+            13,
+            16,
+            16
+          ],
+          "texture": "#hazard"
+        },
+        "east": {
+          "uv": [
+            0,
+            13,
+            16,
+            16
+          ],
+          "texture": "#hazard"
+        },
+        "west": {
+          "uv": [
+            0,
+            13,
+            16,
+            16
+          ],
+          "texture": "#hazard"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        3,
+        13
+      ],
+      "to": [
+        3,
+        32,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "east": {
+          "uv": [
+            13,
+            0,
+            16,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            13,
+            0,
+            16,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "up": {
+          "uv": [
+            0,
+            13,
+            3,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            3,
+            3
+          ],
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        3,
+        13
+      ],
+      "to": [
+        16,
+        32,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            13,
+            0,
+            16,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            13,
+            0,
+            16,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "east": {
+          "uv": [
+            13,
+            0,
+            16,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            13,
+            0,
+            16,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "up": {
+          "uv": [
+            13,
+            13,
+            16,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "down": {
+          "uv": [
+            13,
+            0,
+            16,
+            3
+          ],
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        29,
+        13
+      ],
+      "to": [
+        13,
+        32,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            0,
+            13,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            3,
+            0,
+            13,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "east": {
+          "uv": [
+            13,
+            0,
+            16,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            13,
+            0,
+            16,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "up": {
+          "uv": [
+            3,
+            13,
+            13,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "down": {
+          "uv": [
+            3,
+            0,
+            13,
+            3
+          ],
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        6,
+        15
+      ],
+      "to": [
+        12,
+        27,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            0,
+            12,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "south": {
+          "uv": [
+            4,
+            0,
+            12,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "east": {
+          "uv": [
+            15,
+            0,
+            16,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "west": {
+          "uv": [
+            15,
+            0,
+            16,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "up": {
+          "uv": [
+            4,
+            15,
+            12,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "down": {
+          "uv": [
+            4,
+            0,
+            12,
+            1
+          ],
+          "texture": "#hydraulic"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        3,
+        14
+      ],
+      "to": [
+        13,
+        5,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            11,
+            13,
+            13
+          ],
+          "texture": "#hydraulic"
+        },
+        "south": {
+          "uv": [
+            3,
+            11,
+            13,
+            13
+          ],
+          "texture": "#hydraulic"
+        },
+        "east": {
+          "uv": [
+            0,
+            11,
+            2,
+            13
+          ],
+          "texture": "#hydraulic"
+        },
+        "west": {
+          "uv": [
+            14,
+            11,
+            16,
+            13
+          ],
+          "texture": "#hydraulic"
+        },
+        "up": {
+          "uv": [
+            3,
+            14,
+            13,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "down": {
+          "uv": [
+            3,
+            0,
+            13,
+            2
+          ],
+          "texture": "#hydraulic"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        23,
+        6
+      ],
+      "to": [
+        3,
+        25,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            0,
+            3,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "south": {
+          "uv": [
+            1,
+            0,
+            3,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "east": {
+          "uv": [
+            6,
+            0,
+            13,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "west": {
+          "uv": [
+            6,
+            0,
+            13,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "up": {
+          "uv": [
+            1,
+            6,
+            3,
+            13
+          ],
+          "texture": "#hydraulic"
+        },
+        "down": {
+          "uv": [
+            1,
+            3,
+            3,
+            10
+          ],
+          "texture": "#hydraulic"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        23,
+        6
+      ],
+      "to": [
+        15,
+        25,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            13,
+            0,
+            15,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "south": {
+          "uv": [
+            13,
+            0,
+            15,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "east": {
+          "uv": [
+            6,
+            0,
+            13,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "west": {
+          "uv": [
+            6,
+            0,
+            13,
+            16
+          ],
+          "texture": "#hydraulic"
+        },
+        "up": {
+          "uv": [
+            13,
+            6,
+            15,
+            13
+          ],
+          "texture": "#hydraulic"
+        },
+        "down": {
+          "uv": [
+            13,
+            3,
+            15,
+            10
+          ],
+          "texture": "#hydraulic"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        12,
+        9
+      ],
+      "to": [
+        3,
+        14,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            13,
+            2,
+            15,
+            4
+          ],
+          "texture": "#hydraulic"
+        },
+        "south": {
+          "uv": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "texture": "#hydraulic"
+        },
+        "east": {
+          "uv": [
+            3,
+            2,
+            7,
+            4
+          ],
+          "texture": "#hydraulic"
+        },
+        "west": {
+          "uv": [
+            9,
+            2,
+            13,
+            4
+          ],
+          "texture": "#hydraulic"
+        },
+        "up": {
+          "uv": [
+            1,
+            9,
+            3,
+            13
+          ],
+          "texture": "#hydraulic"
+        },
+        "down": {
+          "uv": [
+            1,
+            3,
+            3,
+            7
+          ],
+          "texture": "#hydraulic"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        12,
+        9
+      ],
+      "to": [
+        15,
+        14,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "texture": "#hydraulic"
+        },
+        "south": {
+          "uv": [
+            13,
+            2,
+            15,
+            4
+          ],
+          "texture": "#hydraulic"
+        },
+        "east": {
+          "uv": [
+            3,
+            2,
+            7,
+            4
+          ],
+          "texture": "#hydraulic"
+        },
+        "west": {
+          "uv": [
+            9,
+            2,
+            13,
+            4
+          ],
+          "texture": "#hydraulic"
+        },
+        "up": {
+          "uv": [
+            13,
+            9,
+            15,
+            13
+          ],
+          "texture": "#hydraulic"
+        },
+        "down": {
+          "uv": [
+            13,
+            3,
+            15,
+            7
+          ],
+          "texture": "#hydraulic"
+        }
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        -3,
+        0
+      ],
+      "scale": [
+        0.36,
+        0.36,
+        0.36
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.2,
+        0.2,
+        0.2
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        -2,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    }
+  }
+}
