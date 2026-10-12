@@ -1,251 +1,243 @@
-"""Builds the seven long swords (wooden, stone, copper, iron, golden, diamond, netherite): a 3D model for the hands and
-a flat 32x32 inventory sprite, each in its material's colours (taken from the vanilla sword of that tier).
+"""Builds the seven long swords (wooden, stone, copper, iron, golden, diamond, netherite): one flat texture each, made
+from that tier's vanilla sword the way the recipe makes the item, by laying three swords end to end on the diagonal.
 
-The held model is a two-hand sword: a blade three times the length of a vanilla sword's, a wide crossguard with flared
-quillons and a centre boss, a long leather-wrapped grip split by a ring into two hand-widths, and an octagonal pommel.
-It's far longer than the 16 pixel item box, so it's built at half scale (K model pixels per design pixel) and the
-display transforms scale it back up. Design pixels match a vanilla sword's texture pixels, measured along the sword
-from the crossguard (a, + toward the tip); the sword stands up the y axis at x = z = 8, its flat facing +-z.
+The vanilla sword sprite (16x16) runs from the pommel at the lower left to the point at the upper right. Its blade is
+a band five texels wide across the diagonal, every row of it the row below moved one texel up and right. The long
+sword keeps the vanilla hilt (pommel, grip and crossguard) where it is, at the lower left of a 32x32 canvas, and
+lays three copies of the blade along the same diagonal, each starting where the one before ends, the last reaching
+the canvas's upper right corner. Only the last copy keeps the point: the others carry the straight blade on through
+the texels where their point would be. Every texel is a vanilla one, outline and shading included.
 
-In third person it takes the vanilla sword's pose (the model's upright blade turned onto the sprite's diagonal), held
-low on the grip: the hand sits where it holds a vanilla sword, and the blade reaches three times as far past it. In
-first person vanilla's pose would bring the point back into the camera (a sword's tip leans toward the viewer), so
-the sword stands up and leans away instead: the grip where a vanilla sword's is, the point about half a block further
-off than the grip and leaving the top of the screen right of the crosshair, the flat turned toward the viewer. The inventory, item frames, shelves and dropped items use the sprite (the item
-definition picks by display context)."""
-import math, os, sys
+The vanilla textures are read from the Minecraft client jar Loom has already downloaded (see client_jar()), so the
+output follows whatever the jar has. The item model is a flat item/handheld one, like a vanilla sword's, used in
+every display context. The 32x32 texture covers the same 16 model pixels a 16x16 one does, so the held transforms
+are vanilla's at twice the scale: the hilt comes out the size of a vanilla sword's, in the same place in the hand,
+and the blade three times as long.
+
+Usage: python3 tools/gen_longswords.py src/main/resources/assets/mymod [path/to/minecraft-client.jar]"""
+import glob, os, struct, sys, zipfile, zlib
 from collections import OrderedDict
 
 sys.path.insert(0, os.path.dirname(__file__))
-from gunkit import Kit, check, display, display_matrix, mix, model, placed, png, ref, write
+from gunkit import display, display_matrix, placed, png, write
 
-ASSETS = sys.argv[1]
-TEX = os.path.join(ASSETS, "textures")
-MODELS, ITEMS = os.path.join(ASSETS, "models/item"), os.path.join(ASSETS, "items")
+ASSETS = sys.argv[1] if len(sys.argv) > 1 else None
+TIERS = ["wooden", "stone", "copper", "iron", "golden", "diamond", "netherite"]
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-K = 0.5    # model pixels per design pixel
-Y0 = 4.0   # model y of the crossguard's centre (a = 0)
-HAND = -7.4  # where the main hand holds the grip (a): low down, below the ring, leaving room for the other hand
-
-# Each tier's ramp, darkest to brightest, from its vanilla sword: deep, outline, dark, mid, light, bright, highlight.
-TIERS = OrderedDict([
-    ("wooden", [0x20180A, 0x372910, 0x473614, 0x594319, 0x755821, 0x866526, 0xA58A4A]),
-    ("stone", [0x212121, 0x494949, 0x5A5A5A, 0x787777, 0x95918D, 0xB3B1AF, 0xCFCDCB]),
-    ("copper", [0x421C11, 0x5F2C1C, 0x803921, 0x9C4E31, 0xE3826C, 0xFC9982, 0xFDD4CB]),
-    ("iron", [0x181818, 0x444444, 0x6B6B6B, 0x969696, 0xBEBEBE, 0xD8D8D8, 0xFFFFFF]),
-    ("golden", [0x3F2E0E, 0x825D16, 0xDC9613, 0xE9B115, 0xEAEE57, 0xFDFF76, 0xFFFFFF]),
-    ("diamond", [0x082520, 0x0E3F36, 0x156355, 0x1E8A77, 0x2BC7AC, 0x33EBCB, 0xA4FDF0]),
-    ("netherite", [0x160814, 0x231012, 0x322727, 0x4F3C3E, 0x51444E, 0x706770, 0x867B86]),
-])
-# The vanilla stick's browns, wrapped as leather on the grip: deep, dark, mid, light.
-LEATHER = [0x281E0B, 0x493615, 0x684E1E, 0x896727]
-DEEP, OUTLINE, DARK, MID, LIGHT, BRIGHT, HI = range(7)
-
-# ============================================================================================================ atlas
+# ======================================================================================================= vanilla
 
 
-def paint(tier, ramp):
-    k = Kit("sword", f"item/{tier}_long_sword", seed=40 + list(TIERS).index(tier))
-    c = lambda i, jitter=0: k.rgb(ramp[i], jitter=jitter)
-
-    def blade_face(fuller):
-        # Across the flat: dark rim, a bright bevel lit from the upper left, the flat, a fuller down the middle (or
-        # a plain ridge toward the point) and a darker bevel on the far side.
-        cols = ([OUTLINE, HI, BRIGHT, LIGHT, LIGHT, MID, DARK, DARK, MID, LIGHT, LIGHT, MID, MID, DARK, DEEP, DEEP]
-                if fuller else [OUTLINE, HI, BRIGHT, BRIGHT, LIGHT, LIGHT, MID, DARK, DARK, DEEP, DEEP, DEEP])
-
-        def f(x, y, w, h):
-            i = cols[x * len(cols) // w]
-            # A faint sheen running down the blade.
-            if i in (LIGHT, BRIGHT) and (y // 6) % 5 == 0:
-                return k.rgb(mix(ramp[i], ramp[min(i + 1, HI)], 0.4))
-            return c(i, jitter=3)
-        return f
-
-    def edge(x, y, w, h):
-        return c(BRIGHT if x < w // 2 else LIGHT, jitter=2)
-
-    def bevelled(lo, body, hi, centre=None):
-        """A picture with a 1 texel rim: dark bottom/right, light top/left; centre: a 2x2 stud of that colour."""
-        def f(x, y, w, h):
-            if x == 0 or y == 0:
-                return c(hi)
-            if x == w - 1 or y == h - 1:
-                return c(lo)
-            if centre is not None and abs(x - (w - 1) / 2) < 1 and abs(y - (h - 1) / 2) < 1:
-                return c(centre)
-            return c(body, jitter=4)
-        return f
-
-    def grip(x, y, w, h):
-        # Leather strip wound round the grip: diagonal bands with a dark seam between them.
-        band = (x + y) % 6
-        if band == 0:
-            return k.rgb(LEATHER[0])
-        return k.rgb(LEATHER[1 if band in (1, 5) else 2 if band in (2, 4) else 3], jitter=4)
-
-    k.swatch("blade_face", 0, 0, 4, 16, blade_face(True), picture=True)
-    k.swatch("blade_tip", 4, 0, 7, 16, blade_face(False), picture=True)
-    k.swatch("blade_edge", 7, 0, 8, 16, edge, picture=True)
-    k.swatch("blade_end", 8, 0, 10, 2, lambda x, y, w, h: c(MID, jitter=4))
-    k.swatch("guard_side", 10, 0, 16, 4, lambda x, y, w, h: c(DARK if (x + y) % 7 == 0 else MID, jitter=5))
-    k.swatch("guard_face", 8, 4, 16, 6, bevelled(OUTLINE, MID, LIGHT), picture=True)
-    k.swatch("boss", 8, 6, 11, 9, bevelled(OUTLINE, LIGHT, BRIGHT, centre=HI), picture=True)
-    k.swatch("grip", 8, 9, 10, 16, grip, picture=True)
-    k.swatch("ring", 10, 9, 12, 11, lambda x, y, w, h: c(LIGHT if y % 4 == 0 else MID, jitter=3))
-    k.swatch("pommel", 12, 9, 15, 12, bevelled(OUTLINE, MID, BRIGHT), picture=True)
-    k.swatch("pommel_end", 12, 12, 15, 15, bevelled(DARK, LIGHT, BRIGHT, centre=HI), picture=True)
-    return k
+def minecraft_version():
+    with open(os.path.join(REPO, "gradle.properties")) as f:
+        for line in f:
+            if line.startswith("minecraft_version="):
+                return line.split("=", 1)[1].strip()
+    sys.exit("minecraft_version not found in gradle.properties")
 
 
-# ============================================================================================================ model
+def client_jar():
+    """The Minecraft client jar for this project's version: the one named on the command line, else Loom's global
+    cache (~/.gradle/caches/fabric-loom/<version>/minecraft-client.jar), else the client-only jar in the project's
+    own Loom cache (or, in a git worktree under .claude/worktrees, the main checkout's). Run ./gradlew build once
+    if none is there."""
+    if len(sys.argv) > 2:
+        return sys.argv[2]
+    version = minecraft_version()
+    roots = [REPO]
+    if os.sep + os.path.join(".claude", "worktrees") + os.sep in REPO:
+        roots.append(REPO.split(os.sep + os.path.join(".claude", "worktrees") + os.sep)[0])
+    candidates = [os.path.expanduser(os.path.join("~", ".gradle", "caches", "fabric-loom", version, "minecraft-client.jar"))]
+    for root in roots:
+        candidates += sorted(glob.glob(os.path.join(root, ".gradle", "loom-cache", "minecraftMaven", "net", "minecraft",
+                                                    "minecraft-clientOnly-*", version, f"minecraft-clientOnly-*-{version}.jar")))
+    for path in candidates:
+        if os.path.isfile(path):
+            with zipfile.ZipFile(path) as z:
+                if "assets/minecraft/textures/item/iron_sword.png" in z.namelist():
+                    return path
+    sys.exit(f"no Minecraft {version} client jar found; run ./gradlew build first or pass the jar's path")
 
 
-def y(a):
-    return round(Y0 + K * a, 4)
+def read_png(data):
+    """Pixels (RGBA tuples, row by row) of a non-interlaced PNG: greyscale, RGB, palette or RGBA, any bit depth up
+    to 8 (vanilla's item textures are 4 and 8 bit palette ones)."""
+    pos, idat, palette, alpha = 8, b"", b"", b""
+    while pos < len(data):
+        n, kind = struct.unpack(">I4s", data[pos:pos + 8])
+        body = data[pos + 8:pos + 8 + n]
+        pos += 12 + n
+        if kind == b"IHDR":
+            w, h, depth, colour, _, _, interlace = struct.unpack(">IIBBBBB", body)
+        elif kind == b"PLTE":
+            palette = body
+        elif kind == b"tRNS":
+            alpha = body
+        elif kind == b"IDAT":
+            idat += body
+    channels = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[colour]
+    if interlace or depth > 8:
+        sys.exit("unsupported PNG (interlaced or 16 bit)")
+    step, stride = max(1, channels * depth // 8), (w * channels * depth + 7) // 8
+    raw, prev, px = zlib.decompress(idat), bytearray(stride), []
+    for y in range(h):
+        kind, line = raw[y * (stride + 1)], bytearray(raw[y * (stride + 1) + 1:(y + 1) * (stride + 1)])
+        for i in range(stride):
+            a, b, c = line[i - step] if i >= step else 0, prev[i], prev[i - step] if i >= step else 0
+            p = a + b - c
+            paeth = a if abs(p - a) <= abs(p - b) and abs(p - a) <= abs(p - c) else b if abs(p - b) <= abs(p - c) else c
+            line[i] = (line[i] + (0, a, b, (a + b) // 2, paeth)[kind]) & 255
+        prev = line
+        samples = [(line[bit // 8] >> (8 - depth - bit % 8)) & ((1 << depth) - 1) for bit in range(0, w * channels * depth, depth)]
+        for x in range(w):
+            s = samples[x * channels:(x + 1) * channels]
+            if colour == 3:
+                i = s[0]
+                px.append(tuple(palette[3 * i:3 * i + 3]) + (alpha[i] if i < len(alpha) else 255,))
+            elif colour in (0, 4):
+                px.append((s[0],) * 3 + ((s[1],) if colour == 4 else (255,)))
+            else:
+                px.append(tuple(s) + ((255,) if colour == 2 else ()))
+    return w, h, px
 
 
-def part(k, out, a0, a1, width, depth, mat, **faces):
-    """A box centred on the sword's axis from a0 to a1 (design pixels), width across the flat, depth through it."""
-    w, d = width * K / 2, depth * K / 2
-    return k.box(out, 8 - w, y(a0), 8 - d, 8 + w, y(a1), 8 + d, mat, **faces)
+# ======================================================================================================= texture
+
+# Vanilla sword texels by p = x - y (along the sword, toward the point) and q = x + y (across it). The blade is the
+# band q = 13..17 from p = -2 (the first texels clear of the crossguard) to the point; each diagonal step along it is
+# 2 in p. Its texels at p > 12 shape the point (the canvas corner, a highlight down its middle).
+BAND = range(13, 18)
+BASE = -2
+STRAIGHT = 12
+STEP = 8         # texels right (and up) between one blade copy and the next: a vanilla blade's length, p 16
+SEGMENTS = 3
+SIZE = 16 + STEP * (SEGMENTS - 1)   # 32: the vanilla sprite's span, plus the two extra blades
 
 
-def sword(k):
-    out = []
-    # Blade: 0.6 thick, stepping in toward the point, then a square turned 45 degrees for the point itself (a hair
-    # thinner than the blade so their flats don't fight). The first step carries the fuller.
-    for a0, a1, width, face in ((0.8, 31, 2.8, "blade_face"), (31, 35, 2.4, "blade_tip"), (35, 38, 1.9, "blade_tip"),
-                                (38, 40, 1.3, "blade_tip")):
-        part(k, out, a0, a1, width, 0.6, "blade_end", north=face, south=face, east="blade_edge", west="blade_edge")
-    s = 1.3 * K / math.sqrt(2) / 2
-    k.box(out, 8 - s, y(40) - s, 8 - 0.25 * K, 8 + s, y(40) + s, 8 + 0.25 * K, "blade_tip",
-          rot=("z", 45, (8, y(40), 8)), down=None)
-    # Crossguard: a wide bar, flared quillons past its ends and a boss in the middle.
-    part(k, out, -0.8, 0.8, 10, 1.8, "guard_side", north="guard_face", south="guard_face")
-    for side in (-1, 1):
-        x0, x1 = 8 + side * 4.4 * K, 8 + side * 5.6 * K
-        k.box(out, x0, y(-1.2), 8 - 1.0 * K, x1, y(1.2), 8 + 1.0 * K, "guard_side", north="guard_face", south="guard_face")
-    part(k, out, -1.3, 1.6, 3.2, 2.2, "guard_side", north="boss", south="boss")
-    # Grip: long enough for two hands, a ring at each end and one between the hands.
-    part(k, out, -9.8, -1.3, 1.6, 1.6, "grip", up="ring", down="ring")
-    for a0, a1, width in ((-2.3, -1.4, 2.0), (-5.9, -5.4, 1.9), (-9.6, -8.8, 2.0)):
-        part(k, out, a0, a1, width, width, "ring")
-    # Pommel: an octagon (two squares, one turned 45 degrees about the axis) with a button under it.
-    part(k, out, -12.2, -9.6, 2.8, 2.8, "pommel", up="pommel_end", down="pommel_end")
-    turned = part(k, out, -12.15, -9.65, 2.8, 2.8, "pommel", up="pommel_end", down="pommel_end")
-    turned["rotation"] = OrderedDict([("angle", 45), ("axis", "y"), ("origin", [8, y(-11), 8])])
-    turned["faces"] = turned.pop("faces")
-    part(k, out, -12.8, -12.2, 1.4, 1.4, "pommel_end")
+def long_sword(px):
+    """The long sword's SIZE x SIZE texture from the vanilla sword's 16x16 pixels."""
+    blade, hilt = {}, {}
+    for y in range(16):
+        for x in range(16):
+            c = px[y * 16 + x]
+            if c[3] == 0:
+                continue
+            p, q = x - y, x + y
+            (blade if p >= BASE and q in BAND else hilt)[(x, y)] = c
+            if p >= BASE and q not in BAND:
+                sys.exit(f"vanilla sword texel ({x}, {y}) lies past the crossguard outside the blade: layout changed")
+    # Every texel of a copied stretch must be there, or the copies would leave holes where they meet.
+    for p in range(BASE, BASE + 2 * STEP):
+        for q in BAND:
+            if (p + q) % 2 == 0 and ((p + q) // 2, (q - p) // 2) not in blade:
+                sys.exit(f"vanilla sword blade has no texel at p {p}, q {q}: layout changed")
+
+    out = [(0, 0, 0, 0)] * (SIZE * SIZE)
+
+    def put(x, y, c):
+        # Vanilla coordinates, the sprite at the canvas's lower left: SIZE - 16 down.
+        out[(y + SIZE - 16) * SIZE + x] = c
+
+    for (x, y), c in hilt.items():
+        put(x, y, c)
+    for k in range(SEGMENTS):
+        last = k == SEGMENTS - 1
+        for (x, y), c in blade.items():
+            p, q = x - y, x + y
+            if not last:
+                if p >= BASE + 2 * STEP:
+                    continue  # the next copy's base goes here
+                if p > STRAIGHT:
+                    # Carry the straight blade on: the texel a whole number of diagonal steps further back.
+                    back = p - 2 * ((p - STRAIGHT + 1) // 2)
+                    c = blade[((back + q) // 2, (q - back) // 2)]
+            put(x + STEP * k, y - STEP * k, c)
     return out
 
 
-# ========================================================================================================= displays
+# ======================================================================================================= displays
 
-# Vanilla's item/handheld transforms, and the middle of a sword sprite's grip (texel 2, 13) in its model space.
-VANILLA = {
+# Vanilla's item/handheld transforms. The long sword's model is the vanilla sword's halved about the model's origin
+# (corner (0, 0)), since each texture texel covers half a model pixel, so twice the scale and a translation moved by
+# that corner's offset put every hilt texel where vanilla puts it.
+HANDHELD = {
     "thirdperson_righthand": ([0, -90, 55], [0, 4.0, 0.5], 0.85),
     "firstperson_righthand": ([0, -90, 25], [1.13, 3.2, 1.13], 0.68),
 }
-VANILLA_GRIP = (2.5, 2.5, 8)
-# First-person rotation, found by projecting the model into the view (70 degree hand FOV, 16:9): the nearest point is
-# 0.66 blocks from the camera, the point leans 0.7 blocks further away than the grip and leaves the top of the screen
-# at 72% of its width, and the blade passes no nearer the crosshair than a quarter of the screen.
-FP_ROTATION = [-30, -50, -10]
+TEXEL = 16 / SIZE   # model pixels per texture texel
+# The middle of a vanilla sword's grip: texel (3, 12), in vanilla model pixels and in the long sword's.
+VANILLA_GRIP = (3.5, 16 - 12.5, 8)
+GRIP = (3.5 * TEXEL, 16 - (12.5 + SIZE - 16) * TEXEL, 8)
+# First person: vanilla's pose would lay the blade back across the camera (a sword's point leans toward the viewer),
+# so the sword stands up and leans away instead, its flat turned toward the viewer. Found with fp_check() below: the
+# grip sits where a vanilla sword's does (just under the lower right of the screen), the whole sword stays a block
+# from the camera, the blade leaves the top of the screen three quarters of the way across, its point well past the
+# edge, and passes no nearer the crosshair than a quarter of the screen's width.
+FP_ROTATION = [-20, -40, 40]
 
 
 def held(context):
-    rot, tr, sc = VANILLA[context]
+    rot, tr, sc = HANDHELD[context]
     m = display_matrix(rot)
     target = [tr[i] + sum(m[i][j] * (VANILLA_GRIP[j] - 8) for j in range(3)) * sc for i in range(3)]
-    # The sprite's blade runs up its diagonal, 45 degrees round from this model's upright one.
-    mine = [rot[0], rot[1], rot[2] - 45]
-    if context.startswith("firstperson"):
-        mine = FP_ROTATION
-    scale = round(sc / K, 4)
-    return display(mine, [v + 0.0 for v in placed(mine, scale, (8, y(HAND), 8), target)], scale)
+    mine = FP_ROTATION if context.startswith("firstperson") else rot
+    scale = round(sc / TEXEL, 4)
+    return display(mine, [v + 0.0 for v in placed(mine, scale, GRIP, target)], scale)
 
 
 def displays():
     out = OrderedDict()
     for side in ("thirdperson", "firstperson"):
-        # The game mirrors a left-hand transform itself (negating its x shift and its y and z turns), so both hands
-        # take the same values, as the guns' do.
+        # The game mirrors a left-hand transform itself (negating its x shift and its y and z turns: vanilla's
+        # handheld.json lists the mirror image, which it mirrors back), so both hands take the same values.
         out[side + "_righthand"] = out[side + "_lefthand"] = held(side + "_righthand")
+    # Dropped: half again a vanilla sword's size (the item entity stands it on the ground by its bounding box).
+    out["ground"] = display([0, 0, 0], [0.0, 2.0, 0.0], 0.75)
+    # The inventory, item frames and heads keep item/generated's: the whole sword fills the slot or the frame.
     return out
 
 
-# =========================================================================================================== sprite
+def fp_check(t, points):
+    """Where model points (pixels) land in the first-person view for a display transform t: per point, its distance
+    from the camera (blocks) and its screen position (-1..1 left to right and bottom to top, 16:9, 70 degrees)."""
+    import math
+    m, s = display_matrix(t["rotation"]), t["scale"][0]
+    tan = math.tan(math.radians(35))
+    res = []
+    for v in points:
+        local = [(v[i] / 16 - 0.5) * s for i in range(3)]
+        pos = [(0.56, -0.52, -0.72)[i] + t["translation"][i] / 16 + sum(m[i][j] * local[j] for j in range(3)) for i in range(3)]
+        dist = math.sqrt(sum(c * c for c in pos))
+        res.append((dist, pos[0] / -pos[2] / tan / (16 / 9), pos[1] / -pos[2] / tan) if pos[2] < 0 else (dist, None, None))
+    return res
 
 
-def sprite(tier, ramp):
-    """32x32, on the diagonal like a vanilla sword: pommel at the lower left, point at the upper right. s runs along
-    the diagonal (0-62), d across it (each step one diagonal row of texels)."""
-    W = 32
-    px = [(0, 0, 0, 0)] * (W * W)
-    parts = [None] * (W * W)
-    rgb = lambda hx: ((hx >> 16) & 255, (hx >> 8) & 255, hx & 255, 255)
-
-    def put(x, y_, colour, part_name):
-        px[y_ * W + x] = rgb(colour)
-        parts[y_ * W + x] = part_name
-
-    for y_ in range(W):
-        for x in range(W):
-            s, d = x + (W - 1 - y_), x - (W - 1 - y_)
-            if 22 <= s <= 60:
-                width = 3 if s <= 52 else 2 if s <= 56 else 1 if s <= 59 else 0
-                if abs(d) <= width:
-                    shade = {-3: OUTLINE, -2: HI, -1: BRIGHT, 0: MID if s < 50 else LIGHT, 1: LIGHT, 2: MID, 3: DEEP}[d]
-                    if abs(d) == width:
-                        shade = OUTLINE if d <= 0 else DEEP
-                    put(x, y_, ramp[shade], "blade")
-            if 17 <= s <= 23 and abs(d) <= 2:
-                put(x, y_, ramp[HI if (s, d) == (20, 0) else LIGHT], "guard")
-            elif 18 <= s <= 21 and abs(d) <= 9 or 17 <= s <= 22 and 8 <= abs(d) <= 9:
-                put(x, y_, ramp[LIGHT if s == 20 and abs(d) < 8 else MID], "guard")
-            if 6 <= s <= 16 and abs(d) <= 2:
-                if s in (11, 12):
-                    put(x, y_, ramp[MID], "guard")
-                else:
-                    put(x, y_, LEATHER[1 + (s // 2 + (d + 4) // 2) % 3], "grip")
-            if s <= 6 and abs(d) + abs(s - 3) <= 5:
-                put(x, y_, ramp[BRIGHT if (s, d) == (3, -1) else LIGHT if d < 0 else MID], "pommel")
-    # Outline every part where it meets empty space: the material's outline up and left, its deep shade down and right
-    # (the leather's darkest brown on the grip).
-    out = list(px)
-    for y_ in range(W):
-        for x in range(W):
-            p = parts[y_ * W + x]
-            if p is None or p == "blade":
-                continue
-            empty = lambda xx, yy: not (0 <= xx < W and 0 <= yy < W) or parts[yy * W + xx] is None
-            if empty(x - 1, y_) or empty(x, y_ - 1):
-                out[y_ * W + x] = rgb(LEATHER[0] if p == "grip" else ramp[OUTLINE])
-            elif empty(x + 1, y_) or empty(x, y_ + 1):
-                out[y_ * W + x] = rgb(LEATHER[0] if p == "grip" else ramp[DEEP])
-    png(os.path.join(TEX, f"item/{tier}_long_sword_icon.png"), W, W, out)
+# ========================================================================================================= write
 
 
-# ============================================================================================================ write
+def main():
+    if not ASSETS:
+        sys.exit(__doc__.rsplit("Usage: ", 1)[1])
+    jar = client_jar()
+    print("vanilla textures from", jar)
+    ds = displays()
+    with zipfile.ZipFile(jar) as z:
+        for tier in TIERS:
+            name = f"{tier}_long_sword"
+            w, h, px = read_png(z.read(f"assets/minecraft/textures/item/{tier}_sword.png"))
+            if (w, h) != (16, 16):
+                sys.exit(f"{tier}_sword.png is {w}x{h}, not 16x16")
+            png(os.path.join(ASSETS, "textures", "item", name + ".png"), SIZE, SIZE, long_sword(px))
+            write(os.path.join(ASSETS, "models", "item", name + ".json"), OrderedDict([
+                ("parent", "minecraft:item/handheld"),
+                ("textures", OrderedDict(layer0=f"mymod:item/{name}")),
+                ("display", ds)]))
+            write(os.path.join(ASSETS, "items", name + ".json"), {"model": OrderedDict([
+                ("type", "minecraft:model"), ("model", f"mymod:item/{name}")])})
+    for context, t in ds.items():
+        print(f"{context}: rotation {t['rotation']} translation {t['translation']} scale {t['scale'][0]}")
+    print("long swords done")
 
-DISPLAYS = displays()
-FLAT = ["gui", "fixed", "ground", "head", "on_shelf"]
-for tier, ramp in TIERS.items():
-    name = f"{tier}_long_sword"
-    kit = paint(tier, ramp)
-    elements = sword(kit)
-    check(name, elements)
-    kit.save(TEX)
-    write(os.path.join(MODELS, name + ".json"), model(kit, elements, DISPLAYS))
-    sprite(tier, ramp)
-    write(os.path.join(MODELS, name + "_icon.json"), OrderedDict([
-        ("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0=f"mymod:item/{name}_icon"))]))
-    write(os.path.join(ITEMS, name + ".json"), {"model": OrderedDict([
-        ("type", "minecraft:select"), ("property", "minecraft:display_context"),
-        ("cases", [OrderedDict([("when", FLAT), ("model", ref(name + "_icon"))])]),
-        ("fallback", ref(name))])})
 
-for context, t in DISPLAYS.items():
-    print(f"{context}: rotation {t['rotation']} translation {t['translation']} scale {t['scale'][0]}")
-print("long swords done")
+if __name__ == "__main__":
+    main()
