@@ -43,6 +43,7 @@ import com.jheinz.mymod.attachment.AttachmentSlot;
 import com.jheinz.mymod.armor.PlateCarrierItem;
 import com.jheinz.mymod.lmg.MachineGunItem;
 import com.jheinz.mymod.lmg.MachineGuns;
+import com.jheinz.mymod.schnozzle.Schnozzles;
 import com.jheinz.mymod.shotgun.ShotgunItem;
 import com.jheinz.mymod.shotgun.Shotguns;
 
@@ -397,7 +398,7 @@ public final class ModItems {
 		});
 		CreativeModeTabEvents.modifyOutputEvent(COMBAT_TAB)
 				.register(output -> {
-					output.insertAfter(Items.TRIDENT, CRUCIFIX);
+					output.insertAfter(Items.TRIDENT, CRUCIFIX, Schnozzles.NOSE_HAIR_WHIP);
 					output.insertAfter(Items.TURTLE_HELMET, NEURALINK, NEURALINK_MK2, ESP_MODULE, NIGHT_VISION_MODULE,
 							XRAY_MODULE, OPTIC_LASERS_MODULE, TELEKINESIS_MODULE, BLINK_MODULE, NEURAL_HIJACK_MODULE,
 							EMP_PULSE_MODULE, OVERCLOCK_MODULE, SMART_LINK_MODULE, MIND_READER_MODULE, BIO_MONITOR_MODULE,

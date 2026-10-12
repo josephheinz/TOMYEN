@@ -732,5 +732,20 @@
         "pitch": 0.5
       }
     ]
+  },
+  "nose_hair_whip_crack": {
+    "subtitle": "subtitles.mymod.nose_hair_whip_crack",
+    "sounds": [
+      "mymod:nose_hair_whip_crack1",
+      "mymod:nose_hair_whip_crack2",
+      "mymod:nose_hair_whip_crack3"
+    ]
+  },
+  "nose_hair_whip_snag": {
+    "subtitle": "subtitles.mymod.nose_hair_whip_snag",
+    "sounds": [
+      "mymod:nose_hair_whip_snag1",
+      "mymod:nose_hair_whip_snag2"
+    ]
   }
 }

@@ -692,5 +692,12 @@
   "subtitles.mymod.schnozzle_sneeze": "The Schnozzle sneezes",
   "subtitles.mymod.schnozzle_hurt": "The Schnozzle snorts in pain",
   "subtitles.mymod.schnozzle_death": "The Schnozzle honks its last",
-  "subtitles.mymod.booger_splat": "Booger splats"
+  "subtitles.mymod.booger_splat": "Booger splats",
+  "item.mymod.nose_hair_whip": "Nose Hair Whip",
+  "item.mymod.nose_hair_whip.lash": "Attack: lash out up to 6 blocks with a crack",
+  "item.mymod.nose_hair_whip.snag": "Use: snag a creature or item and yank it to you, or a block to yank yourself over",
+  "item.mymod.nose_hair_whip.slime": "The booger grip sometimes leaves its target Slimed",
+  "effect.mymod.slimed": "Slimed",
+  "subtitles.mymod.nose_hair_whip_crack": "Whip cracks",
+  "subtitles.mymod.nose_hair_whip_snag": "Whip snags"
 }

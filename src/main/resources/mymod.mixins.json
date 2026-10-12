@@ -14,6 +14,7 @@
 		"MobAccessor",
 		"MobHijackMixin",
 		"PlayerPowerArmorMixin",
+		"ServerPunchWhipMixin",
 		"ServerPlayerDebtDeathMixin",
 		"ServerSwapHandsMixin",
 		"SlotGunOffhandMixin"

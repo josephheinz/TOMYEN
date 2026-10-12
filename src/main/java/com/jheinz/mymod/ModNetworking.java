@@ -86,10 +86,25 @@ public final class ModNetworking {
 		}
 	}
 
+	/** Sent to everyone nearby (and the player) when a Nose Hair Whip snags at something, so they can draw the lash. */
+	public record WhipLash(int playerId, Vec3 to) implements CustomPacketPayload {
+		public static final Type<WhipLash> TYPE = new Type<>(MyMod.id("whip_lash"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, WhipLash> CODEC = StreamCodec.composite(
+				ByteBufCodecs.VAR_INT, WhipLash::playerId,
+				Vec3.STREAM_CODEC, WhipLash::to,
+				WhipLash::new);
+
+		@Override
+		public Type<WhipLash> type() {
+			return TYPE;
+		}
+	}
+
 	public static void initialize() {
 		NeuralNetworking.initialize();
 		PayloadTypeRegistry.serverboundPlay().register(CrucifixPunch.TYPE, CrucifixPunch.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(LightBeam.TYPE, LightBeam.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(WhipLash.TYPE, WhipLash.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(CrucifixPunch.TYPE, (payload, context) -> {
 			ItemStack held = context.player().getMainHandItem();
 			if (held.getItem() instanceof CrucifixItem crucifix && !context.player().isUsingItem()) {
