@@ -25,6 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -42,6 +43,8 @@ import com.jheinz.mymod.exoskeleton.ExoskeletonItem;
 import com.jheinz.mymod.attachment.AttachmentSlot;
 import com.jheinz.mymod.armor.PlateCarrierItem;
 import com.jheinz.mymod.lmg.MachineGunItem;
+import com.jheinz.mymod.longsword.LongSwordItem;
+import com.jheinz.mymod.longsword.LongSwords;
 import com.jheinz.mymod.lmg.MachineGuns;
 import com.jheinz.mymod.schnozzle.Schnozzles;
 import com.jheinz.mymod.shotgun.ShotgunItem;
@@ -325,6 +328,17 @@ public final class ModItems {
 			properties -> new ExoModuleItem(properties, ExoModule.SERVO_LEGS), new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
 	public static final Item CRUCIFIX = register("crucifix", CrucifixItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
 
+	// Long swords: three swords of one material on the diagonal of a crafting table. Two-handed, slower and harder
+	// hitting, with more reach and a wider sweep (see LongSwords).
+	public static final Item WOODEN_LONG_SWORD = longSword("wooden_long_sword", LongSwords.properties(ToolMaterial.WOOD));
+	public static final Item STONE_LONG_SWORD = longSword("stone_long_sword", LongSwords.properties(ToolMaterial.STONE));
+	public static final Item COPPER_LONG_SWORD = longSword("copper_long_sword", LongSwords.properties(ToolMaterial.COPPER));
+	public static final Item IRON_LONG_SWORD = longSword("iron_long_sword", LongSwords.properties(ToolMaterial.IRON));
+	public static final Item GOLDEN_LONG_SWORD = longSword("golden_long_sword", LongSwords.properties(ToolMaterial.GOLD));
+	public static final Item DIAMOND_LONG_SWORD = longSword("diamond_long_sword", LongSwords.properties(ToolMaterial.DIAMOND));
+	public static final Item NETHERITE_LONG_SWORD = longSword("netherite_long_sword",
+			LongSwords.properties(ToolMaterial.NETHERITE).fireResistant());
+
 	// Vanilla keeps its tab keys private, so rebuild the key from its id.
 	private static final ResourceKey<CreativeModeTab> COMBAT_TAB =
 			ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace("combat"));
@@ -339,6 +353,10 @@ public final class ModItems {
 
 	private static Item item(String name) {
 		return register(name, Item::new, new Item.Properties());
+	}
+
+	private static Item longSword(String name, Item.Properties properties) {
+		return register(name, LongSwordItem::new, properties);
 	}
 
 	private static Item part(String name) {
@@ -398,6 +416,8 @@ public final class ModItems {
 		});
 		CreativeModeTabEvents.modifyOutputEvent(COMBAT_TAB)
 				.register(output -> {
+					output.insertAfter(Items.NETHERITE_SWORD, WOODEN_LONG_SWORD, STONE_LONG_SWORD, COPPER_LONG_SWORD, IRON_LONG_SWORD,
+							GOLDEN_LONG_SWORD, DIAMOND_LONG_SWORD, NETHERITE_LONG_SWORD);
 					output.insertAfter(Items.TRIDENT, CRUCIFIX, Schnozzles.NOSE_HAIR_WHIP);
 					output.insertAfter(Items.TURTLE_HELMET, NEURALINK, NEURALINK_MK2, ESP_MODULE, NIGHT_VISION_MODULE,
 							XRAY_MODULE, OPTIC_LASERS_MODULE, TELEKINESIS_MODULE, BLINK_MODULE, NEURAL_HIJACK_MODULE,

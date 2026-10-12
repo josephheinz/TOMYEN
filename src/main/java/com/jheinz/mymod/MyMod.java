@@ -15,6 +15,7 @@ import com.jheinz.mymod.neuralink.NeuralinkEffects;
 import com.jheinz.mymod.exoskeleton.ExoskeletonEffects;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.lmg.MachineGuns;
+import com.jheinz.mymod.longsword.LongSwords;
 import com.jheinz.mymod.shotgun.Shotguns;
 import com.jheinz.mymod.powerarmor.PowerArmors;
 import com.jheinz.mymod.schnozzle.Schnozzles;
@@ -55,6 +56,7 @@ public class MyMod implements ModInitializer {
 		Launchers.initialize();
 		Shotguns.initialize();
 		MachineGuns.initialize();
+		LongSwords.initialize();
 		Banking.initialize();
 		NeuralCore.initialize();
 		PowerArmors.initialize();
