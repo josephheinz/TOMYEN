@@ -28,7 +28,14 @@
 		"HumanoidArmorLayerExoSocketsMixin",
 		"HumanoidMobRendererExoSocketsMixin",
 		"LivingEntityRendererExoSocketsMixin",
-		"WingsLayerExoSocketsMixin"
+		"WingsLayerExoSocketsMixin",
+		"ItemLayerRenderStateInvoker",
+		"ItemStackRenderStateAccessor",
+		"WhipArmPoseMixin",
+		"WhipFirstPersonMixin",
+		"WhipHeldItemMixin",
+		"WhipLevelEntitiesMixin",
+		"WhipViewBobMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
