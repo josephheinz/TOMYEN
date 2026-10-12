@@ -2,7 +2,10 @@ package com.jheinz.mymod;
 
 import net.fabricmc.api.ModInitializer;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +72,21 @@ public class MyMod implements ModInitializer {
 		PowerArmors.initialize();
 		Schnozzles.initialize();
 		Skullcranes.initialize();
+		linkBlockItems();
+	}
+
+	/**
+	 * Registering a {@link BlockItem} straight into the item registry skips vanilla's block-to-item link, which
+	 * leaves {@code block.asItem()} as air (breaking pick-block and creative tab entries). Link every mod block item
+	 * that's missing one.
+	 */
+	private static void linkBlockItems() {
+		for (Item item : BuiltInRegistries.ITEM) {
+			if (item instanceof BlockItem blockItem && MOD_ID.equals(BuiltInRegistries.ITEM.getKey(item).getNamespace())
+					&& !Item.BY_BLOCK.containsKey(blockItem.getBlock())) {
+				blockItem.registerBlocks(Item.BY_BLOCK, item);
+			}
+		}
 	}
 
 	public static Identifier id(String path) {
