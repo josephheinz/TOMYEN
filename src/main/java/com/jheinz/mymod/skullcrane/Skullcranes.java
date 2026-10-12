@@ -30,7 +30,9 @@ import com.jheinz.mymod.MyMod;
 /**
  * Skullcranes: packs of flying mechanical skulls with servo arms that hunt the mountains at night, grab their prey
  * between them, carry it up and drop it. Their entity, the invisible grip that carries the prey, their drops (Servo
- * Arms and Optic Lenses, which go into tech scrap, computer chips and spyglasses) and their sounds.
+ * Arms and Optic Lenses, which go into tech scrap, computer chips and spyglasses) and their sounds; and the gear
+ * built from those parts: the Grapple Claw, the Optic Monocle, the Servo Arm Backpack (see {@link ServoGear}) and the
+ * Servo Drone, a tame little servo skull.
  *
  * <p>Uncommon rather than rare: spawn weight {@link #SPAWN_WEIGHT} (zombies are 95, the Schnozzle 2), in packs of
  * {@value #MIN_PACK}-{@value #MAX_PACK}, only at night, only under open sky, only in mountain and hill biomes (where
@@ -59,8 +61,27 @@ public final class Skullcranes {
 					.clientTrackingRange(10)
 					.updateInterval(1));
 
+	/** The Grapple Claw's claw: quick, every tick, so its cable stays on it. */
+	public static final EntityType<GrappleHook> GRAPPLE_HOOK = entity("grapple_hook",
+			EntityType.Builder.<GrappleHook>of(GrappleHook::new, MobCategory.MISC)
+					.noLootTable()
+					.noSummon()
+					.sized(0.3f, 0.3f)
+					.clientTrackingRange(8)
+					.updateInterval(1));
+	public static final EntityType<ServoDrone> SERVO_DRONE_ENTITY = entity("servo_drone", EntityType.Builder.of(ServoDrone::new, MobCategory.MISC)
+			.noLootTable()
+			.sized(0.45f, 0.45f)
+			.eyeHeight(0.25f)
+			.clientTrackingRange(10)
+			.updateInterval(2));
+
 	public static final Item SERVO_ARM = item("servo_arm", Item::new, new Item.Properties());
 	public static final Item OPTIC_LENS = item("optic_lens", Item::new, new Item.Properties());
+	public static final Item GRAPPLE_CLAW = item("grapple_claw", GrappleClawItem::new, GrappleClawItem.properties());
+	public static final Item OPTIC_MONOCLE = item("optic_monocle", Item::new, ServoGear.monocleProperties());
+	public static final Item SERVO_ARM_BACKPACK = item("servo_arm_backpack", Item::new, ServoGear.backpackProperties());
+	public static final Item SERVO_DRONE = item("servo_drone", ServoDroneItem::new, ServoDroneItem.properties());
 	public static final Item SKULLCRANE_SPAWN_EGG = item("skullcrane_spawn_egg", SpawnEggItem::new,
 			new Item.Properties().spawnEgg(SKULLCRANE));
 
@@ -96,6 +117,8 @@ public final class Skullcranes {
 
 	public static void initialize() {
 		FabricDefaultAttributeRegistry.register(SKULLCRANE, Skullcrane.createAttributes());
+		FabricDefaultAttributeRegistry.register(SERVO_DRONE_ENTITY, ServoDrone.createAttributes());
+		ServoGear.initialize();
 		SpawnPlacements.register(SKULLCRANE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 				Skullcrane::checkSpawnRules);
 		BiomeModifications.addSpawn(BiomeSelectors.includeByKey(Biomes.WINDSWEPT_HILLS, Biomes.WINDSWEPT_GRAVELLY_HILLS,
@@ -106,5 +129,7 @@ public final class Skullcranes {
 				.register(output -> output.insertAfter(Items.SHEEP_SPAWN_EGG, SKULLCRANE_SPAWN_EGG));
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS)
 				.register(output -> output.insertAfter(Items.BONE, SERVO_ARM, OPTIC_LENS));
+		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+				.register(output -> output.insertAfter(Items.SPYGLASS, GRAPPLE_CLAW, OPTIC_MONOCLE, SERVO_ARM_BACKPACK, SERVO_DRONE));
 	}
 }

@@ -1,6 +1,7 @@
 """Paints the Skullcrane (its entity texture and the glow layer for its lenses and antigrav emitter, UVs matching
-client/skullcrane/SkullcraneModel), its spawn egg, the Servo Arm and Optic Lens items, and writes their item models and
-definitions. On the data side it writes the Skullcrane's loot table, the recipes that use its drops (with recipe-book
+client/skullcrane/SkullcraneModel) and the Servo Drone's brass-and-green repaint of it, the worn monocle and backpack
+(client/skullcrane/ServoGearRenderer), its spawn egg, the Servo Arm and Optic Lens items and the Grapple Claw, Optic
+Monocle, Servo Arm Backpack and Servo Drone made from them, and writes their item models and definitions. On the data side it writes the Skullcrane's loot table, the recipes that use its drops (with recipe-book
 advancements), and adds it to the mymod:holy_vulnerable and minecraft:undead entity tags.
 
 Usage: python3 tools/gen_skullcrane.py src/main/resources/assets/mymod"""
@@ -282,6 +283,67 @@ paint_cube(tex, 40, 32, 0.6, 1.3, 0.6, lambda s: (lambda x, y: col(METAL_DARK if
 tex.save("entity/skullcrane/skullcrane.png")
 glow.save("entity/skullcrane/skullcrane_glow.png")
 
+
+# The Servo Drone: the skullcrane's texture with its steel turned brass and its lenses and emitter green.
+def tame(c):
+    r, g, b, a = c
+    if a == 0:
+        return c
+    if r > 150 and g < 90 and b < 90:  # red lens
+        return (clamp(g * 0.6), clamp(r * 0.95), clamp(b * 0.6 + 30), a)
+    if b > 200 and g > 180 and r < 230:  # cyan emitter
+        return (clamp(r * 0.5), g, clamp(b * 0.55), a)
+    if abs(r - b) < 25 and abs(r - g) < 25 and 40 < r < 215:  # steel
+        return (clamp(r * 1.12 + 18), clamp(g * 0.92 + 4), clamp(b * 0.5), a)
+    return c
+
+
+drone = Canvas(64, 64)
+drone.px = [tame(c) for c in tex.px]
+drone_glow = Canvas(64, 64)
+drone_glow.px = [tame(c) for c in glow.px]
+drone.save("entity/skullcrane/servo_drone.png")
+drone_glow.save("entity/skullcrane/servo_drone_glow.png")
+
+# Worn gear (client/skullcrane/ServoGearRenderer): the monocle's band, rim and lens; the backpack's casing, power
+# cell, arm struts, servo joints and claw fingers.
+gear = Canvas(64, 32)
+gear_glow = Canvas(64, 32)
+LEATHER = (88, 58, 38)
+CELL = (90, 210, 255)
+
+
+def paint_on(canvas, u, v, w, h, d, f):
+    for name, rect in faces(u, v, w, h, d).items():
+        canvas.rect(*rect, f)
+
+
+paint_on(gear, 0, 0, 8.6, 0.6, 8.6, lambda x, y: col(LEATHER, 1.0, 6))
+paint_on(gear, 36, 0, 3, 0.5, 0.5, lambda x, y: col(METAL_LIGHT, 1.0, 6))
+paint_on(gear, 44, 0, 0.5, 2.5, 0.5, lambda x, y: col(METAL_LIGHT, 1.0, 6))
+for canvas in (gear, gear_glow):
+    paint_on(canvas, 48, 0, 2, 2.5, 0.3, lambda x, y: col(LENS_HOT if (x, y) == (0, 0) else LENS, 1.0, 6))
+
+
+# Casing: steel with a bolt in each corner and vents across the back.
+def casing(x, y):
+    if (x, y) in ((0, 0), (5, 0), (0, 6), (5, 6)):
+        return col(BOLT)
+    if y in (2, 4) and 1 <= x <= 4:
+        return col(METAL_DARK)
+    return metal(METAL)(x, y)
+
+
+paint_on(gear, 0, 10, 6, 7, 2.5, casing)
+for canvas in (gear, gear_glow):
+    paint_on(canvas, 18, 10, 3, 4, 1, lambda x, y: col(CELL if (x + y) % 3 else (220, 250, 255), 1.0, 8))
+paint_on(gear, 26, 10, 1.2, 5, 1.2, lambda x, y: col(METAL_LIGHT if y % 3 == 2 else METAL, 1.0, 6))
+paint_on(gear, 34, 10, 1, 4, 1, lambda x, y: col(BRASS if y < 2 else METAL, 1.0, 6))
+paint_on(gear, 38, 10, 1.8, 1.8, 1.8, lambda x, y: col(BOLT if (x, y) == (0, 0) else METAL_DARK, 1.0, 5))
+paint_on(gear, 46, 10, 0.6, 2, 0.6, lambda x, y: col(METAL_LIGHT if y == 0 else METAL_DARK, 1.0, 5))
+gear.save("entity/skullcrane/servo_gear.png")
+gear_glow.save("entity/skullcrane/servo_gear_glow.png")
+
 # ---------------------------------------------------------------------------------------------- items
 def sprite(rows, palette):
     c = Canvas(16, 16)
@@ -352,6 +414,82 @@ for i in range(w * h):
         egg.px[i] = col(BONE_LIGHT if light > 5 else BONE if light > 1 else BONE_SHADE if light > -4 else BONE_STAIN)
 egg.save("item/skullcrane_spawn_egg.png")
 
+# Grapple Claw: a claw on a coil of cable, the cable trailing off to a grip.
+GRAPPLE = ["................",
+           "..........k..k..",
+           ".........k.kk.k.",
+           "..........jJJj..",
+           "..........jjjj..",
+           "...........cc...",
+           "..........c..c..",
+           ".........c....c.",
+           "........c.cc.c..",
+           ".......c.c..c...",
+           "......c..c.c....",
+           ".....c....c.....",
+           "....hh..........",
+           "...hHh..........",
+           "..hHh...........",
+           "..hh............"]
+sprite(GRAPPLE, {"k": col(METAL_LIGHT), "j": col(METAL_DARK), "J": col(BOLT), "c": col((60, 60, 66)), "h": col(BRASS_DARK),
+                 "H": col(BRASS)}).save("item/grapple_claw.png")
+
+# Optic Monocle: a red lens in a steel rim, with a chain hanging off it.
+monocle = Canvas(16, 16)
+for y in range(16):
+    for x in range(16):
+        r = math.hypot(x + 0.5 - 7, y + 0.5 - 6)
+        if r < 3.4:
+            monocle.set(x, y, col(LENS_HOT if r < 1.0 else LENS, 1.0 + 0.05 * ((7 - x) + (6 - y)), 4))
+        elif r < 4.8:
+            monocle.set(x, y, col(METAL_LIGHT if (x + y) % 4 == 0 else METAL, 1.0, 5))
+for x, y in ((6, 4), (5, 5)):
+    monocle.set(x, y, col((255, 230, 220)))
+for i, (x, y) in enumerate(((10, 10), (11, 11), (11, 12), (12, 13), (12, 14), (13, 15))):
+    monocle.set(x, y, col(BRASS if i % 2 else BRASS_DARK))
+monocle.save("item/optic_monocle.png")
+
+# Servo Arm Backpack: a steel pack with a glowing cell and two arms curling up off its top.
+BACKPACK = ["................",
+            "..k..........k..",
+            ".k.k........k.k.",
+            "..j..........j..",
+            "..a..........a..",
+            "..a..........a..",
+            "..J..........J..",
+            "...a........a...",
+            "...MMMMMMMMMM...",
+            "...MbmmmmmmbM...",
+            "...MmmmCCmmmM...",
+            "...MmmmCCmmmM...",
+            "...MmmmCCmmmM...",
+            "...MbmmmmmmbM...",
+            "...MMMMMMMMMM...",
+            "................"]
+sprite(BACKPACK, {"k": col(METAL_LIGHT), "j": col(METAL_DARK), "J": col(BOLT), "a": col(METAL), "M": col(METAL_DARK), "m": col(METAL),
+                  "b": col(BOLT), "C": col((110, 220, 255))}).save("item/servo_arm_backpack.png")
+
+# Servo Drone: a little brass-plated skull with green lenses and arms tucked under.
+DRONE = ["................",
+         "................",
+         ".....BBBBBB.....",
+         "....BBBBBBBBp...",
+         "....BBBBBBBBp...",
+         "....BggBBggBp...",
+         "....BGgBBGgB....",
+         "....BBBssBBB....",
+         ".....tttttt.....",
+         ".....jjjjjj.....",
+         "......eeee......",
+         "....a.a..a.a....",
+         "....a.a..a.a....",
+         "...k.k....k.k...",
+         "................",
+         "................"]
+sprite(DRONE, {"B": col(BONE), "p": col((200, 160, 80)), "g": col((60, 200, 90)), "G": col((180, 255, 190)), "s": col(SOCKET),
+               "t": col(TOOTH), "j": col(BONE_SHADE), "e": col((100, 230, 140)), "a": col((190, 150, 70)),
+               "k": col(METAL_LIGHT)}).save("item/servo_drone.png")
+
 # ---------------------------------------------------------------------------------------------- json
 MODELS, ITEMS = os.path.join(ASSETS, "models/item"), os.path.join(ASSETS, "items")
 
@@ -363,7 +501,8 @@ def write(path, obj):
         f.write("\n")
 
 
-for name in ("skullcrane_spawn_egg", "servo_arm", "optic_lens"):
+for name in ("skullcrane_spawn_egg", "servo_arm", "optic_lens", "grapple_claw", "optic_monocle", "servo_arm_backpack",
+             "servo_drone"):
     write(os.path.join(MODELS, name + ".json"),
           OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/" + name})]))
     write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
@@ -383,8 +522,8 @@ write(os.path.join(DATA, "loot_table/entities/skullcrane.json"), OrderedDict([
     ("random_sequence", "mymod:entities/skullcrane")]))
 
 
-def advancement(name, ingredient):
-    write(os.path.join(DATA, "advancement/recipes/misc", name + ".json"), OrderedDict([
+def advancement(name, ingredient, category="misc"):
+    write(os.path.join(DATA, "advancement/recipes", category, name + ".json"), OrderedDict([
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
             ("has_item", {"conditions": {"items": [{"items": ingredient}]}, "trigger": "minecraft:inventory_changed"}),
@@ -397,20 +536,29 @@ def shapeless(name, ingredients, result, count, category="misc"):
     write(os.path.join(DATA, "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shapeless"), ("category", category), ("ingredients", ingredients),
         ("result", OrderedDict([("count", count), ("id", result)]))]))
-    advancement(name, ingredients[0])
+    advancement(name, ingredients[0], category)
 
 
 def shaped(name, pattern, key, result, count, category="misc"):
     write(os.path.join(DATA, "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shaped"), ("category", category), ("key", key), ("pattern", pattern),
         ("result", OrderedDict([("count", count), ("id", result)]))]))
-    advancement(name, next(iter(key.values())))
+    advancement(name, next(iter(key.values())), category)
 
 
 shapeless("tech_scrap_from_servo_arm", ["mymod:servo_arm"], "mymod:tech_scrap", 2)
 shapeless("computer_chip_from_optic_lens", ["mymod:optic_lens", "mymod:tech_scrap"], "mymod:computer_chip", 1)
 shaped("spyglass_from_optic_lens", ["L", "C", "C"], OrderedDict([("L", "mymod:optic_lens"), ("C", "minecraft:copper_ingot")]),
        "minecraft:spyglass", 1, "equipment")
+
+shaped("grapple_claw", ["A", "L", "T"], OrderedDict([("A", "mymod:servo_arm"), ("L", "minecraft:lead"), ("T", "minecraft:tripwire_hook")]),
+       "mymod:grapple_claw", 1, "equipment")
+shaped("optic_monocle", [" S ", "GLG"], OrderedDict([("L", "mymod:optic_lens"), ("S", "minecraft:string"), ("G", "minecraft:gold_nugget")]),
+       "mymod:optic_monocle", 1, "equipment")
+shaped("servo_arm_backpack", ["A A", "ILI", " C "], OrderedDict([("A", "mymod:servo_arm"), ("I", "minecraft:iron_ingot"),
+       ("L", "minecraft:leather"), ("C", "mymod:computer_chip")]), "mymod:servo_arm_backpack", 1, "equipment")
+shaped("servo_drone", [" L ", "BCB", "A A"], OrderedDict([("L", "mymod:optic_lens"), ("B", "minecraft:bone"), ("C", "mymod:computer_chip"),
+       ("A", "mymod:servo_arm")]), "mymod:servo_drone", 1, "misc")
 
 
 def tag_add(path, entry):

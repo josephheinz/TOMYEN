@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "mymod:servo_arm",
+    "I": "minecraft:iron_ingot",
+    "L": "minecraft:leather",
+    "C": "mymod:computer_chip"
+  },
+  "pattern": [
+    "A A",
+    "ILI",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:servo_arm_backpack"
+  }
+}

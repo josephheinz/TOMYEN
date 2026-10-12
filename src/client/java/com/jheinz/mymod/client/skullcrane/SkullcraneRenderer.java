@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -38,7 +39,7 @@ public class SkullcraneRenderer extends MobRenderer<Skullcrane, SkullcraneRender
 
 	public SkullcraneRenderer(EntityRendererProvider.Context context) {
 		super(context, new SkullcraneModel(context.bakeLayer(SkullcraneModel.LAYER)), 0.35f);
-		addLayer(new GlowLayer(this));
+		addLayer(new GlowLayer<>(this, GLOW));
 	}
 
 	@Override
@@ -110,7 +111,7 @@ public class SkullcraneRenderer extends MobRenderer<Skullcrane, SkullcraneRender
 	}
 
 	/** From world space into the model's: undoes the body's turn and the renderer's upside-down flip. */
-	private static Vec3 toModel(Vec3 world, float bodyRot) {
+	static Vec3 toModel(Vec3 world, float bodyRot) {
 		float angle = (180.0f - bodyRot) * Mth.DEG_TO_RAD;
 		float cos = Mth.cos(angle);
 		float sin = Mth.sin(angle);
@@ -120,17 +121,20 @@ public class SkullcraneRenderer extends MobRenderer<Skullcrane, SkullcraneRender
 	}
 
 	/** The lenses and emitter, full bright whatever the light, dimmed by how worked up it is and dark once it's dead. */
-	private static class GlowLayer extends RenderLayer<SkullcraneRenderState, SkullcraneModel> {
-		GlowLayer(SkullcraneRenderer renderer) {
+	static class GlowLayer<S extends SkullcraneRenderState> extends RenderLayer<S, SkullcraneModel> {
+		private final RenderType glow;
+
+		GlowLayer(RenderLayerParent<S, SkullcraneModel> renderer, RenderType glow) {
 			super(renderer);
+			this.glow = glow;
 		}
 
 		@Override
-		public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, SkullcraneRenderState state, float yRot, float xRot) {
+		public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, S state, float yRot, float xRot) {
 			if (state.glow <= 0.0f) {
 				return;
 			}
-			collector.order(1).submitModel(getParentModel(), state, poseStack, GLOW, light, OverlayTexture.NO_OVERLAY, ARGB.gray(state.glow),
+			collector.order(1).submitModel(getParentModel(), state, poseStack, glow, light, OverlayTexture.NO_OVERLAY, ARGB.gray(state.glow),
 					null, state.outlineColor);
 		}
 	}
