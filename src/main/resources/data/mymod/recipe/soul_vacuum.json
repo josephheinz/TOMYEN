@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": "mymod:steel_plate",
+    "G": "minecraft:glass",
+    "I": "mymod:steel_ingot",
+    "L": "minecraft:soul_lantern",
+    "C": "mymod:computer_chip",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "PGP",
+    "ILC",
+    " RI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:soul_vacuum"
+  }
+}

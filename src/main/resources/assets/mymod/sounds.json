@@ -747,5 +747,17 @@
       "mymod:nose_hair_whip_snag1",
       "mymod:nose_hair_whip_snag2"
     ]
+  },
+  "soul_vacuum_loop": {
+    "subtitle": "subtitles.mymod.soul_vacuum_loop",
+    "sounds": [
+      "mymod:soul_vacuum_loop"
+    ]
+  },
+  "soul_wail": {
+    "subtitle": "subtitles.mymod.soul_wail",
+    "sounds": [
+      "mymod:soul_wail"
+    ]
   }
 }

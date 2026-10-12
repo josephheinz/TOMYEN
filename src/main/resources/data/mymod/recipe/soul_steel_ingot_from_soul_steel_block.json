@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:soul_steel_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "mymod:soul_steel_ingot"
+  }
+}

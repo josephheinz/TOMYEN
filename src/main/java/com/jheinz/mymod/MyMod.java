@@ -17,9 +17,11 @@ import com.jheinz.mymod.exoskeleton.ExoskeletonEffects;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.lmg.MachineGuns;
 import com.jheinz.mymod.longsword.LongSwords;
+import com.jheinz.mymod.magmasteel.Magmasteel;
 import com.jheinz.mymod.shotgun.Shotguns;
 import com.jheinz.mymod.powerarmor.PowerArmors;
 import com.jheinz.mymod.schnozzle.Schnozzles;
+import com.jheinz.mymod.soul.Souls;
 import com.jheinz.mymod.tank.Tanks;
 import com.jheinz.mymod.station.ModMenus;
 
@@ -45,6 +47,8 @@ public class MyMod implements ModInitializer {
 		ModCreativeTabs.initialize();
 		ModBlocks.initialize();
 		Industry.initialize();
+		Magmasteel.initialize();
+		Souls.initialize();
 		Hogfires.initialize();
 		ModEntities.initialize();
 		ModMenus.initialize();
