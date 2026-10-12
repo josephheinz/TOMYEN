@@ -37,7 +37,7 @@ import org.jspecify.annotations.Nullable;
  * suit stands on its base plate looking out the same way.
  * <ul>
  * <li>Use it: the rack's interface, to fit pieces and a fusion core.
- * <li>Sneak-use it with empty hands, wearing an exoskeleton with no modules: climb into the suit on the rack.
+ * <li>Sneak-use it with empty hands, wearing an exoskeleton with nothing socketed: climb into the suit on the rack.
  * <li>Use it while wearing power armor, with the rack empty: dock, climbing out and leaving the suit on it.
  * </ul>
  * Only the base plate and the two rear uprights are solid, so the wearer can stand in the frame. Breaking the

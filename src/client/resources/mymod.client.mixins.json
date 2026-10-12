@@ -23,7 +23,12 @@
 		"TankHiddenFromCrewMixin",
 		"TankMouseMixin",
 		"TankSightCameraMixin",
-		"TankSightZoomMixin"
+		"TankSightZoomMixin",
+		"CapeLayerExoSocketsMixin",
+		"HumanoidArmorLayerExoSocketsMixin",
+		"HumanoidMobRendererExoSocketsMixin",
+		"LivingEntityRendererExoSocketsMixin",
+		"WingsLayerExoSocketsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

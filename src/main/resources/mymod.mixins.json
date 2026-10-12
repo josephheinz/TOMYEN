@@ -19,7 +19,13 @@
 		"ServerPunchWhipMixin",
 		"ServerPlayerDebtDeathMixin",
 		"ServerSwapHandsMixin",
-		"SlotGunOffhandMixin"
+		"SlotGunOffhandMixin",
+		"EnchantmentHelperExoSocketsMixin",
+		"EndermanExoSocketsMixin",
+		"ItemStackExoSocketsMixin",
+		"LivingEntityExoSocketsMixin",
+		"PiglinAiExoSocketsMixin",
+		"PlayerExoSocketsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

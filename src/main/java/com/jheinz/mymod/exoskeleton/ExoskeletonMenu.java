@@ -14,20 +14,20 @@ import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.station.ModMenus;
 
 /**
- * The module sockets of the exoskeleton in the player's hand, over their inventory. Like the Neuralink's, the
- * sockets are stored on the suit itself, so every change is written straight back to it; while the menu is
- * open the suit can't be moved.
+ * The sockets of the exoskeleton in the player's hand, over their inventory: modules, armor and an elytra, by
+ * the rules in {@link ExoSockets}. Like the Neuralink's, the sockets are stored on the suit itself, so every
+ * change is written straight back to it; while the menu is open the suit can't be moved.
  */
 public class ExoskeletonMenu extends AbstractContainerMenu {
 	// Slot positions, shared with the screen: the sockets in a column, the inventory below.
-	public static final int MODULE_X = 10;
-	public static final int MODULE_Y = 20;
-	public static final int MODULE_SPACING = 20;
+	public static final int SOCKET_X = 10;
+	public static final int SOCKET_Y = 18;
+	public static final int SOCKET_SPACING = 20;
 	public static final int INVENTORY_X = 8;
-	public static final int INVENTORY_Y = 114;
+	public static final int INVENTORY_Y = SOCKET_Y + ExoSockets.COUNT * SOCKET_SPACING + 12;
 	public static final int HEIGHT = INVENTORY_Y + 82;
 
-	private static final int INVENTORY_START = ExoskeletonItem.MODULE_SLOTS;
+	private static final int INVENTORY_START = ExoSockets.COUNT;
 	private static final int HOTBAR_START = INVENTORY_START + 27;
 	private static final int INVENTORY_END = HOTBAR_START + 9;
 
@@ -35,7 +35,7 @@ public class ExoskeletonMenu extends AbstractContainerMenu {
 	private final InteractionHand hand;
 	/** The inventory index of the exoskeleton being edited. */
 	private final int deviceSlot;
-	private final SimpleContainer modules;
+	private final SimpleContainer sockets;
 
 	/** Client side: the server only opens this from an exoskeleton in hand, the main hand if it holds one. */
 	public ExoskeletonMenu(int containerId, Inventory inventory) {
@@ -48,7 +48,7 @@ public class ExoskeletonMenu extends AbstractContainerMenu {
 		this.inventory = inventory;
 		this.hand = hand;
 		this.deviceSlot = hand == InteractionHand.MAIN_HAND ? inventory.getSelectedSlot() : Inventory.SLOT_OFFHAND;
-		this.modules = new SimpleContainer(ExoskeletonItem.MODULE_SLOTS) {
+		this.sockets = new SimpleContainer(ExoSockets.COUNT) {
 			@Override
 			public void setChanged() {
 				super.setChanged();
@@ -58,15 +58,15 @@ public class ExoskeletonMenu extends AbstractContainerMenu {
 				}
 			}
 		};
-		device().getOrDefault(ModComponents.EXOSKELETON_MODULES, ItemContainerContents.EMPTY).copyInto(modules.getItems());
-		for (int i = 0; i < ExoskeletonItem.MODULE_SLOTS; i++) {
-			addSlot(new ModuleSlot(i, MODULE_X, socketY(i)));
+		device().getOrDefault(ModComponents.EXOSKELETON_MODULES, ItemContainerContents.EMPTY).copyInto(sockets.getItems());
+		for (int i = 0; i < ExoSockets.COUNT; i++) {
+			addSlot(new SocketSlot(i, SOCKET_X, socketY(i)));
 		}
 		addStandardInventorySlots(inventory, INVENTORY_X, INVENTORY_Y);
 	}
 
 	public static int socketY(int socket) {
-		return MODULE_Y + socket * MODULE_SPACING;
+		return SOCKET_Y + socket * SOCKET_SPACING;
 	}
 
 	private ItemStack device() {
@@ -105,7 +105,7 @@ public class ExoskeletonMenu extends AbstractContainerMenu {
 			if (!moveItemStackTo(stack, INVENTORY_START, INVENTORY_END, true)) {
 				return ItemStack.EMPTY;
 			}
-		} else if (!(stack.getItem() instanceof ExoModuleItem) || !moveItemStackTo(stack, 0, INVENTORY_START, false)) {
+		} else if (!ExoSockets.fits(stack) || !moveItemStackTo(stack, 0, INVENTORY_START, false)) {
 			boolean fromInventory = index < HOTBAR_START;
 			if (!moveItemStackTo(stack, fromInventory ? HOTBAR_START : INVENTORY_START,
 					fromInventory ? INVENTORY_END : HOTBAR_START, false)) {
@@ -130,24 +130,15 @@ public class ExoskeletonMenu extends AbstractContainerMenu {
 		return device().getItem() instanceof ExoskeletonItem;
 	}
 
-	/** Takes one module, and not one the suit already has in another socket. */
-	private class ModuleSlot extends Slot {
-		ModuleSlot(int index, int x, int y) {
-			super(modules, index, x, y);
+	/** Takes one item: a module the suit doesn't have yet, or armor for a slot no other socket fills. */
+	private class SocketSlot extends Slot {
+		SocketSlot(int index, int x, int y) {
+			super(sockets, index, x, y);
 		}
 
 		@Override
 		public boolean mayPlace(ItemStack stack) {
-			if (!(stack.getItem() instanceof ExoModuleItem item)) {
-				return false;
-			}
-			for (int i = 0; i < modules.getContainerSize(); i++) {
-				if (i != getContainerSlot() && modules.getItem(i).getItem() instanceof ExoModuleItem other
-						&& other.module() == item.module()) {
-					return false;
-				}
-			}
-			return true;
+			return ExoSockets.mayPlace(sockets.getItems(), getContainerSlot(), stack);
 		}
 
 		@Override

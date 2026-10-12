@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
  * A suit of power armor standing empty, its back open, where someone climbed out of it (or died in it). It
  * stays put: nothing pushes it, it only falls if the ground goes, and it's saved with the world.
  * <ul>
- * <li>Use it wearing an exoskeleton with no modules: climb back in.
+ * <li>Use it wearing an exoskeleton with nothing socketed: climb back in.
  * <li>Hit it: the blow wears down whichever piece it lands on.
  * <li>Sneak and hit it: break it down, dropping its pieces and core (or climb in and dock it at a station).
  * </ul>

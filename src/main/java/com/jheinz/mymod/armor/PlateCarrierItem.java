@@ -18,6 +18,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
 import com.jheinz.mymod.ModComponents;
+import com.jheinz.mymod.exoskeleton.ExoSockets;
+import com.jheinz.mymod.exoskeleton.ExoskeletonItem;
 
 /**
  * A vest worn in the chest slot that holds one {@link ArmorPlateItem}. Like a bundle: right-click a
@@ -28,9 +30,12 @@ public class PlateCarrierItem extends Item {
 		super(properties);
 	}
 
-	/** The plate in the vest the entity is wearing in its chest slot, or null. */
+	/** The plate in the vest the entity is wearing in its chest slot (or in its exoskeleton's chest socket), or null. */
 	public static ArmorPlateItem wornPlate(LivingEntity entity) {
 		ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+		if (chest.getItem() instanceof ExoskeletonItem) {
+			chest = ExoSockets.armor(chest, EquipmentSlot.CHEST);
+		}
 		if (!(chest.getItem() instanceof PlateCarrierItem)) {
 			return null;
 		}

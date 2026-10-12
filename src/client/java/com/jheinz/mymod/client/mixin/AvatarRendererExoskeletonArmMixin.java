@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonRenderer;
 
-/** Draws a worn exoskeleton's arm frame over the player's own hand in first person. */
+/** Draws a worn exoskeleton's arm frame, and a socketed chestplate's sleeve over it, on the player's own hand in first person. */
 @Mixin(AvatarRenderer.class)
 public abstract class AvatarRendererExoskeletonArmMixin {
 	@Inject(method = "renderRightHand", at = @At("TAIL"))
