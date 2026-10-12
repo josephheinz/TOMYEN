@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mymod:computer_chip",
+    "minecraft:glass_pane",
+    "minecraft:fermented_spider_eye",
+    "minecraft:lead"
+  ],
+  "result": {
+    "id": "mymod:neural_hijack_module"
+  }
+}

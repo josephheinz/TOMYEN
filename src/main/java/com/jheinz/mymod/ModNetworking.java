@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.holy.CrucifixItem;
+import com.jheinz.mymod.neuralink.NeuralNetworking;
 
 /**
  * Attacking with nothing targeted never reaches the server in vanilla, so the client reports
@@ -86,6 +87,7 @@ public final class ModNetworking {
 	}
 
 	public static void initialize() {
+		NeuralNetworking.initialize();
 		PayloadTypeRegistry.serverboundPlay().register(CrucifixPunch.TYPE, CrucifixPunch.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(LightBeam.TYPE, LightBeam.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(CrucifixPunch.TYPE, (payload, context) -> {

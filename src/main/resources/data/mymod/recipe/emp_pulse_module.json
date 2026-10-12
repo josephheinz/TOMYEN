@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mymod:computer_chip",
+    "minecraft:glass_pane",
+    "minecraft:copper_ingot",
+    "minecraft:redstone_block"
+  ],
+  "result": {
+    "id": "mymod:emp_pulse_module"
+  }
+}

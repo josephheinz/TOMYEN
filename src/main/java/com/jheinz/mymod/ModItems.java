@@ -242,11 +242,25 @@ public final class ModItems {
 	public static final Item SILICON = item("silicon");
 	/** Silicon and tech scrap: the next tier of electronics after scrap. */
 	public static final Item COMPUTER_CHIP = item("computer_chip");
-	public static final Item NEURALINK = register("neuralink", NeuralinkItem::new,
+	public static final Item NEURALINK = register("neuralink", properties -> new NeuralinkItem(properties, 3),
 			new Item.Properties().stacksTo(1).rarity(Rarity.RARE).equippable(EquipmentSlot.HEAD));
+	/** Fused in the Foundry from a Neuralink and more chips: five sockets instead of three. */
+	public static final Item NEURALINK_MK2 = register("neuralink_mk2", properties -> new NeuralinkItem(properties, 5),
+			new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).equippable(EquipmentSlot.HEAD));
 	public static final Item ESP_MODULE = module("esp_module", NeuralinkModule.ESP);
 	public static final Item NIGHT_VISION_MODULE = module("night_vision_module", NeuralinkModule.NIGHT_VISION);
 	public static final Item XRAY_MODULE = module("xray_module", NeuralinkModule.XRAY);
+	public static final Item OPTIC_LASERS_MODULE = module("optic_lasers_module", NeuralinkModule.OPTIC_LASERS);
+	public static final Item TELEKINESIS_MODULE = module("telekinesis_module", NeuralinkModule.TELEKINESIS);
+	public static final Item BLINK_MODULE = module("blink_module", NeuralinkModule.BLINK);
+	public static final Item NEURAL_HIJACK_MODULE = module("neural_hijack_module", NeuralinkModule.NEURAL_HIJACK);
+	public static final Item EMP_PULSE_MODULE = module("emp_pulse_module", NeuralinkModule.EMP_PULSE);
+	public static final Item OVERCLOCK_MODULE = module("overclock_module", NeuralinkModule.OVERCLOCK);
+	public static final Item SMART_LINK_MODULE = module("smart_link_module", NeuralinkModule.SMART_LINK);
+	public static final Item MIND_READER_MODULE = module("mind_reader_module", NeuralinkModule.MIND_READER);
+	public static final Item BIO_MONITOR_MODULE = module("bio_monitor_module", NeuralinkModule.BIO_MONITOR);
+	public static final Item HIVE_MIND_MODULE = module("hive_mind_module", NeuralinkModule.HIVE_MIND);
+	public static final Item RECALL_MODULE = module("recall_module", NeuralinkModule.RECALL);
 	public static final Item CRUCIFIX = register("crucifix", CrucifixItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
 
 	// Vanilla keeps its tab keys private, so rebuild the key from its id.

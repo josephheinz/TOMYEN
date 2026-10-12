@@ -30,12 +30,14 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.neuralink.NeuralNetworking;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.neuralink.NeuralinkModule;
 
 /**
  * Draws what the wearer's modules see, through walls: ESP boxes around mobs and players, and x-ray
- * highlights on ores.
+ * highlights on ores. With Hive Mind too, ESP also boxes what teammates' implants see beyond the wearer's own
+ * range, edged in the hive's amber.
  */
 public final class NeuralinkVision {
 	private static final RenderPipeline LINES_PIPELINE = RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
@@ -59,7 +61,10 @@ public final class NeuralinkVision {
 	/** Drawing more ore than this would cost frames in ore-rich areas. */
 	private static final int MAX_ORES = 6000;
 
-	private record Target(AABB box, int color) {
+	private static final int HIVE = NeuralinkModule.HIVE_MIND.color();
+
+	/** @param shared seen by a Hive Mind teammate rather than the wearer */
+	private record Target(AABB box, int color, boolean shared) {
 	}
 
 	private NeuralinkVision() {
@@ -95,7 +100,23 @@ public final class NeuralinkVision {
 				}
 				int color = entity instanceof Player ? PLAYER : entity instanceof Enemy ? HOSTILE : PASSIVE;
 				AABB box = entity.getBoundingBox().move(at.subtract(entity.position())).inflate(0.06).move(camera.reverse());
-				targets.add(new Target(box, color));
+				targets.add(new Target(box, color, false));
+			}
+			for (NeuralNetworking.Contact contact : NeuralClient.contacts) {
+				// Anything this close our own ESP is already boxing.
+				if (contact.pos().distanceToSqr(eye) <= range) {
+					continue;
+				}
+				double half = contact.width() / 2.0;
+				Vec3 at = contact.pos();
+				AABB box = new AABB(at.x - half, at.y, at.z - half, at.x + half, at.y + contact.height(), at.z + half).inflate(0.06)
+						.move(camera.reverse());
+				int color = switch (contact.kind()) {
+					case NeuralNetworking.Contact.PLAYER -> PLAYER;
+					case NeuralNetworking.Contact.HOSTILE -> HOSTILE;
+					default -> PASSIVE;
+				};
+				targets.add(new Target(box, color, true));
 			}
 		}
 		List<OreScanner.Ore> ores = new ArrayList<>();
@@ -129,7 +150,7 @@ public final class NeuralinkVision {
 				edges(pose, buffer, new AABB(ore.pos()).deflate(0.002).move(camera.reverse()), argb(0.8f, ore.color()), width);
 			}
 			for (Target target : targets) {
-				edges(pose, buffer, target.box(), argb(0.3f, target.color()), width);
+				edges(pose, buffer, target.box(), argb(target.shared() ? 0.45f : 0.3f, target.shared() ? HIVE : target.color()), width);
 				brackets(pose, buffer, target.box(), argb(pulse, target.color()), width * 1.6f);
 			}
 		});

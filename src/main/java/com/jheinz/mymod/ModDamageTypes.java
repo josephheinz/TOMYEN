@@ -15,6 +15,9 @@ public final class ModDamageTypes {
 	public static final ResourceKey<DamageType> HOLLOW_POINT_BULLET = key("hollow_point_bullet");
 	public static final ResourceKey<DamageType> BLEEDING = key("bleeding");
 	public static final ResourceKey<DamageType> HOLY_LIGHT = key("holy_light");
+	public static final ResourceKey<DamageType> OPTIC_LASER = key("optic_laser");
+	public static final ResourceKey<DamageType> TELEKINETIC_IMPACT = key("telekinetic_impact");
+	public static final ResourceKey<DamageType> NEURAL_OVERLOAD = key("neural_overload");
 
 	/** Armor stops bullets better than melee: armor and toughness count this much more against them. */
 	private static final float BULLET_ARMOR_BONUS = 1.5f;

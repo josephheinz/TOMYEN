@@ -5,6 +5,8 @@
 	"mixins": [
 		"ContainerSwapOffhandMixin",
 		"LivingEntityBulletArmorMixin",
+		"MobAccessor",
+		"MobHijackMixin",
 		"ServerSwapHandsMixin",
 		"SlotGunOffhandMixin"
 	],

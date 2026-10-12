@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mymod:computer_chip",
+    "minecraft:glass_pane",
+    "minecraft:clock",
+    "minecraft:sugar"
+  ],
+  "result": {
+    "id": "mymod:overclock_module"
+  }
+}

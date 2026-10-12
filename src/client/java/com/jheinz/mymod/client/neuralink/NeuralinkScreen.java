@@ -6,49 +6,47 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 
-import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.neuralink.NeuralinkMenu;
 import com.jheinz.mymod.neuralink.NeuralinkModule;
 import com.jheinz.mymod.neuralink.NeuralinkModuleItem;
 
+import static com.jheinz.mymod.client.neuralink.NeuralStyle.CYAN;
+import static com.jheinz.mymod.client.neuralink.NeuralStyle.DARK;
+import static com.jheinz.mymod.client.neuralink.NeuralStyle.DIM;
+import static com.jheinz.mymod.client.neuralink.NeuralStyle.GLITCH;
+import static com.jheinz.mymod.client.neuralink.NeuralStyle.TEXT;
+import static com.jheinz.mymod.client.neuralink.NeuralStyle.argb;
+import static com.jheinz.mymod.client.neuralink.NeuralStyle.brackets;
+import static com.jheinz.mymod.client.neuralink.NeuralStyle.mix;
+import static com.jheinz.mymod.client.neuralink.NeuralStyle.wave;
+
 /**
  * The Neuralink's interface, drawn entirely in code: a dark glass panel on a faint grid with a sweeping scan
- * line, a hologram of the player wired to three module sockets that light up in their module's colour, and the
- * player's inventory below.
+ * line, a hologram of the player wired to the module sockets (three, or five on a Mk II) that light up in their
+ * module's colour, and the player's inventory below.
  */
 public class NeuralinkScreen extends AbstractContainerScreen<NeuralinkMenu> {
 	private static final int WIDTH = 196;
-	private static final int HEIGHT = 202;
-	private static final int CYAN = 0x00E5FF;
-	private static final int GLITCH = 0xFF2A6D;
-	private static final int TEXT = 0xFFE6FCFF;
-	private static final int DIM = 0xFF4FA8B8;
-	private static final int DARK = 0xFF2A5560;
 
-	// The hologram panel, relative to the screen's top left.
+	// The hologram panel, relative to the screen's top left; it runs down to the layout's holoBottom.
 	private static final int HOLO_X0 = 8;
 	private static final int HOLO_Y0 = 22;
 	private static final int HOLO_X1 = 64;
-	private static final int HOLO_Y1 = 100;
+	/** The hologram's height for three sockets, which the player model is sized for. */
+	private static final int BASE_HOLO_HEIGHT = 78;
 
 	private static final Component EMPTY_SOCKET = Component.translatable("container.mymod.neuralink.empty_socket");
 
 	public NeuralinkScreen(NeuralinkMenu menu, Inventory inventory, Component title) {
-		super(menu, inventory, title, WIDTH, HEIGHT);
+		super(menu, inventory, title, WIDTH, menu.layout().height());
 	}
 
-	private static int argb(int alpha, int rgb) {
-		return (Mth.clamp(alpha, 0, 255) << 24) | (rgb & 0xFFFFFF);
-	}
-
-	/** 0 to 1 and back, once per {@code periodMillis}. */
-	private static float wave(long now, float periodMillis, float phase) {
-		return 0.5f + 0.5f * Mth.sin((float) (now % 100000L) / periodMillis * Mth.TWO_PI + phase);
+	private int sockets() {
+		return menu.layout().sockets();
 	}
 
 	private NeuralinkModule moduleIn(int socket) {
@@ -91,20 +89,22 @@ public class NeuralinkScreen extends AbstractContainerScreen<NeuralinkMenu> {
 		graphics.fill(Math.max(x0 + 6, run), y0 + 17, Math.min(x1 - 6, run + 30), y0 + 18, argb(0xD0, CYAN));
 
 		// Hologram of the player.
-		int hx0 = x0 + HOLO_X0, hy0 = y0 + HOLO_Y0, hx1 = x0 + HOLO_X1, hy1 = y0 + HOLO_Y1;
+		NeuralinkMenu.Layout layout = menu.layout();
+		int hx0 = x0 + HOLO_X0, hy0 = y0 + HOLO_Y0, hx1 = x0 + HOLO_X1, hy1 = y0 + layout.holoBottom();
+		int modelSize = Math.min(40, 30 * (hy1 - hy0) / BASE_HOLO_HEIGHT);
 		graphics.fillGradient(hx0, hy0, hx1, hy1, argb(0x10, CYAN), argb(0x30, CYAN));
 		brackets(graphics, hx0, hy0, hx1, hy1, 6, 1, argb(0xE0, CYAN));
 		int base = hy1 - 8;
 		graphics.horizontalLine(hx0 + 10, hx1 - 11, base, argb(0x90, CYAN));
 		graphics.horizontalLine(hx0 + 16, hx1 - 17, base + 2, argb(0x60, CYAN));
 		graphics.horizontalLine(hx0 + 22, hx1 - 23, base + 4, argb(0x30, CYAN));
-		InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, hx0, hy0 + 2, hx1, base + 2, 30, 0.0625f, mouseX, mouseY,
+		InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, hx0, hy0 + 2, hx1, base + 2, modelSize, 0.0625f, mouseX, mouseY,
 				minecraft.player);
 		int holoScan = hy0 + (int) (now / 20 % (hy1 - hy0));
 		graphics.horizontalLine(hx0 + 1, hx1 - 2, holoScan, argb(0x60, CYAN));
 
 		// Module sockets, each wired to the hologram.
-		for (int socket = 0; socket < NeuralinkItem.MODULE_SLOTS; socket++) {
+		for (int socket = 0; socket < sockets(); socket++) {
 			Slot slot = menu.slots.get(socket);
 			NeuralinkModule module = moduleIn(socket);
 			int accent = module != null ? module.color() : CYAN;
@@ -125,8 +125,8 @@ public class NeuralinkScreen extends AbstractContainerScreen<NeuralinkMenu> {
 		}
 
 		// Inventory.
-		graphics.horizontalLine(x0 + 6, x1 - 7, y0 + 106, argb(0x50, CYAN));
-		for (int i = NeuralinkItem.MODULE_SLOTS; i < menu.slots.size(); i++) {
+		graphics.horizontalLine(x0 + 6, x1 - 7, y0 + layout.dividerY(), argb(0x50, CYAN));
+		for (int i = sockets(); i < menu.slots.size(); i++) {
 			Slot slot = menu.slots.get(i);
 			int sx = x0 + slot.x - 1, sy = y0 + slot.y - 1;
 			graphics.fill(sx, sy, sx + 18, sy + 18, 0xC00A1620);
@@ -150,15 +150,18 @@ public class NeuralinkScreen extends AbstractContainerScreen<NeuralinkMenu> {
 			graphics.text(font, title, 11, 7, argb(0xB0, CYAN), false);
 		}
 		graphics.text(font, title, 10, 6, TEXT, false);
-		String link = "N1 // LINK " + (now % 1000 < 600 ? "●" : "○");
+		String link = (menu.isMk2() ? "N2" : "N1") + " // LINK " + (now % 1000 < 600 ? "●" : "○");
 		graphics.text(font, link, imageWidth - 10 - font.width(link), 6, DIM, false);
 
-		for (int socket = 0; socket < NeuralinkItem.MODULE_SLOTS; socket++) {
+		NeuralinkMenu.Layout layout = menu.layout();
+		for (int socket = 0; socket < sockets(); socket++) {
 			NeuralinkModule module = moduleIn(socket);
-			int x = NeuralinkMenu.MODULE_X + 22, y = NeuralinkMenu.MODULE_Y + socket * NeuralinkMenu.MODULE_SPACING;
+			int x = NeuralinkMenu.MODULE_X + 22, y = layout.socketY(socket);
 			if (module != null) {
 				graphics.text(font, module.displayName().getString().toUpperCase(Locale.ROOT), x, y, argb(0xFF, module.color()), false);
-				graphics.text(font, "▪ " + Component.translatable("container.mymod.neuralink.ready").getString(), x, y + 9, DIM, false);
+				// Active modules are fired with the trigger key; passive ones just run.
+				String state = module.isActive() ? "container.mymod.neuralink.active" : "container.mymod.neuralink.ready";
+				graphics.text(font, "▪ " + Component.translatable(state).getString(), x, y + 9, DIM, false);
 			} else {
 				graphics.text(font, Component.translatable("container.mymod.neuralink.socket", socket + 1).getString(), x, y, DIM, false);
 				graphics.text(font, "— " + Component.translatable("container.mymod.neuralink.empty").getString() + " —", x, y + 9, DARK, false);
@@ -166,35 +169,16 @@ public class NeuralinkScreen extends AbstractContainerScreen<NeuralinkMenu> {
 		}
 
 		graphics.text(font, Component.translatable("container.mymod.neuralink.storage").getString(), NeuralinkMenu.INVENTORY_X - 1,
-				NeuralinkMenu.INVENTORY_Y - 11, DIM, false);
+				layout.inventoryY() - 11, DIM, false);
 		String hint = Component.translatable("container.mymod.neuralink.hint").getString();
-		graphics.text(font, hint, imageWidth - 9 - font.width(hint), NeuralinkMenu.INVENTORY_Y - 11, DARK, false);
+		graphics.text(font, hint, imageWidth - 9 - font.width(hint), layout.inventoryY() - 11, DARK, false);
 	}
 
 	@Override
 	protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 		super.extractTooltip(graphics, mouseX, mouseY);
-		if (hoveredSlot != null && hoveredSlot.index < NeuralinkItem.MODULE_SLOTS && !hoveredSlot.hasItem() && menu.getCarried().isEmpty()) {
+		if (hoveredSlot != null && hoveredSlot.index < sockets() && !hoveredSlot.hasItem() && menu.getCarried().isEmpty()) {
 			graphics.setTooltipForNextFrame(font, EMPTY_SOCKET, mouseX, mouseY);
 		}
-	}
-
-	/** L-shaped marks in the four corners of a box. */
-	private static void brackets(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int length, int thickness, int color) {
-		graphics.fill(x0, y0, x0 + length, y0 + thickness, color);
-		graphics.fill(x0, y0, x0 + thickness, y0 + length, color);
-		graphics.fill(x1 - length, y0, x1, y0 + thickness, color);
-		graphics.fill(x1 - thickness, y0, x1, y0 + length, color);
-		graphics.fill(x0, y1 - thickness, x0 + length, y1, color);
-		graphics.fill(x0, y1 - length, x0 + thickness, y1, color);
-		graphics.fill(x1 - length, y1 - thickness, x1, y1, color);
-		graphics.fill(x1 - thickness, y1 - length, x1, y1, color);
-	}
-
-	private static int mix(int from, int to, float amount) {
-		int r = (int) Mth.lerp(amount, (from >> 16) & 255, (to >> 16) & 255);
-		int g = (int) Mth.lerp(amount, (from >> 8) & 255, (to >> 8) & 255);
-		int b = (int) Mth.lerp(amount, from & 255, to & 255);
-		return (r << 16) | (g << 8) | b;
 	}
 }

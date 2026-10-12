@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mymod:computer_chip",
+    "minecraft:glass_pane",
+    "minecraft:blaze_powder",
+    "minecraft:redstone"
+  ],
+  "result": {
+    "id": "mymod:optic_lasers_module"
+  }
+}

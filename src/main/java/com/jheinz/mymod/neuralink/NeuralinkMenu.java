@@ -17,34 +17,43 @@ import com.jheinz.mymod.station.ModMenus;
 /**
  * The module sockets of the Neuralink in the player's hand, over their inventory. The sockets are stored on
  * the Neuralink itself, so every change is written straight back to it; while the menu is open the Neuralink
- * can't be moved.
+ * can't be moved. A Mk II has five sockets to the original's three, so the panel grows to fit them.
  */
 public class NeuralinkMenu extends AbstractContainerMenu {
 	// Slot positions, shared with the screen.
 	public static final int MODULE_X = 76;
-	public static final int MODULE_Y = 26;
-	public static final int MODULE_SPACING = 24;
 	public static final int INVENTORY_X = 17;
-	public static final int INVENTORY_Y = 120;
 
-	private static final int INVENTORY_START = NeuralinkItem.MODULE_SLOTS;
-	private static final int HOTBAR_START = INVENTORY_START + 27;
-	private static final int INVENTORY_END = HOTBAR_START + 9;
+	/**
+	 * Where things go for a Neuralink with this many sockets (y relative to the panel's top).
+	 *
+	 * @param holoBottom bottom of the hologram panel the sockets are wired to
+	 * @param dividerY   the rule between the sockets and the inventory
+	 */
+	public record Layout(int sockets, int moduleY, int spacing, int holoBottom, int dividerY, int inventoryY, int height) {
+		public static Layout of(int sockets) {
+			// Three sockets get room to breathe; more pack a little closer and the panel grows taller.
+			int spacing = sockets <= 3 ? 24 : 20;
+			int moduleY = sockets <= 3 ? 26 : 24;
+			int holoBottom = moduleY + (sockets - 1) * spacing + 26;
+			int inventoryY = holoBottom + 20;
+			return new Layout(sockets, moduleY, spacing, holoBottom, holoBottom + 6, inventoryY, inventoryY + 82);
+		}
+
+		public int socketY(int socket) {
+			return moduleY + socket * spacing;
+		}
+	}
 
 	private final Inventory inventory;
 	private final InteractionHand hand;
 	/** The inventory index of the Neuralink being edited. */
 	private final int deviceSlot;
-	private final SimpleContainer modules = new SimpleContainer(NeuralinkItem.MODULE_SLOTS) {
-		@Override
-		public void setChanged() {
-			super.setChanged();
-			ItemStack device = device();
-			if (device.getItem() instanceof NeuralinkItem) {
-				device.set(ModComponents.NEURALINK_MODULES, ItemContainerContents.fromItems(getItems()));
-			}
-		}
-	};
+	private final Layout layout;
+	private final int inventoryStart;
+	private final int hotbarStart;
+	private final int inventoryEnd;
+	private final SimpleContainer modules;
 
 	/** Client side: the server only opens this from a Neuralink in hand, the main hand if it holds one. */
 	public NeuralinkMenu(int containerId, Inventory inventory) {
@@ -57,12 +66,35 @@ public class NeuralinkMenu extends AbstractContainerMenu {
 		this.inventory = inventory;
 		this.hand = hand;
 		this.deviceSlot = hand == InteractionHand.MAIN_HAND ? inventory.getSelectedSlot() : Inventory.SLOT_OFFHAND;
+		this.layout = Layout.of(Math.max(1, NeuralinkItem.moduleSlots(device())));
+		this.inventoryStart = layout.sockets();
+		this.hotbarStart = inventoryStart + 27;
+		this.inventoryEnd = hotbarStart + 9;
+		this.modules = new SimpleContainer(layout.sockets()) {
+			@Override
+			public void setChanged() {
+				super.setChanged();
+				ItemStack device = device();
+				if (device.getItem() instanceof NeuralinkItem) {
+					device.set(ModComponents.NEURALINK_MODULES, ItemContainerContents.fromItems(getItems()));
+				}
+			}
+		};
 		NonNullList<ItemStack> installed = modules.getItems();
 		device().getOrDefault(ModComponents.NEURALINK_MODULES, ItemContainerContents.EMPTY).copyInto(installed);
-		for (int i = 0; i < NeuralinkItem.MODULE_SLOTS; i++) {
-			addSlot(new ModuleSlot(i, MODULE_X, MODULE_Y + i * MODULE_SPACING));
+		for (int i = 0; i < layout.sockets(); i++) {
+			addSlot(new ModuleSlot(i, MODULE_X, layout.socketY(i)));
 		}
-		addStandardInventorySlots(inventory, INVENTORY_X, INVENTORY_Y);
+		addStandardInventorySlots(inventory, INVENTORY_X, layout.inventoryY());
+	}
+
+	public Layout layout() {
+		return layout;
+	}
+
+	/** Whether this is the upgraded, five-socket Neuralink. */
+	public boolean isMk2() {
+		return layout.sockets() > 3;
 	}
 
 	private ItemStack device() {
@@ -97,14 +129,14 @@ public class NeuralinkMenu extends AbstractContainerMenu {
 		ItemStack stack = slot.getItem();
 		ItemStack original = stack.copy();
 
-		if (index < INVENTORY_START) {
-			if (!moveItemStackTo(stack, INVENTORY_START, INVENTORY_END, true)) {
+		if (index < inventoryStart) {
+			if (!moveItemStackTo(stack, inventoryStart, inventoryEnd, true)) {
 				return ItemStack.EMPTY;
 			}
-		} else if (!(stack.getItem() instanceof NeuralinkModuleItem) || !moveItemStackTo(stack, 0, INVENTORY_START, false)) {
-			boolean fromInventory = index < HOTBAR_START;
-			if (!moveItemStackTo(stack, fromInventory ? HOTBAR_START : INVENTORY_START,
-					fromInventory ? INVENTORY_END : HOTBAR_START, false)) {
+		} else if (!(stack.getItem() instanceof NeuralinkModuleItem) || !moveItemStackTo(stack, 0, inventoryStart, false)) {
+			boolean fromInventory = index < hotbarStart;
+			if (!moveItemStackTo(stack, fromInventory ? hotbarStart : inventoryStart,
+					fromInventory ? inventoryEnd : hotbarStart, false)) {
 				return ItemStack.EMPTY;
 			}
 		}

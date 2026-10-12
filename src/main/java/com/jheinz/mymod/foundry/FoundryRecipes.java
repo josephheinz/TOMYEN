@@ -14,7 +14,10 @@ import com.jheinz.mymod.foundry.FoundryRecipe.Cost;
 public final class FoundryRecipes {
 	public static final List<FoundryRecipe> ALL = List.of(
 			// Silica from quartz, fluxed with sand.
-			recipe(ModItems.SILICON, 1, 200, cost(Items.QUARTZ, 1), cost(Items.SAND, 1)));
+			recipe(ModItems.SILICON, 1, 200, cost(Items.QUARTZ, 1), cost(Items.SAND, 1)),
+			// A Neuralink fused with a bank of extra chips: five sockets, and its modules stay installed.
+			new FoundryRecipe(ModItems.NEURALINK_MK2, 1, 400, List.of(cost(ModItems.NEURALINK, 1), cost(ModItems.COMPUTER_CHIP, 6)),
+					ModItems.NEURALINK));
 
 	private FoundryRecipes() {
 	}

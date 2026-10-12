@@ -11,7 +11,8 @@
 		"HumanoidGunAimMixin",
 		"MinecraftAttackMixin",
 		"MinecraftSemiAutoMixin",
-		"GunAutoFireMixin"
+		"GunAutoFireMixin",
+		"MouseHandlerRadialMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

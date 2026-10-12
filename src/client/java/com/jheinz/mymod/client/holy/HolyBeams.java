@@ -6,9 +6,6 @@ import java.util.List;
 
 import org.joml.Vector3f;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 
 import net.minecraft.client.Minecraft;
@@ -18,6 +15,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.ModNetworking;
+import com.jheinz.mymod.client.BeamRibbon;
 
 /** Beams of light fired from crucifixes: a white-gold shaft that flashes bright and fades out over a moment. */
 public final class HolyBeams {
@@ -62,25 +60,9 @@ public final class HolyBeams {
 			Vector3f a = beam.from.subtract(camera).toVector3f();
 			Vector3f b = beam.to.subtract(camera).toVector3f();
 			context.submitNodeCollector().submitCustomGeometry(context.poseStack(), RenderTypes.lightning(), (pose, buffer) -> {
-				ribbon(pose, buffer, a, b, GLOW_WIDTH * width * (1.0f + age), 1.0f, 0.85f, 0.45f, 0.45f * fade);
-				ribbon(pose, buffer, a, b, CORE_WIDTH * width, 1.0f, 1.0f, 0.9f, 0.95f * fade);
+				BeamRibbon.draw(pose, buffer, a, b, GLOW_WIDTH * width * (1.0f + age), 1.0f, 0.85f, 0.45f, 0.45f * fade);
+				BeamRibbon.draw(pose, buffer, a, b, CORE_WIDTH * width, 1.0f, 1.0f, 0.9f, 0.95f * fade);
 			});
-		}
-	}
-
-	/** A flat strip from a to b, turned to face the camera (at the origin). */
-	private static void ribbon(PoseStack.Pose pose, VertexConsumer buffer, Vector3f a, Vector3f b, float halfWidth, float r, float g,
-			float bl, float alpha) {
-		Vector3f direction = new Vector3f(b).sub(a);
-		Vector3f mid = new Vector3f(a).add(b).mul(0.5f);
-		Vector3f side = new Vector3f(direction).cross(mid).normalize().mul(halfWidth);
-		Vector3f[] corners = {new Vector3f(a).sub(side), new Vector3f(a).add(side), new Vector3f(b).add(side), new Vector3f(b).sub(side)};
-		// Wind it counter-clockwise as seen from the camera, so it isn't culled.
-		Vector3f normal = new Vector3f(corners[1]).sub(corners[0]).cross(new Vector3f(corners[2]).sub(corners[0]));
-		boolean facing = normal.dot(new Vector3f(corners[0]).negate()) > 0.0f;
-		for (int i = 0; i < 4; i++) {
-			Vector3f corner = corners[facing ? i : 3 - i];
-			buffer.addVertex(pose, corner.x, corner.y, corner.z).setColor(r, g, bl, alpha);
 		}
 	}
 }

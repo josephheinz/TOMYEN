@@ -21,17 +21,30 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import com.jheinz.mymod.ModComponents;
+import com.jheinz.mymod.ModEffects;
 
 /**
- * Worn on the head. Using it in hand opens its interface, where up to {@link #MODULE_SLOTS} modules are
- * installed; sneak-use puts it on. Its modules work only while it's worn.
+ * Worn on the head. Using it in hand opens its interface, where up to {@link #moduleSlots()} modules are
+ * installed (3 for the original, 5 for the Mk II); sneak-use puts it on. Its modules work only while it's worn,
+ * and not at all while an EMP has knocked it out ({@link ModEffects#NEURAL_STATIC}).
  */
 public class NeuralinkItem extends Item {
-	public static final int MODULE_SLOTS = 3;
 	private static final Component TITLE = Component.translatable("container.mymod.neuralink");
 
-	public NeuralinkItem(Properties properties) {
+	private final int moduleSlots;
+
+	public NeuralinkItem(Properties properties, int moduleSlots) {
 		super(properties);
+		this.moduleSlots = moduleSlots;
+	}
+
+	public int moduleSlots() {
+		return moduleSlots;
+	}
+
+	/** The socket count of a Neuralink stack, 0 for anything else. */
+	public static int moduleSlots(ItemStack stack) {
+		return stack.getItem() instanceof NeuralinkItem neuralink ? neuralink.moduleSlots : 0;
 	}
 
 	@Override
@@ -57,10 +70,20 @@ public class NeuralinkItem extends Item {
 		return modules;
 	}
 
-	/** The modules working for an entity: those in the Neuralink on its head, if it wears one. */
-	public static Set<NeuralinkModule> activeModules(LivingEntity entity) {
+	/** The modules in the Neuralink on an entity's head, working or not. */
+	public static Set<NeuralinkModule> installedModules(LivingEntity entity) {
 		ItemStack head = entity.getItemBySlot(EquipmentSlot.HEAD);
 		return head.getItem() instanceof NeuralinkItem ? modules(head) : EnumSet.noneOf(NeuralinkModule.class);
+	}
+
+	/** Whether the entity's Neuralink is knocked out by an EMP. */
+	public static boolean isJammed(LivingEntity entity) {
+		return entity.hasEffect(ModEffects.NEURAL_STATIC);
+	}
+
+	/** The modules working for an entity: those in the Neuralink on its head, if it wears one and it isn't jammed. */
+	public static Set<NeuralinkModule> activeModules(LivingEntity entity) {
+		return isJammed(entity) ? EnumSet.noneOf(NeuralinkModule.class) : installedModules(entity);
 	}
 
 	public static boolean isActive(LivingEntity entity, NeuralinkModule module) {
@@ -71,6 +94,7 @@ public class NeuralinkItem extends Item {
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip,
 			TooltipFlag flag) {
 		Set<NeuralinkModule> modules = modules(stack);
+		tooltip.accept(Component.translatable("item.mymod.neuralink.sockets", modules.size(), moduleSlots).withStyle(ChatFormatting.DARK_AQUA));
 		if (modules.isEmpty()) {
 			tooltip.accept(Component.translatable("item.mymod.neuralink.no_modules").withStyle(ChatFormatting.DARK_GRAY));
 		}
@@ -79,5 +103,9 @@ public class NeuralinkItem extends Item {
 		}
 		tooltip.accept(Component.translatable("item.mymod.neuralink.open").withStyle(ChatFormatting.GRAY));
 		tooltip.accept(Component.translatable("item.mymod.neuralink.wear").withStyle(ChatFormatting.GRAY));
+		if (modules.stream().anyMatch(NeuralinkModule::isActive)) {
+			tooltip.accept(Component.translatable("item.mymod.neuralink.trigger", Component.keybind("key.mymod.neural_trigger"))
+					.withStyle(ChatFormatting.DARK_GRAY));
+		}
 	}
 }

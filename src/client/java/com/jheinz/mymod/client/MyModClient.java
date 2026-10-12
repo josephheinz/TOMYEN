@@ -31,6 +31,11 @@ import com.jheinz.mymod.client.holy.LightOrbRenderer;
 import com.jheinz.mymod.client.vampire.VampireCloakModel;
 import com.jheinz.mymod.client.vampire.VampireModel;
 import com.jheinz.mymod.client.vampire.VampireRenderer;
+import com.jheinz.mymod.client.neuralink.NeuralBeams;
+import com.jheinz.mymod.client.neuralink.NeuralClient;
+import com.jheinz.mymod.client.neuralink.NeuralHud;
+import com.jheinz.mymod.client.neuralink.NeuralSenses;
+import com.jheinz.mymod.client.neuralink.NeuralTrigger;
 import com.jheinz.mymod.client.neuralink.NeuralinkScreen;
 import com.jheinz.mymod.client.neuralink.NeuralinkVision;
 import com.jheinz.mymod.client.neuralink.OreScanner;
@@ -58,6 +63,7 @@ public class MyModClient implements ClientModInitializer {
 			GunAnimation.tick(client.player);
 			LaserSights.tick(client);
 			OreScanner.tick(client);
+			NeuralTrigger.tick(client);
 			while (FIRE_MODE_KEY.consumeClick()) {
 				if (client.player != null && client.player.getMainHandItem().getItem() instanceof GunItem) {
 					ClientPlayNetworking.send(ModNetworking.CycleFireMode.INSTANCE);
@@ -82,8 +88,15 @@ public class MyModClient implements ClientModInitializer {
 		ParticleProviderRegistry.getInstance().register(ModParticles.GREEN_LASER_DOT, LaserDotParticle.Provider::new);
 		LevelRenderEvents.COLLECT_SUBMITS.register(LaserBeams::submit);
 		LevelRenderEvents.COLLECT_SUBMITS.register(NeuralinkVision::submit);
+		LevelRenderEvents.COLLECT_SUBMITS.register(NeuralBeams::submit);
+		NeuralTrigger.initialize();
+		NeuralClient.register();
 		RangeSelectItemModelProperties.ID_MAPPER.put(MyMod.id("gun_animation"), GunAnimationProperty.MAP_CODEC);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, MyMod.id("ammo"), AmmoHud::extract);
+		// Screen-wide Neuralink effects go under everything else; world-anchored markers under the crosshair.
+		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, MyMod.id("neuralink_screen"), NeuralHud::extractScreen);
+		HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, MyMod.id("neuralink_senses"), NeuralSenses::extract);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, MyMod.id("neuralink"), NeuralHud::extract);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, MyMod.id("scope"), GunScope::extract);
 		HudElementRegistry.replaceElement(VanillaHudElements.CROSSHAIR, vanilla -> (graphics, delta) -> {
 			if (!GunCrosshair.extract(graphics, delta)) {

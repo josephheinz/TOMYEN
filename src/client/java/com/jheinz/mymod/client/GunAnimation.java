@@ -171,10 +171,10 @@ public final class GunAnimation {
 			if (gun.stats().singleRounds()) {
 				boolean single = rounds - Math.max(lastRounds, 0) == 1;
 				start(single ? Kind.LOAD_ROUND : Kind.SPEEDLOAD, motion, item,
-						single ? 250 : gun.stats().reloadTicks() * 50L);
+						single ? 250 : (long) (gun.stats().reloadTicks() * 50L * GunItem.reloadFactor(player)));
 			} else {
 				start(Kind.RELOAD, motion, item,
-						(gun.stats().reloadTicks() + gun.loadedMagazine(held).extraReloadTicks()) * 50L);
+						(long) ((gun.stats().reloadTicks() + gun.loadedMagazine(held).extraReloadTicks()) * 50L * GunItem.reloadFactor(player)));
 				// An empty gun (or an open bolt) has to be made ready once the new magazine is in.
 				if (lastRounds <= 0 || (lastBoltOpen && !boltOpen)) {
 					queued = new Running(motion.work(), motion, item, 0, duration(motion.work()));

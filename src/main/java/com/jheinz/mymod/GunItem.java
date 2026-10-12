@@ -39,6 +39,8 @@ import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.attachment.AttachmentItem;
 import com.jheinz.mymod.attachment.Attachments;
+import com.jheinz.mymod.neuralink.NeuralinkItem;
+import com.jheinz.mymod.neuralink.NeuralinkModule;
 
 /**
  * A magazine-fed hitscan firearm. Each use fires one round from the inserted magazine (a burst fires the rest
@@ -54,6 +56,12 @@ public class GunItem extends Item {
 	/** How long working a bolt blocks firing. */
 	private static final int BOLT_TICKS = 18;
 	private static final float SUPPRESSED_PITCH = 1.15f;
+	/** A Neuralink Smart-Link steadies hip fire this much... */
+	private static final float SMART_LINK_SPREAD = 0.65f;
+	/** ...and keeps rapid fire a little tighter. */
+	private static final float SMART_LINK_BLOOM = 0.85f;
+	/** Reloads take this much of their usual time while a Neuralink Overclock runs. */
+	private static final float OVERCLOCK_RELOAD_FACTOR = 0.5f;
 
 	private final GunStats stats;
 	private final List<MagazineItem> magazines;
@@ -83,16 +91,24 @@ public class GunItem extends Item {
 
 	/**
 	 * How it handles in this holder's hands. With something in the off hand it's fired one-handed: more kick
-	 * and wider shots, much more so for a long gun than a handgun.
+	 * and wider shots, much more so for a long gun than a handgun. A Neuralink Smart-Link tightens hip fire.
 	 */
 	public GunStats stats(ItemStack gun, LivingEntity holder) {
 		GunStats fitted = stats(gun);
-		if (!isOneHanded(holder)) {
-			return fitted;
+		if (isOneHanded(holder)) {
+			boolean handgun = isHandgun();
+			fitted = fitted.withRecoil(fitted.recoilDegrees() * (handgun ? 1.2f : 1.6f))
+					.withSpread(fitted.spreadDegrees() * (handgun ? 1.25f : 1.8f), fitted.bloomPerShot() * (handgun ? 1.1f : 1.4f));
 		}
-		boolean handgun = isHandgun();
-		return fitted.withRecoil(fitted.recoilDegrees() * (handgun ? 1.2f : 1.6f))
-				.withSpread(fitted.spreadDegrees() * (handgun ? 1.25f : 1.8f), fitted.bloomPerShot() * (handgun ? 1.1f : 1.4f));
+		if (NeuralinkItem.isActive(holder, NeuralinkModule.SMART_LINK)) {
+			fitted = fitted.withSpread(fitted.spreadDegrees() * SMART_LINK_SPREAD, fitted.bloomPerShot() * SMART_LINK_BLOOM);
+		}
+		return fitted;
+	}
+
+	/** How long a reload takes for this holder relative to normal: half while overclocked. */
+	public static float reloadFactor(LivingEntity holder) {
+		return holder.hasEffect(ModEffects.OVERCLOCKED) ? OVERCLOCK_RELOAD_FACTOR : 1.0f;
 	}
 
 	/** Holding a gun with something in the off hand, so the gun is held in one hand. */
@@ -257,7 +273,8 @@ public class GunItem extends Item {
 		gun.set(ModComponents.LOADED_MAGAZINE_TYPE, fresh.typeHolder());
 		gun.remove(ModComponents.BOLT_OPEN);
 		// From empty, the gun also has to be racked (or its bolt worked) once the new magazine is in.
-		player.getCooldowns().addCooldown(gun, stats.reloadTicks() + freshType.extraReloadTicks() + (roundsLeft == 0 ? RACK_TICKS : 0));
+		int reloadTicks = stats.reloadTicks() + freshType.extraReloadTicks() + (roundsLeft == 0 ? RACK_TICKS : 0);
+		player.getCooldowns().addCooldown(gun, Math.round(reloadTicks * reloadFactor(player)));
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CROSSBOW_LOADING_END,
 				SoundSource.PLAYERS, 1.0f, 0.8f);
 	}
@@ -309,7 +326,7 @@ public class GunItem extends Item {
 		MagazineContents fresh = player.getInventory().getItem(slot).remove(ModComponents.MAGAZINE_CONTENTS);
 		returnLooseRounds(player, gun);
 		gun.set(ModComponents.LOADED_MAGAZINE, fresh);
-		player.getCooldowns().addCooldown(gun, stats.reloadTicks());
+		player.getCooldowns().addCooldown(gun, Math.round(stats.reloadTicks() * reloadFactor(player)));
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CROSSBOW_LOADING_END,
 				SoundSource.PLAYERS, 1.0f, 0.9f);
 	}

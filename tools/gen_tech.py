@@ -1,4 +1,5 @@
-"""Paints tech scrap, silicon, computer chips, the Neuralink and its modules, and writes their item models. The Neuralink has a flat icon for
+"""Paints tech scrap, silicon, computer chips, the Neuralink (and Mk II) and its modules, and the Neuralink's
+status effect icons, and writes their item models. The Neuralink has a flat icon for
 inventories and hands, and a small 3D implant for when it's worn: an item on the head slot is drawn by
 vanilla's custom-head layer with the "head" display transform, scaled here so 1 model unit = 1 head pixel.
 In that space the head fills 4..12 on every axis; +x is the wearer's right, +y up and +z the back."""
@@ -126,6 +127,9 @@ png(os.path.join(TEX, "item/silicon.png"), 16, 16, sprite(SILICON, SILICON_PALET
 png(os.path.join(TEX, "item/computer_chip.png"), 16, 16, sprite(COMPUTER_CHIP, COMPUTER_CHIP_PALETTE))
 
 png(os.path.join(TEX, "item/neuralink.png"), 16, 16, sprite(NEURALINK, NEURALINK_PALETTE))
+# The Mk II: the same band in graphite and gold, with brighter pods.
+NEURALINK_MK2_PALETTE = {"o": 0xC9A23A, "w": 0x3A3F48, "m": 0x23272F, "c": 0x7DF9FF, "b": 0xFFD54F}
+png(os.path.join(TEX, "item/neuralink_mk2.png"), 16, 16, sprite(NEURALINK, NEURALINK_MK2_PALETTE))
 
 # Neuralink modules: a white cartridge with gold contacts and a dark window showing the module's symbol in its
 # colour, with a matching status light.
@@ -152,6 +156,19 @@ MODULE_SYMBOLS = {
     "esp_module": (0xFF4D6A, ["aa..aa", "a....a", "a....a", "aa..aa"]),
     "night_vision_module": (0x5CFF7A, [".aaaa.", "a.aa.a", "a.aa.a", ".aaaa."]),
     "xray_module": (0xC77DFF, ["..aa..", ".a..a.", ".a..a.", "..aa.."]),
+    # Actives: converging beams, a block lifted off a palm, a double chevron, lock-on brackets, a bolt, a clock.
+    "optic_lasers_module": (0xFF3B30, ["a....a", ".a..a.", "..aa..", "..aa.."]),
+    "telekinesis_module": (0xB388FF, ["..aa..", "..aa..", "......", "a.aa.a"]),
+    "blink_module": (0x40C4FF, ["a..a..", ".a..a.", ".a..a.", "a..a.."]),
+    "neural_hijack_module": (0xFF6EC7, ["a.aa.a", ".a..a.", ".a..a.", "a.aa.a"]),
+    "emp_pulse_module": (0xFFEA00, ["..a...", ".aaa..", "...aaa", "....a."]),
+    "overclock_module": (0xFF9100, [".aaaa.", "a.a..a", "a..a.a", ".aaaa."]),
+    # Passives: a crosshair, a thought bubble, a heartbeat, honeycomb, a map pin.
+    "smart_link_module": (0x18FFFF, ["..aa..", "aa..aa", "aa..aa", "..aa.."]),
+    "mind_reader_module": (0xF48FB1, [".aaaa.", "a....a", ".aaaa.", ".a...."]),
+    "bio_monitor_module": (0x76FF03, ["..a...", "..aa..", "aa.a.a", "...a.."]),
+    "hive_mind_module": (0xFFC23D, ["aa.aa.", ".aa.aa", "aa.aa.", ".aa.aa"]),
+    "recall_module": (0x84FFFF, [".aaaa.", "aa..aa", ".aaaa.", "..aa.."]),
 }
 for name, (accent, symbol) in MODULE_SYMBOLS.items():
     rows = [list(r) for r in MODULE_BODY]
@@ -169,6 +186,65 @@ for x0, base, light in SWATCHES.values():
         for x in range(4):
             parts[y * 16 + x0 + x] = rgba(light if (x + y) < 2 or (x == 1 and y == 1) else base)
 png(os.path.join(TEX, "item/neuralink_parts.png"), 16, 16, parts)
+# The Mk II's: graphite shell, gold trim, the same glow.
+MK2_SWATCHES = {"white": (0x3A3F48, 0x5A606B), "trim": (0xC9A23A, 0xFFD54F), "glow": (0x3EF2FF, 0xC8FDFF)}
+parts = [(0, 0, 0, 0)] * (16 * 16)
+for name, (base, light) in MK2_SWATCHES.items():
+    x0 = SWATCHES[name][0]
+    for y in range(4):
+        for x in range(4):
+            parts[y * 16 + x0 + x] = rgba(light if (x + y) < 2 or (x == 1 and y == 1) else base)
+png(os.path.join(TEX, "item/neuralink_mk2_parts.png"), 16, 16, parts)
+
+
+def effect_icon(name, rows, palette):
+    """An 18x18 status effect icon from 16 rows of 16, centred."""
+    px = [(0, 0, 0, 0)] * (18 * 18)
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch != ".":
+                px[(y + 1) * 18 + x + 1] = rgba(palette[ch])
+    png(os.path.join(TEX, "mob_effect/%s.png" % name), 18, 18, px)
+
+
+# Neural static: a cracked screen full of snow over a dead signal bar.
+effect_icon("neural_static", [
+    "................",
+    ".oooooooooooooo.",
+    ".owgwwgwgwwgwwo.",
+    ".ogwwgwwkwgwwgo.",
+    ".owwgwwkkwwgwwo.",
+    ".ogwwwkwwkwwwgo.",
+    ".owgwkwwgwkwgwo.",
+    ".owwkwgwwwwkwwo.",
+    ".ogkwwwgwgwwkgo.",
+    ".owwgwwwgwwgwwo.",
+    ".oooooooooooooo.",
+    "......oooo......",
+    "....oooooooo....",
+    "................",
+    "..r..r..r..r....",
+    "..r..r..........",
+], {"o": 0x3A3F48, "w": 0x9AA4B0, "g": 0xD8DEE6, "k": 0x15171C, "r": 0xFF2A6D})
+# Overclocked: a stopwatch with a lightning-fast hand and speed lines.
+effect_icon("overclocked", [
+    "......oooo......",
+    ".......oo.......",
+    ".....oooooo.....",
+    "...oohhhhhhoo...",
+    "..ohhhhhhhhhho..",
+    "..ohhhhhyhhhho..",
+    ".ohhhhhhyhhhhho.",
+    ".ohhhhhhyhhhhho.",
+    ".ohhhhhhyyyyhho.",
+    ".ohhhhhhhhhhhho.",
+    "..ohhhhhhhhhho..",
+    "..ohhhhhhhhhho..",
+    "...oohhhhhhoo...",
+    ".....oooooo.....",
+    "ss..............",
+    "sss.ss..........",
+], {"o": 0x7A3B00, "h": 0xFFE0B2, "y": 0xFF6D00, "s": 0xFF9100})
 
 
 def box(name, frm, to, swatch, skip=(), glow=False):
@@ -215,8 +291,15 @@ write_json(os.path.join(MODELS, "neuralink_worn.json"), {
     # 1.6 undoes the custom-head layer's 0.625 so model units are head pixels.
     "display": {"head": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1.6, 1.6, 1.6]}},
 })
+write_json(os.path.join(MODELS, "neuralink_mk2_worn.json"), {
+    "textures": {"parts": "mymod:item/neuralink_mk2_parts", "particle": "mymod:item/neuralink_mk2_parts"},
+    "elements": ELEMENTS,
+    "display": {"head": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1.6, 1.6, 1.6]}},
+})
 write_json(os.path.join(MODELS, "neuralink.json"),
            {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/neuralink"}})
+write_json(os.path.join(MODELS, "neuralink_mk2.json"),
+           {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/neuralink_mk2"}})
 write_json(os.path.join(MODELS, "tech_scrap.json"),
            {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/tech_scrap"}})
 
@@ -226,10 +309,11 @@ for name in [*MODULE_SYMBOLS, "silicon", "computer_chip"]:
 ITEMS = os.path.join(ASSETS, "items")
 for name in ["tech_scrap", "silicon", "computer_chip", *MODULE_SYMBOLS]:
     write_json(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
-write_json(os.path.join(ITEMS, "neuralink.json"), {"model": {
-    "type": "minecraft:select",
-    "property": "minecraft:display_context",
-    "cases": [{"when": ["head"], "model": {"type": "minecraft:model", "model": "mymod:item/neuralink_worn"}}],
-    "fallback": {"type": "minecraft:model", "model": "mymod:item/neuralink"},
-}})
+for name in ["neuralink", "neuralink_mk2"]:
+    write_json(os.path.join(ITEMS, name + ".json"), {"model": {
+        "type": "minecraft:select",
+        "property": "minecraft:display_context",
+        "cases": [{"when": ["head"], "model": {"type": "minecraft:model", "model": "mymod:item/%s_worn" % name}}],
+        "fallback": {"type": "minecraft:model", "model": "mymod:item/" + name},
+    }})
 print("ok:", len(ELEMENTS), "elements")

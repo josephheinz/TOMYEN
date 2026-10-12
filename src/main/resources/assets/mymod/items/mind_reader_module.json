@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mymod:item/mind_reader_module"
+  }
+}

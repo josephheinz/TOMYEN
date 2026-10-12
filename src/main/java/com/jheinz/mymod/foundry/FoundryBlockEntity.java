@@ -87,7 +87,7 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 
 	public static void serverTick(Level level, BlockPos pos, BlockState state, FoundryBlockEntity foundry) {
 		FoundryRecipe recipe = FoundryRecipes.find(foundry);
-		boolean canSmelt = recipe != null && foundry.hasRoomFor(recipe.result());
+		boolean canSmelt = recipe != null && foundry.hasRoomFor(recipe.result(foundry));
 		boolean changed = false;
 
 		if (canSmelt && foundry.heat == 0 && foundry.items.get(FUEL_SLOT).is(Items.LAVA_BUCKET)) {
@@ -102,10 +102,11 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 			foundry.progressTotal = recipe.cookTicks();
 			if (++foundry.progress >= foundry.progressTotal) {
 				foundry.progress = 0;
+				ItemStack result = recipe.result(foundry);
 				recipe.consume(foundry);
 				ItemStack output = foundry.items.get(OUTPUT_SLOT);
 				if (output.isEmpty()) {
-					foundry.items.set(OUTPUT_SLOT, recipe.result());
+					foundry.items.set(OUTPUT_SLOT, result);
 				} else {
 					output.grow(recipe.resultCount());
 				}

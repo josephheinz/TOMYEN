@@ -8,9 +8,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 import com.jheinz.mymod.ModDamageTypes;
+import com.jheinz.mymod.neuralink.NeuralinkItem;
+import com.jheinz.mymod.neuralink.NeuralinkModule;
 
 /**
- * Loses half a heart every two seconds (faster at higher levels). A bleeding player at night also has a
+ * Loses half a heart every two seconds (faster at higher levels), half that with a Neuralink Bio-Monitor
+ * clotting it. A bleeding player at night also has a
  * chance each time of drawing a fresh vampire out of the dark nearby; see {@link BloodScent}.
  */
 public class BleedingEffect extends MobEffect {
@@ -29,7 +32,8 @@ public class BleedingEffect extends MobEffect {
 
 	@Override
 	public boolean applyEffectTick(ServerLevel level, LivingEntity mob, int amplification) {
-		mob.hurtServer(level, mob.damageSources().source(ModDamageTypes.BLEEDING), 1.0f);
+		float damage = NeuralinkItem.isActive(mob, NeuralinkModule.BIO_MONITOR) ? 0.5f : 1.0f;
+		mob.hurtServer(level, mob.damageSources().source(ModDamageTypes.BLEEDING), damage);
 		if (mob instanceof Player player) {
 			BloodScent.maybeCallVampire(level, player);
 		}

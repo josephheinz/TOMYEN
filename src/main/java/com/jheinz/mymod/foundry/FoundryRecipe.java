@@ -2,19 +2,34 @@ package com.jheinz.mymod.foundry;
 
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 /**
  * Something the Foundry smelts: up to two ingredients with amounts, in either input slot, and nothing else in
- * the inputs.
+ * the inputs. An upgrade recipe turns its {@code upgrades} ingredient into the result, keeping that item's data
+ * (a Neuralink's installed modules, say).
  */
-public record FoundryRecipe(Item resultItem, int resultCount, int cookTicks, List<Cost> costs) {
+public record FoundryRecipe(Item resultItem, int resultCount, int cookTicks, List<Cost> costs, @Nullable Item upgrades) {
 	public record Cost(Item item, int count) {
 	}
 
-	public ItemStack result() {
+	public FoundryRecipe(Item resultItem, int resultCount, int cookTicks, List<Cost> costs) {
+		this(resultItem, resultCount, cookTicks, costs, null);
+	}
+
+	/** What smelting these inputs gives. */
+	public ItemStack result(Container container) {
+		if (upgrades != null) {
+			for (int slot = 0; slot < FoundryBlockEntity.INPUT_COUNT; slot++) {
+				if (container.getItem(slot).is(upgrades)) {
+					return container.getItem(slot).transmuteCopy(resultItem, resultCount);
+				}
+			}
+		}
 		return new ItemStack(resultItem, resultCount);
 	}
 

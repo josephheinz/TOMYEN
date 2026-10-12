@@ -7,6 +7,7 @@ import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jheinz.mymod.neuralink.NeuralCore;
 import com.jheinz.mymod.neuralink.NeuralinkEffects;
 import com.jheinz.mymod.station.ModMenus;
 
@@ -36,6 +37,7 @@ public class MyMod implements ModInitializer {
 		BurstFire.initialize();
 		GunOffhand.initialize();
 		NeuralinkEffects.initialize();
+		NeuralCore.initialize();
 	}
 
 	public static Identifier id(String path) {

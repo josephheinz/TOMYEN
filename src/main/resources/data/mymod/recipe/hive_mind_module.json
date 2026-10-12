@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mymod:tech_scrap",
+    "mymod:tech_scrap",
+    "minecraft:glass_pane",
+    "minecraft:honeycomb"
+  ],
+  "result": {
+    "id": "mymod:hive_mind_module"
+  }
+}
