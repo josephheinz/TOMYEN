@@ -37,6 +37,7 @@ public class MyMod implements ModInitializer {
 		ModParticles.initialize();
 		ModEffects.initialize();
 		ModItems.initialize();
+		ModCreativeTabs.initialize();
 		ModBlocks.initialize();
 		Industry.initialize();
 		Hogfires.initialize();
