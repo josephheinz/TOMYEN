@@ -13,6 +13,7 @@ import net.minecraft.world.item.Items;
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.powerarmor.PowerArmorRecipes;
+import com.jheinz.mymod.silver.Silver;
 import com.jheinz.mymod.station.StationRecipe.Cost;
 
 /** Everything the Weapon Station can make. Built from code, so client and server always agree. */
@@ -29,6 +30,11 @@ public final class StationRecipes {
 			// Soft gold for the expanding tip.
 			recipe(ModItems.BULLET_556_HOLLOW_POINT, 4,
 					cost(ModItems.BULLET_CASING_556, 4), cost(Items.GUNPOWDER, 1), cost(Items.GOLD_NUGGET, 1)),
+			// Silver for the evil; holy silver too, or consecrate silver rounds by dropping them in crucifix light.
+			recipe(ModItems.BULLET_556_SILVER, 4,
+					cost(ModItems.BULLET_CASING_556, 4), cost(Items.GUNPOWDER, 1), cost(Silver.SILVER_NUGGET, 1)),
+			recipe(ModItems.BULLET_556_HOLY_SILVER, 4,
+					cost(ModItems.BULLET_CASING_556, 4), cost(Items.GUNPOWDER, 1), cost(Silver.HOLY_SILVER_NUGGET, 1)),
 			// 9mm: smaller cases, less powder per round.
 			recipe(ModItems.BULLET_CASING_9MM, 12, cost(Items.COPPER_INGOT, 1), cost(Items.GOLD_NUGGET, 1)),
 			recipe(ModItems.BULLET_9MM_FMJ, 8,

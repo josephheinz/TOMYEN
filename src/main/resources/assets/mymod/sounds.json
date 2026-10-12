@@ -747,5 +747,80 @@
       "mymod:nose_hair_whip_snag1",
       "mymod:nose_hair_whip_snag2"
     ]
+  },
+  "holy_silver_consecrate": {
+    "subtitle": "subtitles.mymod.holy_silver_consecrate",
+    "sounds": [
+      {
+        "name": "minecraft:block/conduit/activate",
+        "pitch": 1.35,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:block/beacon/activate",
+        "pitch": 1.7,
+        "volume": 0.8
+      }
+    ]
+  },
+  "holy_silver_ward": {
+    "subtitle": "subtitles.mymod.holy_silver_ward",
+    "sounds": [
+      {
+        "name": "minecraft:block/amethyst/resonate1",
+        "pitch": 1.7,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:block/amethyst/resonate2",
+        "pitch": 1.7,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:block/amethyst/resonate3",
+        "pitch": 1.7,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:block/amethyst/resonate4",
+        "pitch": 1.7,
+        "volume": 0.9
+      }
+    ]
+  },
+  "item.armor.equip_holy_silver": {
+    "subtitle": "subtitles.mymod.item.armor.equip_holy_silver",
+    "sounds": [
+      {
+        "name": "minecraft:item/armor/equip_gold1",
+        "pitch": 1.25,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/armor/equip_gold2",
+        "pitch": 1.25,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/armor/equip_gold3",
+        "pitch": 1.25,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/armor/equip_gold4",
+        "pitch": 1.25,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/armor/equip_gold5",
+        "pitch": 1.25,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/armor/equip_gold6",
+        "pitch": 1.25,
+        "volume": 1.0
+      }
+    ]
   }
 }

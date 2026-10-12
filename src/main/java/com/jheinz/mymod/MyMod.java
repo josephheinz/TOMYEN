@@ -20,6 +20,7 @@ import com.jheinz.mymod.longsword.LongSwords;
 import com.jheinz.mymod.shotgun.Shotguns;
 import com.jheinz.mymod.powerarmor.PowerArmors;
 import com.jheinz.mymod.schnozzle.Schnozzles;
+import com.jheinz.mymod.silver.Silver;
 import com.jheinz.mymod.tank.Tanks;
 import com.jheinz.mymod.station.ModMenus;
 
@@ -45,6 +46,7 @@ public class MyMod implements ModInitializer {
 		ModCreativeTabs.initialize();
 		ModBlocks.initialize();
 		Industry.initialize();
+		Silver.initialize();
 		Hogfires.initialize();
 		ModEntities.initialize();
 		ModMenus.initialize();

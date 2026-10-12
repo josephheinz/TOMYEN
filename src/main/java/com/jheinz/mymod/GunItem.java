@@ -41,6 +41,7 @@ import com.jheinz.mymod.attachment.AttachmentItem;
 import com.jheinz.mymod.attachment.Attachments;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.neuralink.NeuralinkModule;
+import com.jheinz.mymod.silver.EvilBane;
 
 /**
  * A magazine-fed hitscan firearm. Each use fires one round from the inserted magazine (a burst fires the rest
@@ -426,7 +427,8 @@ public class GunItem extends Item {
 			Entity target = entityHit.getEntity();
 			DamageSource source = new DamageSource(
 					level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(round.damageType()), shooter);
-			target.hurtServer(level, source, round.damage());
+			target.hurtServer(level, source, round.damage() * EvilBane.multiplier(round.item(), target));
+			EvilBane.afterHit(level, round.item(), target);
 			Vec3 hit = entityHit.getLocation();
 			level.sendParticles(ParticleTypes.CRIT, hit.x, hit.y, hit.z, 6, 0.1, 0.1, 0.1, 0.2);
 			drawTracer(level, muzzle, hit, suppressed);

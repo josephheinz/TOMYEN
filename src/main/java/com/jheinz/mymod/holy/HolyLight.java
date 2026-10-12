@@ -13,12 +13,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
@@ -28,27 +28,41 @@ import net.minecraft.world.phys.Vec3;
 import com.jheinz.mymod.ModDamageTypes;
 import com.jheinz.mymod.ModNetworking;
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.silver.HolySilver;
 import com.jheinz.mymod.vampire.Vampire;
 
 /**
- * Holy light from a crucifix: harmless to the living, it burns the undead and anything in the
- * {@code mymod:holy_vulnerable} entity tag (vampires, the Schnozzle), the tagged ones worst of all.
+ * Holy light from a crucifix: harmless to the living, it burns the evil ({@link #EVIL}: the undead and anything in the
+ * {@code mymod:holy_vulnerable} entity tag, such as vampires and the Schnozzle), the holy-vulnerable worst of all. It
+ * also consecrates dropped silver it touches (see HolySilver).
  */
 public final class HolyLight {
 	/** Holy light hurts what's in this tag even if it isn't undead, and hurts it {@link #VULNERABLE_MULTIPLIER} times as much. */
 	public static final TagKey<EntityType<?>> HOLY_VULNERABLE = TagKey.create(Registries.ENTITY_TYPE, MyMod.id("holy_vulnerable"));
 	public static final float VULNERABLE_MULTIPLIER = 3.0f;
+	/**
+	 * The evil: everything holy light burns, silver bites and holy silver armor wards off. {@code mymod:evil} holds
+	 * {@code #mymod:holy_vulnerable} and {@code #minecraft:undead}.
+	 */
+	public static final TagKey<EntityType<?>> EVIL = TagKey.create(Registries.ENTITY_TYPE, MyMod.id("evil"));
 	public static final double BEAM_RANGE = 48.0;
 	/** Beam damage at full charge. */
 	public static final float BEAM_DAMAGE = 8.0f;
 	/** Vampires this close to a beam's path are lit up by it. */
 	private static final double BEAM_REVEAL_RADIUS = 5.0;
+	/** Dropped items this close to where the beam strikes are caught in its light. */
+	private static final double ITEM_SPLASH = 0.75;
 
 	private HolyLight() {
 	}
 
+	/** Whether the entity is evil: undead or holy-vulnerable. */
+	public static boolean isEvil(@Nullable Entity entity) {
+		return entity != null && entity.is(EVIL);
+	}
+
 	public static boolean hurts(Entity entity) {
-		return entity instanceof LivingEntity living && (living.is(EntityTypeTags.UNDEAD) || living.is(HOLY_VULNERABLE));
+		return entity instanceof LivingEntity && isEvil(entity);
 	}
 
 	/** Hurts the target if it's undead or holy-vulnerable (triple for the latter); does nothing to anything else. */
@@ -76,7 +90,12 @@ public final class HolyLight {
 		double width = 0.2 + 0.4 * power;
 		for (Entity entity : level.getEntities(player, new AABB(start, end).inflate(BEAM_REVEAL_RADIUS), Entity::isAlive)) {
 			Optional<Vec3> hit = entity.getBoundingBox().inflate(width).clip(start, end);
-			if (hit.isPresent()) {
+			if (entity instanceof ItemEntity item) {
+				// Dropped silver in the beam, or lying where it lands.
+				if (hit.isPresent() || item.getBoundingBox().inflate(ITEM_SPLASH).contains(end)) {
+					HolySilver.consecrate(level, item);
+				}
+			} else if (hit.isPresent()) {
 				smite(level, entity, player, player, BEAM_DAMAGE * power);
 			}
 			if (entity instanceof Vampire vampire && distanceToSegment(vampire.position().add(0, 1, 0), start, end) < BEAM_REVEAL_RADIUS) {

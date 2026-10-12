@@ -2,6 +2,8 @@
   "values": [
     "mymod:bauxite_ore",
     "mymod:oil_shale",
-    "mymod:deepslate_oil_shale"
+    "mymod:deepslate_oil_shale",
+    "mymod:silver_ore",
+    "mymod:deepslate_silver_ore"
   ]
 }

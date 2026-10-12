@@ -1,5 +1,7 @@
 {
   "values": [
-    "#mymod:long_swords"
+    "#mymod:long_swords",
+    "mymod:silver_sword",
+    "mymod:holy_silver_sword"
   ]
 }

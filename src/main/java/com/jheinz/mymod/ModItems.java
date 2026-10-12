@@ -49,6 +49,7 @@ import com.jheinz.mymod.lmg.MachineGuns;
 import com.jheinz.mymod.schnozzle.Schnozzles;
 import com.jheinz.mymod.shotgun.ShotgunItem;
 import com.jheinz.mymod.shotgun.Shotguns;
+import com.jheinz.mymod.silver.EvilBane;
 
 public final class ModItems {
 	/** Field-of-view multiplier when aiming through a red dot sight. */
@@ -64,11 +65,17 @@ public final class ModItems {
 	public static final Item BULLET_556_GREEN_TIP = item("bullet_556_green_tip");
 	public static final Item BULLET_556_AP = item("bullet_556_ap");
 	public static final Item BULLET_556_HOLLOW_POINT = item("bullet_556_hollow_point");
+	// Silver rounds hit the evil (undead and holy-vulnerable) twice as hard, holy silver three times and sets them alight
+	// (see EvilBane); against anything else they're FMJ. A dropped silver round turns holy in crucifix light.
+	public static final Item BULLET_556_SILVER = round("bullet_556_silver", EvilBane.SILVER);
+	public static final Item BULLET_556_HOLY_SILVER = round("bullet_556_holy_silver", EvilBane.HOLY_SILVER);
 	private static final List<Ammo> AMMO_556 = List.of(
 			new Ammo(BULLET_556_FMJ, 6.0f, ModDamageTypes.BULLET, 0xD08A4E),
 			new Ammo(BULLET_556_GREEN_TIP, 5.5f, ModDamageTypes.PENETRATOR_BULLET, 0x6CC24A),
 			new Ammo(BULLET_556_AP, 5.0f, ModDamageTypes.ARMOR_PIERCING_BULLET, 0xB4B4B4),
-			new Ammo(BULLET_556_HOLLOW_POINT, 9.0f, ModDamageTypes.HOLLOW_POINT_BULLET, 0xE05A4E));
+			new Ammo(BULLET_556_HOLLOW_POINT, 9.0f, ModDamageTypes.HOLLOW_POINT_BULLET, 0xE05A4E),
+			new Ammo(BULLET_556_SILVER, 6.0f, ModDamageTypes.BULLET, 0xC9D3E0),
+			new Ammo(BULLET_556_HOLY_SILVER, 6.0f, ModDamageTypes.BULLET, 0xFFE9A0));
 
 	// 9x19mm Parabellum: Glock
 	public static final Item BULLET_CASING_9MM = item("bullet_casing_9mm");
@@ -114,9 +121,14 @@ public final class ModItems {
 	// ball that carries much further. Shells go straight into a shotgun's tube from the inventory.
 	public static final Item SHELL_12G_BUCKSHOT = item("shell_12g_buckshot");
 	public static final Item SHELL_12G_SLUG = item("shell_12g_slug");
+	/** Buckshot of silver (and holy silver): plain buckshot, but every pellet bites the evil like a silver round. */
+	public static final Item SHELL_12G_SILVER_BUCKSHOT = round("shell_12g_silver_buckshot", EvilBane.SILVER);
+	public static final Item SHELL_12G_HOLY_SILVER_BUCKSHOT = round("shell_12g_holy_silver_buckshot", EvilBane.HOLY_SILVER);
 	private static final List<ShotgunItem.Shell> SHELLS_12G = List.of(
 			new ShotgunItem.Shell(SHELL_12G_BUCKSHOT, 8, 2.5f, 4.5f, 8.0, 28.0, 0.3f, 40.0, 0xD8483A),
-			new ShotgunItem.Shell(SHELL_12G_SLUG, 1, 16.0f, 0.0f, 20.0, 60.0, 0.6f, 80.0, 0x5AA866));
+			new ShotgunItem.Shell(SHELL_12G_SLUG, 1, 16.0f, 0.0f, 20.0, 60.0, 0.6f, 80.0, 0x5AA866),
+			new ShotgunItem.Shell(SHELL_12G_SILVER_BUCKSHOT, 8, 2.5f, 4.5f, 8.0, 28.0, 0.3f, 40.0, 0xC9D3E0),
+			new ShotgunItem.Shell(SHELL_12G_HOLY_SILVER_BUCKSHOT, 8, 2.5f, 4.5f, 8.0, 28.0, 0.3f, 40.0, 0xFFE9A0));
 
 	public static final MagazineItem STANAG_MAGAZINE = magazine("stanag_magazine", 30, AMMO_556, 0);
 	public static final MagazineItem GLOCK_MAGAZINE = magazine("glock_magazine", 17, AMMO_9MM, 0);
@@ -355,6 +367,10 @@ public final class ModItems {
 		return register(name, Item::new, new Item.Properties());
 	}
 
+	private static Item round(String name, EvilBane bane) {
+		return register(name, Item::new, new Item.Properties().component(ModComponents.EVIL_BANE, bane));
+	}
+
 	private static Item longSword(String name, Item.Properties properties) {
 		return register(name, LongSwordItem::new, properties);
 	}
@@ -443,6 +459,8 @@ public final class ModItems {
 					ammo.addAll(ammoEntries(BULLET_CASING_357, AMMO_357, SPEEDLOADER_357));
 					ammo.add(new ItemStack(SHELL_12G_BUCKSHOT));
 					ammo.add(new ItemStack(SHELL_12G_SLUG));
+					ammo.add(new ItemStack(SHELL_12G_SILVER_BUCKSHOT));
+					ammo.add(new ItemStack(SHELL_12G_HOLY_SILVER_BUCKSHOT));
 					output.insertAfter(Items.ARROW, ammo);
 				});
 	}

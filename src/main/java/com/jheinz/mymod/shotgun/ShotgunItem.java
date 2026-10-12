@@ -49,6 +49,7 @@ import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.ModDamageTypes;
 import com.jheinz.mymod.attachment.AttachmentItem;
 import com.jheinz.mymod.attachment.Attachments;
+import com.jheinz.mymod.silver.EvilBane;
 
 /**
  * A tube-fed shotgun. Shells go into the tube one at a time straight from the inventory (no magazines): a punch
@@ -261,7 +262,10 @@ public class ShotgunItem extends GunItem {
 				GunItem.drawTracer(level, muzzle, stop, false);
 			}
 		}
-		blows.forEach((target, damage) -> target.hurtServer(level, source, damage));
+		blows.forEach((target, damage) -> {
+			target.hurtServer(level, source, damage * EvilBane.multiplier(shell.item(), target));
+			EvilBane.afterHit(level, shell.item(), target);
+		});
 
 		// A shotgun's bark: a fat puff of smoke and a lick of flame that others see.
 		level.sendParticles(ParticleTypes.SMOKE, muzzle.x, muzzle.y, muzzle.z, 8, 0.06, 0.06, 0.06, 0.02);
