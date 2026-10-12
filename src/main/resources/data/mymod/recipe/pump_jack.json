@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "mymod:steel_ingot",
+    "R": "minecraft:redstone",
+    "P": "minecraft:piston",
+    "C": "mymod:empty_canister"
+  },
+  "pattern": [
+    "SSS",
+    "RPR",
+    "SCS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:pump_jack"
+  }
+}

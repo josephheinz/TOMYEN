@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mymod:block/bauxite_ore"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#minecraft:stone_ore_replaceables",
+    "#minecraft:terracotta",
+    "#minecraft:dirt",
+    "minecraft:red_sandstone",
+    "minecraft:sandstone",
+    "minecraft:coarse_dirt"
+  ]
+}

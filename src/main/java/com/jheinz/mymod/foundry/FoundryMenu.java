@@ -66,6 +66,16 @@ public class FoundryMenu extends AbstractContainerMenu {
 		return total == 0 ? 0.0f : Mth.clamp((float) data.get(FoundryBlockEntity.DATA_HEAT) / total, 0.0f, 1.0f);
 	}
 
+	/** The Foundry's temperature, in °C. */
+	public int temperature() {
+		return data.get(FoundryBlockEntity.DATA_TEMPERATURE);
+	}
+
+	/** How hot the current recipe needs the Foundry, in °C; 0 if it doesn't care. */
+	public int requiredTemperature() {
+		return data.get(FoundryBlockEntity.DATA_REQUIRED_TEMPERATURE);
+	}
+
 	/** How far along the current smelt is, 0 to 1. */
 	public float progress() {
 		int total = data.get(FoundryBlockEntity.DATA_PROGRESS_TOTAL);

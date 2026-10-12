@@ -25,6 +25,10 @@ import com.jheinz.mymod.ModBlocks;
  * stays in the slot), and heat is only spent while something is smelting, so a half-used bucket's worth waits
  * for the next job. Hoppers feed the inputs from above and lava from the sides, and take output and empty
  * buckets from below.
+ * <p>
+ * While it burns, the Foundry heats up by {@link #TEMPERATURE_RISE}°C a tick to {@link #MAX_TEMPERATURE}, and cools
+ * by {@link #TEMPERATURE_FALL} a tick when it's idle. A recipe with a minimum temperature (aluminium's 1400°C, say)
+ * burns heat while the Foundry warms up but only makes progress once it's hot enough.
  */
 public class FoundryBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
 	public static final int INPUT_COUNT = 2;
@@ -32,13 +36,21 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 	public static final int OUTPUT_SLOT = 3;
 	/** Ticks of smelting one lava bucket powers: twenty silicon. */
 	public static final int HEAT_PER_BUCKET = 4000;
+	public static final int AMBIENT_TEMPERATURE = 20;
+	public static final int MAX_TEMPERATURE = 1600;
+	/** Degrees a tick it heats up while burning: from cold to 1400°C in about 17 seconds. */
+	public static final int TEMPERATURE_RISE = 4;
+	public static final int TEMPERATURE_FALL = 2;
 
 	// ContainerData indices, shared with the menu.
 	public static final int DATA_HEAT = 0;
 	public static final int DATA_HEAT_TOTAL = 1;
 	public static final int DATA_PROGRESS = 2;
 	public static final int DATA_PROGRESS_TOTAL = 3;
-	public static final int DATA_COUNT = 4;
+	public static final int DATA_TEMPERATURE = 4;
+	/** The current recipe's minimum temperature, or 0. */
+	public static final int DATA_REQUIRED_TEMPERATURE = 5;
+	public static final int DATA_COUNT = 6;
 
 	private static final int[] TOP_SLOTS = {0, 1};
 	private static final int[] SIDE_SLOTS = {FUEL_SLOT};
@@ -50,6 +62,8 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 	private int heatTotal;
 	private int progress;
 	private int progressTotal;
+	private int temperature = AMBIENT_TEMPERATURE;
+	private int requiredTemperature;
 
 	private final ContainerData data = new ContainerData() {
 		@Override
@@ -59,6 +73,8 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 				case DATA_HEAT_TOTAL -> heatTotal;
 				case DATA_PROGRESS -> progress;
 				case DATA_PROGRESS_TOTAL -> progressTotal;
+				case DATA_TEMPERATURE -> temperature;
+				case DATA_REQUIRED_TEMPERATURE -> requiredTemperature;
 				default -> 0;
 			};
 		}
@@ -70,6 +86,8 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 				case DATA_HEAT_TOTAL -> heatTotal = value;
 				case DATA_PROGRESS -> progress = value;
 				case DATA_PROGRESS_TOTAL -> progressTotal = value;
+				case DATA_TEMPERATURE -> temperature = value;
+				case DATA_REQUIRED_TEMPERATURE -> requiredTemperature = value;
 				default -> {
 				}
 			}
@@ -97,7 +115,19 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 		}
 
 		boolean smelting = canSmelt && foundry.heat > 0;
-		if (smelting) {
+		foundry.requiredTemperature = recipe == null ? 0 : recipe.minTemperature();
+		int temperature = smelting ? Math.min(MAX_TEMPERATURE, foundry.temperature + TEMPERATURE_RISE)
+				: Math.max(AMBIENT_TEMPERATURE, foundry.temperature - TEMPERATURE_FALL);
+		if (temperature != foundry.temperature) {
+			foundry.temperature = temperature;
+			changed = true;
+		}
+		if (smelting && foundry.temperature < recipe.minTemperature()) {
+			// Still warming up: the burn goes into the heat.
+			foundry.heat--;
+			foundry.progressTotal = recipe.cookTicks();
+			changed = true;
+		} else if (smelting) {
 			foundry.heat--;
 			foundry.progressTotal = recipe.cookTicks();
 			if (++foundry.progress >= foundry.progressTotal) {
@@ -141,6 +171,7 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 		heatTotal = input.getIntOr("heat_total", 0);
 		progress = input.getIntOr("progress", 0);
 		progressTotal = input.getIntOr("progress_total", 0);
+		temperature = input.getIntOr("temperature", AMBIENT_TEMPERATURE);
 	}
 
 	@Override
@@ -150,6 +181,7 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 		output.putInt("heat_total", heatTotal);
 		output.putInt("progress", progress);
 		output.putInt("progress_total", progressTotal);
+		output.putInt("temperature", temperature);
 		ContainerHelper.saveAllItems(output, items);
 	}
 

@@ -42,6 +42,8 @@ import com.jheinz.mymod.client.neuralink.NeuralinkVision;
 import com.jheinz.mymod.client.neuralink.OreScanner;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonRenderer;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonScreen;
+import com.jheinz.mymod.client.hogfire.HogfireClient;
+import com.jheinz.mymod.client.industry.IndustryClient;
 import com.jheinz.mymod.client.launcher.LauncherClient;
 import com.jheinz.mymod.client.powerarmor.PowerArmorClient;
 import com.jheinz.mymod.client.tank.TankClient;
@@ -115,5 +117,7 @@ public class MyModClient implements ClientModInitializer {
 		LauncherClient.initialize();
 		BankClient.initialize();
 		PowerArmorClient.initialize();
+		IndustryClient.initialize();
+		HogfireClient.initialize();
 	}
 }

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "mymod:duralumin_ingot",
+    "P": "mymod:steel_plate"
+  },
+  "pattern": [
+    "IPI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:wing_spar"
+  }
+}

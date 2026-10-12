@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "mymod:steel_plate",
+    "X": "mymod:computer_chip",
+    "C": "minecraft:copper_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "PXP",
+    "CRC",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:turbopump"
+  }
+}

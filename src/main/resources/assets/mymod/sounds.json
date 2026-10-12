@@ -1,4 +1,10 @@
 {
+  "hogfire_engine": {
+    "subtitle": "subtitles.mymod.hogfire_engine",
+    "sounds": [
+      "mymod:hogfire_engine"
+    ]
+  },
   "rpg_launch": {
     "subtitle": "subtitles.mymod.rpg_launch",
     "sounds": [

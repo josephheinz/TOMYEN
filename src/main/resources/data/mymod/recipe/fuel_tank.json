@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "mymod:duralumin_sheet",
+    "T": "mymod:tar",
+    "C": "mymod:empty_canister"
+  },
+  "pattern": [
+    "DTD",
+    "DCD",
+    "DDD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:fuel_tank"
+  }
+}

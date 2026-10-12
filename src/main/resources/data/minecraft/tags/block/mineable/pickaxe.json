@@ -3,6 +3,14 @@
     "mymod:weapon_station",
     "mymod:foundry",
     "mymod:atm",
-    "mymod:power_armor_station"
+    "mymod:power_armor_station",
+    "mymod:bauxite_ore",
+    "mymod:oil_shale",
+    "mymod:deepslate_oil_shale",
+    "mymod:steel_block",
+    "mymod:aluminium_block",
+    "mymod:pump_jack",
+    "mymod:refinery",
+    "mymod:metal_press"
   ]
 }

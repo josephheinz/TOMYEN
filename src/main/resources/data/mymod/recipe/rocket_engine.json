@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": "mymod:steel_plate",
+    "F": "mymod:fuel_tank",
+    "U": "mymod:turbopump",
+    "C": "mymod:combustion_chamber",
+    "N": "mymod:rocket_nozzle"
+  },
+  "pattern": [
+    "PFP",
+    "UCP",
+    "PNP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:rocket_engine"
+  }
+}

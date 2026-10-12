@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mymod:item/pig_flight_harness"
+  }
+}

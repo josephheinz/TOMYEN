@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "mymod:block/oil_seep_top",
+    "side": "mymod:block/oil_seep_side",
+    "bottom": "minecraft:block/dirt"
+  }
+}

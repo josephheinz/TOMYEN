@@ -10,6 +10,7 @@ import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.foundry.FoundryRecipe.Cost;
+import com.jheinz.mymod.industry.IndustryRecipes;
 import com.jheinz.mymod.powerarmor.PowerArmorRecipes;
 
 /** Everything the Foundry smelts. Built from code, so client and server always agree. */
@@ -21,7 +22,9 @@ public final class FoundryRecipes {
 			new FoundryRecipe(ModItems.NEURALINK_MK2, 1, 400, List.of(cost(ModItems.NEURALINK, 1), cost(ModItems.COMPUTER_CHIP, 6)),
 					ModItems.NEURALINK)),
 			// Power armor upgrades and fusion core recharging.
-			PowerArmorRecipes.foundry().stream()).toList();
+			Stream.concat(PowerArmorRecipes.foundry().stream(),
+					// Steel, aluminium, duralumin and shale oil for the oil industry.
+					IndustryRecipes.foundry().stream())).toList();
 
 	private FoundryRecipes() {
 	}

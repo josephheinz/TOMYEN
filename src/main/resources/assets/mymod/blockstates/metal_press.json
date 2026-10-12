@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "mymod:block/metal_press"
+    },
+    "powered=true": {
+      "model": "mymod:block/metal_press"
+    }
+  }
+}
