@@ -8,23 +8,23 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.jheinz.mymod.bank.CreditCards;
+import com.jheinz.mymod.bank.PaymentCards;
 
-/** A credit card in a payment slot counts as the emeralds that slot's cost asks for, and paying charges it. */
+/** A payment card in a payment slot counts as the emeralds that slot's cost asks for, and paying uses it. */
 @Mixin(MerchantOffer.class)
-public abstract class MerchantOfferCreditCardMixin {
+public abstract class MerchantOfferPaymentCardMixin {
 	@Inject(method = "satisfiedBy", at = @At("HEAD"), cancellable = true)
 	private void mymod$acceptCard(ItemStack buyA, ItemStack buyB, CallbackInfoReturnable<Boolean> cir) {
-		if (CreditCards.isCard(buyA) || CreditCards.isCard(buyB)) {
-			cir.setReturnValue(CreditCards.satisfies((MerchantOffer) (Object) this, buyA, buyB));
+		if (PaymentCards.isCard(buyA) || PaymentCards.isCard(buyB)) {
+			cir.setReturnValue(PaymentCards.satisfies((MerchantOffer) (Object) this, buyA, buyB));
 		}
 	}
 
 	// Vanilla would shrink the card by the emerald count, destroying it, so cards are paid with here instead.
 	@Inject(method = "take", at = @At("HEAD"), cancellable = true)
-	private void mymod$chargeCard(ItemStack buyA, ItemStack buyB, CallbackInfoReturnable<Boolean> cir) {
-		if (CreditCards.isCard(buyA) || CreditCards.isCard(buyB)) {
-			cir.setReturnValue(CreditCards.take((MerchantOffer) (Object) this, buyA, buyB));
+	private void mymod$payByCard(ItemStack buyA, ItemStack buyB, CallbackInfoReturnable<Boolean> cir) {
+		if (PaymentCards.isCard(buyA) || PaymentCards.isCard(buyB)) {
+			cir.setReturnValue(PaymentCards.take((MerchantOffer) (Object) this, buyA, buyB));
 		}
 	}
 }

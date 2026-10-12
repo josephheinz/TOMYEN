@@ -1,4 +1,4 @@
-"""Paints the banking and tank textures and writes their item/block models: credit cards, the ATM (the
+"""Paints the banking and tank textures and writes their item/block models: credit and debit cards, the ATM (the
 banker's job site), the banker's villager outfit (suit, tie and a green eyeshade), the tank's entity
 texture (UVs match TankModel) and the tank and shell icons.
 
@@ -90,6 +90,16 @@ CARDS = {
 for name, colours in CARDS.items():
     palette = {"g": 0xE8C25A, "G": 0xB8902E, "l": 0xE04040, "L": 0xF0A030, **colours}
     sprite(CARD, palette).save(os.path.join(TEX, "item", name + ".png"))
+
+# The debit card: slate, with an emerald stripe and the bank's emerald in place of the card network logo.
+DEBIT_CARD = CARD[:9] + [
+    "obwwbwwbwwbbEbbo",
+    "obbbbbbbbbbEEebo",
+    "obbbbbbbbbbEeebo",
+    "obbbbbbbbbbbebbo",
+] + CARD[13:]
+sprite(DEBIT_CARD, {"o": 0x14181E, "b": 0x323A44, "h": 0x1F9E58, "w": 0xD0D6DC, "g": 0xE8C25A, "G": 0xB8902E,
+                    "e": 0x17DD62, "E": 0xB8FFD2}).save(os.path.join(TEX, "item", "debit_card.png"))
 
 # --- Tank and shell icons --------------------------------------------------------------------------------
 TANK_ICON = [

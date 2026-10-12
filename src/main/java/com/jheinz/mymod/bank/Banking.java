@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PoiHelper;
@@ -38,12 +39,15 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.trading.TradeSet;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -53,8 +57,8 @@ import net.minecraft.world.level.material.MapColor;
 import com.jheinz.mymod.MyMod;
 
 /**
- * Everything for banking and credit: the banker villager and its ATM job site, credit cards, the debt
- * each player carries, and the collectors sent after players who don't pay. Kept together so the rest
+ * Everything for banking and credit: the banker villager and its ATM job site, bank vaults, credit and
+ * debit cards, the debt each player carries, and the collectors sent after players who don't pay. Kept together so the rest
  * of the mod only has to call {@link #initialize()}.
  * <p>
  * The banker's trades are data-driven, like vanilla's: data/mymod/trade_set/banker/level_N.json, each
@@ -64,6 +68,21 @@ public final class Banking {
 	/** On a credit card: emeralds charged to it so far. Absent means nothing. */
 	public static final DataComponentType<Integer> CARD_BALANCE = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
 			MyMod.id("card_balance"), DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
+
+	/** On a debit card: whose vault it spends from. Absent until it's linked at an ATM. */
+	public static final DataComponentType<CardHolder> CARD_HOLDER = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
+			MyMod.id("card_holder"), DataComponentType.<CardHolder>builder().persistent(CardHolder.CODEC)
+					.networkSynchronized(CardHolder.STREAM_CODEC).build());
+
+	/**
+	 * On a player: their bank vault's contents (see {@link Vaults}). Kept through death and never dropped;
+	 * synced to its own player so their debit card tooltips and trade previews know the balance.
+	 */
+	public static final AttachmentType<ItemContainerContents> VAULT = AttachmentRegistry.<ItemContainerContents>builder()
+			.persistent(ItemContainerContents.CODEC)
+			.copyOnDeath()
+			.syncWith(ItemContainerContents.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+			.buildAndRegister(MyMod.id("vault"));
 
 	/** On a player: their credit account. Survives death (the hunt decides what death does to it). */
 	public static final AttachmentType<Debt> DEBT = AttachmentRegistry.<Debt>builder()
@@ -76,9 +95,13 @@ public final class Banking {
 	public static final Item CREDIT_CARD = card("credit_card", 1000, Rarity.COMMON);
 	public static final Item GOLD_CREDIT_CARD = card("gold_credit_card", 2500, Rarity.UNCOMMON);
 	public static final Item PLATINUM_CREDIT_CARD = card("platinum_credit_card", 5000, Rarity.RARE);
+	public static final Item DEBIT_CARD = item("debit_card", DebitCardItem::new, new Item.Properties().stacksTo(1));
 
 	public static final Block ATM = block("atm", AtmBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
 			.strength(3.5f, 9.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
+	public static final MenuType<VaultMenu> VAULT_MENU = Registry.register(BuiltInRegistries.MENU, MyMod.id("bank_vault"),
+			new MenuType<>(VaultMenu::new, FeatureFlags.VANILLA_SET));
 
 	public static final ResourceKey<PoiType> ATM_POI = ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, MyMod.id("atm"));
 	public static final PoiType ATM_POI_TYPE = PoiHelper.register(ATM_POI.identifier(), 1, 1, ATM);
@@ -150,12 +173,19 @@ public final class Banking {
 		FabricDefaultAttributeRegistry.register(COLLECTOR_GOLEM, CollectorGolem.createAttributes());
 
 		CreativeModeTabEvents.modifyOutputEvent(TOOLS_TAB)
-				.register(output -> output.insertAfter(Items.RECOVERY_COMPASS, CREDIT_CARD, GOLD_CREDIT_CARD, PLATINUM_CREDIT_CARD));
+				.register(output -> output.insertAfter(Items.RECOVERY_COMPASS, CREDIT_CARD, GOLD_CREDIT_CARD, PLATINUM_CREDIT_CARD, DEBIT_CARD));
 		CreativeModeTabEvents.modifyOutputEvent(FUNCTIONAL_BLOCKS_TAB).register(output -> output.insertAfter(Items.LECTERN, ATM));
 
 		ServerTickEvents.END_SERVER_TICK.register(DebtCollection::tick);
-		ServerPlayerEvents.LEAVE.register(DebtCollection::onLeave);
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> DebtCollection.onServerStopped());
+		ServerPlayerEvents.LEAVE.register(player -> {
+			DebtCollection.onLeave(player);
+			Vaults.onLeave(player);
+		});
+		ServerLifecycleEvents.SERVER_STARTED.register(Vaults::onServerStarted);
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			DebtCollection.onServerStopped();
+			Vaults.onServerStopped();
+		});
 
 		// Sneak-use a banker with emeralds to pay down your debt, rather than opening its trades.
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
@@ -166,6 +196,20 @@ public final class Banking {
 			if (player instanceof ServerPlayer serverPlayer) {
 				CreditCards.repay(serverPlayer, held);
 				serverPlayer.sendSystemMessage(DebtCollection.statement(serverPlayer));
+			}
+			return InteractionResult.SUCCESS;
+		});
+
+		// Sneak-use an ATM with emeralds to pay down your debt from your hand. Vanilla never lets the block
+		// see a sneaking click with an item in hand, so this catches it first.
+		UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
+			ItemStack held = player.getItemInHand(hand);
+			if (!player.isShiftKeyDown() || player.isSpectator() || !level.getBlockState(hit.getBlockPos()).is(ATM)
+					|| !(held.is(Items.EMERALD) || held.is(Items.EMERALD_BLOCK))) {
+				return InteractionResult.PASS;
+			}
+			if (player instanceof ServerPlayer serverPlayer) {
+				CreditCards.repay(serverPlayer, held);
 			}
 			return InteractionResult.SUCCESS;
 		});

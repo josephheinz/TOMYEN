@@ -5,11 +5,11 @@
 	"mixins": [
 		"ContainerSwapOffhandMixin",
 		"LivingEntityBulletArmorMixin",
+		"MerchantMenuPaymentCardMixin",
+		"MerchantOfferPaymentCardMixin",
+		"MerchantResultSlotPaymentCardMixin",
 		"MobAccessor",
 		"MobHijackMixin",
-		"MerchantMenuCreditCardMixin",
-		"MerchantOfferCreditCardMixin",
-		"MerchantResultSlotCreditCardMixin",
 		"ServerPlayerDebtDeathMixin",
 		"ServerSwapHandsMixin",
 		"SlotGunOffhandMixin"

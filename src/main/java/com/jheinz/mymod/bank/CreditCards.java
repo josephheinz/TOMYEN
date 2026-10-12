@@ -13,85 +13,17 @@ import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.trading.ItemCost;
-import net.minecraft.world.item.trading.MerchantOffer;
-
-import org.jspecify.annotations.Nullable;
 
 /**
- * Paying for trades by card, and paying the bank back.
- * <p>
- * A card sitting in a merchant payment slot counts as however many emeralds that slot's cost asks for,
- * as long as it has that much credit left. The mixins on {@code MerchantOffer} route both the "is this
- * paid for" check and the actual payment through here, so the result slot, single trades and shift-click
- * bulk trading all work the same way, on whichever side runs them; only the server's charge counts, and
- * only the server records the debt.
+ * The credit account side of credit cards: clearing what's been charged to the cards a player carries, and
+ * paying the bank back. Paying for trades with them is {@link PaymentCards}.
  */
 public final class CreditCards {
-	/** The player taking a trade's result right now, set around MerchantResultSlot.onTake (see the mixin). */
-	public static final ThreadLocal<@Nullable Player> PAYER = new ThreadLocal<>();
-
 	private CreditCards() {
 	}
 
 	public static boolean isCard(ItemStack stack) {
 		return stack.getItem() instanceof CreditCardItem;
-	}
-
-	/** A plain emerald cost, the only kind a card can pay. */
-	public static boolean isEmeraldCost(ItemCost cost) {
-		return cost.item().value() == Items.EMERALD && cost.components().isEmpty();
-	}
-
-	/** Whether this stack pays {@code count} of this cost: the items themselves, or a card with the credit. */
-	private static boolean pays(ItemCost cost, int count, ItemStack stack) {
-		if (stack.getItem() instanceof CreditCardItem card) {
-			return isEmeraldCost(cost) && card.available(stack) >= count;
-		}
-		return cost.test(stack) && stack.getCount() >= count;
-	}
-
-	/** {@link MerchantOffer#satisfiedBy}, with cards accepted in place of emeralds. */
-	public static boolean satisfies(MerchantOffer offer, ItemStack buyA, ItemStack buyB) {
-		if (!pays(offer.getItemCostA(), offer.getCostA().getCount(), buyA)) {
-			return false;
-		}
-		return offer.getItemCostB().map(costB -> pays(costB, costB.count(), buyB)).orElse(buyB.isEmpty());
-	}
-
-	/** {@link MerchantOffer#take}, charging a card where one stands in for the emeralds. */
-	public static boolean take(MerchantOffer offer, ItemStack buyA, ItemStack buyB) {
-		if (!satisfies(offer, buyA, buyB)) {
-			return false;
-		}
-		payWith(buyA, offer.getCostA().getCount());
-		if (offer.getItemCostB().isPresent()) {
-			payWith(buyB, offer.getCostB().getCount());
-		}
-		return true;
-	}
-
-	private static void payWith(ItemStack stack, int count) {
-		if (stack.getItem() instanceof CreditCardItem card) {
-			card.setBalance(stack, CreditCardItem.balance(stack) + count);
-			if (PAYER.get() instanceof ServerPlayer player) {
-				DebtCollection.charge(player, count, stack);
-			}
-		} else {
-			stack.shrink(count);
-		}
-	}
-
-	/** Index of the first card among these stacks with at least this much credit, or -1 if there isn't one. */
-	public static int findCardSlot(Iterable<ItemStack> stacks, int count) {
-		int i = 0;
-		for (ItemStack stack : stacks) {
-			if (stack.getItem() instanceof CreditCardItem card && card.available(stack) >= count) {
-				return i;
-			}
-			i++;
-		}
-		return -1;
 	}
 
 	/** Every credit card the player is carrying, most charged first. */

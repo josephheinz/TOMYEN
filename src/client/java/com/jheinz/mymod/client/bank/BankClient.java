@@ -1,6 +1,7 @@
 package com.jheinz.mymod.client.bank;
 
 import java.util.List;
+import java.util.UUID;
 
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -10,19 +11,24 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.IronGolemRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.ItemContainerContents;
 
 import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.bank.Banking;
 import com.jheinz.mymod.bank.CreditCardItem;
 import com.jheinz.mymod.bank.Debt;
 import com.jheinz.mymod.bank.DebtCollection;
+import com.jheinz.mymod.bank.Vaults;
 
 /**
- * Client side of banking: collector rendering, the account readout in the top-left corner while you owe
- * anything (red and flashing in the last in-game hours, "IN COLLECTIONS" once the hunt is on), and the
- * account lines on credit card tooltips.
+ * Client side of banking: collector rendering, the vault screen, the account readout in the top-left corner
+ * while you owe anything (red and flashing in the last in-game hours, "IN COLLECTIONS" once the hunt is on),
+ * the account lines on credit card tooltips, the ATM's usage hints, and the local player's vault balance for
+ * their debit cards (from the vault contents synced to them).
  */
 public final class BankClient {
 	private static final int OK = 0xFFFFFF55;
@@ -39,13 +45,28 @@ public final class BankClient {
 	public static void initialize() {
 		EntityRendererRegistry.register(Banking.DEBT_COLLECTOR, DebtCollectorRenderer::new);
 		EntityRendererRegistry.register(Banking.COLLECTOR_GOLEM, IronGolemRenderer::new);
+		MenuScreens.register(Banking.VAULT_MENU, VaultScreen::new);
 		HudElementRegistry.addLast(MyMod.id("debt"), BankClient::extractHud);
 		ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
 			Minecraft minecraft = Minecraft.getInstance();
 			if (stack.getItem() instanceof CreditCardItem && minecraft.player != null) {
 				addAccountLines(Debt.of(minecraft.player), lines);
+			} else if (stack.is(Banking.ATM.asItem())) {
+				lines.add(Component.translatable("block.mymod.atm.hint.vault").withStyle(ChatFormatting.GRAY));
+				lines.add(Component.translatable("block.mymod.atm.hint.repay").withStyle(ChatFormatting.GRAY));
+				lines.add(Component.translatable("block.mymod.atm.hint.link").withStyle(ChatFormatting.GRAY));
 			}
 		});
+		Vaults.setClientBalance(BankClient::ownVaultBalance);
+	}
+
+	/** The local player's vault balance, if {@code owner} is them; -1 for anyone else. */
+	private static int ownVaultBalance(UUID owner) {
+		Player player = Minecraft.getInstance().player;
+		if (player == null || !player.getUUID().equals(owner)) {
+			return -1;
+		}
+		return Vaults.emeralds(player.getAttachedOrElse(Banking.VAULT, ItemContainerContents.EMPTY).nonEmptyItemCopyStream().toList());
 	}
 
 	/** What the holder owes in all, and when it's due: the card shows only its own balance. */

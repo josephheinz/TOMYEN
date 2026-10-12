@@ -13,34 +13,32 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.jheinz.mymod.bank.CreditCards;
-import com.jheinz.mymod.bank.Debt;
+import com.jheinz.mymod.bank.PaymentCards;
 
 /**
- * Taking a trade's result: cards are frozen while their holder is in collections, and a card charge is
- * billed to the player taking the result (see {@link CreditCards#PAYER}).
+ * Taking a trade's result: a card its holder can't use right now (credit, while they're in collections)
+ * declines, and a card payment is made by the player taking the result (see {@link PaymentCards#PAYER}).
  */
 @Mixin(MerchantResultSlot.class)
-public abstract class MerchantResultSlotCreditCardMixin {
+public abstract class MerchantResultSlotPaymentCardMixin {
 	@Shadow
 	@Final
 	private MerchantContainer slots;
 
 	@Inject(method = "mayPickup", at = @At("HEAD"), cancellable = true)
 	private void mymod$declineFrozenCard(Player player, CallbackInfoReturnable<Boolean> cir) {
-		boolean card = CreditCards.isCard(slots.getItem(0)) || CreditCards.isCard(slots.getItem(1));
-		if (card && Debt.inCollections(player)) {
+		if (PaymentCards.blocked(player, slots.getItem(0), slots.getItem(1))) {
 			cir.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "onTake", at = @At("HEAD"))
 	private void mymod$startPaying(Player player, ItemStack carried, CallbackInfo ci) {
-		CreditCards.PAYER.set(player);
+		PaymentCards.PAYER.set(player);
 	}
 
 	@Inject(method = "onTake", at = @At("RETURN"))
 	private void mymod$stopPaying(Player player, ItemStack carried, CallbackInfo ci) {
-		CreditCards.PAYER.remove();
+		PaymentCards.PAYER.remove();
 	}
 }
