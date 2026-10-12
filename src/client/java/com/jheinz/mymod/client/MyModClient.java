@@ -40,6 +40,8 @@ import com.jheinz.mymod.client.neuralink.NeuralTrigger;
 import com.jheinz.mymod.client.neuralink.NeuralinkScreen;
 import com.jheinz.mymod.client.neuralink.NeuralinkVision;
 import com.jheinz.mymod.client.neuralink.OreScanner;
+import com.jheinz.mymod.client.exoskeleton.ExoskeletonRenderer;
+import com.jheinz.mymod.client.exoskeleton.ExoskeletonScreen;
 import com.jheinz.mymod.client.launcher.LauncherClient;
 import com.jheinz.mymod.client.tank.TankClient;
 import com.jheinz.mymod.station.ModMenus;
@@ -78,6 +80,8 @@ public class MyModClient implements ClientModInitializer {
 		});
 		MenuScreens.register(ModMenus.WEAPON_STATION, WeaponStationScreen::new);
 		MenuScreens.register(ModMenus.NEURALINK, NeuralinkScreen::new);
+		MenuScreens.register(ModMenus.EXOSKELETON, ExoskeletonScreen::new);
+		ExoskeletonRenderer.initialize();
 		MenuScreens.register(ModMenus.FOUNDRY, FoundryScreen::new);
 		EntityRendererRegistry.register(ModEntities.SHOPPING_CART, ShoppingCartRenderer::new);
 		ModelLayerRegistry.registerModelLayer(ShoppingCartModel.LAYER, ShoppingCartModel::createBodyLayer);

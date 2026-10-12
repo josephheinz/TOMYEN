@@ -44,6 +44,10 @@ public final class ModComponents {
 	public static final DataComponentType<ItemContainerContents> NEURALINK_MODULES =
 			register("neuralink_modules", ItemContainerContents.CODEC, ItemContainerContents.STREAM_CODEC);
 
+	/** On an exoskeleton: the modules in its sockets. */
+	public static final DataComponentType<ItemContainerContents> EXOSKELETON_MODULES =
+			register("exoskeleton_modules", ItemContainerContents.CODEC, ItemContainerContents.STREAM_CODEC);
+
 	private ModComponents() {
 	}
 

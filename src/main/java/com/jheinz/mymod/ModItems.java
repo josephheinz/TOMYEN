@@ -32,6 +32,9 @@ import com.jheinz.mymod.holy.CrucifixItem;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.neuralink.NeuralinkModule;
 import com.jheinz.mymod.neuralink.NeuralinkModuleItem;
+import com.jheinz.mymod.exoskeleton.ExoModule;
+import com.jheinz.mymod.exoskeleton.ExoModuleItem;
+import com.jheinz.mymod.exoskeleton.ExoskeletonItem;
 import com.jheinz.mymod.attachment.AttachmentSlot;
 import com.jheinz.mymod.armor.PlateCarrierItem;
 
@@ -261,6 +264,12 @@ public final class ModItems {
 	public static final Item BIO_MONITOR_MODULE = module("bio_monitor_module", NeuralinkModule.BIO_MONITOR);
 	public static final Item HIVE_MIND_MODULE = module("hive_mind_module", NeuralinkModule.HIVE_MIND);
 	public static final Item RECALL_MODULE = module("recall_module", NeuralinkModule.RECALL);
+	/** A full-body frame worn in the chest slot that fills every armor slot (a Neuralink can still be worn). */
+	public static final Item EXOSKELETON = register("exoskeleton", ExoskeletonItem::new, ExoskeletonItem.properties());
+	public static final Item REINFORCED_PLATING_MODULE = register("reinforced_plating_module",
+			properties -> new ExoModuleItem(properties, ExoModule.REINFORCED_PLATING), new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+	public static final Item SERVO_LEGS_MODULE = register("servo_legs_module",
+			properties -> new ExoModuleItem(properties, ExoModule.SERVO_LEGS), new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
 	public static final Item CRUCIFIX = register("crucifix", CrucifixItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
 
 	// Vanilla keeps its tab keys private, so rebuild the key from its id.
@@ -338,6 +347,7 @@ public final class ModItems {
 				.register(output -> {
 					output.insertAfter(Items.TRIDENT, CRUCIFIX);
 					output.insertAfter(Items.TURTLE_HELMET, NEURALINK, ESP_MODULE, NIGHT_VISION_MODULE, XRAY_MODULE);
+					output.insertAfter(XRAY_MODULE, EXOSKELETON, REINFORCED_PLATING_MODULE, SERVO_LEGS_MODULE);
 					output.insertAfter(Items.NETHERITE_BOOTS, PLATE_CARRIER, ARMOR_PLATE_LEVEL_1, ARMOR_PLATE_LEVEL_2,
 							ARMOR_PLATE_LEVEL_3);
 					output.insertAfter(Items.CROSSBOW, M4, M4_UPPER_RECEIVER, M4_LOWER_RECEIVER, AKM, AK_RECEIVER,

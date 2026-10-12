@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "minecraft:iron_block",
+    "C": "mymod:computer_chip",
+    "P": "minecraft:piston",
+    "D": "minecraft:diamond",
+    "S": "mymod:tech_scrap"
+  },
+  "pattern": [
+    "BCB",
+    "PCP",
+    "DSD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:exoskeleton"
+  }
+}
