@@ -32,7 +32,7 @@ import com.jheinz.mymod.vampire.Vampire;
 
 /**
  * Holy light from a crucifix: harmless to the living, it burns the undead and anything in the
- * {@code mymod:holy_vulnerable} entity tag (vampires, the Schnozzle), the tagged ones worst of all.
+ * {@code mymod:holy_vulnerable} entity tag (vampires, the Schnozzle, skullcranes), the tagged ones worst of all.
  */
 public final class HolyLight {
 	/** Holy light hurts what's in this tag even if it isn't undead, and hurts it {@link #VULNERABLE_MULTIPLIER} times as much. */

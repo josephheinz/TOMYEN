@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:optic_lens",
+    "mymod:tech_scrap"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:computer_chip"
+  }
+}
