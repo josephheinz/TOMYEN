@@ -4,13 +4,18 @@ Textures: the ores (bauxite, oil shale and its deepslate form), the oil seep, cr
 steel and aluminium blocks, the Pump Jack's skid, Refinery and Metal Press faces, every industry and gear item, the
 moving parts' entity textures (Pump Jack rig, Metal Press ram, Hogfire gear; UVs match PumpJackRenderer,
 MetalPressRenderer and HogfireGearLayer) and the Refinery and Pump Jack GUIs (slot positions match their menus).
+The ores, oil seep, metal blocks and basic materials (raw bauxite, shale chunk, ingots, plate, sheet, rubber, tar)
+are vanilla textures recoloured, read from the Minecraft client jar; the machines and everything else are drawn here.
 
 Also writes their block states, block/item models and item definitions, and on the data side their loot tables,
 crafting recipes with recipe-book advancements, and tool tags. With ffmpeg on the path it synthesises the Hogfire's
 engine loop (assets/mymod/sounds/hogfire_engine.ogg) too.
 
-Usage: python3 tools/gen_industry.py src/main/resources/assets/mymod"""
-import json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave, zlib
+Usage: python3 tools/gen_industry.py src/main/resources/assets/mymod [path/to/minecraft-client.jar]"""
+import json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave, zipfile, zlib
+
+sys.path.insert(0, os.path.dirname(__file__))
+from gen_longswords import client_jar, read_png
 
 ASSETS = sys.argv[1]  # .../assets/mymod
 DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
@@ -86,94 +91,120 @@ def sprite(rows, palette):
 
 
 # --- Block textures ---------------------------------------------------------------------------------------------
-STONE = [rgba(0x7F7F7F), rgba(0x747474), rgba(0x8A8A8A), rgba(0x6B6B6B)]
-DEEPSLATE = [rgba(0x4D4D52), rgba(0x45454A), rgba(0x57575C), rgba(0x3B3B40)]
+# The ores, the oil seep, the metal blocks and the basic industry items are vanilla textures recoloured, read from
+# the Minecraft client jar Loom has downloaded (gen_longswords.client_jar() finds it). A gradient map recolours them:
+# each texel's luminance picks a colour off the material's ramp, so vanilla's per-texel shading carries over.
+JAR = zipfile.ZipFile(client_jar())
 
 
-def rock(base, seed):
-    rnd.seed(seed)
+def vanilla(path):
+    """The 16x16 pixels of assets/minecraft/textures/<path>.png, a single-colour transparency key applied (some
+    vanilla items, iron_ingot among them, are greyscale with one grey keyed out)."""
+    data = JAR.read("assets/minecraft/textures/" + path + ".png")
+    w, h, px = read_png(data)
+    if (w, h) != (16, 16):
+        sys.exit(f"vanilla {path}.png is {w}x{h}, not 16x16")
+    colour, pos, key = data[25], 8, None
+    while pos < len(data):
+        n, kind = struct.unpack(">I4s", data[pos:pos + 8])
+        if kind == b"tRNS" and colour in (0, 2):
+            key = struct.unpack(">%dH" % (n // 2), data[pos + 8:pos + 8 + n])
+            key = key * 3 if colour == 0 else key
+        pos += 12 + n
+    return [p[:3] + (0,) if key and p[:3] == key else p for p in px]
+
+
+def lum(c):
+    return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+
+
+def gradient(c, stops):
+    """Texel c recoloured: stops are (source luminance, colour) pairs, ascending; between two the colour blends."""
+    v = lum(c)
+    if v <= stops[0][0]:
+        return rgba(stops[0][1], c[3])
+    for (v0, c0), (v1, c1) in zip(stops, stops[1:]):
+        if v <= v1:
+            t = (v - v0) / (v1 - v0)
+            a, b = rgba(c0), rgba(c1)
+            return tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3)) + (c[3],)
+    return rgba(stops[-1][1], c[3])
+
+
+def recolour(px, stops):
+    return [gradient(p, stops) if p[3] else CLEAR for p in px]
+
+
+def chromatic(c):
+    return max(c[:3]) - min(c[:3]) > 20
+
+
+def canvas(px):
     c = Canvas(16, 16)
-    for y in range(16):
-        for x in range(16):
-            c.set(x, y, base[rnd.choice((0, 0, 1, 1, 2, 3))])
+    c.px = list(px)
     return c
 
 
-def blob(c, cx, cy, r, colours, seed):
-    rr = random.Random(seed)
-    for y in range(16):
-        for x in range(16):
-            d = math.hypot(x - cx, (y - cy) * 1.2) + rr.random() * 0.8
-            if d < r:
-                c.set(x, y, colours[0] if d < r * 0.45 else colours[1] if rr.random() < 0.7 else colours[2])
+def ore(base, ore_of, stops):
+    """A vanilla ore's specks laid on vanilla stone (or deepslate), the specks' coloured texels recoloured. Where
+    the ore texture differs from its rock it is speck, the rock's re-shaded grey round each speck included."""
+    rock, specked = vanilla("block/" + base), vanilla("block/" + ore_of)
+    out = list(rock)
+    for i, (r, o) in enumerate(zip(rock, specked)):
+        if o != r:
+            out[i] = gradient(o, stops) if chromatic(o) else o
+    return canvas(out)
 
 
-def bauxite_ore():
-    """Rust-red laterite rock studded with pale pisoliths: it stands out in stone, dirt and terracotta alike."""
-    rnd.seed(101)
-    c = Canvas(16, 16)
-    reds = [rgba(0xA4482A), rgba(0x8E3B22), rgba(0xB75A35), rgba(0x7A311D)]
-    for y in range(16):
-        for x in range(16):
-            c.set(x, y, reds[rnd.choice((0, 0, 1, 2, 3))])
-    for cx, cy in ((3, 3), (11, 2), (7, 7), (13, 9), (2, 11), (9, 13), (5, 14)):
-        r = 1.2 + rnd.random() * 0.8
-        for y in range(16):
-            for x in range(16):
-                d = math.hypot(x - cx, y - cy)
-                if d < r:
-                    c.set(x, y, rgba(0xE3B98A) if d < r * 0.5 else rgba(0xC98E5E))
-        c.set(cx + 1, cy + 1, rgba(0x5E2414))
-    return c
+# Iron ore's specks run from luminance 104 to 200, lapis's from 51 to 147.
+BAUXITE_SPECKS = ((104, 0x4F1E14), (128, 0x7A3222), (152, 0x9C4630), (180, 0xB8644A), (200, 0xD08E74))
+SHALE_SPECKS = ((51, 0x070607), (75, 0x141012), (100, 0x221B1C), (125, 0x342A2E), (147, 0x4E4258))
 
 
-def oil_shale(base, seed):
-    """Fine-bedded dark rock in stone: thin black kerogen seams with an oily brown sheen."""
-    c = rock(base, seed)
-    rr = random.Random(seed + 1)
-    for band in (3, 7, 10, 13):
-        offset = rr.randint(0, 3)
-        for x in range(16):
-            y = band + (1 if (x + offset) % 7 < 2 else 0)
-            c.set(x, y, rgba(0x1C1614))
-            if rr.random() < 0.55:
-                c.set(x, y - 1, rgba(0x4A3B2E))
-            if rr.random() < 0.15:
-                c.set(x, y + 1, rgba(0x6B5640))
-    return c
+def oil_stain(c, t):
+    """Texel c soaked in crude by t (0 dry, 1 black with oil), its shading kept."""
+    wet = gradient(c, ((40, 0x080606), (90, 0x15100E), (130, 0x221A16), (180, 0x3A2E28)))
+    return tuple(round(c[i] + (wet[i] - c[i]) * t) for i in range(3)) + (c[3],)
 
 
 def oil_seep_top():
-    rnd.seed(202)
-    c = Canvas(16, 16)
+    """Vanilla coarse dirt, black puddles of crude soaking into it, a glint of light on the larger ones."""
+    rr = random.Random(202)
+    px = vanilla("block/coarse_dirt")
+    out = []
+    pools = ((5, 5, 3.0), (11, 10, 2.5), (4, 12, 1.6), (12, 3, 1.3))
     for y in range(16):
         for x in range(16):
-            c.set(x, y, rnd.choice((rgba(0x2A221C), rgba(0x231C17), rgba(0x31281F), rgba(0x1B1512))))
-    # Glossy puddles of crude, catching the light.
-    for cx, cy, r in ((5, 5, 3.0), (11, 10, 2.5), (4, 12, 1.6), (12, 3, 1.3)):
-        for y in range(16):
-            for x in range(16):
-                d = math.hypot(x - cx, y - cy)
-                if d < r:
-                    c.set(x, y, rgba(0x0A0808) if d > r * 0.35 else rgba(0x151012))
+            d = min(math.hypot(x - cx, y - cy) - r for cx, cy, r in pools) + rr.random() * 0.8
+            out.append(oil_stain(px[y * 16 + x], 1.0 if d < 0 else max(0.0, 0.75 - d * 0.35)))
+    c = canvas(out)
+    for cx, cy, r in pools[:2]:
         c.set(int(cx - r * 0.4), int(cy - r * 0.4), rgba(0x5C5458))
         c.set(int(cx - r * 0.4) + 1, int(cy - r * 0.4), rgba(0x3B3438))
     return c
 
 
 def oil_seep_side():
-    rnd.seed(203)
-    c = Canvas(16, 16)
+    """Vanilla dirt soaked black at the top, the crude running down it in streaks."""
+    rr = random.Random(203)
+    px = vanilla("block/dirt")
+    runs = {x: 5 + rr.randint(3, 9) for x in (2, 6, 7, 11, 14)}
+    out = []
     for y in range(16):
         for x in range(16):
-            dirt = rnd.choice((rgba(0x5A3F2A), rgba(0x4E3624), rgba(0x664831)))
-            soaked = y < 5 or rnd.random() < max(0.0, 0.7 - y * 0.05)
-            c.set(x, y, shade(dirt, 0.35) if soaked else dirt)
-    # Black runs down from the top.
-    for x in (2, 6, 7, 11, 14):
-        for y in range(5, 5 + rnd.randint(3, 9)):
-            c.set(x, y, rgba(0x120E0C))
-    return c
+            t = 1.0 if y < 3 else max(0.0, 1.0 - (y - 2) * 0.22 - rr.random() * 0.2)
+            if y < runs.get(x, 0):
+                t = max(t, 0.9)
+            out.append(oil_stain(px[y * 16 + x], t))
+    return canvas(out)
+
+
+# Vanilla iron block runs from luminance 176 to 242, its ingot from 53 to 255.
+STEEL_BLOCK = ((176, 0x3E454E), (205, 0x58606A), (230, 0x737C87), (242, 0x8E97A2))
+ALUMINIUM_BLOCK = ((176, 0x9EA7B1), (205, 0xBEC6CE), (230, 0xD8DEE4), (242, 0xEEF2F6))
+STEEL_INGOT = ((53, 0x1E2228), (94, 0x343A42), (130, 0x515963), (168, 0x6B737E), (216, 0x8E96A0), (255, 0xCDD3DA))
+ALUMINIUM_INGOT = ((53, 0x505862), (94, 0x7D8590), (130, 0xA3ABB5), (168, 0xC0C7CF), (216, 0xDDE2E7), (255, 0xFFFFFF))
+DURALUMIN_INGOT = ((53, 0x3E362C), (94, 0x6E6252), (130, 0x958774), (168, 0xB4A591), (216, 0xD8CAB5), (255, 0xFFF8EC))
 
 
 def oil_still(frames=32):
@@ -212,9 +243,6 @@ STEEL_LIGHT = rgba(0x8C949F)
 STEEL_DARK = rgba(0x3B4148)
 STEEL_DEEP = rgba(0x262A30)
 RIVET = rgba(0xB7BEC7)
-ALU = rgba(0xC9CFD6)
-ALU_LIGHT = rgba(0xEDF1F5)
-ALU_DARK = rgba(0x9AA2AC)
 
 
 def plate_block(base, light, dark, seed, seams=True):
@@ -233,26 +261,6 @@ def plate_block(base, light, dark, seed, seams=True):
     for x, y in ((2, 2), (13, 2), (2, 12), (13, 12)):
         c.set(x, y, light)
         c.set(x + 1, y + 1, dark)
-    return c
-
-
-def steel_block():
-    c = plate_block(STEEL, STEEL_LIGHT, STEEL_DARK, 301)
-    # Brushed grain.
-    for y in range(1, 15):
-        if y % 3 == 0:
-            for x in range(1, 15):
-                if rnd.random() < 0.5:
-                    c.set(x, y, shade(c.get(x, y), 1.08))
-    return c
-
-
-def aluminium_block():
-    c = plate_block(ALU, ALU_LIGHT, ALU_DARK, 302, seams=False)
-    for y in range(1, 15):
-        for x in range(1, 15):
-            if (x + y * 3) % 11 == 0:
-                c.set(x, y, ALU_LIGHT)
     return c
 
 
@@ -364,17 +372,22 @@ def press_cylinder():
 
 
 os.makedirs(BLOCK, exist_ok=True)
-bauxite_ore().save(os.path.join(BLOCK, "bauxite_ore.png"))
-oil_shale(STONE, 111).save(os.path.join(BLOCK, "oil_shale.png"))
-oil_shale(DEEPSLATE, 112).save(os.path.join(BLOCK, "deepslate_oil_shale.png"))
+ore("stone", "iron_ore", BAUXITE_SPECKS).save(os.path.join(BLOCK, "bauxite_ore.png"))
+ore("stone", "lapis_ore", SHALE_SPECKS).save(os.path.join(BLOCK, "oil_shale.png"))
+ore("deepslate", "deepslate_lapis_ore", SHALE_SPECKS).save(os.path.join(BLOCK, "deepslate_oil_shale.png"))
 oil_seep_top().save(os.path.join(BLOCK, "oil_seep_top.png"))
 oil_seep_side().save(os.path.join(BLOCK, "oil_seep_side.png"))
 oil_still().save(os.path.join(BLOCK, "crude_oil_still.png"))
 oil_flow().save(os.path.join(BLOCK, "crude_oil_flow.png"))
 write_json(os.path.join(BLOCK, "crude_oil_still.png.mcmeta"), {"animation": {"frametime": 4}})
 write_json(os.path.join(BLOCK, "crude_oil_flow.png.mcmeta"), {"animation": {"frametime": 3}})
-steel_block().save(os.path.join(BLOCK, "steel_block.png"))
-aluminium_block().save(os.path.join(BLOCK, "aluminium_block.png"))
+canvas(recolour(vanilla("block/iron_block"), STEEL_BLOCK)).save(os.path.join(BLOCK, "steel_block.png"))
+canvas(recolour(vanilla("block/iron_block"), ALUMINIUM_BLOCK)).save(os.path.join(BLOCK, "aluminium_block.png"))
+# The skid's side was painted from the random stream the hand-drawn aluminium block left (seed 302, one draw a
+# texel): replay it so the machines keep their textures.
+rnd.seed(302)
+for _ in range(256):
+    rnd.random()
 skid_side().save(os.path.join(BLOCK, "pump_jack_skid_side.png"))
 skid_top().save(os.path.join(BLOCK, "pump_jack_skid_top.png"))
 refinery_side().save(os.path.join(BLOCK, "refinery_side.png"))
@@ -388,79 +401,25 @@ press_bed().save(os.path.join(BLOCK, "metal_press_bed.png"))
 press_cylinder().save(os.path.join(BLOCK, "metal_press_cylinder.png"))
 
 # --- Item textures ----------------------------------------------------------------------------------------------
-INGOT = [
-    "................",
-    "................",
-    "................",
-    "................",
-    "......hhhhhhh...",
-    ".....hllllllmo..",
-    "....hllllllmmo..",
-    "...hllllllmmdo..",
-    "..hmmmmmmmmddo..",
-    "..ommmmmmmdddo..",
-    "..odddddddddo...",
-    "..oooooooooo....",
-    "................",
-    "................",
-    "................",
-    "................",
-]
-
-
-def ingot(h, l, m, d, o):
-    return sprite(INGOT, {"h": h, "l": l, "m": m, "d": d, "o": o})
-
-
-CHUNK = [
-    "................",
-    "................",
-    "................",
-    ".....oooo.......",
-    "....ohhllo......",
-    "...ohllmmmoo....",
-    "...olllmmmmmo...",
-    "..ohllmmmmmdo...",
-    "..ollmmmmmddo...",
-    "..olmmmmmdddo...",
-    "...ommmmdddo....",
-    "....ommdddo.....",
-    ".....ooooo......",
-    "................",
-    "................",
-    "................",
-]
-
-
-def chunk_sprite(h, l, m, d, o, speck=None, specks=()):
-    c = sprite(CHUNK, {"h": h, "l": l, "m": m, "d": d, "o": o})
-    for x, y in specks:
-        c.set(x, y, rgba(speck))
-    return c
-
-
-PLATE = [
-    "................",
-    "................",
-    "................",
-    "................",
-    "......ooooooooo.",
-    ".....ohhhhhhhho.",
-    "....ohlllllllmo.",
-    "...ohlrllllrlmo.",
-    "..ohllllllllmo..",
-    ".ohlrllllllrmo..",
-    ".ommmmmmmmmmo...",
-    ".odddddddddo....",
-    ".oooooooooo.....",
-    "................",
-    "................",
-    "................",
-]
-
-
-def plate_sprite(h, l, m, d, o, r):
-    return sprite(PLATE, {"h": h, "l": l, "m": m, "d": d, "o": o, "r": r})
+def flattened(px, thinner):
+    """Vanilla's ingot pressed flat: its side faces `thinner` texels shorter, the top face brought down onto them.
+    In each column the texels under the top face's white front edge are the side's; the ends, with no edge, lose
+    theirs from the middle, keeping their top and bottom texels. The result moves up by half the cut, to sit where the ingot did."""
+    out = [CLEAR] * 256
+    for x in range(16):
+        col = [(y, px[y * 16 + x]) for y in range(16) if px[y * 16 + x][3]]
+        if not col:
+            continue
+        edge = [i for i, (_, p) in enumerate(col) if lum(p) >= 250]
+        cut = edge[-1] + 1 if edge else 1
+        side = len(col) - cut - 1   # texels between the edge (or the end's top texel) and the bottom outline
+        if edge and side < thinner:
+            sys.exit(f"vanilla iron_ingot column {x} is too short to flatten: layout changed")
+        kept = [p for _, p in col[:cut] + col[cut + min(thinner, side):]]
+        bottom = col[-1][0] - thinner // 2
+        for i, p in enumerate(kept):
+            out[(bottom - len(kept) + 1 + i) * 16 + x] = p
+    return out
 
 
 # A jerrycan: handle on top, cap at the corner, a coloured band and label.
@@ -510,51 +469,23 @@ BUCKET = [
 ]
 
 ITEMS = {}
-ITEMS["bauxite"] = chunk_sprite(0xE0A07A, 0xC0704A, 0xA4482A, 0x7A311D, 0x3C170C, 0xEED2B0,
-                                ((5, 6), (8, 8), (10, 10), (6, 10), (9, 5)))
-ITEMS["shale_chunk"] = chunk_sprite(0x8A7E72, 0x5E544A, 0x46403A, 0x2C2724, 0x141210, 0x0A0808,
-                                    ((4, 7), (5, 7), (6, 7), (8, 9), (9, 9), (10, 9), (7, 5), (8, 5)))
-ITEMS["steel_ingot"] = ingot(0xCDD3DA, 0x9AA2AC, 0x737B86, 0x4E555E, 0x262A30)
-ITEMS["aluminium_ingot"] = ingot(0xFFFFFF, 0xE6EAEE, 0xC6CCD3, 0x9AA2AC, 0x505862)
-ITEMS["duralumin_ingot"] = ingot(0xFBEBD8, 0xDCCDB8, 0xB9AA96, 0x8C7F6E, 0x3E362C)
-ITEMS["steel_plate"] = plate_sprite(0xC2C9D1, 0x8E96A0, 0x646C77, 0x444A53, 0x22262C, 0xD9DEE4)
-ITEMS["duralumin_sheet"] = plate_sprite(0xFFF6E8, 0xE3D6C4, 0xC2B39F, 0x9A8C79, 0x4A4034, 0xA08F78)
-ITEMS["rubber"] = sprite([
-    "................",
-    "................",
-    "................",
-    "....oooooooo....",
-    "...ohhhhhhhhoo..",
-    "..ohlllllllllo..",
-    "..olllmllllllo..",
-    "..olllllllmllo..",
-    "..ollmllllllmo..",
-    "..olllllmlllldo.",
-    "..odlllllllldo..",
-    "...oddddddddo...",
-    "....oooooooo....",
-    "................",
-    "................",
-    "................",
-], {"o": 0x0E0E10, "h": 0x5A5D63, "l": 0x34363A, "m": 0x26282B, "d": 0x1C1D20})
-ITEMS["tar"] = sprite([
-    "................",
-    "................",
-    "................",
-    "......ooo.......",
-    ".....ohhlo......",
-    "....ohklllo.....",
-    "...ohlllllloo...",
-    "...ollllllllo...",
-    "..ollllllllllo..",
-    "..olllllllllmo..",
-    "..olllllllmmmo..",
-    "...ommmmmmmmo...",
-    "....oooooooo....",
-    "................",
-    "................",
-    "................",
-], {"o": 0x050404, "h": 0x6B5E58, "k": 0xBFB3AA, "l": 0x1A1513, "m": 0x0F0C0B})
+# Raw iron's texels run from luminance 53 to 246, flint's from 14 to 168, resin's from 66 to 225, slime's 69 to 255.
+RAW_BAUXITE = ((53, 0x34140D), (79, 0x562216), (118, 0x7E3424), (150, 0x9C4632), (185, 0xB45E48), (230, 0xCC8670),
+               (246, 0xE0AE9A))
+SHALE_CHUNK = ((14, 0x0E0B0A), (34, 0x1E1916), (61, 0x342C27), (86, 0x4A4038), (127, 0x6A5E52), (168, 0x8E8274))
+TAR = ((66, 0x050404), (92, 0x0F0C0B), (117, 0x1A1513), (147, 0x2A2220), (184, 0x4A3E3A), (225, 0xBFB3AA))
+RUBBER = ((69, 0x0E0E10), (100, 0x1C1D20), (120, 0x26282B), (159, 0x34363A), (183, 0x44474C), (233, 0x7A7E86),
+          (255, 0xA0A4AB))
+INGOT = vanilla("item/iron_ingot")
+ITEMS["bauxite"] = canvas(recolour(vanilla("item/raw_iron"), RAW_BAUXITE))
+ITEMS["shale_chunk"] = canvas(recolour(vanilla("item/flint"), SHALE_CHUNK))
+ITEMS["steel_ingot"] = canvas(recolour(INGOT, STEEL_INGOT))
+ITEMS["aluminium_ingot"] = canvas(recolour(INGOT, ALUMINIUM_INGOT))
+ITEMS["duralumin_ingot"] = canvas(recolour(INGOT, DURALUMIN_INGOT))
+ITEMS["steel_plate"] = canvas(recolour(flattened(INGOT, 2), STEEL_INGOT))
+ITEMS["duralumin_sheet"] = canvas(recolour(flattened(INGOT, 3), DURALUMIN_INGOT))
+ITEMS["rubber"] = canvas(recolour(vanilla("item/slime_ball"), RUBBER))
+ITEMS["tar"] = canvas(recolour(vanilla("item/resin_clump"), TAR))
 ITEMS["crude_oil_bucket"] = sprite(BUCKET, {"o": 0x2B2B2B, "h": 0xC6C6C6, "K": 0x110D0C, "k": 0x4A4044, "l": 0x9C9C9C,
                                             "m": 0x6F6F6F})
 ITEMS["empty_canister"] = canister(0x5E6670, 0x7D8590)
