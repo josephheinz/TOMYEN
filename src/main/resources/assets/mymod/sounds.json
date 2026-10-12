@@ -285,5 +285,267 @@
         "pitch": 0.9
       }
     ]
+  },
+  "schnozzle_ambient": {
+    "subtitle": "subtitles.mymod.schnozzle_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:mob/panda/nosebreath1",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:mob/panda/nosebreath2",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:mob/panda/nosebreath3",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle1",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle2",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle3",
+        "pitch": 0.6,
+        "volume": 0.8
+      }
+    ]
+  },
+  "schnozzle_wheeze": {
+    "subtitle": "subtitles.mymod.schnozzle_wheeze",
+    "sounds": [
+      {
+        "name": "minecraft:mob/horse/breathe1",
+        "pitch": 0.4,
+        "attenuation_distance": 80
+      },
+      {
+        "name": "minecraft:mob/horse/breathe2",
+        "pitch": 0.4,
+        "attenuation_distance": 80
+      },
+      {
+        "name": "minecraft:mob/horse/breathe3",
+        "pitch": 0.4,
+        "attenuation_distance": 80
+      },
+      {
+        "name": "minecraft:mob/panda/nosebreath1",
+        "pitch": 0.35,
+        "attenuation_distance": 80
+      },
+      {
+        "name": "minecraft:mob/panda/nosebreath2",
+        "pitch": 0.35,
+        "attenuation_distance": 80
+      },
+      {
+        "name": "minecraft:mob/panda/nosebreath3",
+        "pitch": 0.35,
+        "attenuation_distance": 80
+      },
+      {
+        "name": "minecraft:mob/sniffer/scenting1",
+        "pitch": 0.5,
+        "attenuation_distance": 80
+      },
+      {
+        "name": "minecraft:mob/sniffer/scenting2",
+        "pitch": 0.5,
+        "attenuation_distance": 80
+      },
+      {
+        "name": "minecraft:mob/sniffer/scenting3",
+        "pitch": 0.5,
+        "attenuation_distance": 80
+      }
+    ]
+  },
+  "schnozzle_sniff": {
+    "subtitle": "subtitles.mymod.schnozzle_sniff",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/sniff_1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/warden/sniff_2",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/warden/sniff_3",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/warden/sniff_4",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/sniffer/sniffing1",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/sniffer/sniffing2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/sniffer/sniffing3",
+        "pitch": 0.55
+      }
+    ]
+  },
+  "schnozzle_launch": {
+    "subtitle": "subtitles.mymod.schnozzle_launch",
+    "sounds": [
+      {
+        "name": "minecraft:mob/llama/spit1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/llama/spit2",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "schnozzle_lash": {
+    "subtitle": "subtitles.mymod.schnozzle_lash",
+    "sounds": [
+      {
+        "name": "minecraft:mob/slime/attack1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/slime/attack2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/frog/tongue1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/frog/tongue2",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/frog/tongue3",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/frog/tongue4",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "schnozzle_sneeze_windup": {
+    "subtitle": "subtitles.mymod.schnozzle_sneeze_windup",
+    "sounds": [
+      {
+        "name": "minecraft:mob/panda/pre_sneeze",
+        "pitch": 0.45
+      }
+    ]
+  },
+  "schnozzle_sneeze": {
+    "subtitle": "subtitles.mymod.schnozzle_sneeze",
+    "sounds": [
+      {
+        "name": "minecraft:mob/panda/sneeze1",
+        "pitch": 0.4
+      },
+      {
+        "name": "minecraft:mob/panda/sneeze2",
+        "pitch": 0.4
+      },
+      {
+        "name": "minecraft:mob/panda/sneeze3",
+        "pitch": 0.4
+      }
+    ]
+  },
+  "schnozzle_hurt": {
+    "subtitle": "subtitles.mymod.schnozzle_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/hoglin/hurt1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/hoglin/hurt2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/hoglin/hurt3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/hoglin/hurt4",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/pig/big/hit1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/pig/big/hit2",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/pig/big/hit3",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "schnozzle_death": {
+    "subtitle": "subtitles.mymod.schnozzle_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/horse/donkey/death",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/goat/screaming_death1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/goat/screaming_death2",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/goat/screaming_death3",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "booger_splat": {
+    "subtitle": "subtitles.mymod.booger_splat",
+    "sounds": [
+      {
+        "name": "minecraft:mob/slime/small1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/slime/small2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/slime/small3",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/slime/small4",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/slime/small5",
+        "pitch": 0.8
+      }
+    ]
   }
 }

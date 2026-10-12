@@ -8,12 +8,15 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -24,12 +27,17 @@ import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.ModDamageTypes;
 import com.jheinz.mymod.ModNetworking;
+import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.vampire.Vampire;
 
-/** Holy light from a crucifix: harmless to the living, it burns the undead, and vampires worst of all. */
+/**
+ * Holy light from a crucifix: harmless to the living, it burns the undead and anything in the
+ * {@code mymod:holy_vulnerable} entity tag (vampires, the Schnozzle), the tagged ones worst of all.
+ */
 public final class HolyLight {
-	/** Vampires take this many times the damage. */
-	public static final float VAMPIRE_MULTIPLIER = 3.0f;
+	/** Holy light hurts what's in this tag even if it isn't undead, and hurts it {@link #VULNERABLE_MULTIPLIER} times as much. */
+	public static final TagKey<EntityType<?>> HOLY_VULNERABLE = TagKey.create(Registries.ENTITY_TYPE, MyMod.id("holy_vulnerable"));
+	public static final float VULNERABLE_MULTIPLIER = 3.0f;
 	public static final double BEAM_RANGE = 48.0;
 	/** Beam damage at full charge. */
 	public static final float BEAM_DAMAGE = 8.0f;
@@ -40,16 +48,16 @@ public final class HolyLight {
 	}
 
 	public static boolean hurts(Entity entity) {
-		return entity instanceof LivingEntity living && living.is(EntityTypeTags.UNDEAD);
+		return entity instanceof LivingEntity living && (living.is(EntityTypeTags.UNDEAD) || living.is(HOLY_VULNERABLE));
 	}
 
-	/** Hurts the target if it's undead (triple for vampires); does nothing to anything else. */
+	/** Hurts the target if it's undead or holy-vulnerable (triple for the latter); does nothing to anything else. */
 	public static boolean smite(ServerLevel level, Entity target, Entity direct, @Nullable Entity owner, float amount) {
 		if (!hurts(target)) {
 			return false;
 		}
-		if (target instanceof Vampire) {
-			amount *= VAMPIRE_MULTIPLIER;
+		if (target.is(HOLY_VULNERABLE)) {
+			amount *= VULNERABLE_MULTIPLIER;
 		}
 		boolean hurt = target.hurtServer(level, level.damageSources().source(ModDamageTypes.HOLY_LIGHT, direct, owner), amount);
 		if (hurt) {

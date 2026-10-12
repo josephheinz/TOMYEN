@@ -24,7 +24,8 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Punch (attack) to send out a slow orb of light; hold use to charge, and let go to fire a beam of light
  * straight ahead. The longer the charge (up to {@link #FULL_CHARGE_TICKS}), the stronger the beam. Holy
- * light only hurts the undead. Vampires can't come within {@link #WARD_RADIUS} blocks of anyone holding one.
+ * light only hurts the undead and the holy-vulnerable (see {@link HolyLight#HOLY_VULNERABLE}). Vampires can't come
+ * within {@link #WARD_RADIUS} blocks of anyone holding one.
  */
 public class CrucifixItem extends Item {
 	public static final int MIN_CHARGE_TICKS = 10;

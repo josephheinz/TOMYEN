@@ -17,8 +17,9 @@ import net.minecraft.world.phys.Vec3;
 import com.jheinz.mymod.ModEntities;
 
 /**
- * A slow, weightless orb of light punched out of a crucifix. It drifts straight on through anything living
- * and bursts on the first undead creature or block it meets, or after {@link #LIFETIME} ticks.
+ * A slow, weightless orb of light punched out of a crucifix. It drifts straight on through anything living and
+ * bursts on the first creature holy light hurts (see {@link HolyLight#hurts}) or block it meets, or after
+ * {@link #LIFETIME} ticks.
  */
 public class LightOrb extends ThrowableProjectile {
 	public static final float SPEED = 0.35f;
