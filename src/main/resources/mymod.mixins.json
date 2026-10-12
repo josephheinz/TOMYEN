@@ -13,6 +13,7 @@
 		"MerchantResultSlotPaymentCardMixin",
 		"MobAccessor",
 		"MobHijackMixin",
+		"PlayerLongSwordMixin",
 		"PlayerPowerArmorMixin",
 		"PlayerTankMixin",
 		"ServerPlayerDebtDeathMixin",

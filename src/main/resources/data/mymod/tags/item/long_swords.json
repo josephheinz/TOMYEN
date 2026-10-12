@@ -1,0 +1,11 @@
+{
+  "values": [
+    "mymod:wooden_long_sword",
+    "mymod:stone_long_sword",
+    "mymod:copper_long_sword",
+    "mymod:iron_long_sword",
+    "mymod:golden_long_sword",
+    "mymod:diamond_long_sword",
+    "mymod:netherite_long_sword"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mymod:item/netherite_long_sword_icon"
+  }
+}
