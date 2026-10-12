@@ -46,6 +46,8 @@ import com.jheinz.mymod.client.hogfire.HogfireClient;
 import com.jheinz.mymod.client.schnozzle.SchnozzleClient;
 import com.jheinz.mymod.client.industry.IndustryClient;
 import com.jheinz.mymod.client.launcher.LauncherClient;
+import com.jheinz.mymod.client.lmg.M249Animation;
+import com.jheinz.mymod.client.shotgun.ShotgunAnimation;
 import com.jheinz.mymod.client.powerarmor.PowerArmorClient;
 import com.jheinz.mymod.client.tank.TankClient;
 import com.jheinz.mymod.station.ModMenus;
@@ -70,6 +72,8 @@ public class MyModClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			GunRecoil.tick(client.player);
 			GunAnimation.tick(client.player);
+			ShotgunAnimation.tick(client.player);
+			M249Animation.tick(client.player);
 			LaserSights.tick(client);
 			OreScanner.tick(client);
 			NeuralTrigger.tick(client);
@@ -103,6 +107,7 @@ public class MyModClient implements ClientModInitializer {
 		NeuralTrigger.initialize();
 		NeuralClient.register();
 		RangeSelectItemModelProperties.ID_MAPPER.put(MyMod.id("gun_animation"), GunAnimationProperty.MAP_CODEC);
+		GunModelProperties.register();
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, MyMod.id("ammo"), AmmoHud::extract);
 		// Screen-wide Neuralink effects go under everything else; world-anchored markers under the crosshair.
 		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, MyMod.id("neuralink_screen"), NeuralHud::extractScreen);

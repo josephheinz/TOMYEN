@@ -13,6 +13,7 @@ import com.jheinz.mymod.MagazineItem;
 import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.client.launcher.LauncherClient;
 import com.jheinz.mymod.launcher.RocketLauncherItem;
+import com.jheinz.mymod.shotgun.ShotgunItem;
 
 /** Rounds left in the held gun or magazine, drawn to the right of the hotbar. */
 public final class AmmoHud {
@@ -43,10 +44,12 @@ public final class AmmoHud {
 			}
 			int rounds = loaded == null ? 0 : loaded.rounds();
 			int color = rounds == 0 ? RED : WHITE;
-			String count = rounds + " / " + gun.loadedMagazine(held).capacity();
+			String count = rounds + " / " + gun.capacity(held);
 			graphics.text(minecraft.font, count, x, y, color, true);
 			drawFireMode(graphics, minecraft, gun, held, x + minecraft.font.width(count) + 6, y);
-			if (held.has(ModComponents.BOLT_OPEN) && rounds > 0) {
+			if (ShotgunItem.loading(held)) {
+				graphics.text(minecraft.font, Component.translatable("hud.mymod.shotgun.loading"), x, y + 10, GRAY, true);
+			} else if (held.has(ModComponents.BOLT_OPEN) && rounds > 0) {
 				graphics.text(minecraft.font, Component.translatable("hud.mymod.work_bolt"), x, y + 10, GRAY, true);
 			} else if (rounds == 0) {
 				graphics.text(minecraft.font, Component.translatable("hud.mymod.punch_to_reload"), x, y + 10, GRAY, true);

@@ -27,6 +27,7 @@ import com.jheinz.mymod.client.GunHands;
 import com.jheinz.mymod.client.GunScope;
 import com.jheinz.mymod.client.LaserBeams;
 import com.jheinz.mymod.client.launcher.LauncherAnimation;
+import com.jheinz.mymod.client.shotgun.ShotgunAnimation;
 
 /**
  * Draws the player's own arms, with their skin and sleeves, holding a gun in first person: main hand on
@@ -115,6 +116,7 @@ public abstract class FirstPersonGunArmsMixin {
 			return;
 		}
 		LauncherAnimation.submitRocket(poseStack, collector, light, stack, anchors, mirrored, Minecraft.getInstance().player);
+		ShotgunAnimation.submitShells(poseStack, collector, light, stack, mirrored, Minecraft.getInstance().player);
 		poseStack.pushPose();
 		GunHands.poseArm(poseStack, mymod$viewPose, mainArm.getOpposite(), false, support, mirrored);
 		renderPlayerHand(poseStack, collector, light, mainArm.getOpposite(), playerState);

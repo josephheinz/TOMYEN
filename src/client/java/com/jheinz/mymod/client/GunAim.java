@@ -23,7 +23,8 @@ import com.jheinz.mymod.attachment.Attachments;
  * Aiming down a fitted optic (red dot, holographic or Kobra): sneaking brings the gun up to the middle of
  * the screen, pointing straight ahead, with the optic's window centred in front of the eye. Each optic's
  * reticle is part of its model, glowing on the glass, so it moves with the gun under recoil and sway.
- * Walking doesn't bob the view while aiming (see GameRendererAimBobMixin), and the gun kicks less.
+ * Walking doesn't bob the view while aiming (see GameRendererAimBobMixin), and the gun kicks less. The M249 and
+ * the shotguns can also be aimed with no optic, down their iron sights, with a slight zoom.
  *
  * <p>The aimed pose is worked out from each gun's model: where the optic mount is (as placed by
  * tools/gen_attachments.py), how far back the eye can sit before anything gets in the way, and the gun's
@@ -31,6 +32,11 @@ import com.jheinz.mymod.attachment.Attachments;
  */
 public final class GunAim {
 	private static final long RAISE_MILLIS = 160;
+	/** The M249 is heavy to bring up; the shotguns a little slower than a rifle. */
+	private static final long M249_RAISE_MILLIS = 450;
+	private static final long SHOTGUN_RAISE_MILLIS = 220;
+	/** Field-of-view multiplier aiming down iron sights (only guns that define a sight line below can). */
+	public static final float IRON_SIGHT_ZOOM = 0.9f;
 	/** How far behind the window the eye sits when nothing's in the way, in model pixels. */
 	private static final float EYE_DISTANCE = 6.0f;
 	private static final float NO_LIMIT = Float.MAX_VALUE;
@@ -73,8 +79,36 @@ public final class GunAim {
 			return new Mount(10.0f, 10.2f, NO_LIMIT);
 		} else if (gun == ModItems.GALIL) {
 			return new Mount(3.3f, 10.2f, NO_LIMIT);
+		} else if (gun == ModItems.M249) {
+			// On the feed cover's rail (tools/gen_m249.py).
+			return new Mount(5.6f, 11.85f, NO_LIMIT);
+		} else if (gun == ModItems.REMINGTON_870) {
+			return new Mount(7.4f, 10.1f, NO_LIMIT);
+		} else if (gun == ModItems.SPAS12) {
+			return new Mount(7.5f, 10.6f, NO_LIMIT);
 		}
 		return null;
+	}
+
+	/**
+	 * The sight line of a gun that can be aimed down its iron sights, as a window relative to its optic mount: the
+	 * rear aperture (or, on the 870, the back of the receiver over which the bead is lined up), from
+	 * tools/gen_m249.py and gen_shotguns.py. Null for guns that need an optic to aim.
+	 */
+	private static Optic ironSights(Item gun) {
+		if (gun == ModItems.M249) {
+			return new Optic(0.4f, 6.35f);
+		} else if (gun == ModItems.REMINGTON_870) {
+			return new Optic(0.05f, 6.8f);
+		} else if (gun == ModItems.SPAS12) {
+			return new Optic(0.8f, 6.6f);
+		}
+		return null;
+	}
+
+	/** Whether this gun can be aimed down its iron sights (without an optic). */
+	public static boolean hasIronSights(ItemStack gun) {
+		return ironSights(gun.getItem()) != null;
 	}
 
 	private static Optic optic(ItemStack gun) {
@@ -86,7 +120,7 @@ public final class GunAim {
 		} else if (optic == ModItems.KOBRA_SIGHT) {
 			return new Optic(1.05f, 1.2f);
 		}
-		return null;
+		return optic == null ? ironSights(gun.getItem()) : null;
 	}
 
 	/** Whether this gun has an optic to aim down. */
@@ -108,7 +142,10 @@ public final class GunAim {
 	 */
 	public static float update(LocalPlayer player) {
 		long now = Util.getMillis();
-		float step = Math.min(now - lastMillis, 100L) / (float) RAISE_MILLIS;
+		Item held = player == null ? null : player.getMainHandItem().getItem();
+		long raise = held == ModItems.M249 ? M249_RAISE_MILLIS
+				: held == ModItems.REMINGTON_870 || held == ModItems.SPAS12 ? SHOTGUN_RAISE_MILLIS : RAISE_MILLIS;
+		float step = Math.min(now - lastMillis, 100L) / (float) raise;
 		lastMillis = now;
 		progress = Mth.clamp(progress + (player != null && wantsToAim(player) ? step : -step), 0.0f, 1.0f);
 		GunRecoil.setAiming(progress);

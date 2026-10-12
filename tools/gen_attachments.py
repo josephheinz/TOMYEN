@@ -2,6 +2,9 @@
 import json, math, os, struct, sys, zlib, random
 from collections import OrderedDict
 
+sys.path.insert(0, os.path.dirname(__file__))
+import gunkit
+
 ASSETS = sys.argv[1]  # .../assets/mymod
 MODELS = os.path.join(ASSETS, "models/item")
 ITEMS = os.path.join(ASSETS, "items")
@@ -21,6 +24,11 @@ GUNS = {
     "akm":          dict(muzzle=(-13.0, 8.2), sup=7.5, laser=(-1.0, 6.6), optic=(10.0, 10.2), grip=(3.2, 6.6)),
     "galil":        dict(muzzle=(-15.0, 8.2), sup=7.5, laser=(-2.0, 6.6), optic=(3.3, 10.2), grip=(1.8, 6.6)),
     "awp":          dict(muzzle=(-16.0, 8.9), sup=9.0, laser=(-6.5, 6.5), optic=None, grip=(-2.5, 6.5)),
+    # Shotguns: an optic on the receiver, a laser on the barrel clamp under the magazine tube (see gen_shotguns.py).
+    "remington_870": dict(muzzle=None, laser=(-13.1, 6.55), optic=(7.4, 10.1)),
+    "spas12":       dict(muzzle=None, laser=(-12.85, 6.95), optic=(7.5, 10.6)),
+    # The M249's optic sits on the feed cover's rail (see gen_m249.py and COVER_HINGE below).
+    "m249":         dict(muzzle=(-15.9, 9.0), sup=7.5, laser=(-3.9, 6.4), optic=(5.6, 11.85), grip=(1.8, 6.4)),
 }
 # Iron sights (by element name) taken off a gun while an optic is fitted, and parts cut down to sit flush instead.
 IRON_SIGHTS = {
@@ -33,6 +41,8 @@ IRON_SIGHTS = {
     "akm": ["front_sight_post", "front_sight_ear_left", "front_sight_ear_right", "rear_sight_leaf"],
     "galil": ["front_sight_post", "front_sight_ears", "carry_handle", "carry_handle~l", "carry_handle~r", "carry_handle~bpp",
               "carry_handle~bnp", "rear_sight"],
+    "spas12": ["front_sight", "front_sight_ear", "rear_sight_base", "rear_sight", "rear_sight_aperture", "rear_sight_ear"],
+    "m249": ["front_sight_post", "rear_sight", "rear_sight_aperture"],
 }
 # The AK's rear sight block also carries the gas tube, so it stays, cut down to just under the dust cover's top.
 IRON_SIGHT_TRIMS = {"akm": {"rear_sight_base": 10.18}}
@@ -40,6 +50,10 @@ IRON_SIGHT_TRIMS = {"akm": {"rear_sight_base": 10.18}}
 # Pistols whose optic (and switch) sit on the slide: how far back the slide is in each racking frame
 # (the mymod:gun_animation frames 1-6), so those parts ride along with it.
 SLIDE_TRAVEL = {"glock": [0.417, 0.833, 1.25, 1.667, 2.083, 2.5], "m1911": [0.417, 0.833, 1.25, 1.667, 2.083, 2.5]}
+
+# Guns whose optic rail is on a hinged cover: the hinge (y, z) and how far open the cover is (degrees, front up) in each
+# mymod:gun_animation frame, so a fitted optic swings up with it (the M249's feed cover, frames 7-16).
+COVER_HINGE = {"m249": dict(hinge=(10.9, 13.3), angles={**{f: 12.5 * (f - 6) for f in range(7, 13)}, **{f: 75.0 for f in range(13, 17)}})}
 
 CONTEXTS = ["thirdperson_righthand", "thirdperson_lefthand", "firstperson_righthand", "firstperson_lefthand",
             "head", "gui", "ground", "fixed", "on_shelf"]
@@ -368,6 +382,17 @@ for gun, spec in GUNS.items():
     def on_slide(component, parts):
         """parts: (attachment name, element builder). On a slide-mounted pistol the layer follows the racking frames."""
         resting = select(component, [case(name, build()) for name, build in parts])
+        cover = COVER_HINGE.get(gun)
+        if cover:
+            hy, hz = cover["hinge"]
+            entries = []
+            for frame, angle in sorted(cover["angles"].items()):
+                cases = [(f"mymod:{name}", write_model(gun, f"{name}_o{frame}", gunkit.rotate(build(), gunkit.rx(angle), (8.0, hy, hz)),
+                                                       display)) for name, build in parts]
+                entries.append(OrderedDict([("threshold", frame - 0.5), ("model", select(component, cases))]))
+            entries.append(OrderedDict([("threshold", max(cover["angles"]) + 0.5), ("model", resting)]))
+            return OrderedDict([("type", "minecraft:range_dispatch"), ("property", "mymod:gun_animation"), ("entries", entries),
+                                ("fallback", resting)])
         travel = SLIDE_TRAVEL.get(gun)
         if not travel:
             return resting

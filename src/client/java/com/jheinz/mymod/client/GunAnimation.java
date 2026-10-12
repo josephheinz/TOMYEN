@@ -21,7 +21,11 @@ import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.ModSounds;
 import com.jheinz.mymod.client.launcher.LauncherAnimation;
+import com.jheinz.mymod.client.lmg.M249Animation;
+import com.jheinz.mymod.client.shotgun.ShotgunAnimation;
 import com.jheinz.mymod.launcher.RocketLauncherItem;
+import com.jheinz.mymod.lmg.MachineGunItem;
+import com.jheinz.mymod.shotgun.ShotgunItem;
 
 /**
  * First-person handling animations:
@@ -33,6 +37,7 @@ import com.jheinz.mymod.launcher.RocketLauncherItem;
  * <li>inspecting the gun on demand: turned to show its left side, rolled over to show the ejection side, a
  * press check of the slide, charging handle or bolt, then back.</li>
  * </ul>
+ * The shotguns and the M249 hand all of this to ShotgunAnimation and M249Animation.
  *
  * <p>Three things move together. Moving parts step through model frames chosen by the mymod:gun_animation
  * item model property (1-6: slide or bolt travel, 7-12: magazine leaving the well, 12 being gone). A hand
@@ -210,7 +215,7 @@ public final class GunAnimation {
 
 	/** Whether this stack is in the middle of an animation (drawing, reloading, working the action, inspecting). */
 	public static boolean busy(ItemStack stack) {
-		return current(stack.getItem()) != null;
+		return current(stack.getItem()) != null || ShotgunAnimation.busy(stack) || M249Animation.busy(stack);
 	}
 
 	/** Starts inspecting the held gun, unless it's busy with another animation. */
@@ -219,6 +224,14 @@ public final class GunAnimation {
 			return;
 		}
 		Item item = player.getMainHandItem().getItem();
+		// The shotguns and the M249 have handling of their own.
+		if (item instanceof ShotgunItem) {
+			ShotgunAnimation.inspect(player);
+			return;
+		} else if (item instanceof MachineGunItem) {
+			M249Animation.inspect(player);
+			return;
+		}
 		Motion motion = motion(item);
 		if (motion != null && current(item) == null && queued == null) {
 			start(Kind.INSPECT, motion, item, INSPECT_MILLIS);
@@ -360,8 +373,15 @@ public final class GunAnimation {
 			// Whoever holds it: a launcher's handling is on its stack.
 			return LauncherAnimation.frame(stack);
 		}
+		if (stack.getItem() instanceof ShotgunItem) {
+			// The pump's on the stack too; only the holder sees its flick on drawing and press check.
+			return ShotgunAnimation.frame(stack, player != null && owner == player && stack == player.getMainHandItem());
+		}
 		if (player == null || owner != player || stack != player.getMainHandItem()) {
 			return 0.0f;
+		}
+		if (stack.getItem() instanceof MachineGunItem) {
+			return M249Animation.frame(stack);
 		}
 		Running run = current(stack.getItem());
 		if (run == null) {
@@ -382,6 +402,8 @@ public final class GunAnimation {
 	 * hold of it. Applied to the item's pose, so the gun and both hands move together.
 	 */
 	public static void applyGunPose(PoseStack poseStack, ItemStack stack, GunHands.Anchors anchors, boolean mirrored) {
+		ShotgunAnimation.applyGunPose(poseStack, stack, anchors, mirrored);
+		M249Animation.applyGunPose(poseStack, stack, anchors, mirrored);
 		Running run = current(stack.getItem());
 		if (run == null || anchors == null) {
 			return;
@@ -440,6 +462,11 @@ public final class GunAnimation {
 
 	/** Where a hand should be pulled to for the running animation on this stack, if any. */
 	public static HandOverride hand(ItemStack stack) {
+		if (stack.getItem() instanceof ShotgunItem) {
+			return ShotgunAnimation.hand(stack);
+		} else if (stack.getItem() instanceof MachineGunItem) {
+			return M249Animation.hand(stack);
+		}
 		Running run = current(stack.getItem());
 		if (run == null) {
 			return null;

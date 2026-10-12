@@ -35,16 +35,19 @@ import com.jheinz.mymod.attachment.Attachments;
  */
 public final class LaserBeams {
 	/** Where each gun's laser lens is, in model pixels (from tools/gen_attachments.py: the laser box's front face). */
-	private static final Map<Item, Vector3f> LENSES = Map.of(
-			ModItems.GLOCK, new Vector3f(8.0f, 7.425f, 0.4f),
-			ModItems.M1911, new Vector3f(8.0f, 7.425f, -6.0f),
-			ModItems.REVOLVER_357, new Vector3f(8.0f, 7.925f, -8.6f),
-			ModItems.MAC10, new Vector3f(8.0f, 7.575f, -8.8f),
-			ModItems.MP5, new Vector3f(8.0f, 5.925f, -7.5f),
-			ModItems.M4, new Vector3f(8.0f, 5.525f, -6.5f),
-			ModItems.AKM, new Vector3f(8.0f, 6.025f, -1.0f),
-			ModItems.GALIL, new Vector3f(8.0f, 6.025f, -2.0f),
-			ModItems.AWP, new Vector3f(8.0f, 5.925f, -6.5f));
+	private static final Map<Item, Vector3f> LENSES = Map.ofEntries(
+			Map.entry(ModItems.GLOCK, new Vector3f(8.0f, 7.425f, 0.4f)),
+			Map.entry(ModItems.M1911, new Vector3f(8.0f, 7.425f, -6.0f)),
+			Map.entry(ModItems.REVOLVER_357, new Vector3f(8.0f, 7.925f, -8.6f)),
+			Map.entry(ModItems.MAC10, new Vector3f(8.0f, 7.575f, -8.8f)),
+			Map.entry(ModItems.MP5, new Vector3f(8.0f, 5.925f, -7.5f)),
+			Map.entry(ModItems.M4, new Vector3f(8.0f, 5.525f, -6.5f)),
+			Map.entry(ModItems.AKM, new Vector3f(8.0f, 6.025f, -1.0f)),
+			Map.entry(ModItems.GALIL, new Vector3f(8.0f, 6.025f, -2.0f)),
+			Map.entry(ModItems.AWP, new Vector3f(8.0f, 5.925f, -6.5f)),
+			Map.entry(ModItems.M249, new Vector3f(8.0f, 5.825f, -3.9f)),
+			Map.entry(ModItems.REMINGTON_870, new Vector3f(8.0f, 5.975f, -13.1f)),
+			Map.entry(ModItems.SPAS12, new Vector3f(8.0f, 6.375f, -12.85f)));
 	private static final float FADE_LENGTH = 10.0f;
 	private static final float CORE_ALPHA = 0.55f;
 	private static final float GLOW_ALPHA = 0.12f;

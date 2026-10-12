@@ -16,12 +16,16 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAssets;
@@ -37,6 +41,10 @@ import com.jheinz.mymod.exoskeleton.ExoModuleItem;
 import com.jheinz.mymod.exoskeleton.ExoskeletonItem;
 import com.jheinz.mymod.attachment.AttachmentSlot;
 import com.jheinz.mymod.armor.PlateCarrierItem;
+import com.jheinz.mymod.lmg.MachineGunItem;
+import com.jheinz.mymod.lmg.MachineGuns;
+import com.jheinz.mymod.shotgun.ShotgunItem;
+import com.jheinz.mymod.shotgun.Shotguns;
 
 public final class ModItems {
 	/** Field-of-view multiplier when aiming through a red dot sight. */
@@ -98,6 +106,14 @@ public final class ModItems {
 			new Ammo(BULLET_338_FMJ, 20.0f, ModDamageTypes.BULLET, 0xD08A4E),
 			new Ammo(BULLET_338_AP, 17.0f, ModDamageTypes.ARMOR_PIERCING_BULLET, 0xB4B4B4));
 
+	// 12 gauge: Remington 870, SPAS-12. Buckshot throws eight pellets that lose damage with range; a slug is one heavy
+	// ball that carries much further. Shells go straight into a shotgun's tube from the inventory.
+	public static final Item SHELL_12G_BUCKSHOT = item("shell_12g_buckshot");
+	public static final Item SHELL_12G_SLUG = item("shell_12g_slug");
+	private static final List<ShotgunItem.Shell> SHELLS_12G = List.of(
+			new ShotgunItem.Shell(SHELL_12G_BUCKSHOT, 8, 2.5f, 4.5f, 8.0, 28.0, 0.3f, 40.0, 0xD8483A),
+			new ShotgunItem.Shell(SHELL_12G_SLUG, 1, 16.0f, 0.0f, 20.0, 60.0, 0.6f, 80.0, 0x5AA866));
+
 	public static final MagazineItem STANAG_MAGAZINE = magazine("stanag_magazine", 30, AMMO_556, 0);
 	public static final MagazineItem GLOCK_MAGAZINE = magazine("glock_magazine", 17, AMMO_9MM, 0);
 	public static final MagazineItem AK_MAGAZINE = magazine("ak_magazine", 30, AMMO_762, 0);
@@ -110,6 +126,8 @@ public final class ModItems {
 	public static final MagazineItem MP5_MAGAZINE = magazine("mp5_magazine", 30, AMMO_9MM, 0);
 	public static final MagazineItem MAC10_MAGAZINE = magazine("mac10_magazine", 30, AMMO_45, 0);
 	public static final MagazineItem M1911_MAGAZINE = magazine("m1911_magazine", 7, AMMO_45, 0);
+	/** A soft pouch of linked 5.56 for the M249. Packed like any magazine, a round at a time. */
+	public static final MagazineItem M249_AMMO_BOX = magazine("m249_ammo_box", 100, AMMO_556, 0);
 
 	public static final Item M4_UPPER_RECEIVER = part("m4_upper_receiver");
 	public static final Item M4_LOWER_RECEIVER = part("m4_lower_receiver");
@@ -129,6 +147,12 @@ public final class ModItems {
 	public static final Item MAC10_LOWER = part("mac10_lower");
 	public static final Item M1911_SLIDE = part("m1911_slide");
 	public static final Item M1911_FRAME = part("m1911_frame");
+	public static final Item M249_RECEIVER = part("m249_receiver");
+	public static final Item M249_BARREL = part("m249_barrel");
+	public static final Item REMINGTON_870_RECEIVER = part("remington_870_receiver");
+	public static final Item REMINGTON_870_BARREL = part("remington_870_barrel");
+	public static final Item SPAS12_RECEIVER = part("spas12_receiver");
+	public static final Item SPAS12_BARREL = part("spas12_barrel");
 
 	private static final ArmorMaterial PLATE_CARRIER_MATERIAL = new ArmorMaterial(15,
 			Map.of(ArmorType.HELMET, 1, ArmorType.CHESTPLATE, 3, ArmorType.LEGGINGS, 2, ArmorType.BOOTS, 1, ArmorType.BODY, 3),
@@ -178,24 +202,52 @@ public final class ModItems {
 	public static final Item M1911 = gun("m1911", 800,
 			new GunStats(ModSounds.M1911_SHOT, 2.8f, 48, 25, List.of(FireMode.SEMI)).withSpread(0.8f, 1.2f),
 			List.of(M1911_MAGAZINE), AMMO_45);
+	// Belt-fed from a 100-round box, 800 rpm (see MachineGunItem). Wild from the hip, steady on the bipod (crouch); slow to
+	// carry, aim and reload.
+	public static final Item M249 = register("m249",
+			properties -> new MachineGunItem(properties,
+					new GunStats(MachineGuns.M249_SHOT, 1.3f, 112, 100, List.of(FireMode.AUTO)).withAutoTicks(2).withSpread(1.2f, 0.6f),
+					List.of(M249_AMMO_BOX), AMMO_556),
+			new Item.Properties().durability(1500).repairable(Items.IRON_INGOT).attributes(ItemAttributeModifiers.builder()
+					.add(Attributes.MOVEMENT_SPEED, new AttributeModifier(MyMod.id("m249_weight"), -0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
+							EquipmentSlotGroup.MAINHAND)
+					.build()));
+	// Pump-action: the pump is worked after every shot (0.6 s). Six shells in the tube, loaded one at a time.
+	public static final Item REMINGTON_870 = register("remington_870",
+			properties -> new ShotgunItem(properties,
+					new GunStats(Shotguns.REMINGTON_870_SHOT, 6.0f, 80, ShotgunItem.SHELL_TICKS, List.of(FireMode.PUMP))
+							.withSingleRoundLoading().withSpread(0.8f, 1.5f),
+					SHELLS_12G, 6, Map.of(FireMode.PUMP, new ShotgunItem.Handling(1.0f, 1.0f, 1.0f, ShotgunItem.PUMP_TICKS))),
+			new Item.Properties().durability(900).repairable(Items.IRON_INGOT));
+	// Pump or semi-auto (the fire-mode key): pumped, it throws a tighter, harder-hitting pattern; semi-auto cycles itself
+	// in a quarter of a second but kicks harder. Eight shells in the tube.
+	public static final Item SPAS12 = register("spas12",
+			properties -> new ShotgunItem(properties,
+					new GunStats(Shotguns.SPAS12_SHOT, 6.5f, 80, ShotgunItem.SHELL_TICKS, List.of(FireMode.PUMP, FireMode.SEMI))
+							.withSingleRoundLoading().withSpread(0.7f, 1.4f),
+					SHELLS_12G, 8, Map.of(
+							FireMode.PUMP, new ShotgunItem.Handling(1.1f, 0.85f, 1.0f, ShotgunItem.PUMP_TICKS),
+							FireMode.SEMI, new ShotgunItem.Handling(0.9f, 1.0f, 1.35f, 5))),
+			new Item.Properties().durability(1000).repairable(Items.IRON_INGOT));
 
 	// Attachments. Each is right-clicked onto a gun (or combined with it in the Weapon Station).
-	private static final List<Item> ALL_GUNS = List.of(M4, GLOCK, AKM, AWP, GALIL, REVOLVER_357, MP5, MAC10, M1911);
+	private static final List<Item> ALL_GUNS = List.of(M4, GLOCK, AKM, AWP, GALIL, REVOLVER_357, MP5, MAC10, M1911, M249, REMINGTON_870,
+			SPAS12);
 	/** Quieter shots with no smoke trail, and a little less kick. A revolver's cylinder gap can't be suppressed. */
 	public static final Item SUPPRESSOR = attachment("suppressor", AttachmentSlot.MUZZLE,
-			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911),
+			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911, M249),
 			stats -> stats.withRecoil(stats.recoilDegrees() * 0.85f));
 	/** A cheap oil-filter can: as quiet as a suppressor and a little less kick, but the fat can throws shots wider. */
 	public static final Item OIL_CAN_SUPPRESSOR = attachment("oil_can_suppressor", AttachmentSlot.MUZZLE,
-			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911),
+			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911, M249),
 			stats -> stats.withRecoil(stats.recoilDegrees() * 0.9f).withSpread(stats.spreadDegrees() * 1.15f, stats.bloomPerShot()));
 	/** Ports the gas sideways: much less recoil, but louder. */
 	public static final Item MUZZLE_BRAKE = attachment("muzzle_brake", AttachmentSlot.MUZZLE,
-			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911),
+			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911, M249),
 			stats -> stats.withRecoil(stats.recoilDegrees() * 0.65f));
 	/** Hides the muzzle smoke and steadies rapid fire a little. */
 	public static final Item FLASH_HIDER = attachment("flash_hider", AttachmentSlot.MUZZLE,
-			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911),
+			List.of(M4, GLOCK, AKM, AWP, GALIL, MP5, MAC10, M1911, M249),
 			stats -> stats.withSpread(stats.spreadDegrees(), stats.bloomPerShot() * 0.85f));
 	/** Tighter hip fire, and a red dot on whatever it's pointed at. */
 	public static final Item LASER_SIGHT = attachment("laser_sight", AttachmentSlot.UNDERBARREL, ALL_GUNS,
@@ -205,18 +257,18 @@ public final class ModItems {
 	 * so the AWP's scope leaves no room for one).
 	 */
 	public static final Item RED_DOT_SIGHT = attachment("red_dot_sight", AttachmentSlot.OPTIC,
-			List.of(M4, GLOCK, AKM, GALIL, REVOLVER_357, MP5, MAC10, M1911),
+			List.of(M4, GLOCK, AKM, GALIL, REVOLVER_357, MP5, MAC10, M1911, M249, REMINGTON_870, SPAS12),
 			stats -> stats.withScope(RED_DOT_ZOOM));
 	/** A green laser: brighter, so the dot shows twice as far, and a touch steadier than the red one. */
 	public static final Item GREEN_LASER_SIGHT = attachment("green_laser_sight", AttachmentSlot.UNDERBARREL, ALL_GUNS,
 			stats -> stats.withSpread(stats.spreadDegrees() * 0.55f, stats.bloomPerShot()));
 	/** EOTech holographic sight: aims like a red dot, a little more zoom, with a ring-and-dot reticle. */
 	public static final Item HOLOGRAPHIC_SIGHT = attachment("holographic_sight", AttachmentSlot.OPTIC,
-			List.of(M4, GLOCK, AKM, GALIL, REVOLVER_357, MP5, MAC10, M1911),
+			List.of(M4, GLOCK, AKM, GALIL, REVOLVER_357, MP5, MAC10, M1911, M249, REMINGTON_870, SPAS12),
 			stats -> stats.withScope(HOLOGRAPHIC_ZOOM));
 	/** Kobra reflex sight: aims like a red dot, a little less zoom, with a chevron reticle. */
 	public static final Item KOBRA_SIGHT = attachment("kobra_sight", AttachmentSlot.OPTIC,
-			List.of(M4, GLOCK, AKM, GALIL, REVOLVER_357, MP5, MAC10, M1911),
+			List.of(M4, GLOCK, AKM, GALIL, REVOLVER_357, MP5, MAC10, M1911, M249, REMINGTON_870, SPAS12),
 			stats -> stats.withScope(KOBRA_ZOOM));
 	/** Converts the Glock to full-auto: a round every tick (1200 rpm), and harder to keep on target. */
 	public static final Item GLOCK_SWITCH = attachment("glock_switch", AttachmentSlot.FIRE_CONTROL, List.of(GLOCK),
@@ -224,7 +276,7 @@ public final class ModItems {
 					.withSpread(stats.spreadDegrees(), stats.bloomPerShot() * 1.3f));
 
 	/** Foregrips: a second hand on the gun steadies it. They go on the rail behind any laser, so both fit. */
-	private static final List<Item> GRIP_GUNS = List.of(M4, AKM, AWP, GALIL, MP5, MAC10);
+	private static final List<Item> GRIP_GUNS = List.of(M4, AKM, AWP, GALIL, MP5, MAC10, M249);
 	/** A straight grip to pull the gun into the shoulder: the most recoil control. */
 	public static final Item VERTICAL_GRIP = attachment("vertical_grip", AttachmentSlot.GRIP, GRIP_GUNS,
 			stats -> stats.withRecoil(stats.recoilDegrees() * 0.7f));
@@ -356,16 +408,20 @@ public final class ModItems {
 					output.insertAfter(Items.CROSSBOW, M4, M4_UPPER_RECEIVER, M4_LOWER_RECEIVER, AKM, AK_RECEIVER,
 							AK_BARREL, GALIL, GALIL_RECEIVER, GALIL_BARREL, AWP, AWP_ACTION, AWP_STOCK, MP5, MP5_RECEIVER,
 							MP5_LOWER, MAC10, MAC10_UPPER, MAC10_LOWER, GLOCK, GLOCK_SLIDE, GLOCK_FRAME, M1911,
-							M1911_SLIDE, M1911_FRAME, REVOLVER_357, REVOLVER_FRAME, REVOLVER_CYLINDER, SUPPRESSOR,
+							M1911_SLIDE, M1911_FRAME, REVOLVER_357, REVOLVER_FRAME, REVOLVER_CYLINDER, M249, M249_RECEIVER,
+							M249_BARREL, REMINGTON_870, REMINGTON_870_RECEIVER, REMINGTON_870_BARREL, SPAS12, SPAS12_RECEIVER,
+							SPAS12_BARREL, SUPPRESSOR,
 							OIL_CAN_SUPPRESSOR, MUZZLE_BRAKE, FLASH_HIDER, LASER_SIGHT, GREEN_LASER_SIGHT, RED_DOT_SIGHT,
 							HOLOGRAPHIC_SIGHT, KOBRA_SIGHT, VERTICAL_GRIP, ANGLED_GRIP, STUBBY_GRIP, HANDSTOP, GLOCK_SWITCH);
 					List<ItemStack> ammo = new ArrayList<>();
-					ammo.addAll(ammoEntries(BULLET_CASING_556, AMMO_556, STANAG_MAGAZINE, GALIL_MAGAZINE));
+					ammo.addAll(ammoEntries(BULLET_CASING_556, AMMO_556, STANAG_MAGAZINE, GALIL_MAGAZINE, M249_AMMO_BOX));
 					ammo.addAll(ammoEntries(BULLET_CASING_762, AMMO_762, AK_MAGAZINE, AK_DRUM_MAGAZINE));
 					ammo.addAll(ammoEntries(BULLET_CASING_338, AMMO_338, AWP_MAGAZINE));
 					ammo.addAll(ammoEntries(BULLET_CASING_9MM, AMMO_9MM, GLOCK_MAGAZINE, GLOCK_DRUM_MAGAZINE, MP5_MAGAZINE));
 					ammo.addAll(ammoEntries(BULLET_CASING_45, AMMO_45, M1911_MAGAZINE, MAC10_MAGAZINE));
 					ammo.addAll(ammoEntries(BULLET_CASING_357, AMMO_357, SPEEDLOADER_357));
+					ammo.add(new ItemStack(SHELL_12G_BUCKSHOT));
+					ammo.add(new ItemStack(SHELL_12G_SLUG));
 					output.insertAfter(Items.ARROW, ammo);
 				});
 	}

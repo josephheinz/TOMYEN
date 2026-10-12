@@ -39,7 +39,7 @@ public abstract class GunAutoFireMixin {
 		}
 		MagazineContents loaded = held.get(ModComponents.LOADED_MAGAZINE);
 		if (player.hasInfiniteMaterials() || loaded != null && !loaded.isEmpty()) {
-			rightClickDelay = Math.min(rightClickDelay, gun.stats(held, player).autoTicks());
+			rightClickDelay = Math.min(rightClickDelay, gun.autoTicks(held, player));
 		}
 	}
 }

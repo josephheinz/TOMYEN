@@ -63,6 +63,11 @@ public final class GunRecoil {
 		return kickAtLastShot * (float) Math.exp(-(Util.getMillis() - lastShotMillis) / SETTLE_MS);
 	}
 
+	/** When (Util.getMillis()) the local player last fired. */
+	public static long lastShotMillis() {
+		return lastShotMillis;
+	}
+
 	/** Which way (and how much, -1 to 1) the last shot twisted the gun. */
 	public static float roll() {
 		return roll;

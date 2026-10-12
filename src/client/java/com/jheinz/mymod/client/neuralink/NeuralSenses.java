@@ -258,7 +258,7 @@ public final class NeuralSenses {
 		// A launcher holds a single rocket rather than a magazine.
 		Item rocket = gun instanceof RocketLauncherItem ? RocketLauncherItem.loadedRocket(held) : null;
 		int rounds = gun instanceof RocketLauncherItem ? (rocket == null ? 0 : 1) : loaded == null ? 0 : loaded.rounds();
-		int capacity = gun instanceof RocketLauncherItem ? 1 : gun.loadedMagazine(held).capacity();
+		int capacity = gun instanceof RocketLauncherItem ? 1 : gun.capacity(held);
 		Font font = minecraft.font;
 		int x = cx + 18, y = cy + 6;
 		boolean empty = rounds == 0;

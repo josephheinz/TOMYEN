@@ -17,7 +17,8 @@ def faces(e):
 
 def rot_key(e):
     r = e.get("rotation")
-    return None if not r or r.get("angle", 0) == 0 else json.dumps(r, sort_keys=True)
+    turned = r and (r.get("angle", 0) != 0 or any(r.get(k, 0) != 0 for k in ("x", "y", "z")))
+    return json.dumps(r, sort_keys=True) if turned else None
 
 
 def check(elements):

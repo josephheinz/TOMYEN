@@ -16,7 +16,9 @@ public enum FireMode implements StringRepresentable {
 	/** Keeps firing while use is held. */
 	AUTO("auto"),
 	/** One shot per click, then the bolt has to be worked (the gun's cycle time). */
-	BOLT("bolt");
+	BOLT("bolt"),
+	/** One shot per click, then the shotgun's pump is worked (automatically, over its pump time). */
+	PUMP("pump");
 
 	public static final int BURST_SIZE = 3;
 

@@ -38,6 +38,13 @@ public record GunDisplay(Vector3f translation, float yaw, float scale) {
 			return display(-1.4f, 3.3f, -1.0f, -7, 0.65f);
 		} else if (gun == ModItems.AWP) {
 			return display(-0.35f, 3.85f, -0.53f, -8, 0.5f);
+		} else if (gun == ModItems.M249) {
+			// tools/gen_m249.py and gen_shotguns.py print these.
+			return display(0.249f, 3.776f, -1.778f, -8, 0.52f);
+		} else if (gun == ModItems.REMINGTON_870) {
+			return display(0.291f, 2.289f, -2.079f, -8, 0.55f);
+		} else if (gun == ModItems.SPAS12) {
+			return display(0.179f, 3.547f, -1.283f, -8, 0.53f);
 		}
 		return null;
 	}

@@ -105,6 +105,20 @@ public final class StationRecipes {
 			recipe(ModItems.M1911_SLIDE, 1, cost(Items.IRON_INGOT, 2), cost(Items.IRON_NUGGET, 1), cost(Items.GOLD_NUGGET, 1)),
 			recipe(ModItems.M1911_FRAME, 1, cost(Items.IRON_INGOT, 2), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.COPPER_NUGGET, 1)),
 			recipe(ModItems.M1911, 1, cost(ModItems.M1911_SLIDE, 1), cost(ModItems.M1911_FRAME, 1)),
+			// M249: a piston stands in for the belt feed's pawls; the barrel group carries the bipod (sticks) and handle.
+			recipe(ModItems.M249_RECEIVER, 1, cost(Items.IRON_INGOT, 5), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.PISTON, 1)),
+			recipe(ModItems.M249_BARREL, 1, cost(Items.IRON_BLOCK, 1), cost(Items.IRON_INGOT, 2), cost(Items.STICK, 2)),
+			recipe(ModItems.M249, 1, cost(ModItems.M249_RECEIVER, 1), cost(ModItems.M249_BARREL, 1)),
+			// An olive drab pouch with a steel frame.
+			recipe(ModItems.M249_AMMO_BOX, 1, cost(Items.IRON_INGOT, 1), cost(Items.IRON_NUGGET, 4), cost(Items.DYE.green(), 1)),
+			// Remington 870: dark oak for the walnut stock and fore-end.
+			recipe(ModItems.REMINGTON_870_RECEIVER, 1, cost(Items.IRON_INGOT, 3), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.DARK_OAK_LOG, 1)),
+			recipe(ModItems.REMINGTON_870_BARREL, 1, cost(Items.IRON_INGOT, 3), cost(Items.DARK_OAK_PLANKS, 1), cost(Items.IRON_NUGGET, 2)),
+			recipe(ModItems.REMINGTON_870, 1, cost(ModItems.REMINGTON_870_RECEIVER, 1), cost(ModItems.REMINGTON_870_BARREL, 1)),
+			// SPAS-12: black dye for the polymer and finish; iron bars become the perforated heat shield.
+			recipe(ModItems.SPAS12_RECEIVER, 1, cost(Items.IRON_INGOT, 4), cost(Items.TRIPWIRE_HOOK, 1), cost(Items.DYE.black(), 2)),
+			recipe(ModItems.SPAS12_BARREL, 1, cost(Items.IRON_INGOT, 3), cost(Items.IRON_BARS, 2), cost(Items.DYE.black(), 1)),
+			recipe(ModItems.SPAS12, 1, cost(ModItems.SPAS12_RECEIVER, 1), cost(ModItems.SPAS12_BARREL, 1)),
 			// RPG-7: two iron blocks of steel tube with stick-and-plank heat guards; the spyglass becomes the PGO-7 optic and
 			// leather its eyecup.
 			recipe(Launchers.RPG7_LAUNCH_TUBE, 1, cost(Items.IRON_BLOCK, 2), cost(Items.STICK, 4), cost(Items.OAK_PLANKS, 2)),

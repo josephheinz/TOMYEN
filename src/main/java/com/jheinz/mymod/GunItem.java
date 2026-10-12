@@ -125,6 +125,19 @@ public class GunItem extends Item {
 		return magazines;
 	}
 
+	/** How many rounds the gun holds as loaded now: its inserted magazine's capacity (a shotgun's tube for shotguns). */
+	public int capacity(ItemStack gun) {
+		return loadedMagazine(gun).capacity();
+	}
+
+	/**
+	 * Ticks until holding use fires the next round in full-auto. Called on the client once per round; a gun whose rate
+	 * falls between whole ticks alternates.
+	 */
+	public int autoTicks(ItemStack gun, LivingEntity holder) {
+		return stats(gun, holder).autoTicks();
+	}
+
 	/** The kind of magazine inserted in this gun (or that would be, for a gun with none). */
 	public MagazineItem loadedMagazine(ItemStack gun) {
 		Holder<Item> type = gun.get(ModComponents.LOADED_MAGAZINE_TYPE);

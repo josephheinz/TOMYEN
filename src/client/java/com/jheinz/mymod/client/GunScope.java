@@ -37,6 +37,9 @@ public final class GunScope {
 			return 0.0f;
 		}
 		GunStats stats = gun.stats(player.getMainHandItem());
+		if (!stats.scoped() && GunAim.hasIronSights(player.getMainHandItem())) {
+			return GunAim.IRON_SIGHT_ZOOM;
+		}
 		return stats.scoped() ? stats.scopeZoom() : 0.0f;
 	}
 

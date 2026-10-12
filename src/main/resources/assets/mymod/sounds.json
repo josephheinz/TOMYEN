@@ -23,6 +23,60 @@
       "mymod:lock_tone"
     ]
   },
+  "remington_870_shot": {
+    "subtitle": "subtitles.mymod.remington_870_shot",
+    "sounds": [
+      "mymod:remington_870_shot"
+    ]
+  },
+  "spas12_shot": {
+    "subtitle": "subtitles.mymod.spas12_shot",
+    "sounds": [
+      "mymod:spas12_shot"
+    ]
+  },
+  "m249_shot": {
+    "subtitle": "subtitles.mymod.m249_shot",
+    "sounds": [
+      "mymod:m249_shot"
+    ]
+  },
+  "pump_back": {
+    "subtitle": "subtitles.mymod.pump_back",
+    "sounds": [
+      "mymod:pump_back"
+    ]
+  },
+  "pump_forward": {
+    "subtitle": "subtitles.mymod.pump_forward",
+    "sounds": [
+      "mymod:pump_forward"
+    ]
+  },
+  "shell_insert": {
+    "subtitle": "subtitles.mymod.shell_insert",
+    "sounds": [
+      "mymod:shell_insert"
+    ]
+  },
+  "feed_cover_open": {
+    "subtitle": "subtitles.mymod.feed_cover_open",
+    "sounds": [
+      "mymod:feed_cover_open"
+    ]
+  },
+  "feed_cover_close": {
+    "subtitle": "subtitles.mymod.feed_cover_close",
+    "sounds": [
+      "mymod:feed_cover_close"
+    ]
+  },
+  "belt_rattle": {
+    "subtitle": "subtitles.mymod.belt_rattle",
+    "sounds": [
+      "mymod:belt_rattle"
+    ]
+  },
   "m4_shot": {
     "subtitle": "subtitles.mymod.m4_shot",
     "sounds": [
@@ -545,6 +599,137 @@
       {
         "name": "minecraft:mob/slime/small5",
         "pitch": 0.8
+      }
+    ]
+  },
+  "tank_cannon": {
+    "subtitle": "subtitles.mymod.tank_cannon",
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:random/explode2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:random/explode3",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:random/explode4",
+        "pitch": 0.55
+      }
+    ]
+  },
+  "tank_cannon_cabin": {
+    "subtitle": "subtitles.mymod.tank_cannon",
+    "sounds": [
+      "mymod:tank_cannon_cabin"
+    ]
+  },
+  "tank_breech": {
+    "subtitle": "subtitles.mymod.tank_breech",
+    "sounds": [
+      "mymod:tank_breech"
+    ]
+  },
+  "tank_ram": {
+    "subtitle": "subtitles.mymod.tank_ram",
+    "sounds": [
+      "mymod:tank_ram"
+    ]
+  },
+  "tank_casing": {
+    "subtitle": "subtitles.mymod.tank_casing",
+    "sounds": [
+      "mymod:tank_casing"
+    ]
+  },
+  "tank_loader": {
+    "subtitle": "subtitles.mymod.tank_loader",
+    "sounds": [
+      {
+        "name": "minecraft:mob/villager/haggle1",
+        "pitch": 0.85
+      },
+      {
+        "name": "minecraft:mob/villager/haggle2",
+        "pitch": 0.85
+      },
+      {
+        "name": "minecraft:mob/villager/haggle3",
+        "pitch": 0.85
+      }
+    ]
+  },
+  "tank_coax": {
+    "subtitle": "subtitles.mymod.tank_coax",
+    "sounds": [
+      {
+        "name": "mymod:akm_shot",
+        "pitch": 0.85
+      }
+    ]
+  },
+  "tank_smoke": {
+    "subtitle": "subtitles.mymod.tank_smoke",
+    "sounds": [
+      {
+        "name": "minecraft:fireworks/launch1",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "tank_hatch_open": {
+    "subtitle": "subtitles.mymod.tank_hatch_open",
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_trapdoor/open1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open4",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "tank_hatch_close": {
+    "subtitle": "subtitles.mymod.tank_hatch_close",
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_trapdoor/close1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close4",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "tank_engine": {
+    "subtitle": "subtitles.mymod.tank_engine",
+    "sounds": [
+      {
+        "name": "minecraft:minecart/base",
+        "pitch": 0.5
       }
     ]
   }
