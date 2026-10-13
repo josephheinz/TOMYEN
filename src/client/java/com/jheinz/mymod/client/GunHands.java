@@ -16,6 +16,7 @@ import com.jheinz.mymod.GunRecoil;
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.client.launcher.LauncherAnimation;
 import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.napalm.Napalm;
 
 /**
  * How the player's arms hold each gun in first person. The shoulders stay fixed just off the bottom of
@@ -65,6 +66,9 @@ public final class GunHands {
 			return rifle(-0.022f, 0.119f, 0.156f, 0.069f, 0.086f, -0.491f);
 		} else if (gun == ModItems.SPAS12) {
 			return rifle(-0.022f, 0.119f, 0.156f, 0.062f, 0.154f, -0.441f);
+		} else if (gun == Napalm.FLAMETHROWER) {
+			// The shooting hand on the rear grip, the off hand on the front grip (tools/gen_napalm.py).
+			return rifle(-0.022f, 0.119f, 0.156f, 0.034f, 0.133f, -0.242f);
 		} else if (gun == ModItems.GLOCK || gun == ModItems.M1911 || gun == ModItems.REVOLVER_357) {
 			return pistol(-0.020f, 0.131f, -0.181f);
 		}

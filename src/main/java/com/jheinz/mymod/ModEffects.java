@@ -7,6 +7,7 @@ import net.minecraft.world.effect.MobEffect;
 
 import net.minecraft.world.effect.MobEffectCategory;
 
+import com.jheinz.mymod.napalm.NapalmEffect;
 import com.jheinz.mymod.neuralink.NeuralEffect;
 import com.jheinz.mymod.vampire.BleedingEffect;
 
@@ -20,6 +21,9 @@ public final class ModEffects {
 	/** Running the Overclock module: bullet time around the player, and faster gun reloads. */
 	public static final Holder<MobEffect> OVERCLOCKED = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, MyMod.id("overclocked"),
 			new NeuralEffect(MobEffectCategory.BENEFICIAL, 0xFF9100));
+	/** Burning napalm gel: stays alight in rain, burns harder than fire, and only water puts it out. */
+	public static final Holder<MobEffect> NAPALM = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, MyMod.id("napalm"),
+			new NapalmEffect());
 
 	private ModEffects() {
 	}

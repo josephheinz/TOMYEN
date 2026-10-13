@@ -747,5 +747,17 @@
       "mymod:nose_hair_whip_snag1",
       "mymod:nose_hair_whip_snag2"
     ]
+  },
+  "flamethrower_roar": {
+    "subtitle": "subtitles.mymod.flamethrower_roar",
+    "sounds": [
+      "mymod:flamethrower_roar"
+    ]
+  },
+  "flamethrower_ignite": {
+    "subtitle": "subtitles.mymod.flamethrower_ignite",
+    "sounds": [
+      "mymod:flamethrower_ignite"
+    ]
   }
 }

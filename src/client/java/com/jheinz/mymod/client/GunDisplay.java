@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.napalm.Napalm;
 
 /**
  * A gun's first-person display transform, copied from its item model (both hands use the same one;
@@ -45,6 +46,9 @@ public record GunDisplay(Vector3f translation, float yaw, float scale) {
 			return display(0.291f, 2.289f, -2.079f, -8, 0.55f);
 		} else if (gun == ModItems.SPAS12) {
 			return display(0.179f, 3.547f, -1.283f, -8, 0.53f);
+		} else if (gun == Napalm.FLAMETHROWER) {
+			// tools/gen_napalm.py prints this.
+			return display(0.0f, 2.894f, -0.009f, -8, 0.55f);
 		}
 		return null;
 	}

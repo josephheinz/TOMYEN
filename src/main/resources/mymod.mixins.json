@@ -25,7 +25,8 @@
 		"ItemStackExoSocketsMixin",
 		"LivingEntityExoSocketsMixin",
 		"PiglinAiExoSocketsMixin",
-		"PlayerExoSocketsMixin"
+		"PlayerExoSocketsMixin",
+		"EntityNapalmRainMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
