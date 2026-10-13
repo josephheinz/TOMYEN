@@ -29,6 +29,10 @@ import com.jheinz.mymod.client.GunDisplay;
 import com.jheinz.mymod.client.GunHands;
 import com.jheinz.mymod.client.GunMotion;
 import com.jheinz.mymod.client.GunScope;
+import com.jheinz.mymod.client.shoddy.ShoddyGunClient;
+import com.jheinz.mymod.ModSounds;
+import com.jheinz.mymod.shoddy.ShoddyGunItem;
+import com.jheinz.mymod.shoddy.ShoddyGuns;
 import com.jheinz.mymod.shotgun.ShotgunAction;
 import com.jheinz.mymod.shotgun.ShotgunItem;
 import com.jheinz.mymod.shotgun.Shotguns;
@@ -41,12 +45,32 @@ import com.jheinz.mymod.shotgun.Shotguns;
  * <li>A semi-auto cycle: the hull flies out with no hand movement.</li>
  * <li>Loading: the gun rolls over to bring its loading port to the off hand, which fetches a shell from below and
  * pushes it up into the tube, once per shell, and the gun rolls back when loading stops.</li>
+ * <li>Clearing a homemade gun's jam: the gun turns its action to the eye, the off hand knocks the part twice, then
+ * works it all the way and the stuck case flies out.</li>
  * </ul>
- * The pump's travel shows through the mymod:gun_animation frames (1-6), so other players see it too. Drawing the gun
- * gives the pump a quick flick and inspecting it does a press check, both only for the holder.
+ * The homemade guns (ShoddyGunItem) share all of this, with their own moving part (striker, bolt, ramrod, lever) in
+ * place of the pump and their own loading pose (see {@link Geometry}). The pump's travel shows through the
+ * mymod:gun_animation frames (1-6), so other players see it too. Drawing the gun gives the pump a quick flick and
+ * inspecting it does a press check, both only for the holder.
  */
 public final class ShotgunAnimation {
-	private record Geometry(Vector3f support, Vector3f port, Vector3f ejection, float travel) {
+	/**
+	 * Where things are on a tube-fed gun, in model pixels.
+	 *
+	 * @param support  where the off hand holds it
+	 * @param port     where rounds go in
+	 * @param ejection where fired hulls fly out from
+	 * @param travel   how far the moving part (pump, bolt, striker, ramrod) goes along z when worked; negative is forward
+	 * @param work     where the off hand takes hold of the moving part at rest
+	 * @param ejects   whether working it throws out a hull (a muzzle-loader or a pipe pistol doesn't)
+	 * @param loadPose how the gun turns to bring the port to the off hand while loading: degrees of pitch, yaw and roll
+	 */
+	public record Geometry(Vector3f support, Vector3f port, Vector3f ejection, float travel, Vector3f work, boolean ejects,
+			Vector3f loadPose) {
+		/** A pump gun: the off hand rides the fore-end, and the gun rolls over to load from underneath. */
+		Geometry(Vector3f support, Vector3f port, Vector3f ejection, float travel) {
+			this(support, port, ejection, travel, support, true, new Vector3f(10.0f, 12.0f, -35.0f));
+		}
 	}
 
 	// Model points (pixels) from tools/gen_shotguns.py.
@@ -64,6 +88,22 @@ public final class ShotgunAnimation {
 	private static final float PUMP_EJECT = 0.42f;
 	private static final float CYCLE_EJECT = 0.12f;
 	private static final float EJECT_TICKS = 7.0f;
+
+	/**
+	 * Clearing a jam, as fractions of its time: the gun rolls over to show the action (to CLEAR_ROLLED), two knocks that
+	 * each jerk the part a little way back ({start, stop, home}), then a full stroke that throws the stuck case out, and
+	 * the gun rolls back from CLEAR_UNROLL.
+	 */
+	private static final float CLEAR_ROLLED = 0.15f;
+	private static final float[][] CLEAR_KNOCKS = {{0.18f, 0.24f, 0.28f}, {0.34f, 0.40f, 0.44f}};
+	private static final float CLEAR_KNOCK_TRAVEL = 0.3f;
+	private static final float CLEAR_PULL = 0.50f;
+	private static final float CLEAR_BACK = 0.62f;
+	private static final float CLEAR_RETURN = 0.70f;
+	private static final float CLEAR_HOME = 0.80f;
+	private static final float CLEAR_UNROLL = 0.85f;
+	/** How the gun turns while a jam is cleared: pitch, yaw, and roll to show the ejection side. */
+	private static final Vector3f CLEAR_POSE = new Vector3f(6.0f, 14.0f, -30.0f);
 
 	// Per shell, as fractions of the shell's loading time.
 	private static final float FETCHED = 0.3f;
@@ -91,6 +131,10 @@ public final class ShotgunAnimation {
 	}
 
 	private static Geometry geometry(Item item) {
+		Geometry shoddy = ShoddyGunClient.geometry(item);
+		if (shoddy != null) {
+			return shoddy;
+		}
 		return item == ModItems.SPAS12 ? SPAS : REMINGTON;
 	}
 
@@ -156,9 +200,17 @@ public final class ShotgunAnimation {
 			cueProgress = -1.0f;
 		}
 		float p = action.progress(player.level().getGameTime());
-		Cue[] cues = action.kind() == ShotgunAction.Kind.PUMP
-				? new Cue[] {new Cue(PULL + 0.02f, Shotguns.PUMP_BACK, 0.9f, 1.0f), new Cue(RETURN + 0.03f, Shotguns.PUMP_FORWARD, 0.9f, 1.0f)}
-				: new Cue[] {new Cue(PUSHED - 0.02f, Shotguns.SHELL_INSERT, 0.7f, 1.0f)};
+		Cue[] cues = switch (action.kind()) {
+			// A homemade gun's bolt, striker, ramrod or lever sounds like a rack, not a pump.
+			case PUMP -> held.getItem() instanceof ShoddyGunItem
+					? new Cue[] {new Cue(PULL + 0.02f, ModSounds.BOLT_BACK, 0.8f, 0.8f), new Cue(RETURN + 0.03f, ModSounds.BOLT_FORWARD, 0.8f, 0.75f)}
+					: new Cue[] {new Cue(PULL + 0.02f, Shotguns.PUMP_BACK, 0.9f, 1.0f), new Cue(RETURN + 0.03f, Shotguns.PUMP_FORWARD, 0.9f, 1.0f)};
+			// Two knocks that don't shift it, then the stroke that does.
+			case CLEAR -> new Cue[] {new Cue(CLEAR_KNOCKS[0][1], ShoddyGuns.JAM_CLEAR, 0.8f, 1.0f),
+					new Cue(CLEAR_KNOCKS[1][1], ShoddyGuns.JAM_CLEAR, 0.8f, 1.15f), new Cue(CLEAR_PULL + 0.03f, Shotguns.PUMP_BACK, 0.9f, 0.8f),
+					new Cue(CLEAR_RETURN + 0.03f, Shotguns.PUMP_FORWARD, 0.9f, 0.85f)};
+			default -> new Cue[] {new Cue(PUSHED - 0.02f, Shotguns.SHELL_INSERT, 0.7f, 1.0f)};
+		};
 		for (Cue cue : cues) {
 			if (cue.at() > cueProgress && cue.at() <= p) {
 				player.level().playLocalSound(player.getX(), player.getEyeY(), player.getZ(), cue.sound(), SoundSource.PLAYERS,
@@ -176,6 +228,23 @@ public final class ShotgunAnimation {
 				: 1.0f - GunMotion.smooth(span(p, RETURN, HOME));
 	}
 
+	/** How far back the action is while a jam is cleared, 0 to 1: two short knocks, then a full stroke. */
+	private static float clear(float p) {
+		for (float[] knock : CLEAR_KNOCKS) {
+			if (p >= knock[0] && p < knock[2]) {
+				return CLEAR_KNOCK_TRAVEL * (p < knock[1] ? GunMotion.smooth(span(p, knock[0], knock[1]))
+						: 1.0f - GunMotion.smooth(span(p, knock[1], knock[2])));
+			}
+		}
+		return p < CLEAR_PULL ? 0.0f : p < CLEAR_BACK ? GunMotion.smooth(span(p, CLEAR_PULL, CLEAR_BACK)) : p < CLEAR_RETURN ? 1.0f
+				: 1.0f - GunMotion.smooth(span(p, CLEAR_RETURN, CLEAR_HOME));
+	}
+
+	/** How far over the gun is turned while a jam is cleared. */
+	private static float clearEngaged(float p) {
+		return GunMotion.smooth(span(p, 0.0f, CLEAR_ROLLED)) * (1.0f - GunMotion.smooth(span(p, CLEAR_UNROLL, 1.0f)));
+	}
+
 	private static float span(float p, float a, float b) {
 		return GunMotion.span(p, a, b);
 	}
@@ -183,10 +252,10 @@ public final class ShotgunAnimation {
 	/** How far back the pump is now, 0 to 1, for whoever holds it (the flick and press check only for the holder). */
 	private static float pumpTravel(ItemStack stack, boolean holder) {
 		ShotgunAction action = stack.get(Shotguns.SHOTGUN_ACTION);
-		if (action != null && action.kind() == ShotgunAction.Kind.PUMP) {
+		if (action != null && (action.kind() == ShotgunAction.Kind.PUMP || action.kind() == ShotgunAction.Kind.CLEAR)) {
 			float p = action.progress(now());
 			if (p < 1.0f) {
-				return pump(p);
+				return action.kind() == ShotgunAction.Kind.PUMP ? pump(p) : clear(p);
 			}
 		}
 		if (!holder) {
@@ -232,6 +301,7 @@ public final class ShotgunAnimation {
 		float roll = rolled(stack);
 		float shake = 0.0f;
 		float pull = pumpTravel(stack, true);
+		float clearing = 0.0f;
 		if (action != null) {
 			float p = action.progress(now());
 			long millis = action.ticks() * 50L;
@@ -239,12 +309,19 @@ public final class ShotgunAnimation {
 				shake = GunMotion.jolt(p, HOME, millis, 0.9f) + GunMotion.jolt(p, BACK, millis, 0.4f);
 			} else if (action.kind() == ShotgunAction.Kind.LOAD) {
 				shake = GunMotion.jolt(p, PUSHED, millis, 0.35f);
+			} else if (action.kind() == ShotgunAction.Kind.CLEAR && p < 1.0f) {
+				clearing = clearEngaged(p);
+				shake = GunMotion.jolt(p, CLEAR_KNOCKS[0][1], millis, 0.8f) + GunMotion.jolt(p, CLEAR_KNOCKS[1][1], millis, 0.9f)
+						+ GunMotion.jolt(p, CLEAR_BACK, millis, 0.6f) + GunMotion.jolt(p, CLEAR_HOME, millis, 0.7f);
 			}
 		}
-		// The pump tugs the muzzle down and the gun back a touch; loading rolls the port over to the off hand.
+		// The pump tugs the muzzle down and the gun back a touch; loading turns the port to the off hand, and clearing a
+		// jam turns the action toward the eye.
+		Vector3f load = geometry(stack.getItem()).loadPose();
 		poseStack.translate(0.0f, 0.0f, 0.015f * pull);
-		GunMotion.turn(poseStack, anchors.grip(), 10.0f * roll + 3.0f * pull, 12.0f * roll, -35.0f * roll - 4.0f * pull,
-				0.03f * roll, 1.0f, shake, mirrored);
+		GunMotion.turn(poseStack, anchors.grip(), load.x * roll + CLEAR_POSE.x * clearing + 3.0f * pull,
+				load.y * roll + CLEAR_POSE.y * clearing, load.z * roll + CLEAR_POSE.z * clearing - 4.0f * pull,
+				0.03f * (roll + clearing), 1.0f, shake, mirrored);
 	}
 
 	/** Where the off hand goes: riding the fore-end through the pump stroke, or fetching and pushing in shells. */
@@ -258,11 +335,28 @@ public final class ShotgunAnimation {
 		if (action != null && action.kind() == ShotgunAction.Kind.LOAD) {
 			return new GunAnimation.HandOverride(false, GunMotion.onGun(item, loadingHand(g, action.progress(now()))), rolled);
 		}
+		// The off hand reaches from its hold to the moving part (on a shotgun they're the same place: the fore-end), works
+		// it, and goes back.
 		float pull = pumpTravel(stack, true);
-		if (pull <= 0.0f) {
+		float p = action == null ? 1.0f : action.progress(now());
+		float flick = since(flourishStart, FLOURISH_MILLIS);
+		float check = since(inspectStart, INSPECT_MILLIS);
+		float blend;
+		if (action != null && action.kind() == ShotgunAction.Kind.CLEAR && p < 1.0f) {
+			blend = clearEngaged(p);
+		} else if (action != null && action.kind() == ShotgunAction.Kind.PUMP && p < 1.0f) {
+			blend = GunMotion.smooth(span(p, 0.0f, PULL)) * (1.0f - GunMotion.smooth(span(p, HOME, 1.0f)));
+		} else if (flick < 1.0f) {
+			blend = GunMotion.smooth(span(flick, 0.0f, 0.2f)) * (1.0f - GunMotion.smooth(span(flick, 0.8f, 1.0f)));
+		} else if (check < 1.0f) {
+			blend = GunMotion.smooth(span(check, 0.55f, 0.6f)) * (1.0f - GunMotion.smooth(span(check, 0.78f, 0.83f)));
+		} else {
 			return null;
 		}
-		return new GunAnimation.HandOverride(false, GunMotion.onGun(item, new Vector3f(g.support()).add(0.0f, 0.0f, g.travel() * pull)), 1.0f);
+		if (blend <= 0.0f) {
+			return null;
+		}
+		return new GunAnimation.HandOverride(false, GunMotion.onGun(item, new Vector3f(g.work()).add(0.0f, 0.0f, g.travel() * pull)), blend);
 	}
 
 	/** The off hand's path for one shell (model pixels): down for it, up behind the port, and pushing it in. */
@@ -305,11 +399,15 @@ public final class ShotgunAnimation {
 			}
 			return;
 		}
-		if (action.chambering()) {
-			// Nothing fired, so nothing to throw out.
+		if (action.chambering() || !g.ejects()) {
+			// Nothing fired, so nothing to throw out (or a gun with no port to throw it from).
 			return;
 		}
-		float eject = action.kind() == ShotgunAction.Kind.PUMP ? PUMP_EJECT : CYCLE_EJECT;
+		float eject = switch (action.kind()) {
+			case PUMP -> PUMP_EJECT;
+			case CLEAR -> CLEAR_BACK;
+			default -> CYCLE_EJECT;
+		};
 		float t = (float) (now() - (action.start() + eject * action.ticks()));
 		if (t < 0.0f || t >= EJECT_TICKS) {
 			return;

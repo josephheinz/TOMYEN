@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "#minecraft:planks",
+    "S": "mymod:tech_scrap",
+    "T": [
+      "minecraft:string",
+      "mymod:rubber"
+    ]
+  },
+  "pattern": [
+    "I  ",
+    " IT",
+    " SP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:pipe_rifle"
+  }
+}

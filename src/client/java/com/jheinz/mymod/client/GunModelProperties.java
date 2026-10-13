@@ -65,7 +65,8 @@ public final class GunModelProperties {
 		ShotgunAction action = stack.get(Shotguns.SHOTGUN_ACTION);
 		if (holder == minecraft.player) {
 			shot = GunRecoil.lastShotMillis();
-		} else if (action != null && action.kind() != ShotgunAction.Kind.LOAD && !action.chambering() && minecraft.level != null) {
+		} else if (action != null && (action.kind() == ShotgunAction.Kind.PUMP || action.kind() == ShotgunAction.Kind.CYCLE)
+				&& !action.chambering() && minecraft.level != null) {
 			double ticksAgo = minecraft.level.getGameTime() + minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false) - action.start();
 			shot = now - (long) (ticksAgo * 50.0);
 		} else {

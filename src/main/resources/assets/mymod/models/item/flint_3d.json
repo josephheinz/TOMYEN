@@ -1,0 +1,304 @@
+{
+  "credit": "mymod shoddy - generated",
+  "texture_size": [
+    64,
+    64
+  ],
+  "textures": {
+    "shoddy": "mymod:item/shoddy_guns",
+    "particle": "mymod:item/shoddy_guns"
+  },
+  "display": {
+    "gui": {
+      "rotation": [
+        0,
+        -90,
+        45
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.6,
+        2.6,
+        2.6
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        2.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        -90,
+        45
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.6,
+        2.6,
+        2.6
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        90,
+        -30
+      ],
+      "translation": [
+        0.0,
+        2.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        90,
+        -30
+      ],
+      "translation": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "elements": [
+    {
+      "from": [
+        7.4,
+        7.6,
+        7.6
+      ],
+      "to": [
+        7.95,
+        8.15,
+        8.15
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            14.864,
+            1.348,
+            15.139,
+            1.623
+          ],
+          "texture": "#shoddy"
+        },
+        "east": {
+          "uv": [
+            13.863,
+            1.874,
+            14.138,
+            2.149
+          ],
+          "texture": "#shoddy"
+        },
+        "south": {
+          "uv": [
+            15.191,
+            2.782,
+            15.466,
+            3.057
+          ],
+          "texture": "#shoddy"
+        },
+        "west": {
+          "uv": [
+            13.368,
+            2.779,
+            13.643,
+            3.054
+          ],
+          "texture": "#shoddy"
+        },
+        "up": {
+          "uv": [
+            14.376,
+            0.394,
+            14.651,
+            0.669
+          ],
+          "texture": "#shoddy"
+        },
+        "down": {
+          "uv": [
+            12.77,
+            0.195,
+            13.045,
+            0.47
+          ],
+          "texture": "#shoddy"
+        }
+      }
+    },
+    {
+      "from": [
+        8.2,
+        7.7,
+        8.3
+      ],
+      "to": [
+        8.7,
+        8.2,
+        8.8
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            9.417,
+            0.973,
+            9.667,
+            1.223
+          ],
+          "texture": "#shoddy"
+        },
+        "east": {
+          "uv": [
+            9.824,
+            0.14,
+            10.074,
+            0.39
+          ],
+          "texture": "#shoddy"
+        },
+        "south": {
+          "uv": [
+            10.312,
+            2.081,
+            10.562,
+            2.331
+          ],
+          "texture": "#shoddy"
+        },
+        "west": {
+          "uv": [
+            11.478,
+            0.896,
+            11.728,
+            1.146
+          ],
+          "texture": "#shoddy"
+        },
+        "up": {
+          "uv": [
+            8.876,
+            0.27,
+            9.126,
+            0.52
+          ],
+          "texture": "#shoddy"
+        },
+        "down": {
+          "uv": [
+            8.977,
+            2.718,
+            9.227,
+            2.968
+          ],
+          "texture": "#shoddy"
+        }
+      }
+    },
+    {
+      "from": [
+        8.0,
+        8.3,
+        7.5
+      ],
+      "to": [
+        8.45,
+        8.75,
+        7.95
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            12.876,
+            3.047,
+            13.126,
+            3.297
+          ],
+          "texture": "#shoddy"
+        },
+        "east": {
+          "uv": [
+            12.044,
+            1.623,
+            12.294,
+            1.873
+          ],
+          "texture": "#shoddy"
+        },
+        "south": {
+          "uv": [
+            12.249,
+            2.03,
+            12.499,
+            2.28
+          ],
+          "texture": "#shoddy"
+        },
+        "west": {
+          "uv": [
+            12.823,
+            0.118,
+            13.073,
+            0.368
+          ],
+          "texture": "#shoddy"
+        },
+        "up": {
+          "uv": [
+            12.53,
+            0.39,
+            12.78,
+            0.64
+          ],
+          "texture": "#shoddy"
+        },
+        "down": {
+          "uv": [
+            14.994,
+            2.34,
+            15.244,
+            2.59
+          ],
+          "texture": "#shoddy"
+        }
+      }
+    }
+  ]
+}

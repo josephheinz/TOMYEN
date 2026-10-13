@@ -21,11 +21,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_gunpowder": {
+    "has_steel_ingot": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:gunpowder"
+            "items": "mymod:steel_ingot"
           }
         ]
       },
@@ -42,7 +42,7 @@
     [
       "has_remington_870",
       "has_spas12",
-      "has_gunpowder",
+      "has_steel_ingot",
       "has_the_recipe"
     ]
   ],

@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 import net.minecraft.world.item.Item;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.client.shoddy.ShoddyGunClient;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.napalm.Napalm;
 
@@ -19,7 +20,10 @@ import com.jheinz.mymod.napalm.Napalm;
  */
 public record GunDisplay(Vector3f translation, float yaw, float scale) {
 	public static GunDisplay of(Item gun) {
-		if (gun == ModItems.GLOCK) {
+		GunDisplay shoddy = ShoddyGunClient.display(gun);
+		if (shoddy != null) {
+			return shoddy;
+		} else if (gun == ModItems.GLOCK) {
 			return display(0.0f, 3.0f, -6.0f, -6, 0.65f);
 		} else if (gun == ModItems.M1911) {
 			return display(-0.56f, 3.08f, -0.71f, -6, 0.65f);
