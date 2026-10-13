@@ -41,6 +41,7 @@ import com.jheinz.mymod.tank.Tanks;
 import com.jheinz.mymod.tungsten.Tungsten;
 import com.jheinz.mymod.uranium.Uranium;
 import com.jheinz.mymod.voidsteel.Voidsteel;
+import com.jheinz.mymod.werewolf.Werewolves;
 import com.jheinz.mymod.station.ModMenus;
 
 public class MyMod implements ModInitializer {
@@ -99,6 +100,7 @@ public class MyMod implements ModInitializer {
 		Schnozzles.initialize();
 		Skullcranes.initialize();
 		CathodeWalkers.initialize();
+		Werewolves.initialize();
 		linkBlockItems();
 	}
 

@@ -3,6 +3,7 @@
 	"package": "com.jheinz.mymod.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
+		"LivingEntityRendererWerewolfShakeMixin",
 		"AbstractClientPlayerScopeMixin",
 		"AvatarGunPoseMixin",
 		"AvatarSoulVacuumPoseMixin",

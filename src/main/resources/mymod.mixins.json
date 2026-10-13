@@ -41,7 +41,8 @@
 		"EnderDragonScalesMixin",
 		"EntityDragonscaleFireMixin",
 		"LivingEntityStarSteelMixin",
-		"PlayerStarSteelMixin"
+		"PlayerStarSteelMixin",
+		"VillagerHostilesSensorWerewolfMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

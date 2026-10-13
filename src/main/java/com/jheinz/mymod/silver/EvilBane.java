@@ -11,11 +11,13 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.jheinz.mymod.ModComponents;
+import com.jheinz.mymod.ModDamageTypes;
 import com.jheinz.mymod.holy.HolyLight;
 
 /**
@@ -53,7 +55,28 @@ public record EvilBane(float multiplier, boolean holy) {
 	/** Damage multiplier for a round of this item hitting the target: 1 unless the round is silver and the target evil. */
 	public static float multiplier(Item round, Entity target) {
 		EvilBane bane = of(round);
+		if (bane != null && target instanceof Wary wary) {
+			wary.struckBySilver();
+		}
 		return bane != null && HolyLight.isEvil(target) ? bane.multiplier() : 1.0f;
+	}
+
+	/**
+	 * Whether a hit is silver or holy: holy light, or a blow from a weapon carrying this component. A round's damage
+	 * source only knows the gun it came from, so a {@link Wary} target is told about a silver round just before it lands.
+	 */
+	public static boolean isSilverOrHoly(DamageSource source) {
+		if (source.is(ModDamageTypes.HOLY_LIGHT)) {
+			return true;
+		}
+		ItemStack weapon = source.getWeaponItem();
+		return weapon != null && of(weapon) != null;
+	}
+
+	/** Something that shrugs off everything but silver and holy things (a werewolf), and so needs to know which is which. */
+	public interface Wary {
+		/** A silver round is about to hit it; called just before its damage is dealt. */
+		void struckBySilver();
 	}
 
 	/** After a round of this item hits: holy silver sets an evil target alight. */
