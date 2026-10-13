@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mymod:item/ancient_dragon_scale"
+  }
+}

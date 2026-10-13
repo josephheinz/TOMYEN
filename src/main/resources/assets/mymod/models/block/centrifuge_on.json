@@ -1,0 +1,85 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mymod:block/centrifuge_housing",
+    "side": "mymod:block/centrifuge_housing",
+    "front": "mymod:block/centrifuge_front_on",
+    "top": "mymod:block/centrifuge_top",
+    "bottom": "minecraft:block/iron_block"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        12,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#front",
+          "uv": [
+            0,
+            4,
+            16,
+            16
+          ],
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            4,
+            16,
+            16
+          ],
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            4,
+            16,
+            16
+          ],
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            4,
+            16,
+            16
+          ],
+          "cullface": "west"
+        },
+        "up": {
+          "texture": "#top",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "cullface": "down"
+        }
+      }
+    }
+  ]
+}

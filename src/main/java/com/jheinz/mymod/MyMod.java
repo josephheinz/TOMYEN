@@ -11,14 +11,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jheinz.mymod.bank.Banking;
+import com.jheinz.mymod.fae.Fae;
+import com.jheinz.mymod.dragonscale.Dragonscales;
 import com.jheinz.mymod.hogfire.Hogfires;
 import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.neuralink.NeuralCore;
 import com.jheinz.mymod.neuralink.NeuralinkEffects;
 import com.jheinz.mymod.exoskeleton.ExoSockets;
 import com.jheinz.mymod.exoskeleton.ExoskeletonEffects;
+import com.jheinz.mymod.froststeel.Froststeel;
 import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.meteorite.Meteorites;
 import com.jheinz.mymod.lmg.MachineGuns;
+import com.jheinz.mymod.napalm.Napalm;
 import com.jheinz.mymod.longsword.LongSwords;
 import com.jheinz.mymod.magmasteel.Magmasteel;
 import com.jheinz.mymod.shotgun.Shotguns;
@@ -28,6 +33,9 @@ import com.jheinz.mymod.skullcrane.Skullcranes;
 import com.jheinz.mymod.soul.Souls;
 import com.jheinz.mymod.silver.Silver;
 import com.jheinz.mymod.tank.Tanks;
+import com.jheinz.mymod.tungsten.Tungsten;
+import com.jheinz.mymod.uranium.Uranium;
+import com.jheinz.mymod.voidsteel.Voidsteel;
 import com.jheinz.mymod.station.ModMenus;
 
 public class MyMod implements ModInitializer {
@@ -55,6 +63,12 @@ public class MyMod implements ModInitializer {
 		Magmasteel.initialize();
 		Souls.initialize();
 		Silver.initialize();
+		Tungsten.initialize();
+		Uranium.initialize();
+		Dragonscales.initialize();
+		Meteorites.initialize();
+		Froststeel.initialize();
+		Voidsteel.initialize();
 		Hogfires.initialize();
 		ModEntities.initialize();
 		ModMenus.initialize();
@@ -68,6 +82,7 @@ public class MyMod implements ModInitializer {
 		Launchers.initialize();
 		Shotguns.initialize();
 		MachineGuns.initialize();
+		Napalm.initialize();
 		LongSwords.initialize();
 		Banking.initialize();
 		NeuralCore.initialize();
@@ -89,6 +104,7 @@ public class MyMod implements ModInitializer {
 				blockItem.registerBlocks(Item.BY_BLOCK, item);
 			}
 		}
+		Fae.initialize();
 	}
 
 	public static Identifier id(String path) {

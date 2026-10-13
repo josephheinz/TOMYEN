@@ -24,6 +24,13 @@
               "type": "minecraft:model",
               "model": "mymod:item/rpg7_warhead_pg7_homing"
             }
+          },
+          {
+            "when": "mymod:pg7_napalm_rocket",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/rpg7_warhead_pg7_napalm"
+            }
           }
         ],
         "fallback": {
@@ -42,6 +49,13 @@
               "model": {
                 "type": "minecraft:model",
                 "model": "mymod:item/rpg7_warhead_pg7_homing"
+              }
+            },
+            {
+              "threshold": 2.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/rpg7_warhead_pg7_napalm"
               }
             }
           ],

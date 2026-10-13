@@ -7,6 +7,15 @@
     "mymod:deepslate_silver_ore",
     "mymod:raw_silver_block",
     "mymod:silver_block",
-    "mymod:holy_silver_block"
+    "mymod:holy_silver_block",
+    "mymod:uranium_ore",
+    "mymod:deepslate_uranium_ore",
+    "mymod:raw_uranium_block",
+    "mymod:raw_tungsten_block",
+    "mymod:tungsten_block",
+    "mymod:fae_silver_ore",
+    "mymod:dragon_scale_fossil",
+    "mymod:meteoric_iron_ore",
+    "mymod:froststeel_block"
   ]
 }

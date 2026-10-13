@@ -10,6 +10,9 @@
 		"LivingEntityPowerArmorMixin",
 		"LivingEntityMagmasteelMixin",
 		"LiquidBlockMagmasteelMixin",
+		"LivingEntityFroststeelMixin",
+		"PowderSnowBlockFroststeelMixin",
+		"ProjectileVoidsteelMixin",
 		"MerchantMenuPaymentCardMixin",
 		"MerchantOfferPaymentCardMixin",
 		"MerchantResultSlotPaymentCardMixin",
@@ -31,7 +34,13 @@
 		"PiglinAiExoSocketsMixin",
 		"PlayerExoSocketsMixin",
 		"EnchantmentHelperEvilBaneMixin",
-		"LivingEntityHolySilverMixin"
+		"LivingEntityHolySilverMixin",
+		"EntityNapalmRainMixin",
+		"EnchantmentHelperDragonscaleMixin",
+		"EnderDragonScalesMixin",
+		"EntityDragonscaleFireMixin",
+		"LivingEntityStarSteelMixin",
+		"PlayerStarSteelMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

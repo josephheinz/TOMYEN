@@ -13,6 +13,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.equipment.ArmorMaterial;
@@ -23,12 +24,18 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.exoskeleton.ExoSockets;
+import com.jheinz.mymod.longsword.LongSwordItem;
+import com.jheinz.mymod.longsword.LongSwords;
 
 /**
- * A metal's whole kit, registered in one go: its ingot, nugget and storage block, the five vanilla tools and the four
- * armor pieces, named {@code <metal>_ingot}, {@code <metal>_sword} and so on. The tools take vanilla's per-tool damage
- * and speed baselines except the axe's and hoe's, which vanilla also varies by tier. Each tool and piece of armor
- * carries the metal's hint lines in its tooltip.
+ * A metal's whole kit, registered in one go: its ingot, nugget and storage block, the five vanilla tools, a long sword
+ * and the four armor pieces, named {@code <metal>_ingot}, {@code <metal>_sword} and so on. The tools take vanilla's
+ * per-tool damage and speed baselines except the axe's and hoe's, which vanilla also varies by tier. Each tool and
+ * piece of armor carries the metal's hint lines in its tooltip, and the long sword strikes as the metal's sword does
+ * (see {@link LongSwordItem}).
+ *
+ * <p>Armor counts as worn in its slot or in the sockets of a worn exoskeleton, so full-set bonuses work either way.
  */
 public final class MetalSet {
 	/** Vanilla's attack baselines for the tools that don't vary by tier. */
@@ -44,6 +51,7 @@ public final class MetalSet {
 	public final Item axe;
 	public final Item shovel;
 	public final Item hoe;
+	public final Item longSword;
 	public final Item helmet;
 	public final Item chestplate;
 	public final Item leggings;
@@ -56,20 +64,32 @@ public final class MetalSet {
 	public MetalSet(String metal, ToolMaterial tools, ArmorMaterial armor, float axeDamage, float axeSpeed, float hoeDamage,
 			float hoeSpeed, BiFunction<Item.Properties, List<String>, Item> weapon, List<String> toolHints, List<String> armorHints,
 			MapColor blockColor, int blockLight, boolean fireResistant) {
+		this(metal, tools, armor, axeDamage, axeSpeed, hoeDamage, hoeSpeed, weapon, weapon, toolHints, armorHints, blockColor,
+				blockLight, fireResistant);
+	}
+
+	/** As above, with the sword and the axe built apart, for a metal whose sword does something its axe doesn't. */
+	public MetalSet(String metal, ToolMaterial tools, ArmorMaterial armor, float axeDamage, float axeSpeed, float hoeDamage,
+			float hoeSpeed, BiFunction<Item.Properties, List<String>, Item> swordFactory,
+			BiFunction<Item.Properties, List<String>, Item> axeFactory, List<String> toolHints, List<String> armorHints,
+			MapColor blockColor, int blockLight, boolean fireResistant) {
 		ingot = register(metal + "_ingot", Item::new, properties(fireResistant));
 		nugget = register(metal + "_nugget", Item::new, properties(fireResistant));
 		block = block(metal + "_block", BlockBehaviour.Properties.of().mapColor(blockColor).requiresCorrectToolForDrops()
 				.strength(5.0f, 6.0f).sound(SoundType.METAL).lightLevel(state -> blockLight), fireResistant);
-		sword = register(metal + "_sword", properties -> weapon.apply(properties, toolHints),
+		sword = register(metal + "_sword", properties -> swordFactory.apply(properties, toolHints),
 				properties(fireResistant).sword(tools, SWORD_DAMAGE, SWORD_SPEED));
 		pickaxe = register(metal + "_pickaxe", properties -> new HintItem(properties, toolHints),
 				properties(fireResistant).pickaxe(tools, PICKAXE_DAMAGE, PICKAXE_SPEED));
-		axe = register(metal + "_axe", properties -> weapon.apply(properties, toolHints),
+		axe = register(metal + "_axe", properties -> axeFactory.apply(properties, toolHints),
 				properties(fireResistant).axe(tools, axeDamage, axeSpeed));
 		shovel = register(metal + "_shovel", properties -> new HintItem(properties, toolHints),
 				properties(fireResistant).shovel(tools, SHOVEL_DAMAGE, SHOVEL_SPEED));
 		hoe = register(metal + "_hoe", properties -> new HintItem(properties, toolHints),
 				properties(fireResistant).hoe(tools, hoeDamage, hoeSpeed));
+		Item.Properties longSwordProperties = LongSwords.properties(tools);
+		longSword = register(metal + "_long_sword", properties -> new LongSwordItem(properties, sword),
+				fireResistant ? longSwordProperties.fireResistant() : longSwordProperties);
 		helmet = armor(metal + "_helmet", armor, ArmorType.HELMET, armorHints, fireResistant);
 		chestplate = armor(metal + "_chestplate", armor, ArmorType.CHESTPLATE, armorHints, fireResistant);
 		leggings = armor(metal + "_leggings", armor, ArmorType.LEGGINGS, armorHints, fireResistant);
@@ -89,23 +109,33 @@ public final class MetalSet {
 		return List.of(helmet, chestplate, leggings, boots);
 	}
 
-	/** The sword or the axe: the ones whose hits carry the metal's weapon effect. */
+	/** The sword, the long sword or the axe: the ones whose hits carry the metal's weapon effect. */
 	public boolean isWeapon(ItemStack stack) {
-		return stack.is(sword) || stack.is(axe);
+		return stack.is(sword) || stack.is(longSword) || stack.is(axe);
 	}
 
 	public boolean isTool(ItemStack stack) {
 		return tools().stream().anyMatch(stack::is);
 	}
 
-	/** How many pieces of this metal's armor the entity wears. */
+	/** One of the five tools or the long sword: whatever mines with the metal's tool effect (what a loot context holds). */
+	public boolean minesWith(ItemInstance tool) {
+		return tools().stream().anyMatch(tool::is) || tool.is(longSword);
+	}
+
+	/** How many pieces of this metal's armor the entity wears, in their slots or socketed in a worn exoskeleton. */
 	public int piecesWorn(LivingEntity entity) {
+		List<ItemStack> socketed = ExoSockets.socketedArmor(entity);
 		int worn = 0;
-		worn += entity.getItemBySlot(EquipmentSlot.HEAD).is(helmet) ? 1 : 0;
-		worn += entity.getItemBySlot(EquipmentSlot.CHEST).is(chestplate) ? 1 : 0;
-		worn += entity.getItemBySlot(EquipmentSlot.LEGS).is(leggings) ? 1 : 0;
-		worn += entity.getItemBySlot(EquipmentSlot.FEET).is(boots) ? 1 : 0;
+		worn += wears(entity, EquipmentSlot.HEAD, helmet, socketed) ? 1 : 0;
+		worn += wears(entity, EquipmentSlot.CHEST, chestplate, socketed) ? 1 : 0;
+		worn += wears(entity, EquipmentSlot.LEGS, leggings, socketed) ? 1 : 0;
+		worn += wears(entity, EquipmentSlot.FEET, boots, socketed) ? 1 : 0;
 		return worn;
+	}
+
+	private static boolean wears(LivingEntity entity, EquipmentSlot slot, Item piece, List<ItemStack> socketed) {
+		return entity.getItemBySlot(slot).is(piece) || socketed.stream().anyMatch(stack -> stack.is(piece));
 	}
 
 	public boolean wearsFullSet(LivingEntity entity) {

@@ -1,6 +1,9 @@
 {
   "values": [
     "mymod:magmasteel_block",
-    "mymod:soul_steel_block"
+    "mymod:soul_steel_block",
+    "mymod:star_steel_block",
+    "mymod:froststeel_block",
+    "mymod:voidsteel_block"
   ]
 }

@@ -8,6 +8,11 @@
     "mymod:diamond_long_sword",
     "mymod:netherite_long_sword",
     "mymod:silver_long_sword",
-    "mymod:holy_silver_long_sword"
+    "mymod:holy_silver_long_sword",
+    "mymod:dragonbone_long_sword",
+    "mymod:magmasteel_long_sword",
+    "mymod:soul_steel_long_sword",
+    "mymod:froststeel_long_sword",
+    "mymod:voidsteel_long_sword"
   ]
 }

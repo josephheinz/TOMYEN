@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "mymod:block/glimmerwood_log_top",
+    "side": "mymod:block/glimmerwood_log"
+  }
+}

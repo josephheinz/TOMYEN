@@ -47,7 +47,8 @@ import com.jheinz.mymod.hogfire.Hogfires;
  * <p>
  * The chain: bauxite and oil shale are mined; the Foundry makes steel, aluminium (it needs a hot Foundry) and
  * duralumin, and retorts shale into crude oil; a Pump Jack on an Oil Seep pumps crude from the pocket below; the
- * Refinery distils it into kerosene (rubber and tar on the side) and blends kerosene into rocket fuel; the Metal
+ * Refinery distils it into kerosene (rubber and tar on the side), blends kerosene into rocket fuel and thickens it
+ * with rubber and tar into napalm; the Metal
  * Press stamps steel plate and duralumin sheet; and those make the aerospace parts the Hogfire gear is built from.
  */
 public final class Industry {
@@ -118,6 +119,9 @@ public final class Industry {
 	public static final Item KEROSENE_CANISTER = canister("kerosene_canister");
 	/** Fuels a Hogfire. */
 	public static final Item ROCKET_FUEL_CANISTER = canister("rocket_fuel_canister");
+	/** Kerosene jellied with rubber and tar: a flamethrower's fuel, and what napalm rockets and grenades are filled with. */
+	public static final Item NAPALM_CANISTER = register("napalm_canister", Item::new,
+			new Item.Properties().stacksTo(16).craftRemainder(EMPTY_CANISTER));
 
 	// --- Aerospace components ----------------------------------------------------------------------------------
 	public static final Item COMBUSTION_CHAMBER = component("combustion_chamber");
@@ -162,6 +166,7 @@ public final class Industry {
 						output.accept(CRUDE_OIL_CANISTER);
 						output.accept(KEROSENE_CANISTER);
 						output.accept(ROCKET_FUEL_CANISTER);
+						output.accept(NAPALM_CANISTER);
 						output.accept(COMBUSTION_CHAMBER);
 						output.accept(ROCKET_NOZZLE);
 						output.accept(TURBOPUMP);

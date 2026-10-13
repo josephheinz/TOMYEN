@@ -55,6 +55,10 @@ public final class Tanks {
 			new Item.Properties().stacksTo(8).rarity(Rarity.UNCOMMON));
 	public static final Item HE_SHELL = item("he_shell", properties -> new ShellItem(properties, ShellType.HE),
 			new Item.Properties().stacksTo(8));
+	public static final Item TUNGSTEN_APFSDS_SHELL = item("tungsten_apfsds_shell",
+			properties -> new ShellItem(properties, ShellType.TUNGSTEN_APFSDS), new Item.Properties().stacksTo(8).rarity(Rarity.RARE));
+	public static final Item DU_APFSDS_SHELL = item("du_apfsds_shell", properties -> new ShellItem(properties, ShellType.DU_APFSDS),
+			new Item.Properties().stacksTo(8).rarity(Rarity.EPIC));
 	/** The bank's shells; not obtainable, it's only there for the projectile's looks. */
 	public static final Item TANK_SHELL = item("tank_shell", Item::new, new Item.Properties().stacksTo(16));
 
@@ -153,7 +157,8 @@ public final class Tanks {
 	public static void initialize() {
 		FabricDefaultAttributeRegistry.register(TANK, Tank.createAttributes());
 		CreativeModeTabEvents.modifyOutputEvent(TOOLS_TAB).register(output -> output.insertAfter(Items.TNT_MINECART, TANK_ITEM));
-		CreativeModeTabEvents.modifyOutputEvent(COMBAT_TAB).register(output -> output.insertBefore(Items.SPECTRAL_ARROW, APFSDS_SHELL, HE_SHELL));
+		CreativeModeTabEvents.modifyOutputEvent(COMBAT_TAB).register(output -> output.insertBefore(Items.SPECTRAL_ARROW, APFSDS_SHELL,
+				TUNGSTEN_APFSDS_SHELL, DU_APFSDS_SHELL, HE_SHELL));
 		PayloadTypeRegistry.serverboundPlay().register(Control.TYPE, Control.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Control.TYPE, (payload, context) -> handle(context.player(), payload));
 		ServerTickEvents.END_LEVEL_TICK.register(SmokeScreens::tick);

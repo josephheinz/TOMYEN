@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "mymod:steel_ingot",
+    "E": "mymod:enriched_uranium"
+  },
+  "pattern": [
+    "S",
+    "E",
+    "S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:uranium_fuel_rod"
+  }
+}

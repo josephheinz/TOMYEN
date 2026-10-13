@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:voidsteel_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "mymod:voidsteel_ingot"
+  }
+}

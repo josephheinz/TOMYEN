@@ -2,6 +2,8 @@
   "values": [
     "mymod:bleeding",
     "mymod:holy_light",
-    "mymod:neural_overload"
+    "mymod:neural_overload",
+    "mymod:radiation",
+    "mymod:napalm_burn"
   ]
 }

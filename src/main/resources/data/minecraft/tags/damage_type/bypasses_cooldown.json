@@ -3,6 +3,7 @@
     "mymod:bullet",
     "mymod:penetrator_bullet",
     "mymod:armor_piercing_bullet",
-    "mymod:hollow_point_bullet"
+    "mymod:hollow_point_bullet",
+    "mymod:napalm_burn"
   ]
 }

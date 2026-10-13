@@ -19,7 +19,10 @@ public final class RefineryRecipes {
 	/** Kerosene dosed with blaze powder and gunpowder as the oxidiser: rocket fuel. */
 	public static final RefineryRecipe BLEND = new RefineryRecipe("blend", Industry.ROCKET_FUEL_CANISTER, 1, List.of(), 200,
 			List.of(new Cost(Industry.KEROSENE_CANISTER, 1), new Cost(Items.BLAZE_POWDER, 1), new Cost(Items.GUNPOWDER, 2)));
-	public static final List<RefineryRecipe> ALL = List.of(DISTIL, BLEND);
+	/** Kerosene jellied with rubber and tar into sticky napalm. */
+	public static final RefineryRecipe THICKEN = new RefineryRecipe("thicken", Industry.NAPALM_CANISTER, 1, List.of(), 240,
+			List.of(new Cost(Industry.KEROSENE_CANISTER, 1), new Cost(Industry.RUBBER, 2), new Cost(Industry.TAR, 1)));
+	public static final List<RefineryRecipe> ALL = List.of(DISTIL, BLEND, THICKEN);
 
 	private RefineryRecipes() {
 	}

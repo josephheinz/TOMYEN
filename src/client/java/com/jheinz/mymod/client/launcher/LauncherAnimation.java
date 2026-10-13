@@ -91,8 +91,8 @@ public final class LauncherAnimation {
 			new Cue(SEATED, ModSounds.MAG_IN, 1.0f, 0.55f), new Cue(0.93f, SoundEvents.ARMOR_EQUIP_IRON.value(), 0.8f, 0.65f)};
 
 	private static final ItemStackRenderState ROCKET_STATE = new ItemStackRenderState();
-	private static ItemStack rocketStack;
-	private static ItemStack homingRocketStack;
+	/** One of each kind of rocket, in {@link Launchers#ROCKETS} order, for drawing the one being loaded. */
+	private static ItemStack[] rocketStacks;
 
 	private static long cueStart = Long.MIN_VALUE;
 	private static float cueProgress;
@@ -246,28 +246,27 @@ public final class LauncherAnimation {
 		if (p < FETCHED || p >= SEATED) {
 			return;
 		}
-		if (rocketStack == null) {
-			rocketStack = new ItemStack(Launchers.PG7_ROCKET);
-			homingRocketStack = new ItemStack(Launchers.PG7_HOMING_ROCKET);
+		if (rocketStacks == null) {
+			rocketStacks = Launchers.ROCKETS.stream().map(ItemStack::new).toArray(ItemStack[]::new);
 		}
 		Vector3f offset = rocketOffset(p, anchors);
 		poseStack.pushPose();
 		// The launcher's display transform, without its last half-block shift (the rocket's own rendering adds that).
 		poseStack.mulPose(GunDisplay.of(Launchers.RPG7).matrix(mirrored).translate(0.5f, 0.5f, 0.5f));
 		poseStack.translate(offset.x / 16.0f, offset.y / 16.0f, offset.z / 16.0f);
-		Minecraft.getInstance().getItemModelResolver().updateForTopItem(ROCKET_STATE, action.homing() ? homingRocketStack : rocketStack,
+		Minecraft.getInstance().getItemModelResolver().updateForTopItem(ROCKET_STATE, rocketStacks[Launchers.ROCKETS.indexOf(action.rocketItem())],
 				ItemDisplayContext.NONE, player.level(), player, 0);
 		ROCKET_STATE.submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, 0);
 		poseStack.popPose();
 	}
 
-	/** The mymod:gun_animation value: 1 (or 2 for a homing rocket) once a rocket being loaded is pushed home. */
+	/** The mymod:gun_animation value once a rocket being loaded is pushed home: 1 a PG-7, 2 a homing one, 3 napalm. */
 	public static float frame(ItemStack stack) {
 		LauncherAction action = stack.get(Launchers.LAUNCHER_ACTION);
 		if (action == null || action.kind() != LauncherAction.Kind.RELOAD || action.progress(now()) < SEATED) {
 			return 0.0f;
 		}
-		return action.homing() ? 2.0f : 1.0f;
+		return Launchers.ROCKETS.indexOf(action.rocketItem()) + 1.0f;
 	}
 
 	/** Plays the handling sounds for the local player's launcher as its animation passes each cue. */

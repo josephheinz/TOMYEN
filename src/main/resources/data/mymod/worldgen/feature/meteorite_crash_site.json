@@ -1,0 +1,9 @@
+{
+  "type": "mymod:meteorite_crash_site",
+  "crater_radius": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 6,
+    "max_inclusive": 7
+  },
+  "core_radius": 4
+}

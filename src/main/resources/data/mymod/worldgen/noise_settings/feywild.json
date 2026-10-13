@@ -1,0 +1,171 @@
+{
+  "default_block": "minecraft:stone",
+  "default_fluid": "minecraft:air",
+  "disable_mob_generation": false,
+  "legacy_random_source": false,
+  "material_rule": {
+    "type": "minecraft:sequence",
+    "sequence": [
+      {
+        "type": "minecraft:condition",
+        "if_true": {
+          "type": "minecraft:stone_depth",
+          "add_surface_depth": false,
+          "offset": 0,
+          "secondary_depth_range": 0,
+          "surface_type": "floor"
+        },
+        "then_run": {
+          "type": "minecraft:block",
+          "result_state": "minecraft:grass_block"
+        }
+      },
+      {
+        "type": "minecraft:condition",
+        "if_true": {
+          "type": "minecraft:stone_depth",
+          "add_surface_depth": true,
+          "offset": 0,
+          "secondary_depth_range": 0,
+          "surface_type": "floor"
+        },
+        "then_run": {
+          "type": "minecraft:block",
+          "result_state": "minecraft:dirt"
+        }
+      }
+    ]
+  },
+  "noise": {
+    "height": 256,
+    "min_y": 0
+  },
+  "noise_router": {
+    "chunk_surface_level": 0.0,
+    "continents": 0.0,
+    "depth": 0.0,
+    "erosion": 0.0,
+    "final_density": {
+      "type": "minecraft:min",
+      "left": {
+        "type": "minecraft:sub",
+        "left": {
+          "type": "minecraft:cache",
+          "input": {
+            "type": "minecraft:add",
+            "left": {
+              "type": "minecraft:add",
+              "left": 76.0,
+              "right": {
+                "type": "minecraft:mul",
+                "left": 10.0,
+                "right": {
+                  "type": "minecraft:noise",
+                  "noise": "minecraft:surface",
+                  "xz_scale": 0.7,
+                  "y_scale": 0.0
+                }
+              }
+            },
+            "right": {
+              "type": "minecraft:mul",
+              "left": -14.0,
+              "right": {
+                "type": "minecraft:square",
+                "input": {
+                  "type": "minecraft:mul",
+                  "right": 2.7700831024930747e-05,
+                  "left": {
+                    "type": "minecraft:slice",
+                    "axis": "y",
+                    "coordinate": 0,
+                    "input": {
+                      "type": "minecraft:distance_to_point",
+                      "metric": "euclidean_squared",
+                      "point": [
+                        0,
+                        0,
+                        0
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "right": {
+          "type": "minecraft:gradient",
+          "axis": "y",
+          "from_coordinate": 0,
+          "to_coordinate": 256,
+          "from_value": 0.0,
+          "to_value": 256.0
+        }
+      },
+      "right": {
+        "type": "minecraft:sub",
+        "left": {
+          "type": "minecraft:gradient",
+          "axis": "y",
+          "from_coordinate": 0,
+          "to_coordinate": 256,
+          "from_value": 0.0,
+          "to_value": 256.0
+        },
+        "right": {
+          "type": "minecraft:cache",
+          "input": {
+            "type": "minecraft:add",
+            "left": {
+              "type": "minecraft:add",
+              "left": 22.0,
+              "right": {
+                "type": "minecraft:mul",
+                "left": 50.0,
+                "right": {
+                  "type": "minecraft:mul",
+                  "right": 2.7700831024930747e-05,
+                  "left": {
+                    "type": "minecraft:slice",
+                    "axis": "y",
+                    "coordinate": 0,
+                    "input": {
+                      "type": "minecraft:distance_to_point",
+                      "metric": "euclidean_squared",
+                      "point": [
+                        0,
+                        0,
+                        0
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "type": "minecraft:mul",
+              "left": 6.0,
+              "right": {
+                "type": "minecraft:noise",
+                "noise": "minecraft:surface_secondary",
+                "xz_scale": 2.0,
+                "y_scale": 0.0
+              }
+            }
+          }
+        }
+      }
+    },
+    "ridges": 0.0,
+    "temperature": 0.0,
+    "vegetation": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:vegetation",
+      "xz_scale": 1.5,
+      "y_scale": 0.0
+    }
+  },
+  "sea_level": 0,
+  "spawn_target": []
+}

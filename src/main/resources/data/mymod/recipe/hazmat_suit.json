@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "R": "mymod:rubber",
+    "L": "minecraft:leather"
+  },
+  "pattern": [
+    "R R",
+    "RLR",
+    "RRR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:hazmat_suit"
+  }
+}

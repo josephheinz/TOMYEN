@@ -4,8 +4,9 @@ Textures: the ores (bauxite, oil shale and its deepslate form), the oil seep, cr
 steel and aluminium blocks, the Pump Jack's skid, Refinery and Metal Press faces, every industry and gear item, the
 moving parts' entity textures (Pump Jack rig, Metal Press ram, Hogfire gear; UVs match PumpJackRenderer,
 MetalPressRenderer and HogfireGearLayer) and the Refinery and Pump Jack GUIs (slot positions match their menus).
-The ores, oil seep, metal blocks and basic materials (raw bauxite, shale chunk, ingots, plate, sheet, rubber, tar)
-are vanilla textures recoloured, read from the Minecraft client jar; the machines and everything else are drawn here.
+The ores and the oil seep are built on vanilla stone, deepslate and dirt read from the Minecraft client jar; the metal
+blocks, the basic materials (raw bauxite, shale chunk, ingots, plate, sheet, rubber, tar), the machines and everything
+else are drawn here, the materials in vanilla's style but each with a shape of its own.
 
 Also writes their block states, block/item models and item definitions, and on the data side their loot tables,
 crafting recipes with recipe-book advancements, and tool tags. With ffmpeg on the path it synthesises the Hogfire's
@@ -91,9 +92,9 @@ def sprite(rows, palette):
 
 
 # --- Block textures ---------------------------------------------------------------------------------------------
-# The ores, the oil seep, the metal blocks and the basic industry items are vanilla textures recoloured, read from
-# the Minecraft client jar Loom has downloaded (gen_longswords.client_jar() finds it). A gradient map recolours them:
-# each texel's luminance picks a colour off the material's ramp, so vanilla's per-texel shading carries over.
+# The ores and the oil seep start from vanilla's stone, deepslate and dirt, read from the Minecraft client jar Loom
+# has downloaded (gen_longswords.client_jar() finds it), so they sit among vanilla blocks. A gradient map recolours a
+# texture where needed: each texel's luminance picks a colour off a ramp, so vanilla's per-texel shading carries over.
 JAR = zipfile.ZipFile(client_jar())
 
 
@@ -131,34 +132,102 @@ def gradient(c, stops):
     return rgba(stops[-1][1], c[3])
 
 
-def recolour(px, stops):
-    return [gradient(p, stops) if p[3] else CLEAR for p in px]
-
-
-def chromatic(c):
-    return max(c[:3]) - min(c[:3]) > 20
-
-
 def canvas(px):
     c = Canvas(16, 16)
     c.px = list(px)
     return c
 
 
-def ore(base, ore_of, stops):
-    """A vanilla ore's specks laid on vanilla stone (or deepslate), the specks' coloured texels recoloured. Where
-    the ore texture differs from its rock it is speck, the rock's re-shaded grey round each speck included."""
-    rock, specked = vanilla("block/" + base), vanilla("block/" + ore_of)
-    out = list(rock)
-    for i, (r, o) in enumerate(zip(rock, specked)):
-        if o != r:
-            out[i] = gradient(o, stops) if chromatic(o) else o
-    return canvas(out)
+def lumps(balls, tones, outline, outline_dark, size=16):
+    """Round lumps (cx, cy, r), back to front, lit from the top left. Each texel's light picks one of tones
+    (darkest first), so the lumps shade in vanilla's flat bands; a lump's edge against the clear or against a lump
+    behind it is outlined (outline_dark where it faces down or right)."""
+    owner = [-1] * (size * size)
+    for i, (cx, cy, r) in enumerate(balls):
+        for y in range(size):
+            for x in range(size):
+                if math.hypot(x + 0.5 - cx, y + 0.5 - cy) <= r:
+                    owner[y * size + x] = i
+
+    def other(x, y):
+        return owner[y * size + x] if 0 <= x < size and 0 <= y < size else -1
+
+    c = Canvas(size, size)
+    for y in range(size):
+        for x in range(size):
+            i = owner[y * size + x]
+            if i < 0:
+                continue
+            cx, cy, r = balls[i]
+            dx, dy = (x + 0.5 - cx) / r, (y + 0.5 - cy) / r
+            light = 0.62 - 0.42 * (dx + dy) - 0.25 * (dx * dx + dy * dy)
+            below = other(x, y + 1) < 0 or other(x + 1, y) < 0
+            edge = below or other(x, y - 1) < 0 or other(x - 1, y) < 0 or \
+                any(-1 < other(x + ox, y + oy) < i for ox, oy in ((0, 1), (1, 0), (0, -1), (-1, 0)))
+            if edge:
+                c.set(x, y, outline_dark if below else outline)
+            else:
+                c.set(x, y, tones[max(0, min(len(tones) - 1, int(light * len(tones))))])
+    return c
 
 
-# Iron ore's specks run from luminance 104 to 200, lapis's from 51 to 147.
-BAUXITE_SPECKS = ((104, 0x4F1E14), (128, 0x7A3222), (152, 0x9C4630), (180, 0xB8644A), (200, 0xD08E74))
-SHALE_SPECKS = ((51, 0x070607), (75, 0x141012), (100, 0x221B1C), (125, 0x342A2E), (147, 0x4E4258))
+# Bauxite: brick-red pisoliths (round concretions) set in cream clay.
+BAUXITE = [rgba(c) for c in (0x6A2614, 0x8C3519, 0xA94621, 0xC2602E, 0xD98049)]
+BAUXITE_CREAM = rgba(0xEBD3A4)
+BAUXITE_CLAY = rgba(0xC9A97C)
+
+
+def bauxite_ore():
+    """Vanilla stone with round bauxite nodules in it, shaded like vanilla's ore specks: a dark rim where they
+    sink into the stone at the top left, a lit stone lip under them, a cream fleck of clay here and there."""
+    rock = vanilla("block/stone")
+    c = canvas(rock)
+    nodules = ((4.0, 4.0, 2.3), (11.5, 3.0, 1.6), (9.5, 9.0, 2.5), (3.0, 11.5, 1.8), (13.0, 13.0, 1.5),
+               (7.0, 14.0, 1.1), (14.0, 7.5, 1.1), (6.5, 7.5, 1.0))
+    for cx, cy, r in nodules:
+        for y in range(16):
+            for x in range(16):
+                dx, dy = x + 0.5 - cx, y + 0.5 - cy
+                d = math.hypot(dx, dy)
+                if d <= r:
+                    light = 0.6 - 0.45 * (dx + dy) / r
+                    if d > r - 0.8 and dx + dy < 0:
+                        light -= 0.35
+                    c.set(x, y, BAUXITE[max(0, min(4, int(light * 5)))])
+                elif d <= r + 1 and 0 <= x < 16 and 0 <= y < 16 and c.get(x, y) == rock[y * 16 + x]:
+                    c.set(x, y, shade(rock[y * 16 + x], 0.78 if dx + dy < 0 else 1.14))
+    for x, y in ((5, 3), (10, 8), (2, 11), (12, 2), (8, 12), (1, 7), (14, 10)):
+        c.set(x, y, BAUXITE_CREAM if c.get(x, y) in BAUXITE else BAUXITE_CLAY)
+    return c
+
+
+# Oil shale: a warm, finely layered rock, black oil seams pressed between its layers.
+SHALE_ROCK = {"stone": ((104, 0x5C5650), (116, 0x6A635D), (127, 0x78716A), (143, 0x8A827A)),
+              "deepslate": ((47, 0x2A2624), (61, 0x37312F), (81, 0x47403C), (100, 0x58504A), (121, 0x6B625A))}
+SHALE_LAYERS = (1.0, 0.9, 0.78, 0.9, 1.04, 1.0, 0.94, 0.82, 1.0, 1.06, 1.0, 0.86, 0.76, 0.92, 1.0, 1.08)
+OIL_SEAM, OIL_SEAM_DEEP, OIL_GLOSS = rgba(0x1E191A), rgba(0x0E0B0C), rgba(0x6A6670)
+
+
+def oil_shale(base, seams):
+    """Vanilla stone (or deepslate) turned to shale: recoloured, banded into layers that wave a little, with lenses
+    of black oil (x, y, length) lying along them, a glint of gloss on each."""
+    rock = vanilla("block/" + base)
+    c = Canvas(16, 16)
+    for y in range(16):
+        for x in range(16):
+            layer = SHALE_LAYERS[(y + (1 if math.sin((x + 3) * 0.55) > 0.6 else 0)) % 16]
+            c.set(x, y, shade(gradient(rock[y * 16 + x], SHALE_ROCK[base]), layer))
+    for x0, y, n in seams:
+        for i in range(n):
+            x, thick = (x0 + i) % 16, 1 < i < n - 2  # a lens: two texels deep in the middle, one at the ends
+            c.set(x, y, OIL_SEAM_DEEP if 0 < i < n - 1 else OIL_SEAM)
+            if thick:
+                c.set(x, (y + 1) % 16, OIL_SEAM)
+            if 0 < i < n - 1:  # the rock just under it catches the light
+                lip = (y + (2 if thick else 1)) % 16
+                c.set(x, lip, shade(c.get(x, lip), 1.12))
+        c.set((x0 + 1) % 16, y, OIL_GLOSS)
+    return c
 
 
 def oil_stain(c, t):
@@ -167,25 +236,32 @@ def oil_stain(c, t):
     return tuple(round(c[i] + (wet[i] - c[i]) * t) for i in range(3)) + (c[3],)
 
 
+SHEEN = [rgba(c) for c in (0x8C5AB4, 0x4F7FC0, 0x3FA08C, 0xB0A040)]
+
+
 def oil_seep_top():
-    """Vanilla coarse dirt, black puddles of crude soaking into it, a glint of light on the larger ones."""
+    """Vanilla coarse dirt, a pool of crude welled up in it and two smaller ones, the dirt round them soaked dark;
+    the big pool catches the light, a rainbow sheen along its edge."""
     rr = random.Random(202)
     px = vanilla("block/coarse_dirt")
     out = []
-    pools = ((5, 5, 3.0), (11, 10, 2.5), (4, 12, 1.6), (12, 3, 1.3))
+    pools = ((7.5, 7.0, 4.2), (13.0, 13.5, 1.8), (2.0, 13.0, 1.4))
     for y in range(16):
         for x in range(16):
-            d = min(math.hypot(x - cx, y - cy) - r for cx, cy, r in pools) + rr.random() * 0.8
-            out.append(oil_stain(px[y * 16 + x], 1.0 if d < 0 else max(0.0, 0.75 - d * 0.35)))
+            d = min(math.hypot(x + 0.5 - cx, (y + 0.5 - cy) * 1.15) - r for cx, cy, r in pools) + rr.random() * 0.6
+            out.append(oil_stain(px[y * 16 + x], 1.0 if d < 0 else max(0.0, 0.8 - d * 0.32)))
     c = canvas(out)
-    for cx, cy, r in pools[:2]:
-        c.set(int(cx - r * 0.4), int(cy - r * 0.4), rgba(0x5C5458))
-        c.set(int(cx - r * 0.4) + 1, int(cy - r * 0.4), rgba(0x3B3438))
+    for i, (x, y) in enumerate(((5, 9), (6, 10), (7, 10), (8, 10), (9, 9))):  # sheen along the near edge
+        c.set(x, y, mix(SHEEN[i % 4], rgba(0x120E0D), 0.35))
+    c.set(5, 4, rgba(0xD8D2CC))  # the glint
+    c.set(6, 4, rgba(0x6E6670))
+    c.set(4, 5, rgba(0x5A5260))
+    c.set(12, 13, rgba(0x6E6670))
     return c
 
 
 def oil_seep_side():
-    """Vanilla dirt soaked black at the top, the crude running down it in streaks."""
+    """Vanilla dirt, crude soaked into the top and running down it, each run ending in a glossy bead."""
     rr = random.Random(203)
     px = vanilla("block/dirt")
     runs = {x: 5 + rr.randint(3, 9) for x in (2, 6, 7, 11, 14)}
@@ -196,15 +272,59 @@ def oil_seep_side():
             if y < runs.get(x, 0):
                 t = max(t, 0.9)
             out.append(oil_stain(px[y * 16 + x], t))
-    return canvas(out)
+    c = canvas(out)
+    for x, end in runs.items():
+        c.set(x, end - 1, rgba(0x5E5660))
+    for x in (1, 4, 9, 13):
+        c.set(x, 1, rgba(0x4A4250))
+    return c
 
 
-# Vanilla iron block runs from luminance 176 to 242, its ingot from 53 to 255.
-STEEL_BLOCK = ((176, 0x3E454E), (205, 0x58606A), (230, 0x737C87), (242, 0x8E97A2))
-ALUMINIUM_BLOCK = ((176, 0x9EA7B1), (205, 0xBEC6CE), (230, 0xD8DEE4), (242, 0xEEF2F6))
-STEEL_INGOT = ((53, 0x1E2228), (94, 0x343A42), (130, 0x515963), (168, 0x6B737E), (216, 0x8E96A0), (255, 0xCDD3DA))
-ALUMINIUM_INGOT = ((53, 0x505862), (94, 0x7D8590), (130, 0xA3ABB5), (168, 0xC0C7CF), (216, 0xDDE2E7), (255, 0xFFFFFF))
-DURALUMIN_INGOT = ((53, 0x3E362C), (94, 0x6E6252), (130, 0x958774), (168, 0xB4A591), (216, 0xD8CAB5), (255, 0xFFF8EC))
+# The metal blocks: steel as heavy plates bolted at their corners, aluminium as ribbed, brushed sheet.
+def steel_block():
+    """Four heavy steel plates, each bevelled and bolted down at its corners, so the bolts gather in fours where
+    plates meet; a soft sheen across each plate."""
+    rr = random.Random(301)
+    base, light, dark, deep = rgba(0x6C7682), rgba(0x939EAA), rgba(0x434B55), rgba(0x2E343B)
+    head, head_shadow = rgba(0xB2BCC7), rgba(0x48505A)
+    c = Canvas(16, 16)
+    for y in range(16):
+        for x in range(16):
+            c.set(x, y, shade(base, 0.95 + rr.random() * 0.08))
+    for py in (0, 8):
+        for px in (0, 8):
+            for i in range(1, 6):  # the sheen, rising to the right
+                c.set(px + 1 + i, py + 7 - i, mix(c.get(px + 1 + i, py + 7 - i), light, 0.28))
+            for i in range(8):
+                c.set(px + i, py, light)
+                c.set(px, py + i, light)
+                c.set(px + i, py + 7, dark)
+                c.set(px + 7, py + i, dark)
+            c.set(px + 7, py, base)
+            c.set(px, py + 7, base)
+            c.set(px + 7, py + 7, deep)
+            for x, y in ((1, 1), (5, 1), (1, 5), (5, 5)):  # bolt heads, lit from the top left
+                c.set(px + x, py + y, head)
+                c.set(px + x + 1, py + y + 1, head_shadow)
+    return c
+
+
+def aluminium_block():
+    """Corrugated aluminium sheet: pale, cool ribs running up the block, brushed, with a flat rolled band top and
+    bottom."""
+    rr = random.Random(302)
+    rib = [rgba(c) for c in (0xF3F6F9, 0xE0E6EC, 0xC9D1D9, 0xAEB8C3)]
+    c = Canvas(16, 16)
+    for x in range(16):
+        streak = 0.97 + rr.random() * 0.05
+        for y in range(16):
+            c.set(x, y, shade(rib[x % 4], streak + (rr.random() - 0.5) * 0.02))
+    for x in range(16):
+        c.set(x, 0, rgba(0xF6F9FB))
+        c.set(x, 1, rgba(0xD5DCE3))
+        c.set(x, 14, rgba(0xC2CAD3))
+        c.set(x, 15, rgba(0x8E99A6))
+    return c
 
 
 def oil_still(frames=32):
@@ -372,17 +492,19 @@ def press_cylinder():
 
 
 os.makedirs(BLOCK, exist_ok=True)
-ore("stone", "iron_ore", BAUXITE_SPECKS).save(os.path.join(BLOCK, "bauxite_ore.png"))
-ore("stone", "lapis_ore", SHALE_SPECKS).save(os.path.join(BLOCK, "oil_shale.png"))
-ore("deepslate", "deepslate_lapis_ore", SHALE_SPECKS).save(os.path.join(BLOCK, "deepslate_oil_shale.png"))
+bauxite_ore().save(os.path.join(BLOCK, "bauxite_ore.png"))
+oil_shale("stone", ((1, 3, 6), (9, 1, 5), (6, 7, 7), (13, 9, 4), (2, 12, 5), (10, 13, 6))).save(
+    os.path.join(BLOCK, "oil_shale.png"))
+oil_shale("deepslate", ((3, 2, 7), (11, 5, 5), (0, 9, 6), (8, 11, 7), (13, 14, 4))).save(
+    os.path.join(BLOCK, "deepslate_oil_shale.png"))
 oil_seep_top().save(os.path.join(BLOCK, "oil_seep_top.png"))
 oil_seep_side().save(os.path.join(BLOCK, "oil_seep_side.png"))
 oil_still().save(os.path.join(BLOCK, "crude_oil_still.png"))
 oil_flow().save(os.path.join(BLOCK, "crude_oil_flow.png"))
 write_json(os.path.join(BLOCK, "crude_oil_still.png.mcmeta"), {"animation": {"frametime": 4}})
 write_json(os.path.join(BLOCK, "crude_oil_flow.png.mcmeta"), {"animation": {"frametime": 3}})
-canvas(recolour(vanilla("block/iron_block"), STEEL_BLOCK)).save(os.path.join(BLOCK, "steel_block.png"))
-canvas(recolour(vanilla("block/iron_block"), ALUMINIUM_BLOCK)).save(os.path.join(BLOCK, "aluminium_block.png"))
+steel_block().save(os.path.join(BLOCK, "steel_block.png"))
+aluminium_block().save(os.path.join(BLOCK, "aluminium_block.png"))
 # The skid's side was painted from the random stream the hand-drawn aluminium block left (seed 302, one draw a
 # texel): replay it so the machines keep their textures.
 rnd.seed(302)
@@ -401,27 +523,6 @@ press_bed().save(os.path.join(BLOCK, "metal_press_bed.png"))
 press_cylinder().save(os.path.join(BLOCK, "metal_press_cylinder.png"))
 
 # --- Item textures ----------------------------------------------------------------------------------------------
-def flattened(px, thinner):
-    """Vanilla's ingot pressed flat: its side faces `thinner` texels shorter, the top face brought down onto them.
-    In each column the texels under the top face's white front edge are the side's; the ends, with no edge, lose
-    theirs from the middle, keeping their top and bottom texels. The result moves up by half the cut, to sit where the ingot did."""
-    out = [CLEAR] * 256
-    for x in range(16):
-        col = [(y, px[y * 16 + x]) for y in range(16) if px[y * 16 + x][3]]
-        if not col:
-            continue
-        edge = [i for i, (_, p) in enumerate(col) if lum(p) >= 250]
-        cut = edge[-1] + 1 if edge else 1
-        side = len(col) - cut - 1   # texels between the edge (or the end's top texel) and the bottom outline
-        if edge and side < thinner:
-            sys.exit(f"vanilla iron_ingot column {x} is too short to flatten: layout changed")
-        kept = [p for _, p in col[:cut] + col[cut + min(thinner, side):]]
-        bottom = col[-1][0] - thinner // 2
-        for i, p in enumerate(kept):
-            out[(bottom - len(kept) + 1 + i) * 16 + x] = p
-    return out
-
-
 # A jerrycan: handle on top, cap at the corner, a coloured band and label.
 CANISTER = [
     "................",
@@ -469,23 +570,173 @@ BUCKET = [
 ]
 
 ITEMS = {}
-# Raw iron's texels run from luminance 53 to 246, flint's from 14 to 168, resin's from 66 to 225, slime's 69 to 255.
-RAW_BAUXITE = ((53, 0x34140D), (79, 0x562216), (118, 0x7E3424), (150, 0x9C4632), (185, 0xB45E48), (230, 0xCC8670),
-               (246, 0xE0AE9A))
-SHALE_CHUNK = ((14, 0x0E0B0A), (34, 0x1E1916), (61, 0x342C27), (86, 0x4A4038), (127, 0x6A5E52), (168, 0x8E8274))
-TAR = ((66, 0x050404), (92, 0x0F0C0B), (117, 0x1A1513), (147, 0x2A2220), (184, 0x4A3E3A), (225, 0xBFB3AA))
-RUBBER = ((69, 0x0E0E10), (100, 0x1C1D20), (120, 0x26282B), (159, 0x34363A), (183, 0x44474C), (233, 0x7A7E86),
-          (255, 0xA0A4AB))
-INGOT = vanilla("item/iron_ingot")
-ITEMS["bauxite"] = canvas(recolour(vanilla("item/raw_iron"), RAW_BAUXITE))
-ITEMS["shale_chunk"] = canvas(recolour(vanilla("item/flint"), SHALE_CHUNK))
-ITEMS["steel_ingot"] = canvas(recolour(INGOT, STEEL_INGOT))
-ITEMS["aluminium_ingot"] = canvas(recolour(INGOT, ALUMINIUM_INGOT))
-ITEMS["duralumin_ingot"] = canvas(recolour(INGOT, DURALUMIN_INGOT))
-ITEMS["steel_plate"] = canvas(recolour(flattened(INGOT, 2), STEEL_INGOT))
-ITEMS["duralumin_sheet"] = canvas(recolour(flattened(INGOT, 3), DURALUMIN_INGOT))
-ITEMS["rubber"] = canvas(recolour(vanilla("item/slime_ball"), RUBBER))
-ITEMS["tar"] = canvas(recolour(vanilla("item/resin_clump"), TAR))
+# The industry materials, drawn in vanilla's item style (an ingot's bevels and lit end faces, raw ore's shaded lumps,
+# dark outlines heavier at the bottom right) but each with a shape and surface of its own, so none passes for iron,
+# copper or flint in an inventory.
+STEEL = {"o": 0x2C323A, "O": 0x16191E, "T": 0xA4AEB9, "t": 0x828D99, "w": 0xE8F0F7, "e": 0x636D78, "f": 0x4D5661,
+         "F": 0x3C444D, "n": 0x48515B, "N": 0xB9C3CD, "h": 0x262B31, "H": 0xB3BDC8}
+DURALUMIN = {"o": 0x6E564A, "O": 0x3C2C25, "w": 0xFFF8F2, "d": 0xEADCD2, "s": 0xCFBAAC, "a": 0xD5BFB0, "c": 0xA9907F,
+             "f": 0xAE9282, "F": 0x947868, "m": 0x947868, "u": 0xA88C7B, "k": 0x7E6457}
+# Steel: a long, low bar, darker and bluer than iron, a crisp bright bevel and a maker's stamp punched in the top.
+ITEMS["steel_ingot"] = sprite([
+    "................",
+    "................",
+    "................",
+    "...........oo...",
+    "........oooTtO..",
+    ".....oooTTttttO.",
+    "..oooTTtnnnttttO",
+    "oottttttNNNtwwwO",
+    "owtttttttwwwfffO",
+    "oewtttwwwfffFFFO",
+    "oeewwwfffFFFOOO.",
+    ".oefffFFFOOO....",
+    "..oFFFOOO.......",
+    "...OOO..........",
+    "................",
+    "................",
+], STEEL)
+# Aluminium: a short cast bar, pale and cool as frost, matte, every edge rounded off.
+ITEMS["aluminium_ingot"] = sprite([
+    "................",
+    "................",
+    "................",
+    "................",
+    "........ooo.....",
+    ".....ooohhhm....",
+    "..ooohddddhhm...",
+    ".ohhddddddddhm..",
+    ".oahdddddddwwaO.",
+    "oaawhddddwwggaO.",
+    "oaaawwwwwggmmaO.",
+    "oaaaagggmmmkkaO.",
+    ".oaaagmmmmkkaO..",
+    "..ooagmkkkOOO...",
+    "....ooOOOO......",
+    "................",
+], {"o": 0x8592A2, "O": 0x5B6676, "m": 0x97A3B0, "w": 0xFBFDFF, "d": 0xE3E9F0, "h": 0xF4F7FA, "a": 0xCDD5DE,
+    "g": 0xB9C3CE, "k": 0x8D99A7})
+# Duralumin: a rolled bar with a faint copper warmth, the rolling striations running down its length.
+ITEMS["duralumin_ingot"] = sprite([
+    "................",
+    "................",
+    "..........oo....",
+    ".......oooaam...",
+    "....oooadsssam..",
+    ".oooadsssdddsam.",
+    "owdsssdddssswwdm",
+    "oawdddssswwwdfaO",
+    "oaawsswwwdffFFaO",
+    "oaaawwdffFFFaaaO",
+    "ocaadfFFFfaacOO.",
+    ".ocadFfffFOOO...",
+    "..ocafFOOO......",
+    "...ooOO.........",
+    "................",
+    "................",
+], DURALUMIN)
+# Steel plate: a square plate rolled thin, a rivet hole drilled near each corner.
+ITEMS["steel_plate"] = sprite([
+    "................",
+    "................",
+    "................",
+    ".........oo.....",
+    "......ooottO....",
+    "...oooTTThttO...",
+    "oooTTTtttHtttO..",
+    "owtthttttttthtO.",
+    "oewtHtttttttHtwO",
+    ".oewttthtttwwwfO",
+    "..oewttHwwwfffO.",
+    "...oewwwfffOOO..",
+    "....offfOOO.....",
+    ".....OOO........",
+    "................",
+    "................",
+], STEEL)
+# Duralumin sheet: thinner still, striated, a corner folded back over it.
+ITEMS["duralumin_sheet"] = sprite([
+    "................",
+    "................",
+    "................",
+    ".........oo.....",
+    "......ooottO....",
+    "...oooddddssO...",
+    "..owukdsssdddO..",
+    "..owuukddddddsO.",
+    "..owukddddsssdwO",
+    "..owdddsssdwwwO.",
+    "...owssdwwwOOO..",
+    "....owwwOOO.....",
+    ".....OOO........",
+    "................",
+    "................",
+    "................",
+], DURALUMIN | {"t": 0xEADCD2})
+# Raw bauxite: a clump of round nodules of every size, earthy red, flecked with the cream clay they grew in.
+ITEMS["bauxite"] = lumps(((6.0, 7.5, 4.2), (11.6, 5.2, 2.9), (8.7, 2.9, 1.9), (10.9, 11.1, 3.3), (4.1, 12.6, 2.4),
+                          (13.7, 9.0, 1.9)), BAUXITE, rgba(0x4E1B0F), rgba(0x30100A))
+for x, y in ((4, 5), (5, 4), (10, 4), (9, 9), (3, 11), (8, 2), (13, 8)):
+    ITEMS["bauxite"].set(x, y, BAUXITE_CREAM)
+# Shale chunk: a flat slab split off along its layers, a seam of oil glistening in its edge.
+ITEMS["shale_chunk"] = sprite([
+    "................",
+    "................",
+    "................",
+    "................",
+    "........oooo....",
+    ".....oooTTttoo..",
+    "...ooTTtttttttO.",
+    ".ooTttttgtttttO.",
+    "oTttttttttttgtO.",
+    "o1tttgttttttt1O.",
+    "o211ttttttt1122O",
+    ".o2221111112222O",
+    ".okGkkkkkkkkkkO.",
+    "..o111111111111O",
+    "...OOOO3333OOO..",
+    ".......OOOO.....",
+], {"o": 0x2A2420, "O": 0x16120F, "T": 0x7E746A, "t": 0x665D55, "g": 0x8A7F75, "1": 0x5A5149, "2": 0x463E38,
+    "3": 0x3A332E, "k": 0x0C0A0A, "G": 0x7A7084})
+# Rubber: a rolled sheet lying along the ingots' axis, its spiralled end towards you.
+ITEMS["rubber"] = sprite([
+    "................",
+    "................",
+    "................",
+    "..........KKKK..",
+    ".......KKKSSSSK.",
+    "....KKKSSSsssbK.",
+    "..KKRRKsssbbbbK.",
+    ".KRRrrRKbbbbbBK.",
+    "KRrKKKrRKbbbBBK.",
+    "KRKrRKrRKbbBBK..",
+    "KRKrkKrRKbBBK...",
+    "KRrKKrRKKBBK....",
+    ".KRrrRRKBBK.....",
+    "..KKKKKKKK......",
+    "................",
+    "................",
+], {"K": 0x0E0E10, "R": 0x55585F, "r": 0x3A3C42, "S": 0x5A5E65, "s": 0x45484E, "b": 0x313338, "B": 0x222327,
+    "k": 0x18191C})
+# Tar: a glossy black dome of it, a drip running off.
+ITEMS["tar"] = sprite([
+    "................",
+    "................",
+    "................",
+    "................",
+    "......KKKKK.....",
+    "....KKmmmmmKK...",
+    "...KmmhHmmmddK..",
+    "..KmmhHHmdddddK.",
+    "..KmhhmdddddddK.",
+    ".KmmmdddddddDDK.",
+    ".KddddddddddDsK.",
+    "..KdddddddDDsK..",
+    "...KKddDDKKKK...",
+    ".....KdDK.......",
+    ".....KhsK.......",
+    "......KK........",
+], {"K": 0x060505, "m": 0x2C2522, "d": 0x1A1615, "D": 0x100D0C, "s": 0x4A3426, "h": 0x8C847E, "H": 0xF2EAE2})
 ITEMS["crude_oil_bucket"] = sprite(BUCKET, {"o": 0x2B2B2B, "h": 0xC6C6C6, "K": 0x110D0C, "k": 0x4A4044, "l": 0x9C9C9C,
                                             "m": 0x6F6F6F})
 ITEMS["empty_canister"] = canister(0x5E6670, 0x7D8590)
@@ -1059,7 +1310,7 @@ shaped("pig_wings", "mymod:pig_wings", ["S S", "KSK", "K K"], {"S": "mymod:wing_
 shaped("pig_flight_harness", "mymod:pig_flight_harness", ["L L", "PSP", "L L"],
        {"L": "minecraft:leather", "P": PLATE, "S": "minecraft:saddle"}, PLATE, category="equipment")
 
-# --- Tags (shared with gen_silver.py and hand edits, so entries are added to what's there; the pickaxe tag is by hand) --
+# --- Tags (shared with gen_silver.py, gen_ores_tu.py and hand edits, so entries are added to what's there; the pickaxe tag is by hand) --
 TAGS = os.path.normpath(os.path.join(DATA, "..", "minecraft", "tags"))
 
 

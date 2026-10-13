@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "G": "minecraft:glass_pane",
+    "C": "minecraft:copper_ingot",
+    "X": "mymod:computer_chip",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "IGI",
+    "CXC",
+    "IRI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:geiger_counter"
+  }
+}

@@ -1024,5 +1024,351 @@
         "volume": 1.0
       }
     ]
+  },
+  "geiger_click": {
+    "subtitle": "subtitles.mymod.geiger_click",
+    "sounds": [
+      "mymod:geiger_click1",
+      "mymod:geiger_click2",
+      "mymod:geiger_click3"
+    ]
+  },
+  "centrifuge_hum": {
+    "subtitle": "subtitles.mymod.centrifuge_hum",
+    "sounds": [
+      "mymod:centrifuge_hum"
+    ]
+  },
+  "flamethrower_roar": {
+    "subtitle": "subtitles.mymod.flamethrower_roar",
+    "sounds": [
+      "mymod:flamethrower_roar"
+    ]
+  },
+  "flamethrower_ignite": {
+    "subtitle": "subtitles.mymod.flamethrower_ignite",
+    "sounds": [
+      "mymod:flamethrower_ignite"
+    ]
+  },
+  "fairy_ambient": {
+    "subtitle": "subtitles.mymod.fairy_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:mob/allay/idle_without_item1",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/allay/idle_without_item2",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/allay/idle_without_item3",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/allay/idle_without_item4",
+        "pitch": 1.6,
+        "volume": 0.6
+      }
+    ]
+  },
+  "fairy_giggle": {
+    "subtitle": "subtitles.mymod.fairy_giggle",
+    "sounds": [
+      {
+        "name": "minecraft:mob/allay/item_taken1",
+        "pitch": 1.7
+      },
+      {
+        "name": "minecraft:mob/allay/item_taken2",
+        "pitch": 1.7
+      },
+      {
+        "name": "minecraft:mob/allay/item_taken3",
+        "pitch": 1.7
+      },
+      {
+        "name": "minecraft:mob/allay/item_taken4",
+        "pitch": 1.7
+      }
+    ]
+  },
+  "fairy_hurt": {
+    "subtitle": "subtitles.mymod.fairy_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/allay/hurt1",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:mob/allay/hurt2",
+        "pitch": 1.6
+      }
+    ]
+  },
+  "fairy_death": {
+    "subtitle": "subtitles.mymod.fairy_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/allay/death1",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:mob/allay/death2",
+        "pitch": 1.6
+      }
+    ]
+  },
+  "fairy_bottled": {
+    "subtitle": "subtitles.mymod.fairy_bottled",
+    "sounds": [
+      {
+        "name": "minecraft:item/bottle/fill1",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:item/bottle/fill2",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:item/bottle/fill3",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:item/bottle/fill4",
+        "pitch": 1.3
+      }
+    ]
+  },
+  "fae_ring_chime": {
+    "subtitle": "subtitles.mymod.fae_ring_chime",
+    "sounds": [
+      {
+        "name": "minecraft:block/amethyst/shimmer",
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:note/icechime",
+        "volume": 0.4
+      }
+    ]
+  },
+  "fae_ring_travel": {
+    "subtitle": "subtitles.mymod.fae_ring_travel",
+    "sounds": [
+      {
+        "name": "minecraft:block/amethyst/resonate1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/amethyst/resonate2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/amethyst/resonate3",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/amethyst/resonate4",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "feywild_loop": {
+    "sounds": [
+      {
+        "name": "minecraft:ambient/nether/warped_forest/ambience",
+        "pitch": 1.5,
+        "volume": 0.35,
+        "stream": true
+      }
+    ]
+  },
+  "feywild_additions": {
+    "sounds": [
+      {
+        "name": "minecraft:note/icechime",
+        "pitch": 1.5,
+        "volume": 0.15
+      },
+      {
+        "name": "minecraft:note/icechime",
+        "pitch": 2.0,
+        "volume": 0.12
+      },
+      {
+        "name": "minecraft:block/amethyst/shimmer",
+        "pitch": 1.3,
+        "volume": 0.3
+      },
+      {
+        "name": "minecraft:mob/allay/idle_without_item2",
+        "pitch": 1.8,
+        "volume": 0.12
+      },
+      {
+        "name": "minecraft:mob/allay/idle_without_item3",
+        "pitch": 1.9,
+        "volume": 0.12
+      }
+    ]
+  },
+  "music.feywild": {
+    "sounds": [
+      {
+        "name": "minecraft:music/game/floating_dream",
+        "pitch": 1.12,
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/infinite_amethyst",
+        "pitch": 1.12,
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/swamp/aerie",
+        "pitch": 1.12,
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/echo_in_the_wind",
+        "pitch": 1.12,
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/left_to_bloom",
+        "pitch": 1.12,
+        "stream": true
+      }
+    ]
+  },
+  "dragonscale_equip": {
+    "subtitle": "subtitles.mymod.dragonscale_equip",
+    "sounds": [
+      {
+        "name": "minecraft:item/armor/equip_netherite1",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:item/armor/equip_netherite2",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:item/armor/equip_netherite3",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:item/armor/equip_netherite4",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings1",
+        "pitch": 1.6,
+        "volume": 0.35
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings2",
+        "pitch": 1.6,
+        "volume": 0.35
+      }
+    ]
+  },
+  "dragonscale_wing_flap": {
+    "subtitle": "subtitles.mymod.dragonscale_wing_flap",
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/wings1",
+        "pitch": 1.5,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings2",
+        "pitch": 1.5,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings3",
+        "pitch": 1.5,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings4",
+        "pitch": 1.5,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings5",
+        "pitch": 1.5,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings6",
+        "pitch": 1.5,
+        "volume": 0.9
+      }
+    ]
+  },
+  "dragon_roar": {
+    "subtitle": "subtitles.mymod.dragon_roar",
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/growl1",
+        "pitch": 1.35,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:mob/enderdragon/growl2",
+        "pitch": 1.35,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:mob/enderdragon/growl3",
+        "pitch": 1.35,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:mob/enderdragon/growl4",
+        "pitch": 1.35,
+        "volume": 1.0
+      }
+    ]
+  },
+  "meteor_whistle": {
+    "subtitle": "subtitles.mymod.meteor_whistle",
+    "sounds": [
+      {
+        "name": "minecraft:item/elytra/elytra_loop",
+        "pitch": 1.7
+      }
+    ]
+  },
+  "meteor_impact": {
+    "subtitle": "subtitles.mymod.meteor_impact",
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:random/explode2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:random/explode3",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:random/explode4",
+        "pitch": 0.55
+      }
+    ]
   }
 }

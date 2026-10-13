@@ -1,5 +1,6 @@
 package com.jheinz.mymod.launcher;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -12,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -43,7 +45,8 @@ import com.jheinz.mymod.attachment.Attachments;
  * rocket steers itself onto it; any other combination flies straight.
  *
  * <p>Reloading takes a homing rocket first when the module is fitted, and a plain one first otherwise, so the
- * expensive ones aren't spent where they can't home.
+ * expensive ones aren't spent where they can't home. Sneaking and punching switches to the next kind the player
+ * carries (plain, homing, napalm), unloading the seated rocket, and reloads take that kind first from then on.
  */
 public class RocketLauncherItem extends GunItem {
 	public static final int EQUIP_TICKS = 45;
@@ -78,7 +81,7 @@ public class RocketLauncherItem extends GunItem {
 	public static Item rocketToFire(ItemStack launcher, Player player) {
 		Item loaded = loadedRocket(launcher);
 		if (loaded == null && player.hasInfiniteMaterials()) {
-			return hasGuidance(launcher) ? Launchers.PG7_HOMING_ROCKET : Launchers.PG7_ROCKET;
+			return rocketOrder(launcher).getFirst();
 		}
 		return loaded;
 	}
@@ -140,24 +143,44 @@ public class RocketLauncherItem extends GunItem {
 		player.getCooldowns().addCooldown(launcher, FIRE_COOLDOWN_TICKS);
 	}
 
-	/** Punching starts a reload when it's shouldered and empty; the rocket goes in when it finishes. */
+	/**
+	 * Punching starts a reload when it's shouldered and empty; the rocket goes in when it finishes. Sneaking and
+	 * punching switches to the next kind of rocket the player has (unloading the seated one back into the inventory),
+	 * and later reloads take that kind first.
+	 */
 	@Override
 	public void reload(ServerPlayer player, ItemStack launcher) {
 		if (!shouldered(launcher, player.level())) {
 			return;
 		}
-		if (launcher.has(Launchers.LOADED_ROCKET)) {
+		Item seated = loadedRocket(launcher);
+		Item rocket;
+		if (player.isShiftKeyDown()) {
+			rocket = nextRocket(player, seated != null ? seated : preferredRocket(player, launcher));
+			if (rocket == null || rocket == seated) {
+				fail(player, "item.mymod.rpg7.no_other_rockets");
+				return;
+			}
+			launcher.set(Launchers.ROCKET_CHOICE, rocket.builtInRegistryHolder());
+			if (seated != null) {
+				launcher.remove(Launchers.LOADED_ROCKET);
+				if (!player.hasInfiniteMaterials()) {
+					player.getInventory().placeItemBackInInventory(new ItemStack(seated), Prediction.SERVER_ONLY);
+				}
+			}
+			player.sendOverlayMessage(Component.translatable("item.mymod.rpg7.switched", Component.translatable(rocket.getDescriptionId())));
+		} else if (seated != null) {
 			player.sendOverlayMessage(Component.translatable("item.mymod.rpg7.already_loaded"));
 			return;
+		} else {
+			rocket = preferredRocket(player, launcher);
 		}
-		Item rocket = preferredRocket(player, launcher);
 		if (rocket == null) {
 			fail(player, "item.mymod.rpg7.no_rockets");
 			return;
 		}
 		int ticks = Math.round(RELOAD_TICKS * reloadFactor(player));
-		launcher.set(Launchers.LAUNCHER_ACTION,
-				LauncherAction.reload(player.level().getGameTime(), ticks, rocket == Launchers.PG7_HOMING_ROCKET));
+		launcher.set(Launchers.LAUNCHER_ACTION, LauncherAction.reload(player.level().getGameTime(), ticks, rocket));
 		player.getCooldowns().addCooldown(launcher, ticks);
 		// The shooter hears their own reload from the animation's cues; this is for everyone else.
 		player.level().playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.ARMOR_EQUIP_GENERIC.value(),
@@ -172,12 +195,15 @@ public class RocketLauncherItem extends GunItem {
 				SoundSource.PLAYERS, 0.7f, 0.6f);
 	}
 
-	/** Finishes a reload: takes the rocket chosen when it started (or the other kind if that's gone) and seats it. */
+	/** Finishes a reload: takes the rocket chosen when it started (or another kind if that's gone) and seats it. */
 	void completeReload(ServerPlayer player, ItemStack launcher, LauncherAction action, long now) {
 		launcher.set(Launchers.LAUNCHER_ACTION, LauncherAction.ready(now));
-		Item wanted = action.homing() ? Launchers.PG7_HOMING_ROCKET : Launchers.PG7_ROCKET;
+		Item wanted = action.rocketItem();
 		Item loaded = player.hasInfiniteMaterials() ? wanted : null;
-		for (Item type : List.of(wanted, wanted == Launchers.PG7_ROCKET ? Launchers.PG7_HOMING_ROCKET : Launchers.PG7_ROCKET)) {
+		List<Item> order = new ArrayList<>(rocketOrder(launcher));
+		order.remove(wanted);
+		order.addFirst(wanted);
+		for (Item type : order) {
 			int slot = loaded == null ? findRocket(player, type) : -1;
 			if (slot >= 0) {
 				player.getInventory().getItem(slot).shrink(1);
@@ -193,15 +219,42 @@ public class RocketLauncherItem extends GunItem {
 				0.9f, 0.55f);
 	}
 
+	/**
+	 * Which rockets a reload tries, in order: the kind last switched to, then a homing rocket first if the module's
+	 * fitted (so the dear ones aren't spent where they can't home), then plain, then napalm.
+	 */
+	private static List<Item> rocketOrder(ItemStack launcher) {
+		List<Item> order = new ArrayList<>(hasGuidance(launcher)
+				? List.of(Launchers.PG7_HOMING_ROCKET, Launchers.PG7_ROCKET, Launchers.PG7_NAPALM_ROCKET)
+				: List.of(Launchers.PG7_ROCKET, Launchers.PG7_NAPALM_ROCKET, Launchers.PG7_HOMING_ROCKET));
+		Holder<Item> choice = launcher.get(Launchers.ROCKET_CHOICE);
+		if (choice != null && order.remove(choice.value())) {
+			order.addFirst(choice.value());
+		}
+		return order;
+	}
+
 	private static Item preferredRocket(Player player, ItemStack launcher) {
-		List<Item> order = hasGuidance(launcher) ? List.of(Launchers.PG7_HOMING_ROCKET, Launchers.PG7_ROCKET)
-				: List.of(Launchers.PG7_ROCKET, Launchers.PG7_HOMING_ROCKET);
+		List<Item> order = rocketOrder(launcher);
 		for (Item type : order) {
 			if (findRocket(player, type) >= 0) {
 				return type;
 			}
 		}
 		return player.hasInfiniteMaterials() ? order.getFirst() : null;
+	}
+
+	/** The next kind after {@code current} in {@link Launchers#ROCKETS} that the player has (any in creative). */
+	private static Item nextRocket(Player player, Item current) {
+		List<Item> all = Launchers.ROCKETS;
+		int from = current == null ? -1 : all.indexOf(current);
+		for (int i = 1; i <= all.size(); i++) {
+			Item type = all.get(Math.floorMod(from + i, all.size()));
+			if (player.hasInfiniteMaterials() || findRocket(player, type) >= 0) {
+				return type;
+			}
+		}
+		return null;
 	}
 
 	private static int findRocket(Player player, Item type) {
@@ -235,6 +288,7 @@ public class RocketLauncherItem extends GunItem {
 		tooltip.accept(Component.translatable(guided ? "item.mymod.rpg7.lock_hint" : "item.mymod.rpg7.module_hint")
 				.withStyle(ChatFormatting.DARK_GRAY));
 		tooltip.accept(Component.translatable("item.mymod.rpg7.hint").withStyle(ChatFormatting.DARK_GRAY));
+		tooltip.accept(Component.translatable("item.mymod.rpg7.switch_hint").withStyle(ChatFormatting.DARK_GRAY));
 		if (guided) {
 			tooltip.accept(Component.translatable("item.mymod.gun.remove_attachment_hint").withStyle(ChatFormatting.DARK_GRAY));
 		}

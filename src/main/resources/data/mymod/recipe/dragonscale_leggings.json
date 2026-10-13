@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "N": "minecraft:netherite_scrap",
+    "S": "#mymod:dragon_scales"
+  },
+  "pattern": [
+    "SSS",
+    "SNS",
+    "S S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:dragonscale_leggings"
+  }
+}
