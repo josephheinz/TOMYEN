@@ -49,6 +49,8 @@
     "mymod:large_star_crystal_bud",
     "mymod:star_crystal_cluster",
     "mymod:star_lantern",
-    "mymod:star_steel_block"
+    "mymod:star_steel_block",
+    "mymod:froststeel_block",
+    "mymod:voidsteel_block"
   ]
 }

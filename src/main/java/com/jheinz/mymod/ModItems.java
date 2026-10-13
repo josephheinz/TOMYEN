@@ -45,6 +45,10 @@ import com.jheinz.mymod.armor.PlateCarrierItem;
 import com.jheinz.mymod.lmg.MachineGunItem;
 import com.jheinz.mymod.longsword.LongSwordItem;
 import com.jheinz.mymod.longsword.LongSwords;
+import com.jheinz.mymod.magmasteel.Magmasteel;
+import com.jheinz.mymod.froststeel.Froststeel;
+import com.jheinz.mymod.soul.SoulSteel;
+import com.jheinz.mymod.voidsteel.Voidsteel;
 import com.jheinz.mymod.lmg.MachineGuns;
 import com.jheinz.mymod.schnozzle.Schnozzles;
 import com.jheinz.mymod.shotgun.ShotgunItem;
@@ -439,7 +443,8 @@ public final class ModItems {
 		CreativeModeTabEvents.modifyOutputEvent(COMBAT_TAB)
 				.register(output -> {
 					output.insertAfter(Items.NETHERITE_SWORD, WOODEN_LONG_SWORD, STONE_LONG_SWORD, COPPER_LONG_SWORD, IRON_LONG_SWORD,
-							GOLDEN_LONG_SWORD, DIAMOND_LONG_SWORD, NETHERITE_LONG_SWORD);
+							GOLDEN_LONG_SWORD, DIAMOND_LONG_SWORD, NETHERITE_LONG_SWORD, Magmasteel.SET.longSword,
+							SoulSteel.SET.longSword, Froststeel.SET.longSword, Voidsteel.SET.longSword);
 					output.insertAfter(Items.TRIDENT, CRUCIFIX, Schnozzles.NOSE_HAIR_WHIP);
 					output.insertAfter(Items.TURTLE_HELMET, NEURALINK, NEURALINK_MK2, ESP_MODULE, NIGHT_VISION_MODULE,
 							XRAY_MODULE, OPTIC_LASERS_MODULE, TELEKINESIS_MODULE, BLINK_MODULE, NEURAL_HIJACK_MODULE,

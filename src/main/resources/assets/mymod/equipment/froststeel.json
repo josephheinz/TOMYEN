@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mymod:froststeel"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mymod:froststeel"
+      }
+    ]
+  }
+}

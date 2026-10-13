@@ -15,7 +15,8 @@ import com.jheinz.mymod.foundry.FoundryMenu;
 
 /**
  * Two inputs, the lava slot, a tank showing how much heat is left, vanilla's progress arrow, and a thermometer with
- * a mark at the temperature the current recipe needs.
+ * a mark at the temperature the current recipe needs (white until it's reached, then green), or, for a quench, a
+ * pale blue one at the most it allows.
  */
 public class FoundryScreen extends AbstractContainerScreen<FoundryMenu> {
 	private static final Identifier BACKGROUND = MyMod.id("textures/gui/container/foundry.png");
@@ -86,6 +87,13 @@ public class FoundryScreen extends AbstractContainerScreen<FoundryMenu> {
 			graphics.fill(x0 - 3, y, x0, y + 1, colour);
 			graphics.fill(x1, y, x1 + 3, y + 1, colour);
 		}
+		int max = menu.maxTemperature();
+		if (max > 0) {
+			int y = bottom - Math.round((float) max / FoundryBlockEntity.MAX_TEMPERATURE * (bottom - top));
+			int colour = menu.temperature() <= max ? 0xFF9FD8FF : 0xFFFFFFFF;
+			graphics.fill(x0 - 3, y, x0, y + 1, colour);
+			graphics.fill(x1, y, x1 + 3, y + 1, colour);
+		}
 	}
 
 	@Override
@@ -93,8 +101,10 @@ public class FoundryScreen extends AbstractContainerScreen<FoundryMenu> {
 		super.extractTooltip(graphics, mouseX, mouseY);
 		if (isHovering(THERMOMETER_X0 - 3, TANK_Y0, THERMOMETER_X1 - THERMOMETER_X0 + 6, TANK_Y1 - TANK_Y0, mouseX, mouseY)) {
 			int required = menu.requiredTemperature();
+			int max = menu.maxTemperature();
 			Component text = required > 0
 					? Component.translatable("container.mymod.foundry.temperature_needed", menu.temperature(), required)
+					: max > 0 ? Component.translatable("container.mymod.foundry.temperature_max", menu.temperature(), max)
 					: Component.translatable("container.mymod.foundry.temperature", menu.temperature());
 			graphics.setTooltipForNextFrame(font, text, mouseX, mouseY);
 		}

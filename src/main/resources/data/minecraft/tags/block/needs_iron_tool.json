@@ -15,6 +15,7 @@
     "mymod:tungsten_block",
     "mymod:fae_silver_ore",
     "mymod:dragon_scale_fossil",
-    "mymod:meteoric_iron_ore"
+    "mymod:meteoric_iron_ore",
+    "mymod:froststeel_block"
   ]
 }
