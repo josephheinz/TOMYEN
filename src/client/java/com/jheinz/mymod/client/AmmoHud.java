@@ -11,7 +11,9 @@ import com.jheinz.mymod.GunItem;
 import com.jheinz.mymod.MagazineContents;
 import com.jheinz.mymod.MagazineItem;
 import com.jheinz.mymod.ModComponents;
+import com.jheinz.mymod.client.energy.EnergyClient;
 import com.jheinz.mymod.client.launcher.LauncherClient;
+import com.jheinz.mymod.energy.EnergyWeaponItem;
 import com.jheinz.mymod.launcher.RocketLauncherItem;
 import com.jheinz.mymod.napalm.FlamethrowerItem;
 import com.jheinz.mymod.shotgun.ShotgunItem;
@@ -38,6 +40,8 @@ public final class AmmoHud {
 			LauncherClient.extractAmmo(graphics, minecraft, held, x, y);
 		} else if (held.getItem() instanceof FlamethrowerItem) {
 			extractFuel(graphics, minecraft, held, x, y);
+		} else if (held.getItem() instanceof EnergyWeaponItem energy) {
+			EnergyClient.extractAmmo(graphics, minecraft, held, energy, x, y);
 		} else if (held.getItem() instanceof GunItem gun) {
 			MagazineContents loaded = held.get(ModComponents.LOADED_MAGAZINE);
 			if (loaded == null && !gun.stats().singleRounds()) {

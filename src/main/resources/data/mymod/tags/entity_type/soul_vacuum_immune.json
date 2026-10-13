@@ -4,6 +4,7 @@
     "minecraft:ender_dragon",
     "minecraft:warden",
     "minecraft:elder_guardian",
-    "mymod:tank"
+    "mymod:tank",
+    "mymod:ufo"
   ]
 }

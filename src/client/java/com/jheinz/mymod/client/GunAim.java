@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 
 import com.jheinz.mymod.GunRecoil;
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.energy.EnergyWeapons;
 import com.jheinz.mymod.attachment.AttachmentItem;
 import com.jheinz.mymod.attachment.AttachmentSlot;
 import com.jheinz.mymod.attachment.Attachments;
@@ -85,7 +86,9 @@ public final class GunAim {
 		} else if (gun == ModItems.REMINGTON_870) {
 			return new Mount(7.4f, 10.1f, NO_LIMIT);
 		} else if (gun == ModItems.SPAS12) {
-			return new Mount(7.5f, 10.6f, NO_LIMIT);
+			return new Mount(7.5f, 10.6f, NO_LIMIT);		} else if (gun == EnergyWeapons.LASER_RIFLE) {
+			// Its built-in sight (tools/gen_energy_weapons.py).
+			return new Mount(4.0f, 11.4f, NO_LIMIT);
 		}
 		return null;
 	}
@@ -102,7 +105,9 @@ public final class GunAim {
 		} else if (gun == ModItems.REMINGTON_870) {
 			return new Optic(0.05f, 6.8f);
 		} else if (gun == ModItems.SPAS12) {
-			return new Optic(0.8f, 6.6f);
+			return new Optic(0.8f, 6.6f);		} else if (gun == EnergyWeapons.LASER_RIFLE) {
+			// The middle of its sight's window.
+			return new Optic(1.4f, 0.2f);
 		}
 		return null;
 	}

@@ -24,6 +24,7 @@ import com.jheinz.mymod.ModEntities;
 import com.jheinz.mymod.ModNetworking;
 import com.jheinz.mymod.ModParticles;
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.client.alien.AlienClient;
 import com.jheinz.mymod.client.bank.BankClient;
 import com.jheinz.mymod.client.cart.ShoppingCartModel;
 import com.jheinz.mymod.client.cart.ShoppingCartRenderer;
@@ -41,6 +42,7 @@ import com.jheinz.mymod.client.neuralink.NeuralinkScreen;
 import com.jheinz.mymod.client.neuralink.NeuralinkVision;
 import com.jheinz.mymod.client.neuralink.OreScanner;
 import com.jheinz.mymod.client.dragonscale.DragonscaleClient;
+import com.jheinz.mymod.client.energy.EnergyClient;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonRenderer;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonScreen;
 import com.jheinz.mymod.client.fae.FaeClient;
@@ -143,5 +145,7 @@ public class MyModClient implements ClientModInitializer {
 		NapalmClient.initialize();
 		FaeClient.initialize();
 		DragonscaleClient.initialize();
+		AlienClient.initialize();
+		EnergyClient.initialize();
 	}
 }

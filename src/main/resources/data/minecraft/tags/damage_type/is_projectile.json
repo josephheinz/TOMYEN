@@ -5,6 +5,7 @@
     "mymod:armor_piercing_bullet",
     "mymod:hollow_point_bullet",
     "mymod:tungsten_core_bullet",
-    "mymod:depleted_uranium_bullet"
+    "mymod:depleted_uranium_bullet",
+    "mymod:railgun_slug"
   ]
 }

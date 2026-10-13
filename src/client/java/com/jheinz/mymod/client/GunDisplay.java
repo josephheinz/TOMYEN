@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 import net.minecraft.world.item.Item;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.energy.EnergyWeapons;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.napalm.Napalm;
 
@@ -48,7 +49,13 @@ public record GunDisplay(Vector3f translation, float yaw, float scale) {
 			return display(0.179f, 3.547f, -1.283f, -8, 0.53f);
 		} else if (gun == Napalm.FLAMETHROWER) {
 			// tools/gen_napalm.py prints this.
-			return display(0.0f, 2.894f, -0.009f, -8, 0.55f);
+			return display(0.0f, 2.894f, -0.009f, -8, 0.55f);		} else if (gun == EnergyWeapons.LASER_RIFLE) {
+			// tools/gen_energy_weapons.py prints these.
+			return display(-0.245f, 3.004f, 1.733f, -8, 0.55f);
+		} else if (gun == EnergyWeapons.RAILGUN) {
+			return display(-0.255f, 3.104f, 1.803f, -8, 0.5f);
+		} else if (gun == EnergyWeapons.RAY_GUN) {
+			return display(-0.503f, 2.746f, -1.151f, -6, 0.65f);
 		}
 		return null;
 	}

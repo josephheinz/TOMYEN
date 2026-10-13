@@ -1,0 +1,44 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "mymod:energy_glow",
+    "entries": [
+      {
+        "threshold": 0.4,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/ray_gun"
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/ray_gun_glow_0"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 0.8,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/ray_gun"
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/ray_gun_glow_1"
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mymod:item/ray_gun"
+    }
+  }
+}
