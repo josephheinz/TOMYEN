@@ -29,7 +29,9 @@
 		"ItemStackExoSocketsMixin",
 		"LivingEntityExoSocketsMixin",
 		"PiglinAiExoSocketsMixin",
-		"PlayerExoSocketsMixin"
+		"PlayerExoSocketsMixin",
+		"EnchantmentHelperEvilBaneMixin",
+		"LivingEntityHolySilverMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

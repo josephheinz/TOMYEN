@@ -12,6 +12,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.ItemContainerContents;
 
+import com.jheinz.mymod.silver.EvilBane;
+
 public final class ModComponents {
 	/** On a magazine item: the rounds it holds. Absent means the magazine is empty. */
 	public static final DataComponentType<MagazineContents> MAGAZINE_CONTENTS = register("magazine_contents");
@@ -47,6 +49,9 @@ public final class ModComponents {
 	/** On an exoskeleton: the modules in its sockets. */
 	public static final DataComponentType<ItemContainerContents> EXOSKELETON_MODULES =
 			register("exoskeleton_modules", ItemContainerContents.CODEC, ItemContainerContents.STREAM_CODEC);
+
+	/** On a silver weapon or round: how much harder it hits the evil (see EvilBane). */
+	public static final DataComponentType<EvilBane> EVIL_BANE = register("evil_bane", EvilBane.CODEC, EvilBane.STREAM_CODEC);
 
 	private ModComponents() {
 	}

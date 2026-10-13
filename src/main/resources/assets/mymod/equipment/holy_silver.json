@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mymod:holy_silver"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "mymod:holy_silver"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mymod:holy_silver"
+      }
+    ]
+  }
+}

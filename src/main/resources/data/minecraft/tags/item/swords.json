@@ -2,6 +2,8 @@
   "values": [
     "#mymod:long_swords",
     "mymod:magmasteel_sword",
-    "mymod:soul_steel_sword"
+    "mymod:soul_steel_sword",
+    "mymod:silver_sword",
+    "mymod:holy_silver_sword"
   ]
 }

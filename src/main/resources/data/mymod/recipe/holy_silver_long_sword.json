@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "mymod:holy_silver_sword"
+  },
+  "pattern": [
+    "S  ",
+    " S ",
+    "  S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:holy_silver_long_sword"
+  }
+}

@@ -13,6 +13,11 @@
     "mymod:refinery",
     "mymod:metal_press",
     "mymod:magmasteel_block",
-    "mymod:soul_steel_block"
+    "mymod:soul_steel_block",
+    "mymod:silver_ore",
+    "mymod:deepslate_silver_ore",
+    "mymod:raw_silver_block",
+    "mymod:silver_block",
+    "mymod:holy_silver_block"
   ]
 }

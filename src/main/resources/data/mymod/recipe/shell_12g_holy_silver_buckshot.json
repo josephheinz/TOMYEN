@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "minecraft:copper_nugget",
+    "G": "minecraft:gunpowder",
+    "N": "mymod:holy_silver_nugget",
+    "P": "minecraft:paper"
+  },
+  "pattern": [
+    "NNN",
+    "PGP",
+    " C "
+  ],
+  "result": {
+    "count": 6,
+    "id": "mymod:shell_12g_holy_silver_buckshot"
+  }
+}
