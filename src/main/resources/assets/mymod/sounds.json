@@ -2171,5 +2171,168 @@
         "pitch": 1.5
       }
     ]
+  },
+  "ufo_hum": {
+    "sounds": [
+      {
+        "name": "mymod:ufo_hum",
+        "stream": true
+      }
+    ]
+  },
+  "ufo_beam": {
+    "subtitle": "subtitles.mymod.ufo_beam",
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/ambient",
+        "pitch": 1.6
+      }
+    ]
+  },
+  "ufo_take": {
+    "subtitle": "subtitles.mymod.ufo_take",
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/power1",
+        "pitch": 1.8
+      },
+      {
+        "name": "minecraft:block/beacon/power2",
+        "pitch": 1.8
+      }
+    ]
+  },
+  "ufo_land": {
+    "subtitle": "subtitles.mymod.ufo_land",
+    "sounds": [
+      {
+        "name": "minecraft:tile/piston/out",
+        "pitch": 0.55
+      }
+    ]
+  },
+  "ufo_door": {
+    "subtitle": "subtitles.mymod.ufo_door",
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_door/open1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/iron_door/open2",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "ufo_hurt": {
+    "subtitle": "subtitles.mymod.ufo_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_land",
+        "pitch": 1.6,
+        "volume": 0.5
+      }
+    ]
+  },
+  "ufo_death": {
+    "subtitle": "subtitles.mymod.ufo_death",
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/deactivate",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "alien_ambient": {
+    "subtitle": "subtitles.mymod.alien_ambient",
+    "sounds": [
+      "mymod:alien_chirp1",
+      "mymod:alien_chirp2",
+      "mymod:alien_chirp3"
+    ]
+  },
+  "alien_hurt": {
+    "subtitle": "subtitles.mymod.alien_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/villager/hit1",
+        "pitch": 2.0
+      },
+      {
+        "name": "minecraft:mob/villager/hit2",
+        "pitch": 2.0
+      },
+      {
+        "name": "minecraft:mob/villager/hit3",
+        "pitch": 2.0
+      }
+    ]
+  },
+  "alien_death": {
+    "subtitle": "subtitles.mymod.alien_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/villager/death",
+        "pitch": 2.0
+      }
+    ]
+  },
+  "abduction": {
+    "subtitle": "subtitles.mymod.abduction",
+    "sounds": [
+      "mymod:abduction"
+    ]
+  },
+  "laser_shot": {
+    "subtitle": "subtitles.mymod.laser_shot",
+    "sounds": [
+      "mymod:laser_shot"
+    ]
+  },
+  "railgun_charge": {
+    "subtitle": "subtitles.mymod.railgun_charge",
+    "sounds": [
+      "mymod:railgun_charge"
+    ]
+  },
+  "railgun_shot": {
+    "subtitle": "subtitles.mymod.railgun_shot",
+    "sounds": [
+      "mymod:railgun_shot"
+    ]
+  },
+  "ray_zap": {
+    "subtitle": "subtitles.mymod.ray_zap",
+    "sounds": [
+      "mymod:ray_zap"
+    ]
+  },
+  "energy_overheat": {
+    "subtitle": "subtitles.mymod.energy_overheat",
+    "sounds": [
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "power_cell_load": {
+    "subtitle": "subtitles.mymod.power_cell_load",
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/activate",
+        "pitch": 1.9,
+        "volume": 0.6
+      }
+    ]
+  },
+  "rail_slug_load": {
+    "subtitle": "subtitles.mymod.rail_slug_load",
+    "sounds": [
+      {
+        "name": "minecraft:item/crossbow/loading_end",
+        "pitch": 1.4
+      }
+    ]
   }
 }

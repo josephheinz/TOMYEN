@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.energy.EnergyWeapons;
 import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.mech.MechRecipes;
@@ -186,8 +187,10 @@ public final class StationRecipes {
 			recipe(ModItems.ARMOR_PLATE_LEVEL_2, 1, cost(Items.IRON_INGOT, 5), cost(Items.LEATHER, 1)),
 			// Ceramic strike face on a steel backer.
 			recipe(ModItems.ARMOR_PLATE_LEVEL_3, 1, cost(Items.CLAY_BALL, 4), cost(Items.IRON_INGOT, 2), cost(Items.DIAMOND, 1))),
-			// The Mk I power armor torso, the Bulwark Walker's weapons, smoke launcher and autocannon ammunition, and the Minigun and its parts.
-			Stream.of(PowerArmorRecipes.station(), MechRecipes.station(), Miniguns.station()).flatMap(List::stream)).toList();
+			// The Mk I power armor torso, the Bulwark Walker's weapons, smoke launcher and autocannon ammunition, the Minigun and
+			// its parts, and the energy weapons.
+			Stream.of(PowerArmorRecipes.station(), MechRecipes.station(), Miniguns.station(), EnergyWeapons.stationRecipes())
+					.flatMap(List::stream)).toList();
 
 	static {
 		// Matching is by ingredient set, so two recipes with the same set would make the later one uncraftable.

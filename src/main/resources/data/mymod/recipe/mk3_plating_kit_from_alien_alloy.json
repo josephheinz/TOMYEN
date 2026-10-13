@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "mymod:computer_chip",
+    "A": "mymod:alien_alloy",
+    "G": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    "CAC",
+    "GAG",
+    "CAC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:mk3_plating_kit"
+  }
+}

@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jheinz.mymod.alien.Aliens;
 import com.jheinz.mymod.bank.Banking;
 import com.jheinz.mymod.cathode.CathodeWalkers;
 import com.jheinz.mymod.fae.Fae;
@@ -19,6 +20,7 @@ import com.jheinz.mymod.hogfire.Hogfires;
 import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.neuralink.NeuralCore;
 import com.jheinz.mymod.neuralink.NeuralinkEffects;
+import com.jheinz.mymod.energy.EnergyWeapons;
 import com.jheinz.mymod.exoskeleton.ExoSockets;
 import com.jheinz.mymod.exoskeleton.ExoskeletonEffects;
 import com.jheinz.mymod.froststeel.Froststeel;
@@ -101,6 +103,8 @@ public class MyMod implements ModInitializer {
 		Skullcranes.initialize();
 		CathodeWalkers.initialize();
 		Werewolves.initialize();
+		EnergyWeapons.initialize();
+		Aliens.initialize();
 		linkBlockItems();
 	}
 

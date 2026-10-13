@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 
 import com.jheinz.mymod.GunRecoil;
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.energy.EnergyWeapons;
 import com.jheinz.mymod.client.launcher.LauncherAnimation;
 import com.jheinz.mymod.client.shoddy.ShoddyGunClient;
 import com.jheinz.mymod.launcher.Launchers;
@@ -91,6 +92,13 @@ public final class GunHands {
 			// Held at the hip: the shooting hand on the rear grip, the off hand up on the carry handle (tools/gen_minigun.py).
 			return rifle(0.053f, -0.0185f, 0.106f, 0.0654f, 0.2846f, -0.0121f);
 		} else if (gun == ModItems.GLOCK || gun == ModItems.M1911 || gun == ModItems.REVOLVER_357) {
+		} else if (gun == EnergyWeapons.LASER_RIFLE) {
+			// The shooting hand on the pistol grip, the off hand under the emitter shroud (tools/gen_energy_weapons.py).
+			return rifle(-0.022f, 0.119f, 0.156f, 0.050f, 0.188f, -0.355f);
+		} else if (gun == EnergyWeapons.RAILGUN) {
+			// The off hand under the rails, between the coils.
+			return rifle(-0.022f, 0.119f, 0.156f, 0.045f, 0.153f, -0.321f);
+		} else if (gun == ModItems.GLOCK || gun == ModItems.M1911 || gun == ModItems.REVOLVER_357 || gun == EnergyWeapons.RAY_GUN) {
 			return pistol(-0.020f, 0.131f, -0.181f);
 		}
 		return null;

@@ -23,6 +23,7 @@
 		"PlayerMechMixin",
 		"PlayerPowerArmorMixin",
 		"PlayerSkullcraneGripMixin",
+		"PlayerTractorBeamMixin",
 		"PlayerTankMixin",
 		"ServerPunchWhipMixin",
 		"ServerPlayerDebtDeathMixin",

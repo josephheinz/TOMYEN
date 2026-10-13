@@ -32,6 +32,8 @@ import net.minecraft.world.phys.Vec3;
 import com.jheinz.mymod.GunItem;
 import com.jheinz.mymod.MagazineContents;
 import com.jheinz.mymod.ModComponents;
+import com.jheinz.mymod.energy.EnergyWeaponItem;
+import com.jheinz.mymod.energy.RayGunItem;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.napalm.FlamethrowerItem;
 import com.jheinz.mymod.launcher.RocketLauncherItem;
@@ -263,9 +265,11 @@ public final class NeuralSenses {
 		// A Minigun has no magazine: it counts every 5.56 round carried.
 		boolean belt = gun instanceof MinigunItem;
 		int rounds = gun instanceof RocketLauncherItem ? (rocket == null ? 0 : 1) : belt ? RotaryGun.carried(player)
+				: gun instanceof EnergyWeaponItem energy ? energy.displayRounds(held, player.level().getGameTime())
 				: loaded == null ? 0 : loaded.rounds();
 		int capacity = gun instanceof RocketLauncherItem ? 1 : gun.capacity(held);
-		boolean tank = gun instanceof FlamethrowerItem;
+		// A flamethrower's tank and a Ray Gun's charge read as percentages.
+		boolean tank = gun instanceof FlamethrowerItem || gun instanceof RayGunItem;
 		Font font = minecraft.font;
 		int x = cx + 18, y = cy + 6;
 		boolean empty = rounds == 0;
@@ -278,7 +282,7 @@ public final class NeuralSenses {
 		String mode = Component.translatable(gun instanceof RocketLauncherItem
 				? rocket == Launchers.PG7_HOMING_ROCKET ? "hud.mymod.smart_link.homing"
 						: rocket == Launchers.PG7_NAPALM_ROCKET ? "hud.mymod.smart_link.napalm" : "hud.mymod.smart_link.rocket"
-				: tank ? "hud.mymod.smart_link.fuel" : gun.fireMode(held).translationKey() + ".short").getString().toUpperCase(Locale.ROOT);
+				: gun instanceof RayGunItem ? "hud.mymod.smart_link.charge" : tank ? "hud.mymod.smart_link.fuel" : gun.fireMode(held).translationKey() + ".short").getString().toUpperCase(Locale.ROOT);
 		graphics.text(font, empty ? Component.translatable("hud.mymod.smart_link.reload").getString() : mode, x, y + 10,
 				empty ? argb(0xFF, 0xFF3B30) : DIM, true);
 		// A thin gauge of the magazine under it all (a Minigun's heat).

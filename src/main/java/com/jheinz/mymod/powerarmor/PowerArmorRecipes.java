@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.alien.Aliens;
 import com.jheinz.mymod.foundry.FoundryRecipe;
 import com.jheinz.mymod.station.StationRecipe;
 import com.jheinz.mymod.uranium.Uranium;
@@ -20,12 +21,15 @@ import com.jheinz.mymod.uranium.Uranium;
  * the next mark. The piece keeps its wear and, for a helmet, its Neuralink modules.
  * <li>Foundry: recharging a fusion core: two redstone blocks put back {@link #REDSTONE_RECHARGE} charge (a third of
  * a full core), a piece of enriched uranium fills it right up.
+ * <li>Foundry: an Alien Reactor from a downed UFO and four computer chips to run it make two fully charged fusion cores,
+ * no redstone, glowstone or blaze rods needed.
  * </ul>
  */
 public final class PowerArmorRecipes {
 	private static final int MK2_COOK_TICKS = 600;
 	private static final int MK3_COOK_TICKS = 900;
 	private static final int RECHARGE_TICKS = 400;
+	private static final int REACTOR_TICKS = 600;
 	public static final int REDSTONE_RECHARGE = FusionCoreItem.MAX_CHARGE / 3;
 
 	private PowerArmorRecipes() {
@@ -40,6 +44,8 @@ public final class PowerArmorRecipes {
 		}
 		recipes.add(recharge(Items.REDSTONE_BLOCK, 2, REDSTONE_RECHARGE));
 		recipes.add(recharge(Uranium.ENRICHED_URANIUM, 1, FusionCoreItem.MAX_CHARGE));
+		recipes.add(new FoundryRecipe(PowerArmors.FUSION_CORE, 2, REACTOR_TICKS,
+				List.of(new FoundryRecipe.Cost(Aliens.ALIEN_REACTOR, 1), new FoundryRecipe.Cost(ModItems.COMPUTER_CHIP, 4))));
 		return recipes;
 	}
 

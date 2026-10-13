@@ -1,0 +1,60 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "mymod:energy_glow",
+    "entries": [
+      {
+        "threshold": 0.15,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/railgun"
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/railgun_glow_0"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 0.5,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/railgun"
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/railgun_glow_1"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 0.9,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/railgun"
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/railgun_glow_2"
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mymod:item/railgun"
+    }
+  }
+}
