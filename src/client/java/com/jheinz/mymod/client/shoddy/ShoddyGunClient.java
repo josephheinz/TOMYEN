@@ -15,19 +15,28 @@ import com.jheinz.mymod.shoddy.ShoddyGuns;
  * tools/gen_shoddy.py; move them together with the models.
  */
 public final class ShoddyGunClient {
+	// The round is laid into the breech from above; the hand reaches over the top and draws the striker back with its
+	// fingers, the gun tipped to show it.
 	private static final ShotgunAnimation.Geometry PIPE_PISTOL = new ShotgunAnimation.Geometry(
 			new Vector3f(8.0f, 6.4f, 8.4f), new Vector3f(8.0f, 9.0f, 8.8f), new Vector3f(8.0f, 10.0f, 9.0f), 2.2f,
-			new Vector3f(8.0f, 10.0f, 9.8f), false, new Vector3f(8.0f, 10.0f, -30.0f));
+			new Vector3f(8.0f, 10.0f, 9.8f), false, new Vector3f(8.0f, 10.0f, -30.0f),
+			ShotgunAnimation.Loading.BREECH, new Vector3f(12.0f, 10.0f, -20.0f), 0.0f, 140.0f);
+	// A bolt on the right: rolled over to show it, the handle lifted before it's drawn back.
 	private static final ShotgunAnimation.Geometry PIPE_RIFLE = new ShotgunAnimation.Geometry(
 			new Vector3f(8.0f, 7.9f, -3.0f), new Vector3f(8.0f, 11.0f, 7.6f), new Vector3f(9.6f, 10.6f, 7.6f), 3.0f,
-			new Vector3f(11.0f, 10.0f, 9.7f), true, new Vector3f(6.0f, 14.0f, -25.0f));
-	// Loaded down the muzzle with the gun tipped up; the ramrod runs out forward, so its travel is negative.
+			new Vector3f(11.0f, 10.0f, 9.7f), true, new Vector3f(6.0f, 14.0f, -25.0f),
+			ShotgunAnimation.Loading.BREECH, new Vector3f(4.0f, -6.0f, 20.0f), 1.5f, 120.0f);
+	// Loaded down the muzzle with the gun tipped up; the ramrod runs out forward, so its travel is negative, and it's
+	// rammed with the gun still tipped.
 	private static final ShotgunAnimation.Geometry BLUNDERBUSS = new ShotgunAnimation.Geometry(
 			new Vector3f(8.0f, 6.9f, -2.5f), new Vector3f(8.0f, 9.6f, -14.6f), new Vector3f(8.0f, 9.6f, 5.0f), -5.0f,
-			new Vector3f(8.0f, 7.2f, -9.6f), false, new Vector3f(40.0f, 18.0f, -8.0f));
+			new Vector3f(8.0f, 7.2f, -9.6f), false, new Vector3f(40.0f, 18.0f, -8.0f),
+			ShotgunAnimation.Loading.MUZZLE, new Vector3f(28.0f, 12.0f, -6.0f), 0.0f, -30.0f);
+	// Rounds pressed down into the box on top; the servo lever is pulled back from above.
 	private static final ShotgunAnimation.Geometry JUNK_REPEATER = new ShotgunAnimation.Geometry(
 			new Vector3f(8.0f, 9.1f, -3.0f), new Vector3f(8.0f, 11.6f, 6.2f), new Vector3f(9.5f, 10.3f, 6.5f), 2.6f,
-			new Vector3f(8.0f, 12.45f, 8.7f), true, new Vector3f(8.0f, 12.0f, -30.0f));
+			new Vector3f(8.0f, 12.45f, 8.7f), true, new Vector3f(8.0f, 12.0f, -30.0f),
+			ShotgunAnimation.Loading.BREECH, new Vector3f(6.0f, 8.0f, -18.0f), 0.0f, 140.0f);
 
 	private ShoddyGunClient() {
 	}

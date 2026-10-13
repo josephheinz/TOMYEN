@@ -207,9 +207,14 @@ public final class LauncherAnimation {
 		} else if (p < SEATED) {
 			target = holdPoint(rocketOffset(p, anchors));
 		} else {
-			target = holdPoint(new Vector3f()).lerp(support, smooth(span(p, SEATED, 0.8f)));
+			// Lets go of the seated rocket with a flick and goes back under the heat guard.
+			float back = smooth(span(p, SEATED + 0.02f, 0.8f));
+			target = holdPoint(new Vector3f(0.0f, 1.5f * Mth.sin((float) Math.PI * back), 0.0f)).lerp(support, back);
 		}
-		return new GunAnimation.HandOverride(false, target, 1.0f - smooth(span(p, 0.78f, 0.82f)));
+		// The palm turns in to take a rocket off the belt, comes up under it to carry it, and pushes it home flat.
+		float twist = 60.0f * smooth(span(p, 0.08f, 0.2f)) * (1.0f - smooth(span(p, FETCHED - 0.02f, AT_MUZZLE)))
+				- 25.0f * smooth(span(p, AT_MUZZLE, SEATED)) * (1.0f - smooth(span(p, SEATED, 0.8f)));
+		return new GunAnimation.HandOverride(false, target, 1.0f, twist);
 	}
 
 	/** Where the off hand holds a rocket sitting {@code offset} pixels from its seat, in the held item's space. */

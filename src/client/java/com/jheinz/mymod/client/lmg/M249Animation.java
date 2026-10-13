@@ -20,6 +20,10 @@ import com.jheinz.mymod.client.GunAnimation;
 import com.jheinz.mymod.client.GunHands;
 import com.jheinz.mymod.client.GunMotion;
 import com.jheinz.mymod.client.GunScope;
+import com.jheinz.mymod.client.Keyframes;
+import com.jheinz.mymod.client.Keyframes.Ease;
+import com.jheinz.mymod.client.Keyframes.Path;
+import com.jheinz.mymod.client.Keyframes.Track;
 import com.jheinz.mymod.lmg.MachineGunItem;
 import com.jheinz.mymod.lmg.MachineGuns;
 
@@ -158,6 +162,7 @@ public final class M249Animation {
 		}
 	}
 
+
 	// ---------------------------------------------------------------------------------------------- timeline
 
 	private static float span(float p, float a, float b) {
@@ -168,10 +173,15 @@ public final class M249Animation {
 		return GunMotion.smooth(t);
 	}
 
-	/** How far open the feed cover is during a reload, 0 to 1. */
-	private static float cover(float p) {
-		return smooth(span(p, 0.06f, 0.16f)) * (1.0f - smooth(span(p, 0.7f, 0.8f)));
-	}
+	/** How far open the feed cover is during a reload, 0 to 1: lifted (0.06-0.16), then slammed shut (0.7-0.8). */
+	private static final Track COVER = Keyframes.track(0.0f).hold(0.06f).key(0.16f, 1.0f).hold(0.7f).key(0.8f, 0.0f, Ease.IN).build();
+	/** How far back the charging handle is, 0 to 1. */
+	private static final Track HANDLE_PULL = Keyframes.track(0.0f).hold(0.22f).key(0.45f, 1.0f).hold(0.55f).key(0.65f, 0.0f).build();
+
+	/** The off hand's path through a reload, in model pixels (see {@link #reloadPath()}). */
+	private static Path reloadPath;
+	/** The shooting hand's path through charging, in the held item's space. */
+	private static Path rackPath;
 
 	/** How far the box has dropped (1 is as far as the model shows it before it's gone). */
 	private static float drop(float p) {
@@ -183,11 +193,6 @@ public final class M249Animation {
 		return p >= 0.22f && p < 0.66f;
 	}
 
-	/** How far back the charging handle is, 0 to 1. */
-	private static float handle(float p) {
-		return p < 0.22f ? 0.0f : p < 0.45f ? smooth(span(p, 0.22f, 0.45f)) : p < 0.55f ? 1.0f : 1.0f - smooth(span(p, 0.55f, 0.65f));
-	}
-
 	/** The model frame for the mymod:gun_animation property (0 at rest; see tools/gen_m249.py). */
 	public static float frame(ItemStack stack) {
 		Running run = current(stack);
@@ -195,21 +200,20 @@ public final class M249Animation {
 			return 0.0f;
 		}
 		float p = run.progress();
-		switch (run.kind()) {
-			case RACK -> {
-				return Math.round(handle(p) * 6.0f);
-			}
-			case RELOAD -> {
-				if (beltOut(p)) {
-					return p >= 0.38f && p < 0.5f ? 16.0f : 13.0f + Math.round(drop(p) * 2.0f);
-				}
-				float c = cover(p);
-				return c <= 0.01f ? 0.0f : 6.0f + Math.max(1, Math.round(c * 6.0f));
-			}
-			default -> {
-				return 0.0f;
-			}
+		return switch (run.kind()) {
+			case RACK -> Math.round(HANDLE_PULL.sample(p) * 6.0f);
+			case RELOAD -> reloadFrame(p);
+			default -> 0.0f;
+		};
+	}
+
+	/** The model frame at {@code p} through a reload: the cover opening and closing, the box being changed. */
+	public static float reloadFrame(float p) {
+		if (beltOut(p)) {
+			return p >= 0.38f && p < 0.5f ? 16.0f : 13.0f + Math.round(drop(p) * 2.0f);
 		}
+		float c = COVER.sample(p);
+		return c <= 0.01f ? 0.0f : 6.0f + Math.max(1, Math.round(c * 6.0f));
 	}
 
 	/** The back edge of the feed cover (model pixels), swung up by {@code open} (0 to 1). */
@@ -225,31 +229,48 @@ public final class M249Animation {
 		return new Vector3f(BOX).add(-0.4f * dropped, -BOX_DROP * dropped, 0.0f);
 	}
 
-	/** Where the off hand is during a reload (model pixels). */
-	private static Vector3f reloadHand(float p, Vector3f support) {
-		if (p < 0.06f) {
-			return new Vector3f(support).lerp(coverEdge(0.0f), smooth(span(p, 0.0f, 0.06f)));
-		} else if (p < 0.16f) {
-			return coverEdge(cover(p));
-		} else if (p < 0.22f) {
-			return coverEdge(1.0f).lerp(FEED, smooth(span(p, 0.16f, 0.22f)));
-		} else if (p < 0.3f) {
-			return new Vector3f(FEED).lerp(box(0.0f), smooth(span(p, 0.22f, 0.3f)));
-		} else if (p < 0.38f || p >= 0.5f && p < 0.58f) {
-			return box(drop(p));
-		} else if (p < 0.5f) {
-			Vector3f fetch = box(1.0f).add(FETCH);
-			return box(1.0f).lerp(fetch, smooth(span(p, 0.38f, 0.44f)) * (1.0f - smooth(span(p, 0.44f, 0.5f))));
-		} else if (p < 0.62f) {
-			return box(0.0f).lerp(BELT_END, smooth(span(p, 0.58f, 0.62f)));
-		} else if (p < 0.68f) {
-			return new Vector3f(BELT_END).lerp(FEED, smooth(span(p, 0.62f, 0.68f)));
-		} else if (p < 0.7f) {
-			return new Vector3f(FEED).lerp(coverEdge(1.0f), smooth(span(p, 0.68f, 0.7f)));
-		} else if (p < 0.8f) {
-			return coverEdge(cover(p));
+	/**
+	 * Where the off hand is during a reload (model pixels): fingers under the back edge of the feed cover, lifting it
+	 * (0.06-0.16); to the belt on the tray, pulling it off and down to the box (0.3); dropping the box and away off the
+	 * screen for a new one (0.38-0.5); the new box up into place (0.58); the belt's end laid along the tray (0.62-0.68);
+	 * the palm brought down on the cover, slamming it shut (0.8, with the cue) and lifting off it; and back to the
+	 * handguard.
+	 */
+	private static Path reloadPath() {
+		if (reloadPath == null) {
+			Vector3f closed = coverEdge(0.0f);
+			reloadPath = Keyframes.path(SUPPORT)
+					.key(0.06f, closed, 20.0f)
+					.follow(0.06f, 0.16f, t -> coverEdge(COVER.sample(t)))
+					.key(0.22f, FEED, -40.0f)
+					.key(0.3f, box(0.0f), -50.0f)
+					.follow(0.3f, 0.38f, t -> box(drop(t)))
+					.key(0.44f, box(1.0f).add(FETCH), 60.0f, Ease.OUT)
+					.key(0.5f, box(1.0f), 50.0f)
+					.follow(0.5f, 0.58f, t -> box(drop(t)))
+					.key(0.62f, BELT_END, -40.0f)
+					.key(0.68f, FEED, -40.0f)
+					.key(0.7f, coverEdge(1.0f).add(0.0f, 0.6f, 0.0f), 0.0f)
+					.follow(0.7f, 0.8f, t -> coverEdge(COVER.sample(t)).add(0.0f, 0.6f, 0.0f))
+					.key(0.85f, new Vector3f(closed).add(0.0f, 2.0f, 0.5f), 0.0f, Ease.OUT)
+					.key(0.94f, SUPPORT, 0.0f)
+					.build();
 		}
-		return coverEdge(0.0f).lerp(support, smooth(span(p, 0.8f, 0.92f)));
+		return reloadPath;
+	}
+
+	/** The shooting hand reaching forward to the handle on the right, drawing it back, running it home, and back to the grip. */
+	private static Path rackPath(Item item, GunHands.Anchors anchors) {
+		if (rackPath == null) {
+			rackPath = Keyframes.path(anchors.grip())
+					.key(0.16f, GunMotion.onGun(item, new Vector3f(HANDLE).add(0.8f, 0.8f, 1.0f)), -30.0f)
+					.key(0.22f, GunMotion.onGun(item, HANDLE), -45.0f)
+					.follow(0.22f, 0.65f, t -> GunMotion.onGun(item, new Vector3f(HANDLE).add(0.0f, 0.0f, HANDLE_TRAVEL * HANDLE_PULL.sample(t))))
+					.key(0.7f, GunMotion.onGun(item, new Vector3f(HANDLE).add(0.8f, 0.6f, 0.8f)), -30.0f, Ease.OUT)
+					.key(0.86f, anchors.grip(), 0.0f)
+					.build();
+		}
+		return rackPath;
 	}
 
 	// ------------------------------------------------------------------------------------------------ output
@@ -266,15 +287,18 @@ public final class M249Animation {
 			case RACK -> {
 				float engaged = smooth(span(p, 0.0f, 0.2f)) * (1.0f - smooth(span(p, 0.66f, 0.9f)));
 				float shake = GunMotion.jolt(p, 0.45f, run.durationMillis(), 0.4f) + GunMotion.jolt(p, 0.65f, run.durationMillis(), 1.0f);
-				poseStack.translate(0.0f, 0.0f, 0.02f * handle(p));
+				poseStack.translate(0.0f, 0.0f, 0.02f * HANDLE_PULL.sample(p));
 				GunMotion.turn(poseStack, anchors.support(), 4.0f, -6.0f, -14.0f, 0.03f, engaged, shake, mirrored);
 			}
 			case RELOAD -> {
 				float engaged = smooth(span(p, 0.0f, 0.08f)) * (1.0f - smooth(span(p, 0.84f, 0.98f)));
 				long millis = run.durationMillis();
 				float shake = GunMotion.jolt(p, 0.16f, millis, 0.4f) + GunMotion.jolt(p, 0.3f, millis, 0.3f)
-						+ GunMotion.jolt(p, 0.58f, millis, 0.6f) + GunMotion.jolt(p, 0.8f, millis, 1.0f);
-				GunMotion.turn(poseStack, anchors.grip(), 6.0f, 14.0f, 22.0f, 0.05f, engaged, shake, mirrored);
+						+ GunMotion.jolt(p, 0.58f, millis, 0.6f) + GunMotion.jolt(p, 0.8f, millis, 1.2f);
+				// Rolled over to show the feed tray to the off hand, and dipped a little more as the box is changed.
+				float boxing = smooth(span(p, 0.28f, 0.36f)) * (1.0f - smooth(span(p, 0.56f, 0.64f)));
+				GunMotion.turn(poseStack, anchors.grip(), 8.0f - 6.0f * boxing, 16.0f, 26.0f + 8.0f * boxing, 0.05f, engaged, shake,
+						mirrored);
 			}
 		}
 	}
@@ -286,13 +310,20 @@ public final class M249Animation {
 			return null;
 		}
 		Item item = stack.getItem();
+		GunHands.Anchors anchors = GunHands.anchors(item);
+		if (anchors == null) {
+			return null;
+		}
 		float p = run.progress();
 		return switch (run.kind()) {
-			case RACK -> new GunAnimation.HandOverride(true,
-					GunMotion.onGun(item, new Vector3f(HANDLE).add(0.0f, 0.0f, HANDLE_TRAVEL * handle(p))),
-					smooth(span(p, 0.0f, 0.2f)) * (1.0f - smooth(span(p, 0.66f, 0.86f))));
-			case RELOAD -> new GunAnimation.HandOverride(false, GunMotion.onGun(item, reloadHand(p, SUPPORT)),
-					1.0f - smooth(span(p, 0.9f, 0.97f)));
+			case RACK -> {
+				Keyframes.Sample at = rackPath(item, anchors).sample(p);
+				yield new GunAnimation.HandOverride(true, at.point(), 1.0f, at.twist());
+			}
+			case RELOAD -> {
+				Keyframes.Sample at = reloadPath().sample(p);
+				yield new GunAnimation.HandOverride(false, GunMotion.onGun(item, at.point()), 1.0f, at.twist());
+			}
 			case INSPECT -> null;
 		};
 	}
