@@ -130,6 +130,8 @@ public final class MechArm {
 	private boolean overheated;
 	private int jam;
 	private float spin;
+	private boolean wasSpinning;
+	private int rounds;
 	private boolean trigger;
 	private int pressTicks;
 	private boolean pressUsed;
@@ -368,7 +370,7 @@ public final class MechArm {
 		active = true;
 		ServerPlayer pilot = mech.pilotServer();
 		Vec3 from = MechCrew.muzzle(mech, side, 1.0f);
-		Vec3 direction = spread(level.getRandom(), mech.aimPoint(level).point().subtract(from).normalize(), AUTOCANNON_SPREAD);
+		Vec3 direction = spread(level.getRandom(), MechCrew.fireDirection(mech, side, mech.aimPoint(level).point(), 1.0f), AUTOCANNON_SPREAD);
 		Shot shot = shoot(level, from, direction);
 		if (shot.entity != null) {
 			shot.entity.hurtServer(level, mech.damage(ModDamageTypes.BULLET, pilot), AUTOCANNON_DAMAGE);
@@ -379,7 +381,10 @@ public final class MechArm {
 		}
 		GunItem.drawTracer(level, from, shot.end, false);
 		muzzleFlash(level, from, direction, false);
-		level.playSound(null, from.x, from.y, from.z, Mechs.AUTOCANNON_SOUND, SoundSource.NEUTRAL, 3.0f, 0.95f + level.getRandom().nextFloat() * 0.1f);
+		// A deep boom-thump: the report over a low blast, both carrying (3.0 is heard out to 48 blocks).
+		float pitch = 0.95f + level.getRandom().nextFloat() * 0.1f;
+		level.playSound(null, from.x, from.y, from.z, Mechs.AUTOCANNON_SOUND, SoundSource.NEUTRAL, 3.0f, pitch);
+		level.playSound(null, from.x, from.y, from.z, Mechs.AUTOCANNON_THUMP_SOUND, SoundSource.NEUTRAL, 2.0f, pitch);
 		mech.drain(AUTOCANNON_FUEL);
 		mech.armFired(side);
 		addHeat(AUTOCANNON_HEAT);
@@ -403,11 +408,16 @@ public final class MechArm {
 
 	private boolean tickRotary(ServerLevel level) {
 		boolean spinning = trigger && ready();
+		// The motor whines up from rest and winds down when let go; the barrels' whir in between is each client's (it
+		// follows the synced spin).
+		Vec3 motor = MechCrew.elbow(mech, side, 1.0f);
+		if (spinning && !wasSpinning && spin < 0.5f) {
+			level.playSound(null, motor.x, motor.y, motor.z, Mechs.ROTARY_SPIN_SOUND, SoundSource.NEUTRAL, 1.4f, 0.9f + spin * 0.4f);
+		} else if (!spinning && wasSpinning && spin > 0.3f) {
+			level.playSound(null, motor.x, motor.y, motor.z, Mechs.ROTARY_SPIN_DOWN_SOUND, SoundSource.NEUTRAL, 1.4f, 0.8f + spin * 0.3f);
+		}
+		wasSpinning = spinning;
 		if (spinning) {
-			if (spin < 1.0f && mech.tickCount % 4 == 0) {
-				level.playSound(null, mech.getX(), mech.getY() + 2.5, mech.getZ(), Mechs.ROTARY_SPIN_SOUND, SoundSource.NEUTRAL, 0.6f,
-						0.6f + spin * 0.8f);
-			}
 			spin = Math.min(1.0f, spin + 1.0f / SPIN_UP_TICKS);
 		} else {
 			spin = Math.max(0.0f, spin - 1.0f / SPIN_DOWN_TICKS);
@@ -430,7 +440,7 @@ public final class MechArm {
 			return false;
 		}
 		Vec3 from = MechCrew.muzzle(mech, side, 1.0f);
-		Vec3 direction = spread(level.getRandom(), mech.aimPoint(level).point().subtract(from).normalize(), ROTARY_SPREAD);
+		Vec3 direction = spread(level.getRandom(), MechCrew.fireDirection(mech, side, mech.aimPoint(level).point(), 1.0f), ROTARY_SPREAD);
 		Shot shot = shoot(level, from, direction);
 		if (shot.entity != null) {
 			shot.entity.hurtServer(level, mech.damage(round.damageType(), pilot), round.damage());
@@ -445,7 +455,11 @@ public final class MechArm {
 			GunItem.drawTracer(level, from, shot.end, false);
 		}
 		muzzleFlash(level, from, direction, true);
-		level.playSound(null, from.x, from.y, from.z, Mechs.ROTARY_SOUND, SoundSource.NEUTRAL, 2.0f, 0.95f + level.getRandom().nextFloat() * 0.1f);
+		// A real report every other round (ten a second, the M249's own rate) keeps twenty rounds a second a roar rather
+		// than mush; the barrels' whir carries the rest. Pitch wanders a little so the reports don't phase.
+		if (++rounds % 2 == 0) {
+			level.playSound(null, from.x, from.y, from.z, Mechs.ROTARY_SOUND, SoundSource.NEUTRAL, 2.5f, 0.92f + level.getRandom().nextFloat() * 0.14f);
+		}
 		mech.drain(ROTARY_FUEL);
 		addHeat(ROTARY_HEAT);
 		maybeJam(level.getRandom(), 0.15f);
@@ -471,7 +485,7 @@ public final class MechArm {
 		ServerPlayer pilot = mech.pilotServer();
 		Mech.AimPoint aim = mech.aimPoint(level);
 		Vec3 from = MechCrew.muzzle(mech, side, 1.0f);
-		Vec3 direction = aim.point().subtract(from).normalize();
+		Vec3 direction = MechCrew.fireDirection(mech, side, aim.point(), 1.0f);
 		Entity target = homing && aim.entity() != null && aim.entity().isAlive() ? aim.entity() : null;
 		PG7Rocket rocket = new PG7Rocket(level, pilot != null ? pilot : mech, from,
 				new ItemStack(homing ? Launchers.PG7_HOMING_ROCKET : Launchers.PG7_ROCKET), target);
@@ -507,7 +521,7 @@ public final class MechArm {
 			loaded--;
 		}
 		active = true;
-		FlameStream.spray(level, pilot, nozzle, FLAMER_SPREAD);
+		FlameStream.spray(level, pilot, nozzle, MechCrew.fireDirection(mech, side, mech.aimPoint(level).point(), 1.0f), FLAMER_SPREAD);
 		if (mech.tickCount % 4 == 0) {
 			level.playSound(null, nozzle.x, nozzle.y, nozzle.z, Napalm.FLAMETHROWER_ROAR, SoundSource.NEUTRAL, 1.2f, 0.7f);
 		}

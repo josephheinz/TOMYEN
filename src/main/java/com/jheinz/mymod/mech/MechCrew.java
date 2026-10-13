@@ -82,6 +82,26 @@ public final class MechCrew {
 		return elbow(mech, side, partialTicks).add(aim(mech, partialTicks).scale(Math.max(10.0f, weapon.reach()) / 16.0));
 	}
 
+	/** The most an arm's shot bends in from straight ahead to meet the sight line, in degrees. */
+	private static final float MAX_CONVERGE = 15.0f;
+	private static final double MIN_CONVERGE_COS = Math.cos(Math.toRadians(MAX_CONVERGE));
+
+	/**
+	 * Which way an arm's shot leaves its muzzle: at the aim point if that's nearly straight down the barrel, else straight
+	 * down the barrel. Something closer than the muzzle reaches (or off to the side of it) never sends a round sideways
+	 * or backwards out of the gun.
+	 */
+	public static Vec3 fireDirection(Mech mech, int side, Vec3 aimPoint, float partialTicks) {
+		Vec3 barrel = aim(mech, partialTicks);
+		Vec3 toAim = aimPoint.subtract(muzzle(mech, side, partialTicks));
+		double length = toAim.length();
+		if (length < 2.5) {
+			return barrel;
+		}
+		Vec3 direction = toAim.scale(1.0 / length);
+		return direction.dot(barrel) >= MIN_CONVERGE_COS ? direction : barrel;
+	}
+
 	// --- The pilot ------------------------------------------------------------------------------------------
 
 	/** Where the pilot's feet go so their eyes are at the viewport. */

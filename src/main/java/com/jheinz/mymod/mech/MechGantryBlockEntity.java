@@ -40,6 +40,18 @@ public class MechGantryBlockEntity extends BaseContainerBlockEntity {
 		return MechLoadout.look(items);
 	}
 
+	/**
+	 * Takes every part out: the walker has walked off with them. Unlike {@link #clearContent} (which only empties the
+	 * list) this marks the gantry changed, so the emptied gantry is saved and sent to clients. Without it clients kept
+	 * drawing the fitted walker, and a chunk saved before the walk-out brought the parts back on reload.
+	 */
+	void takeParts() {
+		for (int i = 0; i < MechLoadout.SIZE; i++) {
+			items.set(i, ItemStack.EMPTY);
+		}
+		setChanged();
+	}
+
 	void setParts(List<ItemStack> parts) {
 		for (int i = 0; i < MechLoadout.SIZE; i++) {
 			items.set(i, parts.get(i).copy());

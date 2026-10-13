@@ -84,16 +84,24 @@ public final class Mechs {
 	public static final MenuType<MechCargoMenu> CARGO_MENU = Registry.register(BuiltInRegistries.MENU, MyMod.id("mech_cargo"),
 			new MenuType<>(MechCargoMenu::new, FeatureFlags.VANILLA_SET));
 
+	/** A footfall is three layered sounds: the stomp, a deep metal clank, and a low thud. */
 	public static final SoundEvent STEP_SOUND = sound("mech_step");
+	public static final SoundEvent STEP_CLANK_SOUND = sound("mech_step_clank");
+	public static final SoundEvent STEP_THUD_SOUND = sound("mech_step_thud");
 	public static final SoundEvent LAND_SOUND = sound("mech_land");
 	public static final SoundEvent JETS_SOUND = sound("mech_jets");
 	public static final SoundEvent HATCH_OPEN_SOUND = sound("mech_hatch_open");
 	public static final SoundEvent HATCH_CLOSE_SOUND = sound("mech_hatch_close");
 	public static final SoundEvent POWER_UP_SOUND = sound("mech_power_up");
 	public static final SoundEvent POWER_DOWN_SOUND = sound("mech_power_down");
+	/** The autocannon's report (a big rifle crack, pitched right down) and the boom-thump layered under it. */
 	public static final SoundEvent AUTOCANNON_SOUND = sound("mech_autocannon");
+	public static final SoundEvent AUTOCANNON_THUMP_SOUND = sound("mech_autocannon_thump");
+	/** The rotary cannon's report (the mod's machine gun shots, pitched heavier), its motor's spin up and down, and the barrels' whir. */
 	public static final SoundEvent ROTARY_SOUND = sound("mech_rotary");
 	public static final SoundEvent ROTARY_SPIN_SOUND = sound("mech_rotary_spin");
+	public static final SoundEvent ROTARY_SPIN_DOWN_SOUND = sound("mech_rotary_spin_down");
+	public static final SoundEvent ROTARY_WHIR_SOUND = sound("mech_rotary_whir");
 	public static final SoundEvent PUNCH_SOUND = sound("mech_punch");
 	public static final SoundEvent GRAB_SOUND = sound("mech_grab");
 	public static final SoundEvent THROW_SOUND = sound("mech_throw");
@@ -138,6 +146,29 @@ public final class Mechs {
 		}
 	}
 
+	/**
+	 * Sent by a seated pilot's client every tick: the torso yaw and arm pitch it shows. The server goes by it (within
+	 * the twist limit) so the walker it simulates, and the shots it fires, match what the pilot sees.
+	 */
+	public record Aim(float torsoYaw, float armPitch) implements CustomPacketPayload {
+		public static final Type<Aim> TYPE = new Type<>(MyMod.id("mech_aim"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, Aim> CODEC = StreamCodec.composite(
+				ByteBufCodecs.FLOAT, Aim::torsoYaw,
+				ByteBufCodecs.FLOAT, Aim::armPitch,
+				Aim::new);
+
+		@Override
+		public Type<Aim> type() {
+			return TYPE;
+		}
+	}
+
+	private static void handleAim(ServerPlayer player, Aim aim) {
+		if (player.getVehicle() instanceof Mech mech && mech.isSeated(player)) {
+			mech.pilotAim(aim.torsoYaw(), aim.armPitch());
+		}
+	}
+
 	private static void handle(ServerPlayer player, Control control) {
 		if (player.getVehicle() instanceof Mech mech && mech.isSeated(player)) {
 			mech.control(player, control.action());
@@ -177,5 +208,7 @@ public final class Mechs {
 		CreativeModeTabEvents.modifyOutputEvent(FUNCTIONAL_BLOCKS_TAB).register(output -> output.insertAfter(PowerArmors.STATION, GANTRY));
 		PayloadTypeRegistry.serverboundPlay().register(Control.TYPE, Control.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Control.TYPE, (payload, context) -> handle(context.player(), payload));
+		PayloadTypeRegistry.serverboundPlay().register(Aim.TYPE, Aim.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(Aim.TYPE, (payload, context) -> handleAim(context.player(), payload));
 	}
 }

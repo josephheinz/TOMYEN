@@ -1,28 +1,34 @@
 """Paints the Bulwark Walker and its Mech Gantry, and writes everything around them.
 
-The walker and the gantry frame are code-defined models (MechModel, MechGantryModel) sharing one 256x256 texture
+The walker and the gantry frame are code-defined models (MechModel, MechGantryModel) sharing one 512x256 texture
 and a glow texture. This script is where their geometry lives: SPEC lists every part and box (pivots, offsets and
 sizes in model pixels, y down, front at -z, feet at y 24), UVs are packed from it, and `--java` prints the two
 createLayer bodies to paste into the Java models, so the texture and the models can't drift apart.
 
-Style: as few boxes as hold the silhouette (a hulking sarcophagus torso with a lifting chest hatch, huge
-pauldrons, stubby legs, weapon forearms), four flat materials (slate armour, charcoal frame, brass trim, gunmetal)
-shaded with smooth ramps and a one-pixel edge light; no noise. The glow texture holds the amber viewport and visor,
-the teal power plant window and the jet flames.
+Style: a hulking sarcophagus torso with a lifting chest hatch, huge stepped pauldrons, stubby legs and weapon
+forearms, with a moderate layer of purposeful mechanical detail (it's the biggest thing in the mod, so it has earned
+it): hydraulics at the hips, knees and elbows, layered leg plates, a segmented waist, exhaust stacks and ammunition
+feeds on the back, separate rotary barrels and a muzzle brake. Four flat materials (slate armour, charcoal frame,
+brass trim, gunmetal) shaded with smooth ramps, a one-pixel edge light and a few clean panel lines; no noise. The
+glow texture holds the amber viewport and visor, the teal power plant window and the jet flames.
+
+Every run checks for z-fighting: faces of different boxes that face the same way in the same plane and overlap,
+with every weapon and shoulder part fitted in turn and the walker standing in its gantry (`--check` fails on any).
 
 Also: the part, ammo and gantry icons (16x16), their item models and definitions, the gantry's blockstate, block
 model and deck texture, and the crafting recipes with their recipe-book advancements.
 
-`--preview PATH` renders the walker from the front and the back, and assembled in its gantry, to a PNG.
+`--preview PATH` renders the walker from the front, the back and the side, and assembled in its gantry, to a PNG.
 
-Usage: python3 tools/gen_mech.py src/main/resources/assets/mymod [--java] [--preview PATH]"""
+Usage: python3 tools/gen_mech.py src/main/resources/assets/mymod [--java] [--check] [--preview PATH]"""
 import json, math, os, struct, sys, zlib
 
 ASSETS = sys.argv[1]  # .../assets/mymod
 DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
 TEX = os.path.join(ASSETS, "textures")
 CLEAR = (0, 0, 0, 0)
-SIZE = 256
+# The shared texture: wide enough for the walker's detail and the gantry frame (the models declare the same size).
+TEX_W, TEX_H = 512, 256
 
 
 def png(path, w, h, px):
@@ -100,16 +106,55 @@ def box(x, y, z, w, h, d, material, *decals):
     return {"at": (x, y, z), "size": (w, h, d), "mat": material, "decals": decals}
 
 
+def mirror(side, x, w):
+    """A box's x for one side: given as the left (+x) side's, flipped for the right."""
+    return x if side > 0 else -x - w
+
+
+def mbox(side, x, y, z, w, h, d, material, *decals):
+    return box(mirror(side, x, w), y, z, w, h, d, material, *decals)
+
+
+# Detail goes where the mass is (the user's rule: the bigger a thing, the more intricate it may be; small things are
+# silhouettes). Everything here is a deliberate shape: hydraulics at the hips, knees and elbows, layered plates on the
+# thighs and shins, a segmented waist, exhaust stacks and ammunition feeds on the back, stepped armour edges. Nothing
+# shares a face plane with anything facing the same way (see check_coplanar).
+
+
 def leg(side):
-    """side: 1 for the left leg (model +x), -1 for the right."""
+    """side: 1 for the left leg (model +x), -1 for the right. The left carries the pilot's ladder rungs."""
     s = "left" if side > 0 else "right"
-    rungs = [box(-3, 3, -8, 6, 1, 2, "trim"), box(-3, 8, -8, 6, 1, 2, "trim")] if side > 0 else []
-    parts = [part(s + "_leg", "legs", (8 * side, -31, 0), [box(-5.5, 0, -6, 11, 13, 12, "armor")] + rungs),
-             part(s + "_shin", s + "_leg", (0, 12, 0),
-                  [box(-6, 0, -6.5, 12, 16, 13, "armor"), box(-5, -3, -9.5, 10, 9, 3, "armor")]
-                  + ([box(-3, 11, -8.5, 6, 1, 2, "trim")] if side > 0 else [])),
-             part(s + "_foot", s + "_shin", (0, 16, 0), [box(-7, 0, -11, 14, 3, 18, "frame")])]
-    return parts
+    rungs = [box(-3, 3, -9.5, 6, 1, 2, "trim"), box(-3, 8, -9.5, 6, 1, 2, "trim")] if side > 0 else []
+    thigh = [box(-5.5, 0, -6, 11, 13, 12, "armor"),
+             box(-4.5, 1, -7.5, 9, 10, 1.5, "armor", "panel"),        # layered front plate
+             mbox(side, 5.5, 4, -4.5, 1.5, 8, 9, "armor"),              # outer side plate
+             mbox(side, 5.5, -1, -1.25, 2, 5, 2.5, "gun"),              # hip piston housing...
+             mbox(side, 5.75, -4.5, -0.75, 1.5, 4, 1.5, "trim"),        # ...and its rod up into the hip anchor
+             box(-1.5, 5, 6, 3, 7, 2.5, "gun")]                         # knee piston housing, behind
+    shin = [box(-6, 0, -6.5, 12, 16, 13, "armor"),
+            box(-5, -3, -9.5, 10, 9, 3, "armor"),                       # knee plate
+            box(-3.5, -3.5, -10.5, 7, 5, 1, "trim"),                    # knee cap, a step proud of it
+            box(-4.5, 7, -8, 9, 8, 1.5, "armor", "panel"),              # greave
+            box(-0.75, -4, 6.75, 1.5, 7, 1.5, "trim"),                  # knee piston rod, up into its housing
+            mbox(side, 6, 3, -3, 1.5, 9, 6, "frame")]                   # calf strut
+    if side > 0:
+        shin.append(box(-3, 11, -10, 6, 1, 2, "trim"))
+    foot = [box(-7, 0, -11, 14, 3, 18, "frame"),
+            box(-5.5, -1.5, -11.5, 11, 2, 6, "armor"),                  # toe cap
+            box(-4, -1, 7, 8, 3.5, 2.5, "frame")]                       # heel spur
+    return [part(s + "_leg", "legs", (8 * side, -31, 0), thigh + rungs),
+            part(s + "_shin", s + "_leg", (0, 12, 0), shin),
+            part(s + "_foot", s + "_shin", (0, 16, 0), foot)]
+
+
+def barrel_ring(radius, size):
+    """Six barrels round the spindle, as axis-aligned square rods at a hexagon's corners."""
+    out = []
+    for k in range(6):
+        a = math.radians(60 * k)
+        cx, cy = round(radius * math.cos(a), 2), round(radius * math.sin(a), 2)
+        out.append(box(cx - size / 2, cy - size / 2, -14, size, size, 14, "gun", "bore"))
+    return out
 
 
 def weapons(side):
@@ -118,39 +163,90 @@ def weapons(side):
     fore = s + "_forearm"
     return [
         part(s + "_none", fore, (0, 0, 0), [box(-4, -4, -10, 8, 8, 12, "frame", "plate")]),
-        part(s + "_autocannon", fore, (0, 0, 0), [box(-5, -5, -14, 10, 10, 18, "gun"), box(-3, -9, -10, 6, 4, 8, "frame")]),
+        part(s + "_autocannon", fore, (0, 0, 0), [box(-5, -5, -14, 10, 10, 18, "gun", "panel"),
+                                                  box(-3, -9, -10, 6, 4, 8, "frame"),
+                                                  mbox(side, 5, -3, -9, 3, 6, 6, "trim", "drum")]),
         part(s + "_autocannon_barrel", s + "_autocannon", (0, 0, -14),
-             [box(-2, -2, -16, 4, 4, 16, "gun"), box(-3, -3, -19, 6, 6, 3, "frame", "bore")]),
-        part(s + "_rotary_cannon", fore, (0, 0, 0), [box(-5, -5, -10, 10, 10, 12, "gun"), box(-4, -4, -12, 8, 8, 2, "frame")]),
-        part(s + "_rotary_barrels", s + "_rotary_cannon", (0, 0, -12), [box(-3, -3, -14, 6, 6, 14, "gun", "barrels")]),
-        part(s + "_power_fist", fore, (0, 0, 0), [box(-5, -5, -12, 10, 10, 14, "armor")]),
+             [box(-2, -2, -16, 4, 4, 15.5, "gun"),
+              box(-3, -3, -4, 6, 6, 4, "frame"),                          # recoil sleeve
+              box(-2.5, -2.5, -10.5, 5, 5, 1.5, "frame"),                 # barrel collar
+              box(-3, -3, -20, 6, 6, 4, "frame", "brake")]),              # muzzle brake
+        part(s + "_rotary_cannon", fore, (0, 0, 0), [box(-5, -5, -10.5, 10, 10, 12.5, "gun", "panel"),
+                                                     box(-4, -4, -12, 8, 8, 2, "frame"),
+                                                     box(-2.5, -8, -8, 5, 3, 7, "frame"),           # drive motor
+                                                     mbox(side, 5, -2, -7, 2, 4, 6, "trim", "belt")]),  # feed
+        part(s + "_rotary_barrels", s + "_rotary_cannon", (0, 0, -12),
+             barrel_ring(2.3, 1.5)
+             + [box(-0.8, -0.8, -14.5, 1.6, 1.6, 14, "frame"),             # spindle
+                box(-3.4, -3.4, -10, 6.8, 6.8, 1, "frame"),                # mid clamp
+                box(-3.4, -3.4, -13, 6.8, 6.8, 1, "frame")]),              # muzzle clamp
+        part(s + "_power_fist", fore, (0, 0, 0), [box(-5, -5, -12, 10, 10, 14, "armor"),
+                                                  box(-4, -6.5, -11, 8, 1.5, 9, "armor"),            # knuckle guard
+                                                  box(5, -1.5, -11, 1.5, 3, 10, "trim"),             # actuator rods
+                                                  box(-6.5, -1.5, -11, 1.5, 3, 10, "trim")]),
         part(s + "_palm", s + "_power_fist", (0, 0, -12), [box(-6, -6, -7, 12, 12, 7, "armor")]),
         part(s + "_fingers", s + "_palm", (0, -6, -7), [box(-6, 0, -4, 12, 11, 4, "gun", "knuckles")]),
-        part(s + "_rocket_pod", fore, (0, 0, 0), [box(-6, -6, -13, 12, 12, 15, "armor", "tubes")]),
+        part(s + "_rocket_pod", fore, (0, 0, 0), [box(-6, -6.5, -13, 12, 12, 15, "armor", "tubes"),
+                                                  box(-6.5, -7.25, -11, 13, 13, 2, "frame"),         # stepped band
+                                                  box(-1.5, -7.5, -6, 3, 1.5, 4, "gun")]),           # seeker
         part(s + "_flamer", fore, (0, 0, 0), [box(-4, -4, -10, 8, 8, 12, "gun"), box(-2.5, -9, -8, 5, 5, 9, "trim"),
-                                              box(-1.5, -1.5, -22, 3, 3, 12, "gun"), box(-2, -2, -24, 4, 4, 2, "frame", "bore")]),
+                                              box(-1.5, -1.5, -22, 3, 3, 12, "gun"), box(-2.5, -2.5, -18, 5, 5, 1, "frame"),
+                                              box(-2, -2, -24, 4, 4, 2, "frame", "bore")]),
     ]
 
 
 def arm(side):
     s = "left" if side > 0 else "right"
-    return [part(s + "_arm", "torso", (16 * side, -19, 0), [box(-4, 0, -4, 8, 11, 8, "frame")]),
-            part(s + "_forearm", s + "_arm", (0, 10, 0), [])] + weapons(side)
+    upper = [box(-3.5, 0, -3.5, 7, 11, 7, "frame"),
+             box(-4.25, 7.5, -3, 8.5, 4, 6, "gun"),                         # elbow knuckle
+             box(-1, 1.5, -5, 2, 5.5, 1.5, "gun")]                          # elbow piston housing
+    return [part(s + "_arm", "torso", (16 * side, -19, 0), upper),
+            # The piston's rod rides on the forearm, so it slides in and out of its housing as the arm pitches.
+            part(s + "_forearm", s + "_arm", (0, 10, 0), [box(-0.5, -7, -4.75, 1, 5, 1, "trim")])] + weapons(side)
+
+
+def back(side):
+    """An exhaust stack behind the pauldron, and the ammunition feed: a bin low on the back, a chute to the arm."""
+    return [mbox(side, 10, -37, 10, 2.5, 16, 3, "gun", "stack"),
+            mbox(side, 11, -17, 10, 7, 9, 5, "gun", "bin"),
+            mbox(side, 14, -16.5, 3.5, 3.5, 3, 7.5, "trim", "belt")]
+
+
+def pauldron(side):
+    return [mbox(side, 9.5, -32, -10.5, 12, 13.5, 21, "armor"),
+            mbox(side, 10.5, -35, -8.5, 10, 3, 17, "armor"),
+            mbox(side, 21.5, -31, -9.5, 1.5, 10, 19, "armor"),             # stepped outer edge
+            mbox(side, 8.5, -20, -11.5, 14, 2, 23, "trim")]
 
 
 MECH = (
-    [part("legs", None, (0, 24, 0), [box(-11, -37, -7, 22, 8, 14, "frame")])]
+    [part("legs", None, (0, 24, 0), [box(-11, -37, -7, 22, 8, 14, "frame"),
+                                     box(-7, -35.5, -8.5, 14, 6, 1.5, "armor", "panel"),     # front plate
+                                     box(11, -36, -2.5, 5, 3.5, 5, "gun"),                   # hip anchors
+                                     box(-16, -36, -2.5, 5, 3.5, 5, "gun")])]
     + leg(1) + leg(-1)
     + [part("torso", None, (0, -13, 0), [
-        box(-8, -3, -7, 16, 4, 14, "frame"),
+        # The waist: three rings, alternating, so the torso visibly turns on a joint.
+        box(-8.5, -3.5, -7.5, 17, 1.5, 15, "gun"),
+        box(-7.5, -2, -6.5, 15, 1.5, 13, "frame"),
+        box(-8.5, -0.5, -7.5, 17, 1.5, 15, "gun"),
         box(-12, -27, -10, 24, 24, 20, "armor", "viewport"),
-        box(-5, -34, -11, 10, 7, 10, "armor", "visor")]),
-       part("hatch", "torso", (0, -23, -10), [box(-9, 0, -3, 18, 18, 3, "armor", "hatch")]),
-       part("left_pauldron", "torso", (0, 0, 0), [box(9.5, -32, -10.5, 12, 14, 21, "armor"), box(10.5, -35, -8.5, 10, 3, 17, "armor"),
-                                                  box(8.5, -20, -11.5, 14, 2, 23, "trim")]),
-       part("right_pauldron", "torso", (0, 0, 0), [box(-21.5, -32, -10.5, 12, 14, 21, "armor"), box(-20.5, -35, -8.5, 10, 3, 17, "armor"),
-                                                   box(-22.5, -20, -11.5, 14, 2, 23, "trim")]),
-       part("power_plant", "torso", (0, 0, 0), [box(-9, -25, 10, 18, 18, 7, "armor", "core"),
+        box(-9, -27.5, -11.5, 18, 1.5, 1.5, "armor"),                     # brow over the viewport
+        box(11.5, -25, -8, 2, 18, 16, "armor"),                           # flank plates
+        box(-13.5, -25, -8, 2, 18, 16, "armor"),
+        # The head: a low armoured block, a brow, cheek guards, the visor band and a sensor mast.
+        box(-5, -33.5, -10.5, 10, 6.5, 9.5, "armor"),
+        box(-5.5, -34.5, -11, 11, 1.5, 6, "armor"),
+        box(-4, -31.5, -11.5, 8, 2, 1, "frame", "visor"),
+        box(5, -31, -10, 1.5, 4, 6, "armor"),
+        box(-6.5, -31, -10, 1.5, 4, 6, "armor"),
+        box(3, -38, -3, 1, 4.5, 1, "gun")]
+        + back(1) + back(-1)),
+       part("hatch", "torso", (0, -23, -10), [box(-9, 0, -3, 18, 18, 3, "armor", "hatch"),
+                                              box(-6, 3, -4, 12, 12, 1, "armor")]),
+       part("left_pauldron", "torso", (0, 0, 0), pauldron(1)),
+       part("right_pauldron", "torso", (0, 0, 0), pauldron(-1)),
+       part("power_plant", "torso", (0, 0, 0), [box(-9, -25, 10, 18, 18, 7, "armor", "core", "vents"),
                                                 box(-7.5, -7, 11, 5, 5, 5, "gun", "nozzle"), box(2.5, -7, 11, 5, 5, 5, "gun", "nozzle")]),
        part("jet_flames", "power_plant", (0, 0, 0), [box(-7, -2, 12, 4, 7, 4, "flame"), box(3, -2, 12, 4, 7, 4, "flame")]),
        part("cargo_pod", "torso", (0, 0, 0), [box(-9, -35, 4, 18, 10, 12, "armor", "crate")]),
@@ -182,16 +278,16 @@ def pack():
     for b in boxes:
         shared.setdefault((b["size"], b["mat"], b["decals"]), []).append(b)
     order = sorted(shared.values(), key=lambda group: (-uv_size(group[0])[1], -uv_size(group[0])[0]))
-    sky = [0] * SIZE
+    sky = [0] * TEX_W
     for group in order:
         bw, bh = uv_size(group[0])
         best = None
-        for x in range(0, SIZE - bw + 1):
+        for x in range(0, TEX_W - bw + 1):
             y = max(sky[x:x + bw])
             if best is None or y < best[1]:
                 best = (x, y)
         x, y = best
-        assert y + bh <= SIZE, "texture overflow placing %s" % (group[0],)
+        assert y + bh <= TEX_H, "texture overflow placing %s" % (group[0],)
         for b in group:
             b["uv"] = (x, y)
         for i in range(x, x + bw):
@@ -251,10 +347,82 @@ def decal(c, glow, b, name):
                 glow.set(x, y, AMBER if y == y0 + 2 else shade(AMBER, 0.8))
             c.set(x, y0 + 3, shade(ARMOR, 0.7))
     elif name == "visor":
+        # The visor band: smoked glass with an amber line glowing across it.
         x0, y0, x1, y1 = f["front"]
-        for x in range(x0 + 2, x1 - 2):
-            c.set(x, y0 + 3, GLASS)
-            glow.set(x, y0 + 3, AMBER)
+        for x in range(x0, x1):
+            for y in range(y0, y1):
+                c.set(x, y, GLASS)
+            if x1 - x0 > 2 and x0 < x < x1 - 1:
+                glow.set(x, y1 - 1, AMBER)
+                glow.set(x, y0, shade(AMBER, 0.55))
+    elif name == "panel":
+        # A clean inset panel line round the front, a pixel in from the edge.
+        x0, y0, x1, y1 = f["front"]
+        if x1 - x0 >= 6 and y1 - y0 >= 6:
+            for x in range(x0 + 2, x1 - 2):
+                c.set(x, y0 + 2, shade(c.get(x, y0 + 2), 0.78))
+                c.set(x, y1 - 3, shade(c.get(x, y1 - 3), 1.12))
+            for y in range(y0 + 2, y1 - 2):
+                c.set(x0 + 2, y, shade(c.get(x0 + 2, y), 0.78))
+                c.set(x1 - 3, y, shade(c.get(x1 - 3, y), 1.12))
+    elif name == "drum":
+        # An ammunition drum: brass with a dark band round it.
+        for side in ("xneg", "xpos", "front", "back"):
+            x0, y0, x1, y1 = f[side]
+            for x in range(x0, x1):
+                c.set(x, (y0 + y1) // 2, shade(FRAME, 0.9))
+    elif name == "brake":
+        # Muzzle brake: a bore at the front and two ports through each side.
+        x0, y0, x1, y1 = f["front"]
+        hole(c, glow, x0 + 1, y0 + 1, x1 - 1, y1 - 1)
+        for side in ("xneg", "xpos", "top"):
+            sx0, sy0, sx1, sy1 = f[side]
+            if side == "top":
+                continue
+            for x in (sx0 + 1, sx1 - 2):
+                for y in range(sy0 + 1, sy1 - 1):
+                    c.set(x, y, BORE)
+    elif name == "belt":
+        # A feed chute: brass with the belt's links as dark ticks along it.
+        for side in ("top", "xneg", "xpos"):
+            x0, y0, x1, y1 = f[side]
+            if side == "top":
+                for y in range(y0, y1, 2):
+                    for x in range(x0, x1):
+                        c.set(x, y, shade(TRIM, 0.72))
+            else:
+                for x in range(x0, x1, 2):
+                    for y in range(y0, y1):
+                        c.set(x, y, shade(c.get(x, y), 0.8))
+    elif name == "stack":
+        # An exhaust stack: a dark bore on top, a sooty band at the lip.
+        x0, y0, x1, y1 = f["top"]
+        for x in range(x0, x1):
+            for y in range(y0, y1):
+                if x1 - x0 <= 3 or x0 < x < x1 - 1:
+                    c.set(x, y, BORE)
+        for side in ("xneg", "xpos", "front", "back"):
+            sx0, sy0, sx1, sy1 = f[side]
+            for x in range(sx0, sx1):
+                c.set(x, sy0 + 1, shade(GUN, 0.55))
+                c.set(x, sy0 + 2, shade(GUN, 0.7))
+    elif name == "bin":
+        # An ammunition bin: a brass stripe and a hinge line on its lid.
+        for side in ("xneg", "xpos", "back", "front"):
+            x0, y0, x1, y1 = f[side]
+            for x in range(x0, x1):
+                c.set(x, y0 + 2, TRIM)
+        x0, y0, x1, y1 = f["top"]
+        for x in range(x0, x1):
+            c.set(x, y1 - 2, shade(GUN, 0.7))
+    elif name == "vents":
+        # Cooling louvres down both sides of the power plant.
+        for side in ("xneg", "xpos"):
+            x0, y0, x1, y1 = f[side]
+            for y in range(y0 + 3, y1 - 2, 3):
+                for x in range(x0 + 1, x1 - 1):
+                    c.set(x, y, shade(ARMOR, 0.6))
+                    c.set(x, y + 1, shade(ARMOR, 1.12))
     elif name == "hatch":
         x0, y0, x1, y1 = f["front"]
         for x in range(x0, x1):
@@ -287,7 +455,10 @@ def decal(c, glow, b, name):
         hole(c, glow, x0 + 1, y0 + 1, x1 - 1, y1 - 1)
     elif name == "bore":
         x0, y0, x1, y1 = f["front"]
-        hole(c, glow, x0 + 1, y0 + 1, x1 - 1, y1 - 1)
+        if x1 - x0 <= 2:
+            c.rect(x0, y0, x1, y1, BORE)
+        else:
+            hole(c, glow, x0 + 1, y0 + 1, x1 - 1, y1 - 1)
     elif name == "barrels":
         x0, y0, x1, y1 = f["front"]
         for (x, y) in ((x0 + 1, y0 + 1), (x0 + 3, y0 + 1), (x0 + 1, y0 + 3), (x0 + 3, y0 + 3)):
@@ -342,8 +513,8 @@ def decal(c, glow, b, name):
 
 
 def paint():
-    c = Canvas(SIZE, SIZE)
-    glow = Canvas(SIZE, SIZE)
+    c = Canvas(TEX_W, TEX_H)
+    glow = Canvas(TEX_W, TEX_H)
     for p in MECH + GANTRY:
         for b in p["boxes"]:
             base = MATERIALS[b["mat"]]
@@ -364,7 +535,9 @@ def paint():
 
 # --- Java ----------------------------------------------------------------------------------------------------------------
 def jf(v):
-    return ("%.1f" % v) + "f"
+    """A Java float literal, exact to the spec's quarter pixels (and the barrels' hundredths): 2.0f, 6.75f, 1.24f."""
+    s = ("%.3f" % v).rstrip("0")
+    return (s + "0" if s.endswith(".") else s) + "f"
 
 
 def java(spec, root_var="root"):
@@ -528,22 +701,97 @@ def preview(path):
             return True
         return show
 
-    front = {"left_": {"autocannon", "autocannon_barrel"}, "right_": {"power_fist", "palm", "fingers"}, "shoulder": "cargo_pod"}
-    back = {"left_": {"rocket_pod"}, "right_": {"rotary_cannon", "rotary_barrels"}, "shoulder": "smoke_launcher", "jets": True}
+    front = {"left_": {"autocannon", "autocannon_barrel"}, "right_": {"rotary_cannon", "rotary_barrels"}, "shoulder": "cargo_pod"}
+    back = {"left_": {"rocket_pod"}, "right_": {"power_fist", "palm", "fingers"}, "shoulder": "smoke_launcher", "jets": True}
     walk = {"left_leg": (0.35, 0, 0), "right_leg": (-0.35, 0, 0), "right_shin": (0.5, 0, 0), "right_foot": (-0.15, 0, 0),
             "left_foot": (-0.35, 0, 0), "hatch": (-1.9, 0, 0)}
+    side = {"left_": {"flamer"}, "right_": {"autocannon", "autocannon_barrel"}, "shoulder": "cargo_pod"}
     views = [
         render(world_boxes(MECH, mech_show(front), {}), tex, glow, math.radians(-28), math.radians(-12), w, h, scale, (w / 2, h - 30)),
         render(world_boxes(MECH, mech_show(back), walk), tex, glow, math.radians(150), math.radians(-12), w, h, scale, (w / 2, h - 30)),
+        render(world_boxes(MECH, mech_show(side), {}), tex, glow, math.radians(-90), math.radians(-6), w, h, scale, (w / 2, h - 30)),
         render(world_boxes(GANTRY, lambda n: True, {}) + world_boxes(MECH, mech_show(front), {}, (0, -3, 0)), tex, glow,
                math.radians(-35), math.radians(-15), w, h, 3.4, (w / 2, h - 50)),
     ]
-    out = Canvas(w * 3, h)
+    out = Canvas(w * len(views), h)
     for k, img in enumerate(views):
         for y in range(h):
             for x in range(w):
                 out.set(k * w + x, y, img[y * w + x])
     out.save(path)
+
+
+# --- Z-fighting check ----------------------------------------------------------------------------------------------------
+WEAPON_GROUPS = {"none": {"none"}, "autocannon": {"autocannon", "autocannon_barrel"}, "rotary_cannon": {"rotary_cannon", "rotary_barrels"},
+                 "power_fist": {"power_fist", "palm", "fingers"}, "rocket_pod": {"rocket_pod"}, "flamer": {"flamer"}}
+
+
+def axis_faces(corners):
+    """A box's six faces as (axis, sign, plane, (a0, a1, b0, b1)), or None if it's turned off the axes."""
+    lo = [min(c[i] for c in corners) for i in range(3)]
+    hi = [max(c[i] for c in corners) for i in range(3)]
+    for c in corners:
+        if any(abs(c[i] - lo[i]) > 1e-4 and abs(c[i] - hi[i]) > 1e-4 for i in range(3)):
+            return None
+    out = []
+    for axis in range(3):
+        a, b = [i for i in range(3) if i != axis]
+        rect = (lo[a], hi[a], lo[b], hi[b])
+        out.append((axis, -1, lo[axis], rect))
+        out.append((axis, 1, hi[axis], rect))
+    return out
+
+
+def coplanar(scene):
+    """Every pair of faces that face the same way in the same plane and overlap: these flicker (z-fight)."""
+    faces_ = []
+    for k, (corners, b) in enumerate(scene):
+        fs = axis_faces(corners)
+        for f in fs or []:
+            faces_.append((k, b, f))
+    found = []
+    for i in range(len(faces_)):
+        ki, bi, (ai, si, pi, ri) = faces_[i]
+        for j in range(i + 1, len(faces_)):
+            kj, bj, (aj, sj, pj, rj) = faces_[j]
+            if ki == kj or ai != aj or si != sj or abs(pi - pj) > 1e-4:
+                continue
+            w = min(ri[1], rj[1]) - max(ri[0], rj[0])
+            h = min(ri[3], rj[3]) - max(ri[2], rj[2])
+            if w > 1e-4 and h > 1e-4:
+                found.append((bi, bj, "xyz"[ai], "+" if si > 0 else "-", pi, w * h))
+    return found
+
+
+def check_coplanar():
+    """Builds the walker with every weapon on both arms and each shoulder part, and the gantry with a walker in it, and
+    lists any faces that would z-fight. The glow layer is drawn over the same geometry with an equal-depth test (as
+    vanilla's glowing eyes are), so it never fights its own base."""
+    names = {}
+    for p in MECH + GANTRY:
+        for b in p["boxes"]:
+            names[id(b)] = p["name"]
+    problems = set()
+    for weapon, group in WEAPON_GROUPS.items():
+        for shoulder in ("cargo_pod", "smoke_launcher"):
+            def show(name, group=group, shoulder=shoulder):
+                for prefix in ("left_", "right_"):
+                    rest = name[len(prefix):] if name.startswith(prefix) else None
+                    if rest is not None and any(rest in g for g in WEAPON_GROUPS.values()):
+                        return rest in group
+                if name in ("cargo_pod", "smoke_launcher"):
+                    return name == shoulder
+                return True
+            scenes = [world_boxes(MECH, show, {})]
+            if weapon == "autocannon" and shoulder == "cargo_pod":
+                scenes.append(world_boxes(GANTRY, lambda n: True, {}) + world_boxes(MECH, show, {}, (0, -3, 0)))
+            for scene in scenes:
+                for bi, bj, axis, sign, plane, area in coplanar(scene):
+                    problems.add((names[id(bi)], bi["at"], bi["size"], names[id(bj)], bj["at"], bj["size"], axis + sign, round(plane, 3)))
+    for p in sorted(problems):
+        print("z-fight: %s %s%s and %s %s%s share the %s face plane at %s" % p)
+    print("z-fight check: %d problem(s)" % len(problems))
+    return len(problems)
 
 
 # --- Icons ---------------------------------------------------------------------------------------------------------------
@@ -884,6 +1132,8 @@ def recipes():
 
 if __name__ == "__main__":
     pack()
+    if check_coplanar() and "--check" in sys.argv:
+        sys.exit(1)
     if "--java" in sys.argv:
         print("// --- MechModel ---")
         print(java(MECH))

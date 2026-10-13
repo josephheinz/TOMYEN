@@ -1648,6 +1648,26 @@
       {
         "name": "minecraft:mob/irongolem/walk4",
         "pitch": 0.45
+      },
+      {
+        "name": "minecraft:mob/ravager/step1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/ravager/step2",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/ravager/step3",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/ravager/step4",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/ravager/step5",
+        "pitch": 0.5
       }
     ]
   },
@@ -1731,6 +1751,18 @@
       {
         "name": "minecraft:random/explode3",
         "pitch": 1.5
+      },
+      {
+        "name": "mymod:awp_shot",
+        "pitch": 0.6
+      },
+      {
+        "name": "mymod:awp_shot",
+        "pitch": 0.56
+      },
+      {
+        "name": "mymod:magnum_shot",
+        "pitch": 0.52
       }
     ]
   },
@@ -1744,6 +1776,20 @@
       {
         "name": "minecraft:random/click",
         "pitch": 0.7
+      },
+      {
+        "name": "mymod:m249_shot",
+        "pitch": 0.74,
+        "weight": 2
+      },
+      {
+        "name": "mymod:m249_shot",
+        "pitch": 0.8,
+        "weight": 2
+      },
+      {
+        "name": "mymod:akm_shot",
+        "pitch": 0.72
       }
     ]
   },
@@ -1753,6 +1799,11 @@
       {
         "name": "minecraft:minecart/base",
         "pitch": 1.6
+      },
+      {
+        "name": "minecraft:mob/guardian/attack_loop",
+        "pitch": 1.5,
+        "volume": 0.8
       }
     ]
   },
@@ -2012,6 +2063,116 @@
       {
         "name": "minecraft:mob/cat/hiss3",
         "pitch": 0.6
+      }
+    ]
+  },
+  "mech_step_clank": {
+    "subtitle": "subtitles.mymod.mech_step",
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/walk1",
+        "pitch": 0.42
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk2",
+        "pitch": 0.42
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk3",
+        "pitch": 0.42
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk4",
+        "pitch": 0.42
+      },
+      {
+        "name": "minecraft:random/anvil_land",
+        "pitch": 0.38,
+        "volume": 0.5
+      }
+    ]
+  },
+  "mech_step_thud": {
+    "subtitle": "subtitles.mymod.mech_step",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/step_1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/warden/step_2",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/warden/step_3",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/warden/step_4",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:block/heavy_core/step1",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:block/heavy_core/step2",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:block/heavy_core/step3",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:block/heavy_core/step4",
+        "pitch": 0.45
+      }
+    ]
+  },
+  "mech_autocannon_thump": {
+    "subtitle": "subtitles.mymod.mech_autocannon",
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "pitch": 0.7,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:random/explode2",
+        "pitch": 0.7,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:random/explode3",
+        "pitch": 0.7,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:random/explode4",
+        "pitch": 0.7,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:item/mace/smash_ground_heavy",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "mech_rotary_spin_down": {
+    "subtitle": "subtitles.mymod.mech_rotary_spin_down",
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/deactivate",
+        "pitch": 1.6
+      }
+    ]
+  },
+  "mech_rotary_whir": {
+    "subtitle": "subtitles.mymod.mech_rotary_spin",
+    "sounds": [
+      {
+        "name": "minecraft:minecart/base",
+        "pitch": 1.5
       }
     ]
   }

@@ -13,6 +13,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.client.neuralink.NeuralSenses;
@@ -30,15 +32,17 @@ import static com.jheinz.mymod.client.neuralink.NeuralStyle.argb;
  * The Bulwark Walker's cockpit HUD, amber on smoked glass, drawn under the rest of the HUD (whose hotbar, bars and
  * crosshair it replaces in the cockpit).
  * <ul>
- * <li>The sight: a small dot where the pilot looks, and a bracket for each arm where its weapon will hit (the
- * point the torso's sight line meets: the arms lag the view as the torso turns), coloured by the weapon's state.
+ * <li>Round the edges, the cockpit's viewport frame (see {@link #cockpitFrame}).
+ * <li>The gunsight (see {@link #reticles}): a ring, dot and ticks where the pilot looks, each arm's heat and reload
+ * as arcs round it, and a pip for each arm where it really points (the arms lag the view as the torso turns),
+ * coloured by the weapon's state.
  * <li>Bottom corners, one per arm: the weapon, what's loaded and in the stores, and a bar for its heat, reload,
  * spin-up or grip.
  * <li>Bottom middle: the walker as a silhouette, each part coloured by its condition, with the hull's integrity;
  * the core's charge and the jump jets' charge; a top-down twist gauge (the legs turned as they stand under the
  * torso); and the smoke salvos or the hold.
  * <li>Over that: what a fist is holding, and the sneak-hold to climb out.
- * <li>From outside (F5): a compact panel and the arms' brackets.
+ * <li>From outside (F5): a compact panel and the sight on the aim point.
  * <li>Climbing in or out, the view fades through black into the cockpit or out of it.
  * </ul>
  */
@@ -49,6 +53,13 @@ public final class MechHud {
 	private static final int TEXT = 0xFFFFE6C2;
 	private static final int DIM = 0xFFA87A3E;
 	private static final int PANEL = 0xB0100C08;
+	/** The cockpit frame: the hull's inner faces and the lit edge round the glass. */
+	private static final int HULL_DARK = 0xFF181C21;
+	private static final int HULL = 0xFF262C34;
+	private static final int EDGE = 0xFF4A5563;
+	private static final int SIGHT_RADIUS = 9;
+	/** Within this many degrees of the view (both ways), the arms count as on the sight. */
+	private static final float ALIGNED_DEGREES = 4.0f;
 
 	private MechHud() {
 	}
@@ -86,13 +97,17 @@ public final class MechHud {
 			return;
 		}
 		Font font = minecraft.font;
+		if (firstPerson) {
+			cockpitFrame(graphics);
+		}
 		reticles(graphics, mech, partial, firstPerson);
 		if (firstPerson) {
 			int width = graphics.guiWidth();
 			int height = graphics.guiHeight();
-			int panelWidth = Math.min(132, (width - 140) / 2);
-			arm(graphics, font, mech, MechArm.LEFT, 6, height - 46, panelWidth);
-			arm(graphics, font, mech, MechArm.RIGHT, width - 6 - panelWidth, height - 46, panelWidth);
+			int margin = Math.max(3, Math.round(width * 0.016f)) + 4;
+			int panelWidth = Math.min(132, (width - 140) / 2 - margin + 6);
+			arm(graphics, font, mech, MechArm.LEFT, margin, height - 50, panelWidth);
+			arm(graphics, font, mech, MechArm.RIGHT, width - margin - panelWidth, height - 50, panelWidth);
 			status(graphics, font, mech, partial, width / 2, height - 6);
 			if (mech.hurtTime > 0) {
 				int alpha = 0x60 * mech.hurtTime / Math.max(1, mech.hurtDuration);
@@ -131,37 +146,153 @@ public final class MechHud {
 
 	// --- The sight -------------------------------------------------------------------------------------------
 
-	/** The view dot, and each arm's bracket where its weapon will hit. */
+	/**
+	 * The gunsight. Where the pilot looks: a thin ring with a centre dot and four short ticks outside it, and round it
+	 * each arm's gauges as thin arcs, its heat low on its side of the ring and its reload (or spin-up, grip or jam
+	 * clearing) high. Where each arm really points: a small diamond pip with a tail out to its side, coloured by the
+	 * arm's state. Lined up, the two pips sit together in the ring; while the torso swings round after the view they
+	 * slide in from the side, and the ring dims until they're on it. From outside (F5) the ring sits on the aim point.
+	 */
 	private static void reticles(GuiGraphicsExtractor graphics, Mech mech, float partial, boolean firstPerson) {
+		Vec3 aimPoint = MechClient.aimPoint(mech, partial);
 		int cx = graphics.guiWidth() / 2;
 		int cy = graphics.guiHeight() / 2;
+		boolean aligned = true;
 		if (firstPerson) {
-			graphics.fill(cx, cy, cx + 1, cy + 1, argb(0xC0, AMBER));
+			Player pilot = Minecraft.getInstance().player;
+			if (pilot != null) {
+				float yawOff = Mth.wrapDegrees(mech.torsoYaw(partial) - pilot.getViewYRot(partial));
+				float pitchOff = mech.armPitch(partial) - Mth.clamp(pilot.getViewXRot(partial), Mech.MIN_PITCH, Mech.MAX_PITCH);
+				aligned = Math.abs(yawOff) < ALIGNED_DEGREES && Math.abs(pitchOff) < ALIGNED_DEGREES;
+			}
+		} else {
+			Vector2f at = NeuralSenses.project(graphics, aimPoint);
+			if (at == null) {
+				return;
+			}
+			cx = Math.round(at.x);
+			cy = Math.round(at.y);
 		}
-		Vector2f at = NeuralSenses.project(graphics, MechClient.aimPoint(mech, partial));
-		if (at == null) {
-			return;
-		}
-		int x = Math.round(at.x);
-		int y = Math.round(at.y);
+		int ring = argb(aligned ? 0xC8 : 0x58, AMBER);
+		NeuralStyle.ring(graphics, cx, cy, SIGHT_RADIUS, 0.0f, 1.0f, ring);
+		graphics.fill(cx, cy, cx + 1, cy + 1, argb(0xF0, AMBER));
+		int in = SIGHT_RADIUS + 3;
+		int out = SIGHT_RADIUS + 7;
+		graphics.fill(cx, cy - out, cx + 1, cy - in, ring);
+		graphics.fill(cx, cy + in + 1, cx + 1, cy + out + 1, ring);
+		graphics.fill(cx - out, cy, cx - in, cy + 1, ring);
+		graphics.fill(cx + in + 1, cy, cx + out + 1, cy + 1, ring);
+
 		for (int side = 0; side < 2; side++) {
 			MechWeapon weapon = mech.weapon(side);
 			if (weapon == MechWeapon.NONE || !MechLoadout.has(mech.look(), side == MechArm.LEFT ? MechLoadout.LEFT_ARM : MechLoadout.RIGHT_ARM)) {
 				continue;
 			}
-			int colour = argb(0xE0, stateColour(MechArm.status(mech.armState(side))));
-			int dir = side == MechArm.LEFT ? -1 : 1;
-			int gap = weapon == MechWeapon.POWER_FIST ? 9 : 5;
-			int reach = weapon == MechWeapon.ROTARY_CANNON || weapon == MechWeapon.FLAMER ? 8 : 6;
-			// A bracket opening towards the middle: the left arm's on the left, the right's on the right.
-			int bx = x + dir * gap;
-			graphics.fill(Math.min(bx, bx + dir), y - reach, Math.max(bx, bx + dir) + 1, y + reach + 1, colour);
-			graphics.fill(Math.min(bx, bx - dir * 3), y - reach, Math.max(bx, bx - dir * 3) + 1, y - reach + 1, colour);
-			graphics.fill(Math.min(bx, bx - dir * 3), y + reach, Math.max(bx, bx - dir * 3) + 1, y + reach + 1, colour);
-			if (weapon == MechWeapon.ROCKET_POD) {
-				graphics.fill(x - 1, y - 1, x + 2, y + 2, colour);
+			int packed = mech.armState(side);
+			int status = MechArm.status(packed);
+			gauges(graphics, cx, cy, side, weapon, packed, status);
+			Vector2f at = NeuralSenses.project(graphics, MechClient.armAim(mech, side, aimPoint, partial));
+			if (at != null) {
+				pip(graphics, Math.round(at.x), Math.round(at.y), side == MechArm.LEFT ? -1 : 1, argb(0xF0, stateColour(status)));
 			}
 		}
+	}
+
+	/**
+	 * An arm's two arcs round the sight, on its own side: heat in the lower part of the side (filling upwards, green to
+	 * amber to red) and the reload, spin-up, grip or jam in the upper part (filling downwards). Each shows (on a faint
+	 * track) only while it has something to say, so an idle sight is just the ring, the dot, the ticks and the pips.
+	 */
+	private static void gauges(GuiGraphicsExtractor graphics, int cx, int cy, int side, MechWeapon weapon, int packed, int status) {
+		float radius = SIGHT_RADIUS + 4;
+		boolean left = side == MechArm.LEFT;
+		int track = argb(0x38, AMBER);
+		// In turns (0 up, clockwise). The right side runs 0.07-0.20 (upper) and 0.30-0.43 (lower); the left mirrors it.
+		float upperFrom = left ? 0.80f : 0.07f;
+		float lowerFrom = left ? 0.57f : 0.30f;
+		float span = 0.13f;
+		if (weapon == MechWeapon.AUTOCANNON || weapon == MechWeapon.ROTARY_CANNON) {
+			float heat = MechArm.heat(packed);
+			if (heat > 0.01f) {
+				NeuralStyle.ring(graphics, cx, cy, radius, lowerFrom, lowerFrom + span, track);
+				int colour = argb(0xF0, status == MechArm.OVERHEATED || heat > 0.85f ? RED : heat > 0.6f ? AMBER : GREEN);
+				// Filling from the bottom of the ring upwards.
+				if (left) {
+					NeuralStyle.ring(graphics, cx, cy, radius, lowerFrom, lowerFrom + span * heat, colour);
+				} else {
+					NeuralStyle.ring(graphics, cx, cy, radius, lowerFrom + span * (1.0f - heat), lowerFrom + span, colour);
+				}
+			}
+		}
+		float progress = MechArm.progress(packed);
+		if (progress > 0.01f) {
+			NeuralStyle.ring(graphics, cx, cy, radius, upperFrom, upperFrom + span, track);
+			int colour = argb(0xF0, status == MechArm.JAMMED ? RED : status == MechArm.READY || status == MechArm.HOLDING ? GREEN : AMBER);
+			// Filling from the top of the ring downwards.
+			if (left) {
+				NeuralStyle.ring(graphics, cx, cy, radius, upperFrom + span * (1.0f - progress), upperFrom + span, colour);
+			} else {
+				NeuralStyle.ring(graphics, cx, cy, radius, upperFrom, upperFrom + span * progress, colour);
+			}
+		}
+	}
+
+	/** Where an arm points: a small hollow diamond with a short tail out to its side ({@code dir} -1 left, 1 right). */
+	private static void pip(GuiGraphicsExtractor graphics, int x, int y, int dir, int colour) {
+		graphics.fill(x - 2, y, x - 1, y + 1, colour);
+		graphics.fill(x + 2, y, x + 3, y + 1, colour);
+		graphics.fill(x, y - 2, x + 1, y - 1, colour);
+		graphics.fill(x, y + 2, x + 1, y + 3, colour);
+		graphics.fill(x - 1, y - 1, x, y, colour);
+		graphics.fill(x + 1, y - 1, x + 2, y, colour);
+		graphics.fill(x - 1, y + 1, x, y + 2, colour);
+		graphics.fill(x + 1, y + 1, x + 2, y + 2, colour);
+		int tail0 = x + dir * 4;
+		int tail1 = x + dir * 6;
+		graphics.fill(Math.min(tail0, tail1), y, Math.max(tail0, tail1) + 1, y + 1, colour);
+	}
+
+	// --- The cockpit frame -------------------------------------------------------------------------------------
+
+	/**
+	 * The viewport's frame round the edges of the view: the hull's dark inner face in two flat tones, with one lit
+	 * edge where it meets the glass. A brow across the top that slopes down into the corners, narrow posts either side
+	 * and a low sill (the top of the chest hatch) along the bottom. Flat shapes only, kept to the edges.
+	 */
+	private static void cockpitFrame(GuiGraphicsExtractor graphics) {
+		int width = graphics.guiWidth();
+		int height = graphics.guiHeight();
+		int brow = Math.max(5, Math.round(height * 0.04f));
+		int post = Math.max(3, Math.round(width * 0.016f));
+		int sill = Math.max(4, Math.round(height * 0.028f));
+		int cornerWidth = Math.round(width * 0.085f);
+		int cornerHeight = Math.round(height * 0.15f);
+		int lowCornerWidth = Math.round(width * 0.05f);
+		int lowCornerHeight = Math.round(height * 0.07f);
+		// The far face, darker, then the near face a touch lighter inside it.
+		graphics.fill(0, 0, width, brow, HULL_DARK);
+		graphics.fill(0, height - sill, width, height, HULL_DARK);
+		graphics.fill(0, 0, post, height, HULL_DARK);
+		graphics.fill(width - post, 0, width, height, HULL_DARK);
+		for (int i = 0; i < cornerWidth; i++) {
+			int drop = brow + Math.round((cornerHeight - brow) * (1.0f - i / (float) cornerWidth));
+			graphics.fill(post + i, 0, post + i + 1, drop, HULL);
+			graphics.fill(width - post - i - 1, 0, width - post - i, drop, HULL);
+			graphics.fill(post + i, drop, post + i + 1, drop + 1, EDGE);
+			graphics.fill(width - post - i - 1, drop, width - post - i, drop + 1, EDGE);
+		}
+		for (int i = 0; i < lowCornerWidth; i++) {
+			int rise = sill + Math.round((lowCornerHeight - sill) * (1.0f - i / (float) lowCornerWidth));
+			graphics.fill(post + i, height - rise, post + i + 1, height, HULL);
+			graphics.fill(width - post - i - 1, height - rise, width - post - i, height, HULL);
+			graphics.fill(post + i, height - rise - 1, post + i + 1, height - rise, EDGE);
+			graphics.fill(width - post - i - 1, height - rise - 1, width - post - i, height - rise, EDGE);
+		}
+		// The lit edges along the brow, the posts and the sill.
+		graphics.fill(post + cornerWidth, brow, width - post - cornerWidth, brow + 1, EDGE);
+		graphics.fill(post + lowCornerWidth, height - sill - 1, width - post - lowCornerWidth, height - sill, EDGE);
+		graphics.fill(post, cornerHeight, post + 1, height - lowCornerHeight, EDGE);
+		graphics.fill(width - post - 1, cornerHeight, width - post, height - lowCornerHeight, EDGE);
 	}
 
 	// --- Panels ------------------------------------------------------------------------------------------------

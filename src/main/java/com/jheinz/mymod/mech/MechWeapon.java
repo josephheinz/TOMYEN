@@ -18,7 +18,7 @@ import org.jspecify.annotations.Nullable;
  */
 public enum MechWeapon {
 	NONE("none", 0, 0.0f),
-	AUTOCANNON("autocannon", 30, 33.0f),
+	AUTOCANNON("autocannon", 30, 34.0f),
 	ROTARY_CANNON("rotary_cannon", 0, 26.0f),
 	POWER_FIST("power_fist", 0, 22.0f),
 	ROCKET_POD("rocket_pod", 4, 13.0f),

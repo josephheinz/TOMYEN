@@ -96,9 +96,11 @@ import com.jheinz.mymod.tank.TankShell;
  * <b>Walking.</b> Heavy and deliberate: it speeds up and slows down with some weight, steps up
  * {@link #STEP_UP} blocks, wades along the bottom of rivers (it doesn't swim or float), crushes weak blocks it walks
  * into (leaves, fences, glass panes, plants: the same as a tank's, with the pilot's build rights or mobGriefing),
- * and shoulders mobs aside. Every stride stomps, shaking the cockpit. The torso turns with the pilot's view, at
- * {@link #TORSO_SLEW} degrees a tick and at most {@link #TWIST_LIMIT} degrees off the legs (looking further round
- * pivots the legs); the legs walk the way W/A/S/D point relative to the torso, turning to it first, and walk
+ * and shoulders mobs aside. Every footfall stomps (on each client, in time with its walk: see {@link #tickFootfalls}),
+ * shaking the cockpit and the ground round it. The torso eases after the pilot's view (quickly: a 90 degree snap
+ * settles in about a third of a second) to at most {@link #TWIST_LIMIT} degrees off the legs, looking further round
+ * pivots the legs, and the pilot's client is the authority on it (see {@link Mechs.Aim}) so the shots leave the arms
+ * the pilot sees; the legs walk the way W/A/S/D point relative to the torso, turning to it first, and walk
  * backwards rather than turn right round. Jump fires the jump jets: a burst of lift (and push, if walking) that
  * costs {@link #JET_FUEL} charge and takes {@link #JET_RECHARGE_TICKS} ticks to recharge. Landing from
  * {@link #SHOCKWAVE_FALL} blocks or more sends out a shockwave instead of taking fall damage.
@@ -131,16 +133,30 @@ public class Mech extends PathfinderMob {
 	private static final float REVERSE = 0.55f;
 	private static final float ACCELERATION = 1.0f / 30.0f;
 	private static final float BRAKING = 1.0f / 12.0f;
-	/** Degrees a tick the legs turn (when sound). */
-	private static final float LEG_TURN = 4.0f;
-	/** Degrees a tick the torso turns and the arms pitch after the pilot's view, and their limits. */
-	public static final float TORSO_SLEW = 7.0f;
-	private static final float PITCH_SLEW = 5.0f;
+	/** Degrees a tick the legs turn (when sound) to walk somewhere, and to pivot after a view past the torso's twist. */
+	private static final float LEG_TURN = 6.0f;
+	private static final float LEG_PIVOT = 11.0f;
+	/**
+	 * The torso and arms ease after the pilot's view: each tick they close this share of the gap, at least
+	 * {@link #SLEW_MIN} degrees (so they settle) and at most the cap. A 90 degree snap settles in about 7 ticks.
+	 */
+	private static final float TORSO_EASE = 0.38f;
+	public static final float TORSO_SLEW = 26.0f;
+	private static final float PITCH_EASE = 0.45f;
+	private static final float PITCH_SLEW = 14.0f;
+	private static final float SLEW_MIN = 1.5f;
+	/** How long (ticks) the server goes by the pilot's own torso aim after it last heard it, before working it out itself. */
+	private static final int PILOT_AIM_TIMEOUT = 4;
 	public static final float TWIST_LIMIT = 100.0f;
 	public static final float MIN_PITCH = -35.0f;
 	public static final float MAX_PITCH = 30.0f;
-	/** Blocks a stride covers; each one stomps. */
-	private static final double STRIDE = 1.7;
+	/**
+	 * Radians of walk cycle per unit of walk animation (see MechModel): a foot plants every half cycle, the right at
+	 * whole cycles and the left halfway between.
+	 */
+	public static final float WALK_CYCLE = 0.40f;
+	/** Below this walk animation speed it's shuffling, not striding: no footfalls. */
+	private static final float FOOTFALL_MIN_SPEED = 0.06f;
 	private static final float JET_LIFT = 0.95f;
 	private static final float JET_PUSH = 0.6f;
 	public static final int JET_RECHARGE_TICKS = 60;
@@ -172,7 +188,6 @@ public class Mech extends PathfinderMob {
 	public static final int SEQ_EXITING = 2;
 
 	// Entity events.
-	static final byte STOMP_EVENT = 70;
 	static final byte FIRE_LEFT_EVENT = 71;
 	static final byte FIRE_RIGHT_EVENT = 72;
 	static final byte JETS_EVENT = 73;
@@ -212,18 +227,25 @@ public class Mech extends PathfinderMob {
 	private int smoke = MAX_SMOKE;
 	private int smokeRefill;
 	private int exitHold;
-	private double strideTravel;
 	private final List<Thrown> thrown = new ArrayList<>();
 	private long aimTick = -1;
 	private AimPoint aim = new AimPoint(Vec3.ZERO, null);
+	// Server: the torso aim the pilot's client last reported, and when.
+	private float pilotAimYaw;
+	private float pilotAimPitch;
+	private int pilotAimTick = -100;
 	// The authoritative side (the pilot's client): the throttle, -REVERSE to 1.
 	private float throttle;
-	// Client side: arm recoil, the rotary barrels' turn, the jets' flame, and stomps and landings for the cockpit shake.
+	// Client side: arm recoil, the rotary barrels' turn, the jets' flame, and footfalls and landings for the shake.
 	private final int[] recoil = new int[2];
 	private final float[] barrelSpin = new float[2];
 	private final float[] barrelSpinO = new float[2];
 	private int jetFlame;
+	private int lastFootfall = Integer.MIN_VALUE;
+	/** Client: footfalls so far, how hard the last one landed (about 0.6 walking to 1.3 at a run) and which foot. */
 	public int clientStomps;
+	public float clientStompStrength;
+	public int clientStompFoot;
 	public int clientLandings;
 
 	private record Thrown(Entity entity, int[] ticks) {
@@ -406,7 +428,6 @@ public class Mech extends PathfinderMob {
 				arm.tick(level);
 			}
 			tickSmoke();
-			tickStride(level);
 			tickTerrain(level);
 			tickThrown(level);
 			tickStores();
@@ -423,6 +444,7 @@ public class Mech extends PathfinderMob {
 				jetFlame--;
 			}
 			tickJetFlames();
+			tickFootfalls();
 		}
 	}
 
@@ -438,7 +460,11 @@ public class Mech extends PathfinderMob {
 			}
 			return;
 		}
-		if (pilot != null) {
+		if (pilot != null && tickCount - pilotAimTick <= PILOT_AIM_TIMEOUT) {
+			// The pilot's client turned the torso the pilot sees: go by that, so the shots leave the arms they see.
+			torsoYaw = Mth.wrapDegrees(getYRot() + Mth.clamp(Mth.wrapDegrees(pilotAimYaw - getYRot()), -TWIST_LIMIT - 10.0f, TWIST_LIMIT + 10.0f));
+			armPitch = Mth.clamp(pilotAimPitch, MIN_PITCH, MAX_PITCH);
+		} else if (pilot != null) {
 			slew(pilot.getYRot(), pilot.getXRot());
 		} else if (sequence() != SEQ_NONE) {
 			// Square to the legs for the climb.
@@ -450,11 +476,38 @@ public class Mech extends PathfinderMob {
 	}
 
 	private void slew(float wantYaw, float wantPitch) {
-		float yaw = torsoYaw + Mth.clamp(Mth.wrapDegrees(wantYaw - torsoYaw), -TORSO_SLEW, TORSO_SLEW);
+		float yaw = torsoYaw + ease(Mth.wrapDegrees(wantYaw - torsoYaw), TORSO_EASE, TORSO_SLEW);
 		float twist = Mth.clamp(Mth.wrapDegrees(yaw - getYRot()), -TWIST_LIMIT, TWIST_LIMIT);
 		torsoYaw = Mth.wrapDegrees(getYRot() + twist);
-		armPitch = Mth.clamp(armPitch + Mth.clamp(Mth.clamp(wantPitch, MIN_PITCH, MAX_PITCH) - armPitch, -PITCH_SLEW, PITCH_SLEW), MIN_PITCH,
-				MAX_PITCH);
+		armPitch = Mth.clamp(armPitch + ease(Mth.clamp(wantPitch, MIN_PITCH, MAX_PITCH) - armPitch, PITCH_EASE, PITCH_SLEW), MIN_PITCH, MAX_PITCH);
+	}
+
+	/** One tick's turn towards a target {@code gap} degrees away: a share of it, at least {@link #SLEW_MIN}, at most {@code cap}. */
+	private static float ease(float gap, float share, float cap) {
+		float step = gap * share;
+		if (Math.abs(step) < SLEW_MIN) {
+			step = Mth.clamp(gap, -SLEW_MIN, SLEW_MIN);
+		}
+		return Mth.clamp(step, -cap, cap);
+	}
+
+	/** Server: the torso yaw and arm pitch the pilot's client shows, sent every tick it's seated. */
+	void pilotAim(float yaw, float pitch) {
+		if (!Float.isFinite(yaw) || !Float.isFinite(pitch)) {
+			return;
+		}
+		pilotAimYaw = yaw;
+		pilotAimPitch = pitch;
+		pilotAimTick = tickCount;
+	}
+
+	/** On the pilot's client: the torso yaw and arm pitch this tick, for the server (see {@link Mechs.Aim}). */
+	public float torsoYawNow() {
+		return torsoYaw;
+	}
+
+	public float armPitchNow() {
+		return armPitch;
 	}
 
 	/** Square the torso to the legs, for a walker just put down. */
@@ -573,6 +626,7 @@ public class Mech extends PathfinderMob {
 		}
 		throttle = 0.0f;
 		exitHold = 0;
+		pilotAimTick = -100;
 		startSequence(SEQ_ENTERING);
 		player.setYRot(getYRot());
 		playSound(SoundEvents.IRON_GOLEM_STEP, 0.8f, 0.6f);
@@ -713,7 +767,8 @@ public class Mech extends PathfinderMob {
 		float forward = seated ? driver.zza : 0.0f;
 		float strafe = seated ? driver.xxa : 0.0f;
 		float legs = getYRot();
-		float turnRate = LEG_TURN * (0.5f + 0.5f * partCondition(MechPart.LEGS));
+		float legHealth = 0.5f + 0.5f * partCondition(MechPart.LEGS);
+		float turnRate = LEG_TURN * legHealth;
 		float turn = 0.0f;
 		float target = 0.0f;
 		if (forward != 0.0f || strafe != 0.0f) {
@@ -726,9 +781,11 @@ public class Mech extends PathfinderMob {
 			target = (backwards ? -REVERSE : 1.0f) * Mth.clamp((aligned - 0.75f) / 0.25f, 0.0f, 1.0f);
 		} else if (seated) {
 			// Looking further round than the torso turns: the legs pivot after the view.
+			// Pivots start a little short of the limit, so the torso isn't left pinned against it.
 			float twist = Mth.wrapDegrees(driver.getYRot() - legs);
-			if (Math.abs(twist) > TWIST_LIMIT) {
-				turn = Math.signum(twist) * Math.min(turnRate, Math.abs(twist) - TWIST_LIMIT + turnRate);
+			float over = Math.abs(twist) - (TWIST_LIMIT - 15.0f);
+			if (over > 0.0f) {
+				turn = Math.signum(twist) * Math.min(LEG_PIVOT * legHealth, over * 0.5f + 2.0f);
 			}
 		}
 		if (turn != 0.0f) {
@@ -846,22 +903,56 @@ public class Mech extends PathfinderMob {
 		return jetFlame <= 0 ? 0.0f : Mth.clamp((jetFlame - partialTicks) / JET_FLAME_TICKS, 0.0f, 1.0f);
 	}
 
-	/** Server: a stomp each stride while walking on something. */
-	private void tickStride(ServerLevel level) {
-		if (!onGround() && !isInWater()) {
+	/**
+	 * Client side, on every client that can see it: a footfall each time a foot plants in the walk cycle MechModel
+	 * draws, so the stomp lands exactly when the foot does. Once a plant: it fires as the cycle crosses into the next
+	 * half (a foot down), never again until the one after. Each is tons of steel landing: three layered sounds and the
+	 * ground's own step pitched right down, block dust kicked out round the foot, and a jolt (see MechClient) for the
+	 * pilot and anyone standing near. Faster strides land harder.
+	 */
+	private void tickFootfalls() {
+		int footfall = Mth.floor(walkAnimation.position() * WALK_CYCLE / Mth.PI);
+		boolean striding = walkAnimation.speed() > FOOTFALL_MIN_SPEED && (onGround() || isInWater());
+		if (footfall == lastFootfall || lastFootfall == Integer.MIN_VALUE || !striding) {
+			lastFootfall = footfall;
 			return;
 		}
-		strideTravel += position().subtract(xo, yo, zo).horizontalDistance();
-		if (strideTravel >= STRIDE) {
-			strideTravel -= STRIDE;
-			level.broadcastEntityEvent(this, STOMP_EVENT);
-			playSound(Mechs.STEP_SOUND, 1.2f, 0.9f + random.nextFloat() * 0.15f);
+		lastFootfall = footfall;
+		// Even halves plant the right foot (it's forward when the cycle is at a whole turn), odd the left.
+		int foot = Math.floorMod(footfall, 2) == 0 ? MechArm.RIGHT : MechArm.LEFT;
+		double speed = position().subtract(xo, yo, zo).horizontalDistance();
+		float strength = 0.6f + 0.7f * Mth.clamp((float) (speed / MAX_SPEED), 0.0f, 1.0f);
+		clientStomps++;
+		clientStompStrength = strength;
+		clientStompFoot = foot;
+
+		Vec3 at = MechCrew.legsPoint(this, 1.0f, (foot == MechArm.LEFT ? -1 : 1) * 0.5, 0.05, 0.45);
+		BlockPos below = BlockPos.containing(at.x, getY() - 0.2, at.z);
+		BlockState ground = level().getBlockState(below);
+		if (ground.isAir()) {
+			below = blockPosition().below();
+			ground = level().getBlockState(below);
+		}
+		float pitch = 0.92f + random.nextFloat() * 0.12f - (strength - 1.0f) * 0.1f;
+		level().playLocalSound(at.x, at.y, at.z, Mechs.STEP_SOUND, SoundSource.NEUTRAL, 1.5f * strength, pitch, false);
+		level().playLocalSound(at.x, at.y, at.z, Mechs.STEP_CLANK_SOUND, SoundSource.NEUTRAL, 0.9f * strength, pitch, false);
+		level().playLocalSound(at.x, at.y, at.z, Mechs.STEP_THUD_SOUND, SoundSource.NEUTRAL, 1.3f * strength, pitch * 0.95f, false);
+		if (!ground.isAir()) {
+			level().playLocalSound(at.x, at.y, at.z, ground.getSoundType().getStepSound(), SoundSource.NEUTRAL, 1.0f * strength, 0.5f, false);
+			BlockParticleOption dust = new BlockParticleOption(ParticleTypes.BLOCK, ground);
+			int count = Math.round(10 + 8 * strength);
+			for (int i = 0; i < count; i++) {
+				double angle = random.nextDouble() * Math.PI * 2.0;
+				double out = 0.12 + random.nextDouble() * 0.18 * strength;
+				level().addParticle(dust, at.x + Math.cos(angle) * 0.5, at.y + 0.05, at.z + Math.sin(angle) * 0.5, Math.cos(angle) * out,
+						0.08 + random.nextDouble() * 0.12 * strength, Math.sin(angle) * out);
+			}
 		}
 	}
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState state) {
-		// Its stride stomps instead (see tickStride).
+		// Its footfalls stomp instead, in time with the walk (see tickFootfalls).
 	}
 
 	/** No fall damage: past {@link #SHOCKWAVE_FALL} blocks a landing knocks back and hurts everything round it. */
@@ -1315,19 +1406,6 @@ public class Mech extends PathfinderMob {
 	@Override
 	public void handleEntityEvent(byte id) {
 		switch (id) {
-			case STOMP_EVENT -> {
-				clientStomps++;
-				BlockState ground = level().getBlockState(blockPosition().below());
-				if (!ground.isAir()) {
-					for (int side = -1; side <= 1; side += 2) {
-						Vec3 foot = MechCrew.legsPoint(this, 1.0f, side * 0.5, 0.05, 0.2);
-						for (int i = 0; i < 6; i++) {
-							level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, ground), foot.x, foot.y, foot.z,
-									(random.nextDouble() - 0.5) * 0.3, 0.1, (random.nextDouble() - 0.5) * 0.3);
-						}
-					}
-				}
-			}
 			case FIRE_LEFT_EVENT -> recoil[MechArm.LEFT] = RECOIL_TICKS;
 			case FIRE_RIGHT_EVENT -> recoil[MechArm.RIGHT] = RECOIL_TICKS;
 			case JETS_EVENT -> jetFlame = JET_FLAME_TICKS;
