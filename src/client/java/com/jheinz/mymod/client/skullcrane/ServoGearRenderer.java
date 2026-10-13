@@ -33,7 +33,7 @@ import com.jheinz.mymod.skullcrane.Skullcranes;
  * <ul>
  * <li>The monocle: a steel-rimmed red lens over the right eye on a thin band round the head, the lens glowing.
  * <li>The backpack: a steel casing on the back with a glowing power cell, and two servo arms that rise from it and
- * bend forward over the shoulders, swaying and twitching their claws.
+ * bend forward over the shoulders, swaying and working their pincers.
  * </ul>
  */
 public final class ServoGearRenderer {
@@ -90,7 +90,7 @@ public final class ServoGearRenderer {
 	private static class Gear extends HumanoidModel<HumanoidRenderState> {
 		private final ModelPart[] arms = new ModelPart[2];
 		private final ModelPart[] elbows = new ModelPart[2];
-		private final ModelPart[][] fingers = new ModelPart[2][3];
+		private final ModelPart[][] prongs = new ModelPart[2][2];
 
 		Gear(ModelPart root) {
 			super(root);
@@ -98,8 +98,8 @@ public final class ServoGearRenderer {
 				for (int side = 0; side < 2; side++) {
 					arms[side] = body.getChild("arm_" + side);
 					elbows[side] = arms[side].getChild("elbow");
-					for (int f = 0; f < 3; f++) {
-						fingers[side][f] = elbows[side].getChild("finger_" + f);
+					for (int p = 0; p < 2; p++) {
+						prongs[side][p] = elbows[side].getChild("prong_" + p);
 					}
 				}
 			}
@@ -111,7 +111,7 @@ public final class ServoGearRenderer {
 			animateArms(state.ageInTicks);
 		}
 
-		/** The backpack's arms sway a little and their claws twitch open and shut. */
+		/** The backpack's arms sway a little and their pincers slowly work open and shut. */
 		void animateArms(float age) {
 			if (arms[0] == null) {
 				return;
@@ -121,12 +121,11 @@ public final class ServoGearRenderer {
 				float phase = side * 2.3f;
 				arms[side].xRot = 0.35f + 0.06f * Mth.sin(age * 0.07f + phase);
 				arms[side].zRot = sign * (0.3f + 0.05f * Mth.sin(age * 0.09f + phase));
-				elbows[side].xRot = 1.5f + 0.12f * Mth.sin(age * 0.11f + phase) + (Mth.floor(age / 13.0f + side) % 3 == 0 ? 0.08f : 0.0f);
-				float open = 0.25f + 0.2f * Math.max(0.0f, Mth.sin(age * 0.05f + phase));
-				for (int f = 0; f < 3; f++) {
-					// Negative opens: out from the forearm.
-					fingers[side][f].xRot = -open;
-				}
+				elbows[side].xRot = 1.5f + 0.12f * Mth.sin(age * 0.11f + phase);
+				float open = 0.15f + 0.2f * Math.max(0.0f, Mth.sin(age * 0.05f + phase));
+				// The pincer points on along the forearm (up, in its frame); these turn the prongs apart.
+				prongs[side][0].zRot = -open;
+				prongs[side][1].zRot = open;
 			}
 		}
 	}
@@ -164,24 +163,19 @@ public final class ServoGearRenderer {
 		MeshDefinition mesh = new MeshDefinition();
 		PartDefinition body = emptyHumanoid(mesh)[1];
 		body.addOrReplaceChild("pack", CubeListBuilder.create()
-				.texOffs(0, 10).addBox(-3.0f, 1.0f, 2.0f, 6.0f, 7.0f, 2.5f)
-				.texOffs(18, 10).addBox(-1.5f, 2.5f, 4.5f, 3.0f, 4.0f, 1.0f),
+				.texOffs(0, 10).addBox(-3.0f, 1.0f, 2.0f, 6.0f, 7.0f, 2.0f)
+				.texOffs(16, 10).addBox(-1.5f, 2.5f, 4.0f, 3.0f, 4.0f, 1.0f),
 				PartPose.ZERO);
 		for (int side = 0; side < 2; side++) {
-			float x = side == 0 ? -2.3f : 2.3f;
 			PartDefinition arm = body.addOrReplaceChild("arm_" + side, CubeListBuilder.create()
-					.texOffs(38, 10).addBox(-0.9f, -0.9f, -0.9f, 1.8f, 1.8f, 1.8f)
-					.texOffs(26, 10).addBox(-0.6f, -5.5f, -0.6f, 1.2f, 5.0f, 1.2f),
-					PartPose.offset(x, 1.5f, 3.6f));
+					.texOffs(26, 10).addBox(-0.75f, -5.5f, -0.75f, 1.5f, 5.5f, 1.5f),
+					PartPose.offset(side == 0 ? -2.3f : 2.3f, 1.5f, 3.0f));
 			PartDefinition elbow = arm.addOrReplaceChild("elbow", CubeListBuilder.create()
-					.texOffs(38, 10).addBox(-0.9f, -0.9f, -0.9f, 1.8f, 1.8f, 1.8f)
-					.texOffs(34, 10).addBox(-0.5f, -4.5f, -0.5f, 1.0f, 4.0f, 1.0f),
-					PartPose.offset(0.0f, -5.5f, 0.0f));
-			for (int f = 0; f < 3; f++) {
-				float angle = f * Mth.TWO_PI / 3.0f;
-				// Fingers point on along the forearm (up, in its frame), splayed by xRot.
-				elbow.addOrReplaceChild("finger_" + f, CubeListBuilder.create().texOffs(46, 10).addBox(-0.3f, -2.0f, -0.3f, 0.6f, 2.0f, 0.6f),
-						PartPose.offsetAndRotation(Mth.sin(angle) * 0.4f, -4.5f, Mth.cos(angle) * 0.4f, 0.0f, angle, 0.0f));
+					.texOffs(34, 10).addBox(-0.625f, -4.5f, -0.625f, 1.25f, 4.5f, 1.25f),
+					PartPose.offset(0.0f, -5.2f, 0.0f));
+			for (int p = 0; p < 2; p++) {
+				elbow.addOrReplaceChild("prong_" + p, CubeListBuilder.create().texOffs(42, 10).addBox(-0.25f, -2.5f, -0.25f, 0.5f, 2.5f, 0.5f),
+						PartPose.offset(p == 0 ? -0.25f : 0.25f, -4.2f, 0.0f));
 			}
 		}
 		return LayerDefinition.create(mesh, 64, 32);
