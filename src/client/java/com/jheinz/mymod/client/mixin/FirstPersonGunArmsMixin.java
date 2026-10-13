@@ -87,9 +87,11 @@ public abstract class FirstPersonGunArmsMixin {
 		}
 
 		Matrix4f itemPose = new Matrix4f(poseStack.last().pose());
-		// A racking or bolt animation pulls one hand off its hold to work the gun.
-		Vector3f gripAnchor = anchors.grip();
-		Vector3f supportAnchor = anchors.support();
+		// Racking, reloading, loading and the like pull a hand off its hold to work the gun, along a keyframed path.
+		Vector3f gripTarget = anchors.grip();
+		Vector3f supportTarget = anchors.support();
+		float gripTwist = 0.0f;
+		float supportTwist = 0.0f;
 		GunAnimation.HandOverride working = GunAnimation.hand(stack);
 		if (working == null) {
 			// A launcher's off hand fetches and loads a rocket instead.
@@ -97,16 +99,23 @@ public abstract class FirstPersonGunArmsMixin {
 		}
 		if (working != null) {
 			if (working.mainHand()) {
-				gripAnchor = new Vector3f(gripAnchor).lerp(working.target(), working.blend());
+				gripTarget = new Vector3f(gripTarget).lerp(working.target(), working.blend());
+				gripTwist = working.twist();
 			} else {
-				supportAnchor = new Vector3f(supportAnchor).lerp(working.target(), working.blend());
+				supportTarget = new Vector3f(supportTarget).lerp(working.target(), working.blend());
+				supportTwist = working.twist();
 			}
 		}
-		Vector3f grip = GunHands.toView(mymod$viewPose, itemPose, gripAnchor, mirrored);
-		Vector3f support = GunHands.toView(mymod$viewPose, itemPose, supportAnchor, mirrored);
+		// Eased toward their targets, so a hand let go mid-stroke (fired, switched away) glides back rather than jumps.
+		GunHands.Hand gripHand = GunHands.settle(true, stack.getItem(), anchors.grip(), gripTarget, gripTwist);
+		GunHands.Hand supportHand = GunHands.settle(false, stack.getItem(), anchors.support(), supportTarget, supportTwist);
+		Vector3f grip = GunHands.toView(mymod$viewPose, itemPose, gripHand.point(), mirrored);
+		Vector3f gripHold = GunHands.toView(mymod$viewPose, itemPose, anchors.grip(), mirrored);
+		Vector3f support = GunHands.toView(mymod$viewPose, itemPose, supportHand.point(), mirrored);
+		Vector3f supportHold = GunHands.toView(mymod$viewPose, itemPose, anchors.support(), mirrored);
 
 		poseStack.pushPose();
-		GunHands.poseArm(poseStack, mymod$viewPose, mainArm, true, grip, mirrored);
+		GunHands.poseArm(poseStack, mymod$viewPose, mainArm, true, grip, gripHold, gripHand.twist(), mirrored);
 		renderPlayerHand(poseStack, collector, light, mainArm, playerState);
 		poseStack.popPose();
 
@@ -118,7 +127,7 @@ public abstract class FirstPersonGunArmsMixin {
 		LauncherAnimation.submitRocket(poseStack, collector, light, stack, anchors, mirrored, Minecraft.getInstance().player);
 		ShotgunAnimation.submitShells(poseStack, collector, light, stack, mirrored, Minecraft.getInstance().player);
 		poseStack.pushPose();
-		GunHands.poseArm(poseStack, mymod$viewPose, mainArm.getOpposite(), false, support, mirrored);
+		GunHands.poseArm(poseStack, mymod$viewPose, mainArm.getOpposite(), false, support, supportHold, supportHand.twist(), mirrored);
 		renderPlayerHand(poseStack, collector, light, mainArm.getOpposite(), playerState);
 		poseStack.popPose();
 	}

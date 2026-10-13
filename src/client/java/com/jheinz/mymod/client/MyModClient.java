@@ -84,6 +84,7 @@ public class MyModClient implements ClientModInitializer {
 			GunAnimation.tick(client.player);
 			ShotgunAnimation.tick(client.player);
 			M249Animation.tick(client.player);
+			GunReloads.tick(client);
 			LaserSights.tick(client);
 			OreScanner.tick(client);
 			NeuralTrigger.tick(client);

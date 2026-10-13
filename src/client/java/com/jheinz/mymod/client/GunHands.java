@@ -41,6 +41,19 @@ public final class GunHands {
 	private static final float ARM_AXIS_X = 6.0f;
 	private static final float SHOULDER_Y = 2.0f;
 	private static final float HAND_Y = 12.0f;
+	/**
+	 * How much of a hand's reach away from its hold the shoulder follows, so reaching down for a magazine or back for
+	 * a canister swings the whole arm instead of stretching it from a fixed shoulder.
+	 */
+	private static final float SHOULDER_FOLLOW = 0.3f;
+	/** How quickly a hand catches up with where its animation puts it (seconds), so a cut-short animation never snaps. */
+	private static final float SETTLE_SECONDS = 0.025f;
+
+	/** For each hand (main, support): its offset from its hold and twist as last drawn, when, and on which gun. */
+	private static final Vector3f[] SETTLED = {new Vector3f(), new Vector3f()};
+	private static final float[] SETTLED_TWIST = new float[2];
+	private static final long[] SETTLED_MILLIS = new long[2];
+	private static final Item[] SETTLED_GUN = new Item[2];
 
 	private GunHands() {
 	}
@@ -110,6 +123,33 @@ public final class GunHands {
 				pivot.x, pivot.y, pivot.z);
 	}
 
+	/** Where a hand is drawn (item space) and how far it's twisted about its arm (degrees). */
+	public record Hand(Vector3f point, float twist) {
+	}
+
+	/**
+	 * Eases a hand from where it was last drawn toward {@code target} (item space), so a hand that's let go when an
+	 * animation is cut short, or that changes animation mid-stroke, glides there instead of jumping. Offsets are kept
+	 * from the hand's {@code hold} so the gun's own motion still carries the hand rigidly.
+	 */
+	public static Hand settle(boolean mainHand, Item gun, Vector3f hold, Vector3f target, float twist) {
+		int i = mainHand ? 0 : 1;
+		long now = Util.getMillis();
+		Vector3f offset = new Vector3f(target).sub(hold);
+		if (SETTLED_GUN[i] != gun || now - SETTLED_MILLIS[i] > 250L) {
+			// A different gun, or none drawn for a while: start where the animation says.
+			SETTLED[i].set(offset);
+			SETTLED_TWIST[i] = twist;
+		} else {
+			float k = 1.0f - (float) Math.exp(-(now - SETTLED_MILLIS[i]) / 1000.0f / SETTLE_SECONDS);
+			SETTLED[i].lerp(offset, k);
+			SETTLED_TWIST[i] = Mth.lerp(k, SETTLED_TWIST[i], twist);
+		}
+		SETTLED_GUN[i] = gun;
+		SETTLED_MILLIS[i] = now;
+		return new Hand(new Vector3f(hold).add(SETTLED[i]), SETTLED_TWIST[i]);
+	}
+
 	/** Where an item-space anchor ends up in view space, given the item's pose and the view pose. */
 	public static Vector3f toView(PoseStack.Pose view, Matrix4f itemPose, Vector3f anchor, boolean mirrored) {
 		Matrix4f itemToView = new Matrix4f(view.pose()).invert().mul(itemPose);
@@ -123,14 +163,30 @@ public final class GunHands {
 	 */
 	public static void poseArm(PoseStack poseStack, PoseStack.Pose view, HumanoidArm arm, boolean mainArm, Vector3f hand,
 			boolean mirrored) {
+		poseArm(poseStack, view, arm, mainArm, hand, hand, 0.0f, mirrored);
+	}
+
+	/**
+	 * As {@link #poseArm(PoseStack, PoseStack.Pose, HumanoidArm, boolean, Vector3f, boolean)}, for a hand that's been
+	 * pulled off its hold to work the gun: the shoulder follows part of the way from {@code hold} (where the hand would
+	 * be, in view space) to {@code hand}, and the hand is twisted about the arm by {@code twist} degrees (positive rolls
+	 * the palm clockwise as the player sees it, mirrored for the left hand).
+	 */
+	public static void poseArm(PoseStack poseStack, PoseStack.Pose view, HumanoidArm arm, boolean mainArm, Vector3f hand,
+			Vector3f hold, float twist, boolean mirrored) {
 		float flip = mirrored ? -1.0f : 1.0f;
-		Vector3f shoulder = new Vector3f(mainArm ? MAIN_SHOULDER : OFF_SHOULDER).mul(flip, 1.0f, 1.0f);
+		Vector3f shoulder = new Vector3f(mainArm ? MAIN_SHOULDER : OFF_SHOULDER).mul(flip, 1.0f, 1.0f)
+				.add(new Vector3f(hand).sub(hold).mul(SHOULDER_FOLLOW));
 		Vector3f reach = new Vector3f(hand).sub(shoulder);
 		float length = reach.length();
 		Vector3f yAxis = reach.div(length);
 		// Back of the main hand faces out to the side; the off hand cups the gun from below.
 		Vector3f outward = mainArm ? new Vector3f(flip, -0.3f, 0.0f) : new Vector3f(-flip * 0.4f, -1.0f, 0.0f);
 		Vector3f xAxis = outward.sub(new Vector3f(yAxis).mul(outward.dot(yAxis))).normalize();
+		if (twist != 0.0f) {
+			// About the arm, which points away from the player, so a positive angle turns clockwise as they see it.
+			xAxis.rotateAxis((float) Math.toRadians(twist * flip), yAxis.x, yAxis.y, yAxis.z);
+		}
 		// The arm model's outer side is -X for the right arm, +X for the left.
 		if (arm == HumanoidArm.RIGHT) {
 			xAxis.negate();
