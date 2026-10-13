@@ -35,7 +35,9 @@
 		"EntityNapalmRainMixin",
 		"EnchantmentHelperDragonscaleMixin",
 		"EnderDragonScalesMixin",
-		"EntityDragonscaleFireMixin"
+		"EntityDragonscaleFireMixin",
+		"LivingEntityStarSteelMixin",
+		"PlayerStarSteelMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

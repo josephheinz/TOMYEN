@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mymod:star_steel"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mymod:star_steel"
+      }
+    ]
+  }
+}

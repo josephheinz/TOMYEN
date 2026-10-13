@@ -4,7 +4,8 @@
     "mymod:soul_steel_pickaxe",
     "mymod:holy_silver_pickaxe",
     "mymod:tungsten_carbide_drill",
-    "mymod:fae_silver_pickaxe"
+    "mymod:fae_silver_pickaxe",
+    "mymod:star_steel_pickaxe"
   ],
   "replace": false
 }

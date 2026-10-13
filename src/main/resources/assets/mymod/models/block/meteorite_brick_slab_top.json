@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "mymod:block/meteorite_bricks",
+    "side": "mymod:block/meteorite_bricks",
+    "top": "mymod:block/meteorite_bricks"
+  }
+}

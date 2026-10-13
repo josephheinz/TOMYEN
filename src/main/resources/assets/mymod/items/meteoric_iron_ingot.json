@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mymod:item/meteoric_iron_ingot"
+  }
+}
