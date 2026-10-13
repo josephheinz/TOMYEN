@@ -1686,10 +1686,6 @@
       {
         "name": "minecraft:mob/ghast/fireball4",
         "pitch": 0.55
-      },
-      {
-        "name": "minecraft:item/firecharge/use1",
-        "pitch": 0.5
       }
     ]
   },
