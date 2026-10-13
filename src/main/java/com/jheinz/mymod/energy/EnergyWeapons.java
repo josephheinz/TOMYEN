@@ -107,7 +107,8 @@ public final class EnergyWeapons {
 				recipe(LASER_RIFLE, 1, cost(LASER_EMITTER, 1), cost(LASER_RIFLE_HOUSING, 1)),
 				recipe(RAILGUN_RAILS, 1, cost(Tungsten.TUNGSTEN_CARBIDE, 4), cost(COPPER_COIL, 4), cost(Industry.DURALUMIN_SHEET, 2)),
 				recipe(RAILGUN, 1, cost(RAILGUN_RAILS, 1), cost(Aliens.ALIEN_REACTOR, 1), cost(Aliens.ALIEN_ALLOY, 4)),
-				recipe(STEEL_RAIL_SLUG, 4, cost(Industry.STEEL_INGOT, 1), cost(Items.COPPER_NUGGET, 1)),
+				// A copper driving band and a redstone-doped core; steel and copper alone are the revolver cylinder.
+				recipe(STEEL_RAIL_SLUG, 4, cost(Industry.STEEL_INGOT, 1), cost(Items.COPPER_NUGGET, 1), cost(Items.REDSTONE, 1)),
 				recipe(TUNGSTEN_RAIL_SLUG, 4, cost(Tungsten.TUNGSTEN_CARBIDE, 1), cost(Items.COPPER_NUGGET, 1)));
 	}
 
