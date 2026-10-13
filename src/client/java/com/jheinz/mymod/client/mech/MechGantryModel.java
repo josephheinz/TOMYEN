@@ -30,14 +30,14 @@ public class MechGantryModel extends Model<Unit> {
 		PartDefinition root = mesh.getRoot();
 		// BEGIN GENERATED (tools/gen_mech.py --java)
 		root.addOrReplaceChild("frame", CubeListBuilder.create()
-				.texOffs(20, 44).addBox(-24.0f, -3.0f, -20.0f, 48.0f, 3.0f, 40.0f)
+				.texOffs(108, 0).addBox(-24.0f, -3.0f, -20.0f, 48.0f, 3.0f, 40.0f)
 				.texOffs(0, 0).addBox(-24.0f, -90.0f, 16.0f, 5.0f, 87.0f, 5.0f)
 				.texOffs(0, 0).addBox(19.0f, -90.0f, 16.0f, 5.0f, 87.0f, 5.0f)
-				.texOffs(26, 211).addBox(-24.0f, -94.0f, 15.0f, 48.0f, 4.0f, 7.0f)
-				.texOffs(86, 87).addBox(-24.0f, -80.0f, -12.0f, 4.0f, 4.0f, 28.0f)
-				.texOffs(86, 87).addBox(20.0f, -80.0f, -12.0f, 4.0f, 4.0f, 28.0f),
+				.texOffs(52, 103).addBox(-24.0f, -94.0f, 15.0f, 48.0f, 4.0f, 7.0f)
+				.texOffs(386, 0).addBox(-24.0f, -80.0f, -12.0f, 4.0f, 4.0f, 28.0f)
+				.texOffs(386, 0).addBox(20.0f, -80.0f, -12.0f, 4.0f, 4.0f, 28.0f),
 				PartPose.offset(0.0f, 24.0f, 0.0f));
 		// END GENERATED
-		return LayerDefinition.create(mesh, 256, 256);
+		return LayerDefinition.create(mesh, MechModel.TEXTURE_WIDTH, MechModel.TEXTURE_HEIGHT);
 	}
 }

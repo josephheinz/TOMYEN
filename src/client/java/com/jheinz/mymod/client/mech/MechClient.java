@@ -1,6 +1,13 @@
 package com.jheinz.mymod.client.mech;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -66,8 +73,22 @@ public final class MechClient {
 	private static boolean jumpWasDown;
 	private static int shakeTicks;
 	private static float shakeStrength;
-	private static int lastStomps;
-	private static int lastLandings;
+	/** A footfall's or landing's jolt: how long ago, and how far it drops the view. */
+	private static final int JOLT_TICKS = 7;
+	private static int joltAge = JOLT_TICKS;
+	private static float joltStrength;
+	/** Out to here a walker's footfalls are felt by someone on foot, and its barrels heard whirring. */
+	private static final float FEEL_RANGE = 12.0f;
+	private static final double WHIR_RANGE = 40.0;
+	private static float lean;
+	private static float leanO;
+	private static float lastTorsoYaw = Float.NaN;
+	private static float lastSentYaw = Float.NaN;
+	private static float lastSentPitch;
+	private static int aimKeepAlive;
+	/** Per walker near the player: the footfalls and landings already felt. */
+	private static final Map<Integer, int[]> feltEvents = new HashMap<>();
+	private static final Map<Integer, MechWhirSound> whirs = new HashMap<>();
 	private static final float[] lastRecoil = new float[2];
 
 	private MechClient() {
@@ -126,16 +147,55 @@ public final class MechClient {
 		return mech != null && mech.sequence() != Mech.SEQ_NONE ? 0.0 : 1.0;
 	}
 
-	/** The view's roll and pitch kick in degrees for the shake, or null when it's still. */
-	public static float @Nullable [] cameraShake() {
-		if (shakeTicks <= 0 || pilotedMech() == null) {
-			return null;
-		}
+	/**
+	 * The view's weight, applied where vanilla bobs the view when hurt (see MechCameraShakeMixin), for the pilot and
+	 * anyone standing near a walker:
+	 * <ul>
+	 * <li>A shake (roll and pitch) at shots, hits and stomps.
+	 * <li>A jolt at each footfall and landing: the view drops sharply and eases back up, nodding down a little.
+	 * <li>In the cockpit, a slow lean into the torso's turns that settles after it, and a sway onto the planted foot
+	 * as it walks. Only the view leans: the aim is the pilot's own and never lags for it.
+	 * </ul>
+	 */
+	public static void applyCamera(PoseStack poseStack) {
 		float partial = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
-		float t = Mth.clamp((shakeTicks - partial) / SHAKE_TICKS, 0.0f, 1.0f);
-		float amplitude = shakeStrength * t * t;
-		float time = (Util.getMillis() % 100000L) / 1000.0f;
-		return new float[] {Mth.sin(time * 41.0f) * amplitude * 1.5f, Mth.cos(time * 29.0f) * amplitude * 1.2f + amplitude * 1.5f};
+		if (shakeTicks > 0) {
+			float t = Mth.clamp((shakeTicks - partial) / SHAKE_TICKS, 0.0f, 1.0f);
+			float amplitude = shakeStrength * t * t;
+			float time = (Util.getMillis() % 100000L) / 1000.0f;
+			poseStack.rotateDegrees(Axis.ZP, Mth.sin(time * 41.0f) * amplitude * 1.5f);
+			poseStack.rotateDegrees(Axis.XP, Mth.cos(time * 29.0f) * amplitude * 1.2f + amplitude * 1.5f);
+		}
+		float age = joltAge + partial;
+		if (age < JOLT_TICKS) {
+			// Down in a tick and a half, back up over the rest.
+			float envelope = age < 1.5f ? age / 1.5f : 1.0f - (age - 1.5f) / (JOLT_TICKS - 1.5f);
+			envelope = envelope * envelope * (3.0f - 2.0f * envelope);
+			poseStack.translate(0.0f, joltStrength * envelope, 0.0f);
+			poseStack.rotateDegrees(Axis.XP, joltStrength * envelope * 14.0f);
+		}
+		Mech mech = cockpitMech();
+		if (mech != null) {
+			float leaning = Mth.lerp(partial, leanO, lean);
+			float phase = mech.walkAnimation.position(partial) * Mech.WALK_CYCLE;
+			float stride = Math.min(1.0f, mech.walkAnimation.speed(partial) * 1.6f);
+			poseStack.rotateDegrees(Axis.ZP, leaning + Mth.cos(phase) * 0.9f * stride);
+		}
+	}
+
+	/** A jolt of the view: {@code strength} is how far it drops, in blocks. A stronger one already going isn't cut short. */
+	private static void jolt(float strength) {
+		if (joltAge >= JOLT_TICKS || strength >= joltStrength * 0.6f) {
+			joltStrength = joltAge < 2 ? Math.max(strength, joltStrength) : strength;
+			joltAge = 0;
+		}
+	}
+
+	/** Where each arm's shot goes: from its muzzle along the way it fires (see MechCrew#fireDirection), out to the aim point. */
+	public static Vec3 armAim(Mech mech, int side, Vec3 aimPoint, float partialTicks) {
+		Vec3 muzzle = MechCrew.muzzle(mech, side, partialTicks);
+		double distance = Math.max(6.0, muzzle.distanceTo(aimPoint));
+		return muzzle.add(MechCrew.fireDirection(mech, side, aimPoint, partialTicks).scale(distance));
 	}
 
 	/** Where the arms converge: what the torso's sight line from the viewport runs into. */
@@ -157,6 +217,13 @@ public final class MechClient {
 		triggers[1] = false;
 		jumpWasDown = false;
 		shakeTicks = 0;
+		joltAge = JOLT_TICKS;
+		lean = 0.0f;
+		leanO = 0.0f;
+		lastTorsoYaw = Float.NaN;
+		lastSentYaw = Float.NaN;
+		feltEvents.clear();
+		whirs.clear();
 	}
 
 	// --- Controls --------------------------------------------------------------------------------------------
@@ -260,22 +327,33 @@ public final class MechClient {
 		if (shakeTicks > 0) {
 			shakeTicks--;
 		}
+		if (joltAge < JOLT_TICKS) {
+			joltAge++;
+		}
+		leanO = lean;
+		LocalPlayer player = minecraft.player;
+		if (player == null || minecraft.level == null) {
+			return;
+		}
 		Mech mech = pilotedMech();
+		nearbyWalkers(minecraft, player, mech);
 		if (mech == null) {
+			lastTorsoYaw = Float.NaN;
+			lean = 0.0f;
 			return;
 		}
 		// F5 in a walker: the cockpit, then the chase camera, then back (no view from the front).
 		if (minecraft.options.getCameraType() == CameraType.THIRD_PERSON_FRONT) {
 			minecraft.options.setCameraType(CameraType.FIRST_PERSON);
 		}
-		if (mech.clientStomps != lastStomps) {
-			lastStomps = mech.clientStomps;
-			shake(0.45f);
+		if (mech.isSeated(player)) {
+			sendAim(mech);
 		}
-		if (mech.clientLandings != lastLandings) {
-			lastLandings = mech.clientLandings;
-			shake(1.2f);
-		}
+		// The lean: into the torso's turn, by how fast it's turning, settling slowly.
+		float torsoYaw = mech.torsoYaw(1.0f);
+		float rate = Float.isNaN(lastTorsoYaw) ? 0.0f : Mth.wrapDegrees(torsoYaw - lastTorsoYaw);
+		lastTorsoYaw = torsoYaw;
+		lean += (Mth.clamp(-rate * 0.2f, -3.5f, 3.5f) - lean) * 0.16f;
 		for (int side = 0; side < 2; side++) {
 			float recoil = mech.recoil(side, 0.0f);
 			if (recoil > lastRecoil[side] + 0.5f) {
@@ -286,6 +364,56 @@ public final class MechClient {
 		if (mech.hurtTime == mech.hurtDuration && mech.hurtTime > 0) {
 			shake(0.7f);
 		}
+	}
+
+	/** Tells the server the torso aim this client shows: on every change, and every few ticks regardless. */
+	private static void sendAim(Mech mech) {
+		float yaw = mech.torsoYawNow();
+		float pitch = mech.armPitchNow();
+		if (yaw != lastSentYaw || pitch != lastSentPitch || ++aimKeepAlive >= 2) {
+			aimKeepAlive = 0;
+			lastSentYaw = yaw;
+			lastSentPitch = pitch;
+			ClientPlayNetworking.send(new Mechs.Aim(yaw, pitch));
+		}
+	}
+
+	/**
+	 * Every walker near the player: its footfalls and landings jolt and shake the view (the pilot's own fully, anyone
+	 * else's fading out to {@value #FEEL_RANGE} blocks), and its rotary cannons whir while their barrels turn.
+	 */
+	private static void nearbyWalkers(Minecraft minecraft, LocalPlayer player, @Nullable Mech own) {
+		Set<Integer> present = new HashSet<>();
+		for (Mech mech : minecraft.level.getEntitiesOfClass(Mech.class, player.getBoundingBox().inflate(WHIR_RANGE))) {
+			present.add(mech.getId());
+			int[] seen = feltEvents.computeIfAbsent(mech.getId(), id -> new int[] {mech.clientStomps, mech.clientLandings});
+			boolean stomped = mech.clientStomps != seen[0];
+			boolean landed = mech.clientLandings != seen[1];
+			seen[0] = mech.clientStomps;
+			seen[1] = mech.clientLandings;
+			float feel = mech == own ? 1.0f : 0.55f * (1.0f - (float) mech.distanceTo(player) / FEEL_RANGE);
+			if (feel > 0.0f) {
+				if (stomped) {
+					jolt(0.075f * mech.clientStompStrength * feel);
+					shake(0.3f * mech.clientStompStrength * feel);
+				}
+				if (landed) {
+					jolt(0.22f * feel);
+					shake(1.2f * feel);
+				}
+			}
+			for (int side = 0; side < 2; side++) {
+				int key = mech.getId() * 2 + side;
+				MechWhirSound whir = whirs.get(key);
+				if (MechWhirSound.spin(mech, side) > 0.01f && (whir == null || !whir.playingFor(mech, side))) {
+					whir = new MechWhirSound(mech, side);
+					whirs.put(key, whir);
+					minecraft.getSoundManager().play(whir);
+				}
+			}
+		}
+		feltEvents.keySet().retainAll(present);
+		whirs.values().removeIf(MechWhirSound::isStopped);
 	}
 
 	private static void shake(float strength) {

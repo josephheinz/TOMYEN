@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.mech.Mech;
 import com.jheinz.mymod.mech.MechArm;
 import com.jheinz.mymod.mech.MechLoadout;
 import com.jheinz.mymod.mech.MechShoulder;
@@ -19,21 +20,29 @@ import com.jheinz.mymod.mech.MechWeapon;
 /**
  * The Bulwark Walker, front at -z, 4.5 blocks to the tops of its pauldrons and about 2.8 across them.
  * <ul>
- * <li>Legs (turn with the walker): a pelvis, and each leg a thigh, a shin with a knee plate and a broad foot that
- * stays flat as the leg swings. Rungs up the front of the left leg are the pilot's ladder.
- * <li>Torso (turns with its twist on the waist ring): the armoured sarcophagus with the viewport slit across its
- * top, the chest hatch (hinged along its top edge, lifting for the pilot), a low head with a visor, two huge
- * pauldrons, the power plant on the back with its core window and jet nozzles, and the shoulder slot above it:
- * a Cargo Pod or a Smoke Launcher.
- * <li>Arms (hang under the pauldrons; the forearms pitch with the aim): each forearm carries one of the weapon
- * groups, only the fitted one shown: the autocannon (its barrel kicks back), the rotary cannon (its barrels spin),
- * the power fist (it punches forward, and its fingers open to grip), the rocket pod, the flamer, or a bare stub.
+ * <li>Legs (turn with the walker): a pelvis with hip anchors, and each leg a thigh with layered plates and hip and
+ * knee pistons, a shin with a stepped knee plate and greave, and a broad foot that stays flat as the leg swings.
+ * Rungs up the front of the left leg are the pilot's ladder.
+ * <li>Torso (turns with its twist on a segmented waist): the armoured sarcophagus with the viewport slit across its
+ * top under a brow, flank plates, the chest hatch (hinged along its top edge, lifting for the pilot), a low head with
+ * cheek guards, a glowing visor band and a sensor mast, two stepped pauldrons, exhaust stacks and the ammunition
+ * bins and feed chutes to the arms on the back, the power plant with its core window and jet nozzles, and the
+ * shoulder slot above it: a Cargo Pod or a Smoke Launcher.
+ * <li>Arms (hang under the pauldrons; the forearms pitch with the aim, an elbow piston sliding as they do): each
+ * forearm carries one of the weapon groups, only the fitted one shown: the autocannon (its barrel, with a muzzle
+ * brake, kicks back), the rotary cannon (its six barrels spin), the power fist (it punches forward, and its fingers
+ * open to grip), the rocket pod, the flamer, or a bare stub.
  * </ul>
+ * No two faces share a plane facing the same way (tools/gen_mech.py checks), so nothing z-fights; the glow layer is
+ * the same geometry drawn with an equal-depth test, as vanilla's glowing eyes are.
  * Parts that aren't fitted aren't drawn, so a walker half-built in its gantry shows what it has. Geometry and UVs
  * come from tools/gen_mech.py (which also paints the texture): change them there and paste its --java output.
  */
 public class MechModel extends EntityModel<MechRenderState> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(MyMod.id("mech"), "main");
+	/** The texture the walker and the gantry share (tools/gen_mech.py's TEX_W and TEX_H). */
+	public static final int TEXTURE_WIDTH = 512;
+	public static final int TEXTURE_HEIGHT = 256;
 
 	private final ModelPart legs;
 	private final ModelPart leftLeg;
@@ -90,148 +99,248 @@ public class MechModel extends EntityModel<MechRenderState> {
 		PartDefinition root = mesh.getRoot();
 		// BEGIN GENERATED (tools/gen_mech.py --java)
 		PartDefinition legs = root.addOrReplaceChild("legs", CubeListBuilder.create()
-				.texOffs(0, 122).addBox(-11.0f, -37.0f, -7.0f, 22.0f, 8.0f, 14.0f),
+				.texOffs(338, 60).addBox(-11.0f, -37.0f, -7.0f, 22.0f, 8.0f, 14.0f)
+				.texOffs(340, 112).addBox(-7.0f, -35.5f, -8.5f, 14.0f, 6.0f, 1.5f)
+				.texOffs(492, 111).addBox(11.0f, -36.0f, -2.5f, 5.0f, 3.5f, 5.0f)
+				.texOffs(492, 111).addBox(-16.0f, -36.0f, -2.5f, 5.0f, 3.5f, 5.0f),
 				PartPose.offset(0.0f, 24.0f, 0.0f));
 		PartDefinition leftLeg = legs.addOrReplaceChild("left_leg", CubeListBuilder.create()
-				.texOffs(200, 112).addBox(-5.5f, 0.0f, -6.0f, 11.0f, 13.0f, 12.0f)
-				.texOffs(232, 209).addBox(-3.0f, 3.0f, -8.0f, 6.0f, 1.0f, 2.0f)
-				.texOffs(232, 209).addBox(-3.0f, 8.0f, -8.0f, 6.0f, 1.0f, 2.0f),
+				.texOffs(338, 35).addBox(-5.5f, 0.0f, -6.0f, 11.0f, 13.0f, 12.0f)
+				.texOffs(276, 100).addBox(-4.5f, 1.0f, -7.5f, 9.0f, 10.0f, 1.5f)
+				.texOffs(476, 80).addBox(5.5f, 4.0f, -4.5f, 1.5f, 8.0f, 9.0f)
+				.texOffs(284, 112).addBox(5.5f, -1.0f, -1.25f, 2.0f, 5.0f, 2.5f)
+				.texOffs(76, 114).addBox(5.75f, -4.5f, -0.75f, 1.5f, 4.0f, 1.5f)
+				.texOffs(298, 100).addBox(-1.5f, 5.0f, 6.0f, 3.0f, 7.0f, 2.5f)
+				.texOffs(146, 114).addBox(-3.0f, 3.0f, -9.5f, 6.0f, 1.0f, 2.0f)
+				.texOffs(146, 114).addBox(-3.0f, 8.0f, -9.5f, 6.0f, 1.0f, 2.0f),
 				PartPose.offset(8.0f, -31.0f, 0.0f));
 		PartDefinition leftShin = leftLeg.addOrReplaceChild("left_shin", CubeListBuilder.create()
-				.texOffs(196, 0).addBox(-6.0f, 0.0f, -6.5f, 12.0f, 16.0f, 13.0f)
-				.texOffs(0, 200).addBox(-5.0f, -3.0f, -9.5f, 10.0f, 9.0f, 3.0f)
-				.texOffs(232, 209).addBox(-3.0f, 11.0f, -8.5f, 6.0f, 1.0f, 2.0f),
+				.texOffs(450, 0).addBox(-6.0f, 0.0f, -6.5f, 12.0f, 16.0f, 13.0f)
+				.texOffs(250, 100).addBox(-5.0f, -3.0f, -9.5f, 10.0f, 9.0f, 3.0f)
+				.texOffs(22, 114).addBox(-3.5f, -3.5f, -10.5f, 7.0f, 5.0f, 1.0f)
+				.texOffs(24, 104).addBox(-4.5f, 7.0f, -8.0f, 9.0f, 8.0f, 1.5f)
+				.texOffs(298, 110).addBox(-0.75f, -4.0f, 6.75f, 1.5f, 7.0f, 1.5f)
+				.texOffs(386, 82).addBox(6.0f, 3.0f, -3.0f, 1.5f, 9.0f, 6.0f)
+				.texOffs(146, 114).addBox(-3.0f, 11.0f, -10.0f, 6.0f, 1.0f, 2.0f),
 				PartPose.offset(0.0f, 12.0f, 0.0f));
 		leftShin.addOrReplaceChild("left_foot", CubeListBuilder.create()
-				.texOffs(0, 144).addBox(-7.0f, 0.0f, -11.0f, 14.0f, 3.0f, 18.0f),
+				.texOffs(20, 67).addBox(-7.0f, 0.0f, -11.0f, 14.0f, 3.0f, 18.0f)
+				.texOffs(250, 112).addBox(-5.5f, -1.5f, -11.5f, 11.0f, 2.0f, 6.0f)
+				.texOffs(0, 114).addBox(-4.0f, -1.0f, 7.0f, 8.0f, 3.5f, 2.5f),
 				PartPose.offset(0.0f, 16.0f, 0.0f));
 		PartDefinition rightLeg = legs.addOrReplaceChild("right_leg", CubeListBuilder.create()
-				.texOffs(200, 112).addBox(-5.5f, 0.0f, -6.0f, 11.0f, 13.0f, 12.0f),
+				.texOffs(338, 35).addBox(-5.5f, 0.0f, -6.0f, 11.0f, 13.0f, 12.0f)
+				.texOffs(276, 100).addBox(-4.5f, 1.0f, -7.5f, 9.0f, 10.0f, 1.5f)
+				.texOffs(476, 80).addBox(-7.0f, 4.0f, -4.5f, 1.5f, 8.0f, 9.0f)
+				.texOffs(284, 112).addBox(-7.5f, -1.0f, -1.25f, 2.0f, 5.0f, 2.5f)
+				.texOffs(76, 114).addBox(-7.25f, -4.5f, -0.75f, 1.5f, 4.0f, 1.5f)
+				.texOffs(298, 100).addBox(-1.5f, 5.0f, 6.0f, 3.0f, 7.0f, 2.5f),
 				PartPose.offset(-8.0f, -31.0f, 0.0f));
 		PartDefinition rightShin = rightLeg.addOrReplaceChild("right_shin", CubeListBuilder.create()
-				.texOffs(196, 0).addBox(-6.0f, 0.0f, -6.5f, 12.0f, 16.0f, 13.0f)
-				.texOffs(0, 200).addBox(-5.0f, -3.0f, -9.5f, 10.0f, 9.0f, 3.0f),
+				.texOffs(450, 0).addBox(-6.0f, 0.0f, -6.5f, 12.0f, 16.0f, 13.0f)
+				.texOffs(250, 100).addBox(-5.0f, -3.0f, -9.5f, 10.0f, 9.0f, 3.0f)
+				.texOffs(22, 114).addBox(-3.5f, -3.5f, -10.5f, 7.0f, 5.0f, 1.0f)
+				.texOffs(24, 104).addBox(-4.5f, 7.0f, -8.0f, 9.0f, 8.0f, 1.5f)
+				.texOffs(298, 110).addBox(-0.75f, -4.0f, 6.75f, 1.5f, 7.0f, 1.5f)
+				.texOffs(386, 82).addBox(-7.5f, 3.0f, -3.0f, 1.5f, 9.0f, 6.0f),
 				PartPose.offset(0.0f, 12.0f, 0.0f));
 		rightShin.addOrReplaceChild("right_foot", CubeListBuilder.create()
-				.texOffs(0, 144).addBox(-7.0f, 0.0f, -11.0f, 14.0f, 3.0f, 18.0f),
+				.texOffs(20, 67).addBox(-7.0f, 0.0f, -11.0f, 14.0f, 3.0f, 18.0f)
+				.texOffs(250, 112).addBox(-5.5f, -1.5f, -11.5f, 11.0f, 2.0f, 6.0f)
+				.texOffs(0, 114).addBox(-4.0f, -1.0f, 7.0f, 8.0f, 3.5f, 2.5f),
 				PartPose.offset(0.0f, 16.0f, 0.0f));
 		PartDefinition torso = root.addOrReplaceChild("torso", CubeListBuilder.create()
-				.texOffs(174, 179).addBox(-8.0f, -3.0f, -7.0f, 16.0f, 4.0f, 14.0f)
+				.texOffs(322, 82).addBox(-8.5f, -3.5f, -7.5f, 17.0f, 1.5f, 15.0f)
+				.texOffs(52, 88).addBox(-7.5f, -2.0f, -6.5f, 15.0f, 1.5f, 13.0f)
+				.texOffs(322, 82).addBox(-8.5f, -0.5f, -7.5f, 17.0f, 1.5f, 15.0f)
 				.texOffs(20, 0).addBox(-12.0f, -27.0f, -10.0f, 24.0f, 24.0f, 20.0f)
-				.texOffs(40, 184).addBox(-5.0f, -34.0f, -11.0f, 10.0f, 7.0f, 10.0f),
+				.texOffs(88, 114).addBox(-9.0f, -27.5f, -11.5f, 18.0f, 1.5f, 1.5f)
+				.texOffs(350, 0).addBox(11.5f, -25.0f, -8.0f, 2.0f, 18.0f, 16.0f)
+				.texOffs(350, 0).addBox(-13.5f, -25.0f, -8.0f, 2.0f, 18.0f, 16.0f)
+				.texOffs(272, 83).addBox(-5.0f, -33.5f, -10.5f, 10.0f, 6.5f, 9.5f)
+				.texOffs(306, 112).addBox(-5.5f, -34.5f, -11.0f, 11.0f, 1.5f, 6.0f)
+				.texOffs(128, 114).addBox(-4.0f, -31.5f, -11.5f, 8.0f, 2.0f, 1.0f)
+				.texOffs(460, 111).addBox(5.0f, -31.0f, -10.0f, 1.5f, 4.0f, 6.0f)
+				.texOffs(460, 111).addBox(-6.5f, -31.0f, -10.0f, 1.5f, 4.0f, 6.0f)
+				.texOffs(294, 112).addBox(3.0f, -38.0f, -3.0f, 1.0f, 4.5f, 1.0f)
+				.texOffs(322, 62).addBox(10.0f, -37.0f, 10.0f, 2.5f, 16.0f, 3.0f)
+				.texOffs(386, 97).addBox(11.0f, -17.0f, 10.0f, 7.0f, 9.0f, 5.0f)
+				.texOffs(196, 103).addBox(14.0f, -16.5f, 3.5f, 3.5f, 3.0f, 7.5f)
+				.texOffs(322, 62).addBox(-12.5f, -37.0f, 10.0f, 2.5f, 16.0f, 3.0f)
+				.texOffs(386, 97).addBox(-18.0f, -17.0f, 10.0f, 7.0f, 9.0f, 5.0f)
+				.texOffs(196, 103).addBox(-17.5f, -16.5f, 3.5f, 3.5f, 3.0f, 7.5f),
 				PartPose.offset(0.0f, -13.0f, 0.0f));
 		torso.addOrReplaceChild("hatch", CubeListBuilder.create()
-				.texOffs(72, 143).addBox(-9.0f, 0.0f, -3.0f, 18.0f, 18.0f, 3.0f),
+				.texOffs(280, 62).addBox(-9.0f, 0.0f, -3.0f, 18.0f, 18.0f, 3.0f)
+				.texOffs(448, 98).addBox(-6.0f, 3.0f, -4.0f, 12.0f, 12.0f, 1.0f),
 				PartPose.offset(0.0f, -23.0f, -10.0f));
 		torso.addOrReplaceChild("left_pauldron", CubeListBuilder.create()
-				.texOffs(20, 87).addBox(9.5f, -32.0f, -10.5f, 12.0f, 14.0f, 21.0f)
-				.texOffs(114, 159).addBox(10.5f, -35.0f, -8.5f, 10.0f, 3.0f, 17.0f)
-				.texOffs(150, 87).addBox(8.5f, -20.0f, -11.5f, 14.0f, 2.0f, 23.0f),
+				.texOffs(284, 0).addBox(9.5f, -32.0f, -10.5f, 12.0f, 13.5f, 21.0f)
+				.texOffs(84, 68).addBox(10.5f, -35.0f, -8.5f, 10.0f, 3.0f, 17.0f)
+				.texOffs(450, 29).addBox(21.5f, -31.0f, -9.5f, 1.5f, 10.0f, 19.0f)
+				.texOffs(108, 43).addBox(8.5f, -20.0f, -11.5f, 14.0f, 2.0f, 23.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		torso.addOrReplaceChild("right_pauldron", CubeListBuilder.create()
-				.texOffs(20, 87).addBox(-21.5f, -32.0f, -10.5f, 12.0f, 14.0f, 21.0f)
-				.texOffs(114, 159).addBox(-20.5f, -35.0f, -8.5f, 10.0f, 3.0f, 17.0f)
-				.texOffs(150, 87).addBox(-22.5f, -20.0f, -11.5f, 14.0f, 2.0f, 23.0f),
+				.texOffs(284, 0).addBox(-21.5f, -32.0f, -10.5f, 12.0f, 13.5f, 21.0f)
+				.texOffs(84, 68).addBox(-20.5f, -35.0f, -8.5f, 10.0f, 3.0f, 17.0f)
+				.texOffs(450, 29).addBox(-23.0f, -31.0f, -9.5f, 1.5f, 10.0f, 19.0f)
+				.texOffs(108, 43).addBox(-22.5f, -20.0f, -11.5f, 14.0f, 2.0f, 23.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		PartDefinition powerPlant = torso.addOrReplaceChild("power_plant", CubeListBuilder.create()
-				.texOffs(150, 112).addBox(-9.0f, -25.0f, 10.0f, 18.0f, 18.0f, 7.0f)
-				.texOffs(234, 190).addBox(-7.5f, -7.0f, 11.0f, 5.0f, 5.0f, 5.0f)
-				.texOffs(234, 190).addBox(2.5f, -7.0f, 11.0f, 5.0f, 5.0f, 5.0f),
+				.texOffs(182, 43).addBox(-9.0f, -25.0f, 10.0f, 18.0f, 18.0f, 7.0f)
+				.texOffs(380, 111).addBox(-7.5f, -7.0f, 11.0f, 5.0f, 5.0f, 5.0f)
+				.texOffs(380, 111).addBox(2.5f, -7.0f, 11.0f, 5.0f, 5.0f, 5.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		powerPlant.addOrReplaceChild("jet_flames", CubeListBuilder.create()
-				.texOffs(234, 179).addBox(-7.0f, -2.0f, 12.0f, 4.0f, 7.0f, 4.0f)
-				.texOffs(234, 179).addBox(3.0f, -2.0f, 12.0f, 4.0f, 7.0f, 4.0f),
+				.texOffs(0, 92).addBox(-7.0f, -2.0f, 12.0f, 4.0f, 7.0f, 4.0f)
+				.texOffs(0, 92).addBox(3.0f, -2.0f, 12.0f, 4.0f, 7.0f, 4.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		torso.addOrReplaceChild("cargo_pod", CubeListBuilder.create()
-				.texOffs(134, 137).addBox(-9.0f, -35.0f, 4.0f, 18.0f, 10.0f, 12.0f),
+				.texOffs(442, 58).addBox(-9.0f, -35.0f, 4.0f, 18.0f, 10.0f, 12.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		torso.addOrReplaceChild("smoke_launcher", CubeListBuilder.create()
-				.texOffs(80, 198).addBox(-7.0f, -4.0f, -4.0f, 14.0f, 5.0f, 8.0f),
+				.texOffs(312, 99).addBox(-7.0f, -4.0f, -4.0f, 14.0f, 5.0f, 8.0f),
 				PartPose.offsetAndRotation(0.0f, -30.0f, 11.0f, -0.35f, 0.0f, 0.0f));
 		PartDefinition leftArm = torso.addOrReplaceChild("left_arm", CubeListBuilder.create()
-				.texOffs(142, 179).addBox(-4.0f, 0.0f, -4.0f, 8.0f, 11.0f, 8.0f),
+				.texOffs(448, 80).addBox(-3.5f, 0.0f, -3.5f, 7.0f, 11.0f, 7.0f)
+				.texOffs(220, 103).addBox(-4.25f, 7.5f, -3.0f, 8.5f, 4.0f, 6.0f)
+				.texOffs(372, 112).addBox(-1.0f, 1.5f, -5.0f, 2.0f, 5.5f, 1.5f),
 				PartPose.offset(16.0f, -19.0f, 0.0f));
-		PartDefinition leftForearm = leftArm.addOrReplaceChild("left_forearm", CubeListBuilder.create(),
+		PartDefinition leftForearm = leftArm.addOrReplaceChild("left_forearm", CubeListBuilder.create()
+				.texOffs(84, 114).addBox(-0.5f, -7.0f, -4.75f, 1.0f, 5.0f, 1.0f),
 				PartPose.offset(0.0f, 10.0f, 0.0f));
 		leftForearm.addOrReplaceChild("left_none", CubeListBuilder.create()
-				.texOffs(168, 159).addBox(-4.0f, -4.0f, -10.0f, 8.0f, 8.0f, 12.0f),
+				.texOffs(232, 67).addBox(-4.0f, -4.0f, -10.0f, 8.0f, 8.0f, 12.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		PartDefinition leftAutocannon = leftForearm.addOrReplaceChild("left_autocannon", CubeListBuilder.create()
-				.texOffs(196, 29).addBox(-5.0f, -5.0f, -14.0f, 10.0f, 10.0f, 18.0f)
-				.texOffs(124, 198).addBox(-3.0f, -9.0f, -10.0f, 6.0f, 4.0f, 8.0f),
+				.texOffs(386, 32).addBox(-5.0f, -5.0f, -14.0f, 10.0f, 10.0f, 18.0f)
+				.texOffs(410, 99).addBox(-3.0f, -9.0f, -10.0f, 6.0f, 4.0f, 8.0f)
+				.texOffs(200, 88).addBox(5.0f, -3.0f, -9.0f, 3.0f, 6.0f, 6.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		leftAutocannon.addOrReplaceChild("left_autocannon_barrel", CubeListBuilder.create()
-				.texOffs(208, 159).addBox(-2.0f, -2.0f, -16.0f, 4.0f, 4.0f, 16.0f)
-				.texOffs(232, 200).addBox(-3.0f, -3.0f, -19.0f, 6.0f, 6.0f, 3.0f),
+				.texOffs(138, 68).addBox(-2.0f, -2.0f, -16.0f, 4.0f, 4.0f, 15.5f)
+				.texOffs(400, 111).addBox(-3.0f, -3.0f, -4.0f, 6.0f, 6.0f, 4.0f)
+				.texOffs(236, 113).addBox(-2.5f, -2.5f, -10.5f, 5.0f, 5.0f, 1.5f)
+				.texOffs(420, 111).addBox(-3.0f, -3.0f, -20.0f, 6.0f, 6.0f, 4.0f),
 				PartPose.offset(0.0f, 0.0f, -14.0f));
 		PartDefinition leftRotaryCannon = leftForearm.addOrReplaceChild("left_rotary_cannon", CubeListBuilder.create()
-				.texOffs(194, 137).addBox(-5.0f, -5.0f, -10.0f, 10.0f, 10.0f, 12.0f)
-				.texOffs(152, 198).addBox(-4.0f, -4.0f, -12.0f, 8.0f, 8.0f, 2.0f),
+				.texOffs(20, 44).addBox(-5.0f, -5.0f, -10.5f, 10.0f, 10.0f, 12.5f)
+				.texOffs(440, 111).addBox(-4.0f, -4.0f, -12.0f, 8.0f, 8.0f, 2.0f)
+				.texOffs(0, 104).addBox(-2.5f, -8.0f, -8.0f, 5.0f, 3.0f, 7.0f)
+				.texOffs(476, 111).addBox(5.0f, -2.0f, -7.0f, 2.0f, 4.0f, 6.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		leftRotaryCannon.addOrReplaceChild("left_rotary_barrels", CubeListBuilder.create()
-				.texOffs(64, 164).addBox(-3.0f, -3.0f, -14.0f, 6.0f, 6.0f, 14.0f),
+				.texOffs(218, 87).addBox(1.55f, -0.75f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(218, 87).addBox(0.4f, 1.24f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(218, 87).addBox(-1.9f, 1.24f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(218, 87).addBox(-3.05f, -0.75f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(218, 87).addBox(-1.9f, -2.74f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(218, 87).addBox(0.4f, -2.74f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(20, 88).addBox(-0.8f, -0.8f, -14.5f, 1.6f, 1.6f, 14.0f)
+				.texOffs(220, 113).addBox(-3.4f, -3.4f, -10.0f, 6.8f, 6.8f, 1.0f)
+				.texOffs(220, 113).addBox(-3.4f, -3.4f, -13.0f, 6.8f, 6.8f, 1.0f),
 				PartPose.offset(0.0f, 0.0f, -12.0f));
 		PartDefinition leftPowerFist = leftForearm.addOrReplaceChild("left_power_fist", CubeListBuilder.create()
-				.texOffs(86, 119).addBox(-5.0f, -5.0f, -12.0f, 10.0f, 10.0f, 14.0f),
+				.texOffs(232, 43).addBox(-5.0f, -5.0f, -12.0f, 10.0f, 10.0f, 14.0f)
+				.texOffs(162, 103).addBox(-4.0f, -6.5f, -11.0f, 8.0f, 1.5f, 9.0f)
+				.texOffs(356, 99).addBox(5.0f, -1.5f, -11.0f, 1.5f, 3.0f, 10.0f)
+				.texOffs(356, 99).addBox(-6.5f, -1.5f, -11.0f, 1.5f, 3.0f, 10.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		PartDefinition leftPalm = leftPowerFist.addOrReplaceChild("left_palm", CubeListBuilder.create()
-				.texOffs(104, 179).addBox(-6.0f, -6.0f, -7.0f, 12.0f, 12.0f, 7.0f),
+				.texOffs(410, 80).addBox(-6.0f, -6.0f, -7.0f, 12.0f, 12.0f, 7.0f),
 				PartPose.offset(0.0f, 0.0f, -12.0f));
 		leftPalm.addOrReplaceChild("left_fingers", CubeListBuilder.create()
-				.texOffs(0, 185).addBox(-6.0f, 0.0f, -4.0f, 12.0f, 11.0f, 4.0f),
+				.texOffs(108, 88).addBox(-6.0f, 0.0f, -4.0f, 12.0f, 11.0f, 4.0f),
 				PartPose.offset(0.0f, -6.0f, -7.0f));
 		leftForearm.addOrReplaceChild("left_rocket_pod", CubeListBuilder.create()
-				.texOffs(196, 57).addBox(-6.0f, -6.0f, -13.0f, 12.0f, 12.0f, 15.0f),
+				.texOffs(284, 35).addBox(-6.0f, -6.5f, -13.0f, 12.0f, 12.0f, 15.0f)
+				.texOffs(140, 88).addBox(-6.5f, -7.25f, -11.0f, 13.0f, 13.0f, 2.0f)
+				.texOffs(38, 114).addBox(-1.5f, -7.5f, -6.0f, 3.0f, 1.5f, 4.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		leftForearm.addOrReplaceChild("left_flamer", CubeListBuilder.create()
-				.texOffs(0, 165).addBox(-4.0f, -4.0f, -10.0f, 8.0f, 8.0f, 12.0f)
-				.texOffs(204, 197).addBox(-2.5f, -9.0f, -8.0f, 5.0f, 5.0f, 9.0f)
-				.texOffs(174, 197).addBox(-1.5f, -1.5f, -22.0f, 3.0f, 3.0f, 12.0f)
-				.texOffs(152, 208).addBox(-2.0f, -2.0f, -24.0f, 4.0f, 4.0f, 2.0f),
+				.texOffs(178, 68).addBox(-4.0f, -4.0f, -10.0f, 8.0f, 8.0f, 12.0f)
+				.texOffs(476, 97).addBox(-2.5f, -9.0f, -8.0f, 5.0f, 5.0f, 9.0f)
+				.texOffs(170, 88).addBox(-1.5f, -1.5f, -22.0f, 3.0f, 3.0f, 12.0f)
+				.texOffs(52, 114).addBox(-2.5f, -2.5f, -18.0f, 5.0f, 5.0f, 1.0f)
+				.texOffs(64, 114).addBox(-2.0f, -2.0f, -24.0f, 4.0f, 4.0f, 2.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		PartDefinition rightArm = torso.addOrReplaceChild("right_arm", CubeListBuilder.create()
-				.texOffs(142, 179).addBox(-4.0f, 0.0f, -4.0f, 8.0f, 11.0f, 8.0f),
+				.texOffs(448, 80).addBox(-3.5f, 0.0f, -3.5f, 7.0f, 11.0f, 7.0f)
+				.texOffs(220, 103).addBox(-4.25f, 7.5f, -3.0f, 8.5f, 4.0f, 6.0f)
+				.texOffs(372, 112).addBox(-1.0f, 1.5f, -5.0f, 2.0f, 5.5f, 1.5f),
 				PartPose.offset(-16.0f, -19.0f, 0.0f));
-		PartDefinition rightForearm = rightArm.addOrReplaceChild("right_forearm", CubeListBuilder.create(),
+		PartDefinition rightForearm = rightArm.addOrReplaceChild("right_forearm", CubeListBuilder.create()
+				.texOffs(84, 114).addBox(-0.5f, -7.0f, -4.75f, 1.0f, 5.0f, 1.0f),
 				PartPose.offset(0.0f, 10.0f, 0.0f));
 		rightForearm.addOrReplaceChild("right_none", CubeListBuilder.create()
-				.texOffs(168, 159).addBox(-4.0f, -4.0f, -10.0f, 8.0f, 8.0f, 12.0f),
+				.texOffs(232, 67).addBox(-4.0f, -4.0f, -10.0f, 8.0f, 8.0f, 12.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		PartDefinition rightAutocannon = rightForearm.addOrReplaceChild("right_autocannon", CubeListBuilder.create()
-				.texOffs(196, 29).addBox(-5.0f, -5.0f, -14.0f, 10.0f, 10.0f, 18.0f)
-				.texOffs(124, 198).addBox(-3.0f, -9.0f, -10.0f, 6.0f, 4.0f, 8.0f),
+				.texOffs(386, 32).addBox(-5.0f, -5.0f, -14.0f, 10.0f, 10.0f, 18.0f)
+				.texOffs(410, 99).addBox(-3.0f, -9.0f, -10.0f, 6.0f, 4.0f, 8.0f)
+				.texOffs(200, 88).addBox(-8.0f, -3.0f, -9.0f, 3.0f, 6.0f, 6.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		rightAutocannon.addOrReplaceChild("right_autocannon_barrel", CubeListBuilder.create()
-				.texOffs(208, 159).addBox(-2.0f, -2.0f, -16.0f, 4.0f, 4.0f, 16.0f)
-				.texOffs(232, 200).addBox(-3.0f, -3.0f, -19.0f, 6.0f, 6.0f, 3.0f),
+				.texOffs(138, 68).addBox(-2.0f, -2.0f, -16.0f, 4.0f, 4.0f, 15.5f)
+				.texOffs(400, 111).addBox(-3.0f, -3.0f, -4.0f, 6.0f, 6.0f, 4.0f)
+				.texOffs(236, 113).addBox(-2.5f, -2.5f, -10.5f, 5.0f, 5.0f, 1.5f)
+				.texOffs(420, 111).addBox(-3.0f, -3.0f, -20.0f, 6.0f, 6.0f, 4.0f),
 				PartPose.offset(0.0f, 0.0f, -14.0f));
 		PartDefinition rightRotaryCannon = rightForearm.addOrReplaceChild("right_rotary_cannon", CubeListBuilder.create()
-				.texOffs(194, 137).addBox(-5.0f, -5.0f, -10.0f, 10.0f, 10.0f, 12.0f)
-				.texOffs(152, 198).addBox(-4.0f, -4.0f, -12.0f, 8.0f, 8.0f, 2.0f),
+				.texOffs(20, 44).addBox(-5.0f, -5.0f, -10.5f, 10.0f, 10.0f, 12.5f)
+				.texOffs(440, 111).addBox(-4.0f, -4.0f, -12.0f, 8.0f, 8.0f, 2.0f)
+				.texOffs(0, 104).addBox(-2.5f, -8.0f, -8.0f, 5.0f, 3.0f, 7.0f)
+				.texOffs(476, 111).addBox(-7.0f, -2.0f, -7.0f, 2.0f, 4.0f, 6.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		rightRotaryCannon.addOrReplaceChild("right_rotary_barrels", CubeListBuilder.create()
-				.texOffs(64, 164).addBox(-3.0f, -3.0f, -14.0f, 6.0f, 6.0f, 14.0f),
+				.texOffs(218, 87).addBox(1.55f, -0.75f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(218, 87).addBox(0.4f, 1.24f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(218, 87).addBox(-1.9f, 1.24f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(218, 87).addBox(-3.05f, -0.75f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(218, 87).addBox(-1.9f, -2.74f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(218, 87).addBox(0.4f, -2.74f, -14.0f, 1.5f, 1.5f, 14.0f)
+				.texOffs(20, 88).addBox(-0.8f, -0.8f, -14.5f, 1.6f, 1.6f, 14.0f)
+				.texOffs(220, 113).addBox(-3.4f, -3.4f, -10.0f, 6.8f, 6.8f, 1.0f)
+				.texOffs(220, 113).addBox(-3.4f, -3.4f, -13.0f, 6.8f, 6.8f, 1.0f),
 				PartPose.offset(0.0f, 0.0f, -12.0f));
 		PartDefinition rightPowerFist = rightForearm.addOrReplaceChild("right_power_fist", CubeListBuilder.create()
-				.texOffs(86, 119).addBox(-5.0f, -5.0f, -12.0f, 10.0f, 10.0f, 14.0f),
+				.texOffs(232, 43).addBox(-5.0f, -5.0f, -12.0f, 10.0f, 10.0f, 14.0f)
+				.texOffs(162, 103).addBox(-4.0f, -6.5f, -11.0f, 8.0f, 1.5f, 9.0f)
+				.texOffs(356, 99).addBox(5.0f, -1.5f, -11.0f, 1.5f, 3.0f, 10.0f)
+				.texOffs(356, 99).addBox(-6.5f, -1.5f, -11.0f, 1.5f, 3.0f, 10.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		PartDefinition rightPalm = rightPowerFist.addOrReplaceChild("right_palm", CubeListBuilder.create()
-				.texOffs(104, 179).addBox(-6.0f, -6.0f, -7.0f, 12.0f, 12.0f, 7.0f),
+				.texOffs(410, 80).addBox(-6.0f, -6.0f, -7.0f, 12.0f, 12.0f, 7.0f),
 				PartPose.offset(0.0f, 0.0f, -12.0f));
 		rightPalm.addOrReplaceChild("right_fingers", CubeListBuilder.create()
-				.texOffs(0, 185).addBox(-6.0f, 0.0f, -4.0f, 12.0f, 11.0f, 4.0f),
+				.texOffs(108, 88).addBox(-6.0f, 0.0f, -4.0f, 12.0f, 11.0f, 4.0f),
 				PartPose.offset(0.0f, -6.0f, -7.0f));
 		rightForearm.addOrReplaceChild("right_rocket_pod", CubeListBuilder.create()
-				.texOffs(196, 57).addBox(-6.0f, -6.0f, -13.0f, 12.0f, 12.0f, 15.0f),
+				.texOffs(284, 35).addBox(-6.0f, -6.5f, -13.0f, 12.0f, 12.0f, 15.0f)
+				.texOffs(140, 88).addBox(-6.5f, -7.25f, -11.0f, 13.0f, 13.0f, 2.0f)
+				.texOffs(38, 114).addBox(-1.5f, -7.5f, -6.0f, 3.0f, 1.5f, 4.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		rightForearm.addOrReplaceChild("right_flamer", CubeListBuilder.create()
-				.texOffs(0, 165).addBox(-4.0f, -4.0f, -10.0f, 8.0f, 8.0f, 12.0f)
-				.texOffs(204, 197).addBox(-2.5f, -9.0f, -8.0f, 5.0f, 5.0f, 9.0f)
-				.texOffs(174, 197).addBox(-1.5f, -1.5f, -22.0f, 3.0f, 3.0f, 12.0f)
-				.texOffs(152, 208).addBox(-2.0f, -2.0f, -24.0f, 4.0f, 4.0f, 2.0f),
+				.texOffs(178, 68).addBox(-4.0f, -4.0f, -10.0f, 8.0f, 8.0f, 12.0f)
+				.texOffs(476, 97).addBox(-2.5f, -9.0f, -8.0f, 5.0f, 5.0f, 9.0f)
+				.texOffs(170, 88).addBox(-1.5f, -1.5f, -22.0f, 3.0f, 3.0f, 12.0f)
+				.texOffs(52, 114).addBox(-2.5f, -2.5f, -18.0f, 5.0f, 5.0f, 1.0f)
+				.texOffs(64, 114).addBox(-2.0f, -2.0f, -24.0f, 4.0f, 4.0f, 2.0f),
 				PartPose.offset(0.0f, 0.0f, 0.0f));
 		// END GENERATED
-		return LayerDefinition.create(mesh, 256, 256);
+		return LayerDefinition.create(mesh, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+	}
+
+	/**
+	 * For the cockpit view (see MechFirstPerson): an arm's forearm and its weapon, posed by {@link #setupAnim} (the
+	 * barrels' kick and spin, the punch, the grip), set to draw from its elbow, unpitched.
+	 */
+	ModelPart firstPersonForearm(int side) {
+		ModelPart forearm = forearms[side];
+		forearm.x = 0.0f;
+		forearm.y = 0.0f;
+		forearm.xRot = 0.0f;
+		return forearm;
 	}
 
 	@Override
@@ -274,19 +383,31 @@ public class MechModel extends EntityModel<MechRenderState> {
 			fingers[side].xRot = -1.1f * state.grip[side];
 		}
 
-		// A heavy stride: thighs swing, knees bend on the back swing, feet stay flat, and the torso dips at each footfall.
-		float phase = state.walkAnimationPos * 0.46f;
-		float stride = Math.min(1.0f, state.walkAnimationSpeed * 1.6f);
+		walk(state.walkAnimationPos * Mech.WALK_CYCLE, Math.min(1.0f, state.walkAnimationSpeed * 1.6f));
+	}
+
+	/**
+	 * A heavy stride. The thighs swing, the trailing knee lifts the foot clear, and the feet land flat. A foot plants
+	 * at each half turn of {@code phase} (the right at whole turns: see Mech#tickFootfalls) and the body drops onto it:
+	 * a sharp dip at the plant that eases back up through the step, with the weight swaying over the planted leg.
+	 */
+	private void walk(float phase, float stride) {
 		float swing = Mth.cos(phase) * 0.5f * stride;
 		leftLeg.xRot = swing;
 		rightLeg.xRot = -swing;
-		leftShin.xRot = Math.max(0.0f, Mth.sin(phase)) * 0.7f * stride;
-		rightShin.xRot = Math.max(0.0f, -Mth.sin(phase)) * 0.7f * stride;
+		leftShin.xRot = Math.max(0.0f, Mth.sin(phase)) * 0.75f * stride;
+		rightShin.xRot = Math.max(0.0f, -Mth.sin(phase)) * 0.75f * stride;
 		leftFoot.xRot = -(leftLeg.xRot + leftShin.xRot);
 		rightFoot.xRot = -(rightLeg.xRot + rightShin.xRot);
-		float dip = Math.abs(Mth.cos(phase)) * 1.2f * stride;
+		// Time since the last plant, 0 to 1 over the half turn: the drop is sharp, the recovery slow.
+		float sincePlant = (phase / Mth.PI) - Mth.floor(phase / Mth.PI);
+		float drop = (1.0f - sincePlant) * (1.0f - sincePlant) * (1.0f - sincePlant);
+		float dip = (0.4f + 2.2f * drop) * stride;
 		torso.y += dip;
-		legs.y += dip * 0.5f;
-		torso.zRot = Mth.sin(phase) * 0.025f * stride;
+		legs.y += dip * 0.6f;
+		// The weight rides over the planted foot (the right one through the first half turn); +x is the walker's left.
+		float sway = -Mth.cos(phase);
+		torso.x += sway * 1.1f * stride;
+		torso.zRot = sway * 0.04f * stride;
 	}
 }

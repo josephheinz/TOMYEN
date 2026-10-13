@@ -130,7 +130,7 @@ public class MechGantryBlock extends BaseEntityBlock {
 			player.sendOverlayMessage(Component.translatable("block.mymod.mech_gantry.no_room").withStyle(ChatFormatting.RED));
 			return;
 		}
-		gantry.clearContent();
+		gantry.takeParts();
 		level.playSound(null, pos, SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1.0f, 0.6f);
 		mech.board(player);
 	}

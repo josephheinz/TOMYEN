@@ -100,11 +100,15 @@ public final class FlameStream {
 
 	/** One tick's spray from {@code shooter}'s nozzle. */
 	public static void spray(ServerLevel level, LivingEntity shooter, Vec3 nozzle, float spreadDegrees) {
+		spray(level, shooter, nozzle, aim(shooter.getEyePosition(), shooter.getViewVector(1.0f), nozzle), spreadDegrees);
+	}
+
+	/** One tick's spray from a nozzle pointing its own way (a mounted one, say), rather than where the shooter looks. */
+	public static void spray(ServerLevel level, LivingEntity shooter, Vec3 nozzle, Vec3 direction, float spreadDegrees) {
 		Vec3 eye = shooter.getEyePosition();
 		// A nozzle pushed into a wall sprays from the wall.
 		BlockHitResult blocked = level.clip(new ClipContext(eye, nozzle, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, shooter));
 		Vec3 start = blocked.getType() == HitResult.Type.MISS ? nozzle : blocked.getLocation().lerp(eye, 0.05);
-		Vec3 direction = aim(eye, shooter.getViewVector(1.0f), nozzle);
 		List<Glob> globs = GLOBS.computeIfAbsent(level, key -> new ArrayList<>());
 		RandomSource random = shooter.getRandom();
 		for (int i = 0; i < GLOBS_PER_TICK; i++) {
