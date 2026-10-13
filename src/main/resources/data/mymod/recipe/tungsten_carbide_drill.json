@@ -2,13 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": "mymod:tungsten_carbide",
-    "S": "mymod:steel_ingot"
+    "B": "mymod:carbide_drill_bit",
+    "T": "mymod:tungsten_carbide",
+    "C": "mymod:computer_chip",
+    "D": "mymod:steel_drill",
+    "P": "mymod:steel_plate"
   },
   "pattern": [
-    "CCC",
-    " S ",
-    " S "
+    " TB",
+    "CDT",
+    "P  "
   ],
   "result": {
     "count": 1,

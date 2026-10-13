@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.jheinz.mymod.bank.Banking;
 import com.jheinz.mymod.fae.Fae;
 import com.jheinz.mymod.dragonscale.Dragonscales;
+import com.jheinz.mymod.drill.Drills;
 import com.jheinz.mymod.hogfire.Hogfires;
 import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.neuralink.NeuralCore;
@@ -69,6 +70,7 @@ public class MyMod implements ModInitializer {
 		Uranium.initialize();
 		Dragonscales.initialize();
 		Meteorites.initialize();
+		Drills.initialize();
 		Froststeel.initialize();
 		Voidsteel.initialize();
 		Hogfires.initialize();

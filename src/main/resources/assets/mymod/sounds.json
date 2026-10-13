@@ -1668,5 +1668,17 @@
         "pitch": 1.75
       }
     ]
+  },
+  "drill_motor": {
+    "subtitle": "subtitles.mymod.drill_motor",
+    "sounds": [
+      "mymod:drill_motor"
+    ]
+  },
+  "hand_drill_crank": {
+    "subtitle": "subtitles.mymod.hand_drill_crank",
+    "sounds": [
+      "mymod:hand_drill_crank"
+    ]
   }
 }

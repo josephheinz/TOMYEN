@@ -1,27 +1,21 @@
-package com.jheinz.mymod.tungsten;
+package com.jheinz.mymod.drill;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
@@ -32,25 +26,26 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 /**
- * The Tungsten Carbide Drill: a pickaxe that, unless its user sneaks, also digs the eight blocks around the one it
- * breaks, in the plane of the face it was dug from (a 3x3 square). It takes the neighbours only where it could
- * harvest them itself and they're no harder than the middle block plus {@link #HARDNESS_MARGIN} (so stone takes
- * the ores in it, but not obsidian), never bedrock and the like. Each extra block wears the drill like a dug block,
- * and the work stops if it breaks. The client outlines the whole square (DrillOutline).
+ * 3x3 digging for the drills that {@link DrillItem#bores bore}: with it switched on, running and the player not
+ * sneaking, breaking a block also digs the eight around it, in the plane of the face it was dug from. It takes the
+ * neighbours only where the drill could harvest them itself and they're no harder than the middle block plus
+ * {@link #HARDNESS_MARGIN} (so stone takes the ores in it, but not obsidian), never bedrock and the like. Each extra
+ * block wears the drill and burns its fuel like a dug block, and the work stops if it breaks or runs dry. The client
+ * outlines the whole square (DrillOutline).
  */
-public class TungstenDrillItem extends Item {
+public final class DrillArea {
 	private static final float HARDNESS_MARGIN = 1.5f;
 	/** The face each player is digging, from just before the middle block breaks until just after. */
 	private static final Map<UUID, Direction> DIGGING_FACE = new HashMap<>();
 	private static boolean extraBlocks;
 
-	public TungstenDrillItem(Properties properties) {
-		super(properties);
+	private DrillArea() {
 	}
 
 	/** Whether the player is holding a drill and digging 3x3 with it. */
 	public static boolean digsArea(Player player) {
-		return player.getMainHandItem().getItem() instanceof TungstenDrillItem && !player.isShiftKeyDown();
+		ItemStack drill = player.getMainHandItem();
+		return drill.getItem() instanceof DrillItem item && item.digsWide(drill, player);
 	}
 
 	/**
@@ -91,12 +86,6 @@ public class TungstenDrillItem extends Item {
 		return Direction.orderedByNearest(player)[0].getOpposite();
 	}
 
-	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip,
-			TooltipFlag flag) {
-		tooltip.accept(Component.translatable("item.mymod.tungsten_carbide_drill.hint").withStyle(ChatFormatting.GRAY));
-	}
-
 	static void initialize() {
 		PlayerBlockBreakEvents.BEFORE.register((level, player, pos, state, blockEntity) -> {
 			if (!extraBlocks && player instanceof ServerPlayer && digsArea(player)) {
@@ -115,7 +104,7 @@ public class TungstenDrillItem extends Item {
 	/** Breaks the rest of the square as if the player had dug each block, the middle one already gone. */
 	private static void digNeighbours(ServerPlayer player, BlockPos centre, BlockState middle, Direction face) {
 		ItemStack drill = player.getMainHandItem();
-		if (!(drill.getItem() instanceof TungstenDrillItem)) {
+		if (!(drill.getItem() instanceof DrillItem)) {
 			return;
 		}
 		// The middle block is air by now: judge the square by what was there.
@@ -124,7 +113,7 @@ public class TungstenDrillItem extends Item {
 		extraBlocks = true;
 		try {
 			for (BlockPos pos : blocks) {
-				if (drill.isEmpty() || !(drill.getItem() instanceof TungstenDrillItem)) {
+				if (drill.isEmpty() || !(drill.getItem() instanceof DrillItem item) || !item.running(drill, player)) {
 					break;
 				}
 				BlockState state = player.level().getBlockState(pos);

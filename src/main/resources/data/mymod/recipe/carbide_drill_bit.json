@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "mymod:tungsten_carbide",
+    "S": "mymod:steel_ingot"
+  },
+  "pattern": [
+    " C",
+    "S ",
+    " C"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:carbide_drill_bit"
+  }
+}

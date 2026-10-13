@@ -739,7 +739,7 @@ def tags():
     stones = [n for family in FAMILIES for n in family if n] + ["meteoric_iron_ore"]
     crystals = ["star_crystal_block", "budding_star_crystal"] + [c for c, _ in CRYSTALS]
     merge_tag("minecraft/tags/block/mineable/pickaxe", [M + n for n in stones + crystals + ["star_lantern", "star_steel_block"]])
-    merge_tag("minecraft/tags/block/needs_iron_tool", [M + "meteoric_iron_ore"])
+    # Meteorite stone and meteoric iron ore need drills (mymod:needs_drill, needs_powered_drill): see tools/gen_drills.py.
     merge_tag("minecraft/tags/block/needs_diamond_tool", [M + "star_steel_block"])
     merge_tag("minecraft/tags/block/beacon_base_blocks", [M + "star_steel_block"])
     merge_tag("minecraft/tags/block/crystal_sound_blocks", [M + "star_crystal_block", M + "budding_star_crystal"])

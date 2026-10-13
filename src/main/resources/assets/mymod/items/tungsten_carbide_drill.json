@@ -1,6 +1,68 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mymod:item/tungsten_carbide_drill"
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": [
+          "gui",
+          "ground",
+          "fixed"
+        ],
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/tungsten_carbide_drill"
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/tungsten_carbide_drill_spin_0"
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:composite",
+      "models": [
+        {
+          "type": "minecraft:model",
+          "model": "mymod:item/tungsten_carbide_drill"
+        },
+        {
+          "type": "minecraft:range_dispatch",
+          "property": "mymod:drill_spin",
+          "entries": [
+            {
+              "threshold": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/tungsten_carbide_drill_spin_1"
+              }
+            },
+            {
+              "threshold": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/tungsten_carbide_drill_spin_2"
+              }
+            },
+            {
+              "threshold": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/tungsten_carbide_drill_spin_3"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mymod:item/tungsten_carbide_drill_spin_0"
+          }
+        }
+      ]
+    }
   }
 }

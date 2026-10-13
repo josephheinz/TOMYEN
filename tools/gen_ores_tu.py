@@ -3,7 +3,7 @@
 Textures follow vanilla's look: the ores are vanilla's own stone and deepslate with crystals drawn into them in
 vanilla's ore shading (a highlight up and to the left, a dark edge down and to the right, the rock darkened round
 them), the raw storage blocks and the tungsten block take their shading from vanilla's raw iron block and iron block,
-the Hazmat suit its silhouettes from leather armour and the drill from the iron pickaxe; the rest are hand-drawn
+the Hazmat suit its silhouettes from leather armour; the rest are hand-drawn
 sprites in vanilla's palette style. Each has its own shape so it reads apart from iron, gold and copper at a glance:
 wolframite blades in the ore and a spiky crystal cluster for raw tungsten, a squat dark-bevelled ingot, a faceted
 carbide chunk; yellow-green tablets in a black pitchblende matrix for the uranium ores, a glowing yellowcake heap,
@@ -402,24 +402,6 @@ def fuel_rod():
     return c
 
 
-def drill():
-    """Vanilla's iron pickaxe with a tungsten carbide head, its points ground bright, and a yellow collar."""
-    pick = vanilla("item/iron_pickaxe")
-    head = lambda p: abs(p[0] - p[2]) < 14
-    c = remap(pick, [0x101114, 0x23262B, 0x373B42, 0x4F545C, 0x6E747D], 0.0, 0.85, head)
-    heads = [(i % 16, i // 16) for i, p in enumerate(pick.px) if p[3] and head(p)]
-    # The two ends of the head: the opaque head texels furthest up-left and down-right, ground to a bright edge.
-    for key in (lambda q: q[0] + q[1], lambda q: -(q[0] + q[1]) + 0.01 * q[0]):
-        x, y = min(heads, key=key)
-        c.set(x, y, rgba(0xD8E4EE))
-    # A yellow and black collar where the handle meets the head.
-    for i, p in enumerate(pick.px):
-        x, y = i % 16, i // 16
-        if p[3] and not head(p) and any(abs(x - hx) + abs(y - hy) == 1 for hx, hy in heads) and lum(p) > 0.15:
-            c.set(x, y, rgba(0xF2C41C if (x + y) % 2 else 0x2A2A2A))
-    return c
-
-
 def hazmat_item(name, details):
     """A leather armour piece's silhouette in yellow rubber, with its own details on top."""
     c = remap(vanilla("item/" + name), [0x3A2A06, 0xB08410, 0xD9A816, 0xEBC020], 0.1, 0.95)
@@ -680,7 +662,6 @@ ITEM_TEXTURES = {
     "tungsten_ingot": TUNGSTEN_INGOT,
     "tungsten_nugget": TUNGSTEN_NUGGET,
     "tungsten_carbide": TUNGSTEN_CARBIDE,
-    "tungsten_carbide_drill": drill(),
     "raw_uranium": RAW_URANIUM,
     "enriched_uranium": enriched_uranium(),
     "depleted_uranium": depleted_uranium(),
@@ -724,7 +705,6 @@ if PREVIEW:
         ("item/netherite_ingot", ITEM_TEXTURES["tungsten_ingot"]),
         ("item/iron_nugget", ITEM_TEXTURES["tungsten_nugget"]),
         ("item/netherite_scrap", ITEM_TEXTURES["tungsten_carbide"]),
-        ("item/iron_pickaxe", ITEM_TEXTURES["tungsten_carbide_drill"]),
         ("item/emerald", ITEM_TEXTURES["enriched_uranium"]),
         ("item/copper_ingot", ITEM_TEXTURES["depleted_uranium"]),
         ("item/blaze_rod", ITEM_TEXTURES["uranium_fuel_rod"]),
@@ -780,8 +760,7 @@ for name in ("tungsten_ore", "uranium_ore", "deepslate_uranium_ore", "raw_tungst
     item_def(name, "mymod:block/" + name)
 
 for name in ITEM_TEXTURES:
-    parent = "minecraft:item/handheld" if name == "tungsten_carbide_drill" else "minecraft:item/generated"
-    write_json(os.path.join(MODELS_ITEM, name + ".json"), {"parent": parent, "textures": {"layer0": "mymod:item/" + name}})
+    write_json(os.path.join(MODELS_ITEM, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
     item_def(name, "mymod:item/" + name)
 
 
@@ -877,8 +856,6 @@ storage("mymod:tungsten_block", "mymod:tungsten_ingot")
 shaped("tungsten_ingot_from_nuggets", "mymod:tungsten_ingot", ["###", "###", "###"], {"#": "mymod:tungsten_nugget"}, "mymod:tungsten_nugget")
 shapeless("tungsten_nugget", "mymod:tungsten_nugget", ["mymod:tungsten_ingot"], "mymod:tungsten_ingot", 9)
 STEEL_I, CARBIDE = "mymod:steel_ingot", "mymod:tungsten_carbide"
-shaped("tungsten_carbide_drill", "mymod:tungsten_carbide_drill", ["CCC", " S ", " S "], {"C": CARBIDE, "S": STEEL_I}, CARBIDE,
-       category="equipment")
 shaped("tungsten_apfsds_shell", "mymod:tungsten_apfsds_shell", [" W ", " S ", "GCG"],
        {"W": "mymod:tungsten_ingot", "S": STEEL_I, "G": "minecraft:gunpowder", "C": "minecraft:copper_ingot"}, "mymod:tungsten_ingot", 2,
        category="equipment")
@@ -907,7 +884,7 @@ ORES = ["mymod:tungsten_ore", "mymod:uranium_ore", "mymod:deepslate_uranium_ore"
 URANIUM_ORES = ["mymod:uranium_ore", "mymod:deepslate_uranium_ore"]
 merge_tag(os.path.join(MC_TAGS, "block", "mineable", "pickaxe.json"),
           ORES + ["mymod:raw_tungsten_block", "mymod:raw_uranium_block", "mymod:tungsten_block", "mymod:centrifuge"])
-merge_tag(os.path.join(MC_TAGS, "block", "needs_diamond_tool.json"), ["mymod:tungsten_ore"])
+# Tungsten ore needs a drill (mymod:needs_drill): tools/gen_drills.py writes that tag, the drill and its recipe.
 merge_tag(os.path.join(MC_TAGS, "block", "needs_iron_tool.json"),
           URANIUM_ORES + ["mymod:raw_uranium_block", "mymod:raw_tungsten_block", "mymod:tungsten_block"])
 for kind in ("block", "item"):
@@ -932,7 +909,6 @@ merge_tag(os.path.join(C_TAGS, "item", "nuggets.json"), ["#c:nuggets/tungsten"])
 merge_tag(os.path.join(C_TAGS, "item", "nuggets", "tungsten.json"), ["mymod:tungsten_nugget"])
 merge_tag(os.path.join(MY_TAGS, "item", "tungsten_tool_materials.json"), ["mymod:tungsten_carbide"])
 merge_tag(os.path.join(MY_TAGS, "item", "repairs_hazmat_suit.json"), ["mymod:rubber"])
-merge_tag(os.path.join(MC_TAGS, "item", "pickaxes.json"), ["mymod:tungsten_carbide_drill"])
 for tag, item in (("head_armor", "hazmat_helmet"), ("chest_armor", "hazmat_suit"), ("leg_armor", "hazmat_leggings"),
                   ("foot_armor", "hazmat_boots")):
     merge_tag(os.path.join(MC_TAGS, "item", tag + ".json"), ["mymod:" + item])
