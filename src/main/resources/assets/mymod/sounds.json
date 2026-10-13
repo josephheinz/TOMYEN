@@ -1370,5 +1370,120 @@
         "pitch": 0.55
       }
     ]
+  },
+  "pipe_pistol_shot": {
+    "subtitle": "subtitles.mymod.pipe_pistol_shot",
+    "sounds": [
+      {
+        "name": "mymod:m1911_shot",
+        "pitch": 0.72
+      },
+      {
+        "name": "mymod:glock_shot",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "pipe_rifle_shot": {
+    "subtitle": "subtitles.mymod.pipe_rifle_shot",
+    "sounds": [
+      {
+        "name": "mymod:akm_shot",
+        "pitch": 0.78
+      },
+      {
+        "name": "mymod:awp_shot",
+        "volume": 0.9,
+        "pitch": 0.9
+      }
+    ]
+  },
+  "blunderbuss_shot": {
+    "subtitle": "subtitles.mymod.blunderbuss_shot",
+    "sounds": [
+      {
+        "name": "mymod:remington_870_shot",
+        "pitch": 0.68
+      },
+      {
+        "name": "mymod:spas12_shot",
+        "pitch": 0.66
+      }
+    ]
+  },
+  "junk_repeater_shot": {
+    "subtitle": "subtitles.mymod.junk_repeater_shot",
+    "sounds": [
+      {
+        "name": "mymod:mac10_shot",
+        "pitch": 0.8
+      },
+      {
+        "name": "mymod:mp5_shot",
+        "pitch": 0.76
+      }
+    ]
+  },
+  "misfire_click": {
+    "subtitle": "subtitles.mymod.misfire_click",
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "volume": 0.7,
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:random/wood_click",
+        "volume": 0.8,
+        "pitch": 1.4
+      }
+    ]
+  },
+  "gun_jam": {
+    "subtitle": "subtitles.mymod.gun_jam",
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_land",
+        "volume": 0.35,
+        "pitch": 1.9
+      },
+      {
+        "name": "mymod:bolt_forward",
+        "pitch": 0.55
+      }
+    ]
+  },
+  "gun_jam_clear": {
+    "subtitle": "subtitles.mymod.gun_jam_clear",
+    "sounds": [
+      {
+        "name": "mymod:rack_back",
+        "pitch": 0.65
+      },
+      {
+        "name": "mymod:bolt_back",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "gun_backfire": {
+    "subtitle": "subtitles.mymod.gun_backfire",
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "volume": 0.6,
+        "pitch": 1.7
+      },
+      {
+        "name": "minecraft:random/explode2",
+        "volume": 0.6,
+        "pitch": 1.8
+      },
+      {
+        "name": "minecraft:random/explode3",
+        "volume": 0.6,
+        "pitch": 1.75
+      }
+    ]
   }
 }

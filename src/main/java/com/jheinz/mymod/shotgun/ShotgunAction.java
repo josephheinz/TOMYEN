@@ -15,17 +15,19 @@ import net.minecraft.world.item.Item;
 /**
  * What a held shotgun's action is doing, timed in game ticks so every client can animate it from the stack alone:
  * the pump being worked after a shot (or to chamber the first shell after loading an empty gun), a semi-auto
- * cycle, or one shell being pushed into the tube.
+ * cycle, one shell being pushed into the tube, or a homemade gun's jam being cleared.
  *
  * @param start         game time it began
  * @param ticks         how long it takes
- * @param shell         the shell fired (for PUMP and CYCLE, so the hull that flies out matches) or being loaded
+ * @param shell         the shell fired (for PUMP, CYCLE and CLEAR, so the hull that flies out matches) or being loaded
  * @param chambering    for LOAD, whether the tube was empty when loading began, so the pump has to be worked once
  *                      loading stops; for PUMP, that it's chambering the first shell rather than clearing a fired hull
  */
 public record ShotgunAction(Kind kind, long start, int ticks, Holder<Item> shell, boolean chambering) {
 	public enum Kind implements StringRepresentable {
-		PUMP("pump"), CYCLE("cycle"), LOAD("load");
+		PUMP("pump"), CYCLE("cycle"), LOAD("load"),
+		/** Clearing a jam (see ShoddyGunItem): the action is knocked and worked to throw out the stuck case. */
+		CLEAR("clear");
 
 		public static final Codec<Kind> CODEC = StringRepresentable.fromEnum(Kind::values);
 		public static final StreamCodec<ByteBuf, Kind> STREAM_CODEC = ByteBufCodecs.VAR_INT.map(i -> values()[i], Kind::ordinal);

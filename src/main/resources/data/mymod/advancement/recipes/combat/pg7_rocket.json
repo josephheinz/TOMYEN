@@ -11,11 +11,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_tnt": {
+    "has_steel_plate": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:tnt"
+            "items": "mymod:steel_plate"
           }
         ]
       },
@@ -31,7 +31,7 @@
   "requirements": [
     [
       "has_rpg7",
-      "has_tnt",
+      "has_steel_plate",
       "has_the_recipe"
     ]
   ],

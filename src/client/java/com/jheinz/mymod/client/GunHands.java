@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import com.jheinz.mymod.GunRecoil;
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.client.launcher.LauncherAnimation;
+import com.jheinz.mymod.client.shoddy.ShoddyGunClient;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.napalm.Napalm;
 
@@ -45,7 +46,10 @@ public final class GunHands {
 	}
 
 	public static Anchors anchors(Item gun) {
-		if (gun == ModItems.M4) {
+		Anchors shoddy = ShoddyGunClient.anchors(gun);
+		if (shoddy != null) {
+			return shoddy;
+		} else if (gun == ModItems.M4) {
 			return rifle(-0.022f, 0.119f, 0.156f, 0.055f, 0.179f, -0.390f);
 		} else if (gun == ModItems.AKM) {
 			return rifle(-0.048f, 0.156f, 0.150f, 0.029f, 0.197f, -0.392f);

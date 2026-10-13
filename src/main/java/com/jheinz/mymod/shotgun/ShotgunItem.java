@@ -180,6 +180,10 @@ public class ShotgunItem extends GunItem {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.DISPENSER_FAIL, SoundSource.PLAYERS, 0.6f, 1.6f);
 			return InteractionResult.FAIL;
 		}
+		InteractionResult stopped = beforeShot(level, player, gun);
+		if (stopped != null) {
+			return stopped;
+		}
 		if (level.isClientSide()) {
 			GunRecoil.queue(player, 1, stats(gun, player));
 			return InteractionResult.CONSUME;
@@ -190,7 +194,10 @@ public class ShotgunItem extends GunItem {
 		if (!fireRound((ServerLevel) level, player, gun, hand)) {
 			return InteractionResult.FAIL;
 		}
-		if (fireMode(gun) == FireMode.PUMP) {
+		if (afterShot((ServerLevel) level, player, gun, fired, now)) {
+			return InteractionResult.CONSUME;
+		}
+		if (worked(gun)) {
 			pump(player, gun, fired, now, true);
 		} else {
 			int cycle = handling(gun).cycleTicks();
@@ -201,11 +208,48 @@ public class ShotgunItem extends GunItem {
 	}
 
 	/**
+	 * Called on both sides once a pull of the trigger would fire, just before the shot goes off (and before the
+	 * client's recoil). A non-null result stops the shot and is returned from {@link #use}, e.g. for a misfire.
+	 */
+	protected InteractionResult beforeShot(Level level, Player player, ItemStack gun) {
+		return null;
+	}
+
+	/**
+	 * Called on the server after a shot, before the action cycles. Returning true skips the cycle (the gun has dealt
+	 * with its own action, e.g. it jammed).
+	 */
+	protected boolean afterShot(ServerLevel level, Player player, ItemStack gun, Holder<Item> fired, long now) {
+		return false;
+	}
+
+	/** Whether the action is worked by hand after every shot: a pump, or a homemade gun's bolt. */
+	private boolean worked(ItemStack gun) {
+		FireMode mode = fireMode(gun);
+		return mode == FireMode.PUMP || mode == FireMode.BOLT;
+	}
+
+	/** Ticks to push one shell into the tube (before an Overclock). */
+	protected int shellTicks() {
+		return SHELL_TICKS;
+	}
+
+	/** Ticks to work the action to chamber the first shell after loading an empty gun, in a mode that isn't pump. */
+	protected int chamberTicks() {
+		return PUMP_TICKS;
+	}
+
+	/** Whether loading an empty gun ends by working the action to chamber a shell. */
+	protected boolean chambersAfterLoading() {
+		return true;
+	}
+
+	/**
 	 * Works the pump, clearing the fired hull (or, with {@code afterShot} false, just chambering the first shell); the
 	 * gun can fire once it's done.
 	 */
 	private void pump(Player player, ItemStack gun, Holder<Item> shell, long now, boolean afterShot) {
-		int ticks = fireMode(gun) == FireMode.PUMP ? handling(gun).cycleTicks() : PUMP_TICKS;
+		int ticks = worked(gun) ? handling(gun).cycleTicks() : chamberTicks();
 		gun.set(Shotguns.SHOTGUN_ACTION, new ShotgunAction(ShotgunAction.Kind.PUMP, now, ticks, shell, !afterShot));
 		player.getCooldowns().addCooldown(gun, ticks);
 		// The shooter hears their own pump from the animation's cues; this is for everyone else.
@@ -330,16 +374,16 @@ public class ShotgunItem extends GunItem {
 				return;
 			}
 		}
-		startLoading(player, gun, type, rounds == 0, player.level().getGameTime());
+		startLoading(player, gun, type, rounds == 0 && chambersAfterLoading(), player.level().getGameTime());
 	}
 
 	private void startLoading(ServerPlayer player, ItemStack gun, Holder<Item> type, boolean chambering, long now) {
-		int ticks = Math.max(1, Math.round(SHELL_TICKS * reloadFactor(player)));
+		int ticks = Math.max(1, Math.round(shellTicks() * reloadFactor(player)));
 		gun.set(Shotguns.SHOTGUN_ACTION, new ShotgunAction(ShotgunAction.Kind.LOAD, now, ticks, type, chambering));
 	}
 
 	/** One shell's loading time is up: push it in (if there's still one to push) and carry on or stop. */
-	void loadShell(ServerPlayer player, ItemStack gun, ShotgunAction action, long now) {
+	protected void loadShell(ServerPlayer player, ItemStack gun, ShotgunAction action, long now) {
 		MagazineContents loaded = gun.get(ModComponents.LOADED_MAGAZINE);
 		int rounds = loaded == null ? 0 : loaded.rounds();
 		boolean free = player.hasInfiniteMaterials();

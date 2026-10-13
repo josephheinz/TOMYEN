@@ -1,0 +1,279 @@
+{
+  "credit": "mymod muzzle flash - generated",
+  "texture_size": [
+    32,
+    32
+  ],
+  "textures": {
+    "flash": "mymod:item/muzzle_flash",
+    "particle": "mymod:item/muzzle_flash"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        -1.0,
+        -9.68
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        -1.0,
+        -9.68
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -8,
+        0
+      ],
+      "translation": [
+        1.0841,
+        2.144,
+        -7.7236
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -8,
+        0
+      ],
+      "translation": [
+        1.0841,
+        2.144,
+        -7.7236
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "elements": [
+    {
+      "from": [
+        7.99,
+        8.1,
+        -2.7
+      ],
+      "to": [
+        8.01,
+        11.1,
+        1.45
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        9.59,
+        -2.77
+      ],
+      "to": [
+        9.5,
+        9.61,
+        1.38
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            6,
+            6,
+            16
+          ],
+          "texture": "#flash"
+        },
+        "down": {
+          "uv": [
+            0,
+            6,
+            6,
+            16
+          ],
+          "texture": "#flash"
+        }
+      }
+    },
+    {
+      "from": [
+        7.99,
+        8.4,
+        -2.1
+      ],
+      "to": [
+        8.01,
+        10.8,
+        1.43
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "rotation": {
+        "angle": 45.0,
+        "axis": "z",
+        "origin": [
+          8.0,
+          9.6,
+          -0.335
+        ]
+      },
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        }
+      }
+    },
+    {
+      "from": [
+        6.65,
+        8.25,
+        1.05
+      ],
+      "to": [
+        9.35,
+        10.95,
+        1.06
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            6,
+            16,
+            16
+          ],
+          "texture": "#flash"
+        },
+        "south": {
+          "uv": [
+            6,
+            6,
+            16,
+            16
+          ],
+          "texture": "#flash"
+        }
+      }
+    }
+  ]
+}

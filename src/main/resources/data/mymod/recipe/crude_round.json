@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": "minecraft:gunpowder",
+    "N": "minecraft:iron_nugget",
+    "W": [
+      "minecraft:paper",
+      "minecraft:copper_nugget"
+    ]
+  },
+  "pattern": [
+    "N",
+    "G",
+    "W"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mymod:crude_round"
+  }
+}

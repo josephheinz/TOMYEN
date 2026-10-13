@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "mymod:servo_arm",
+    "I": "minecraft:iron_ingot",
+    "P": "#minecraft:planks",
+    "S": "mymod:tech_scrap",
+    "T": [
+      "minecraft:string",
+      "mymod:rubber"
+    ]
+  },
+  "pattern": [
+    "II ",
+    " AS",
+    " TP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:junk_repeater"
+  }
+}

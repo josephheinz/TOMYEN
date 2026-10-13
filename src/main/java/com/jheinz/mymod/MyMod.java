@@ -27,6 +27,7 @@ import com.jheinz.mymod.napalm.Napalm;
 import com.jheinz.mymod.longsword.LongSwords;
 import com.jheinz.mymod.magmasteel.Magmasteel;
 import com.jheinz.mymod.shotgun.Shotguns;
+import com.jheinz.mymod.shoddy.ShoddyGuns;
 import com.jheinz.mymod.powerarmor.PowerArmors;
 import com.jheinz.mymod.schnozzle.Schnozzles;
 import com.jheinz.mymod.skullcrane.Skullcranes;
@@ -81,6 +82,7 @@ public class MyMod implements ModInitializer {
 		Tanks.initialize();
 		Launchers.initialize();
 		Shotguns.initialize();
+		ShoddyGuns.initialize();
 		MachineGuns.initialize();
 		Napalm.initialize();
 		LongSwords.initialize();

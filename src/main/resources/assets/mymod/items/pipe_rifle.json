@@ -1,0 +1,280 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "mymod:muzzle_flash",
+    "entries": [
+      {
+        "threshold": 0.5,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:range_dispatch",
+              "property": "mymod:gun_animation",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f1"
+                  }
+                },
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f2"
+                  }
+                },
+                {
+                  "threshold": 2.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f3"
+                  }
+                },
+                {
+                  "threshold": 3.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f4"
+                  }
+                },
+                {
+                  "threshold": 4.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f5"
+                  }
+                },
+                {
+                  "threshold": 5.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f6"
+                  }
+                },
+                {
+                  "threshold": 6.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mymod:item/pipe_rifle"
+              }
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/pipe_rifle_flash_0"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 1.5,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:range_dispatch",
+              "property": "mymod:gun_animation",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f1"
+                  }
+                },
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f2"
+                  }
+                },
+                {
+                  "threshold": 2.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f3"
+                  }
+                },
+                {
+                  "threshold": 3.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f4"
+                  }
+                },
+                {
+                  "threshold": 4.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f5"
+                  }
+                },
+                {
+                  "threshold": 5.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f6"
+                  }
+                },
+                {
+                  "threshold": 6.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mymod:item/pipe_rifle"
+              }
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/pipe_rifle_flash_1"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 2.5,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:range_dispatch",
+              "property": "mymod:gun_animation",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f1"
+                  }
+                },
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f2"
+                  }
+                },
+                {
+                  "threshold": 2.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f3"
+                  }
+                },
+                {
+                  "threshold": 3.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f4"
+                  }
+                },
+                {
+                  "threshold": 4.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f5"
+                  }
+                },
+                {
+                  "threshold": 5.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle_f6"
+                  }
+                },
+                {
+                  "threshold": 6.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/pipe_rifle"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mymod:item/pipe_rifle"
+              }
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/pipe_rifle_flash_2"
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:range_dispatch",
+      "property": "mymod:gun_animation",
+      "entries": [
+        {
+          "threshold": 0.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mymod:item/pipe_rifle_f1"
+          }
+        },
+        {
+          "threshold": 1.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mymod:item/pipe_rifle_f2"
+          }
+        },
+        {
+          "threshold": 2.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mymod:item/pipe_rifle_f3"
+          }
+        },
+        {
+          "threshold": 3.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mymod:item/pipe_rifle_f4"
+          }
+        },
+        {
+          "threshold": 4.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mymod:item/pipe_rifle_f5"
+          }
+        },
+        {
+          "threshold": 5.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mymod:item/pipe_rifle_f6"
+          }
+        },
+        {
+          "threshold": 6.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mymod:item/pipe_rifle"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "mymod:item/pipe_rifle"
+      }
+    }
+  }
+}
