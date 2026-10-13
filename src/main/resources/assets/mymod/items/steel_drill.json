@@ -55,6 +55,62 @@
                 "type": "minecraft:model",
                 "model": "mymod:item/steel_drill_spin_3"
               }
+            },
+            {
+              "threshold": 4,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/steel_drill_spin_4"
+              }
+            },
+            {
+              "threshold": 5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/steel_drill_spin_5"
+              }
+            },
+            {
+              "threshold": 6,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/steel_drill_spin_6"
+              }
+            },
+            {
+              "threshold": 7,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/steel_drill_spin_7"
+              }
+            },
+            {
+              "threshold": 8,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/steel_drill_spin_8"
+              }
+            },
+            {
+              "threshold": 9,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/steel_drill_spin_9"
+              }
+            },
+            {
+              "threshold": 10,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/steel_drill_spin_10"
+              }
+            },
+            {
+              "threshold": 11,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/steel_drill_spin_11"
+              }
             }
           ],
           "fallback": {

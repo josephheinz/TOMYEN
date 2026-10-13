@@ -15,21 +15,22 @@ import com.jheinz.mymod.drill.DrillItem;
 import com.jheinz.mymod.drill.Drills;
 
 /**
- * Where the hands go on each drill in first person, held like the long guns: the shooting hand on the pistol grip and
- * the off hand on the side handle, or on the Hand Drill's crank knob, which goes round with the crank. Anchors are in
+ * Where the hands go on each drill in first person, held two-handed at the chest: the main hand on the bottom handle of
+ * the rear cross and the off hand on its left handle, or on the Hand Drill's crank knob, which goes round with the crank. Anchors are in
  * the held item's space as in {@link GunHands}; tools/gen_drills.py prints them from the models.
  * <p>
  * A running drill also shudders in the hands, harder while the bit bites rock.
  */
 public final class DrillHands {
-	private static final Vector3f GRIP = new Vector3f(-0.022f, 0.119f, 0.156f);
-	private static final Vector3f STEEL_HANDLE = new Vector3f(-0.143f, 0.314f, -0.171f);
-	private static final Vector3f HEAVY_HANDLE = new Vector3f(-0.137f, 0.337f, -0.209f);
+	private static final Vector3f GRIP = new Vector3f(0.150f, -0.150f, -0.187f);
+	/** The left handle of the rear cross, the same on every motor drill. */
+	private static final Vector3f HANDLE = new Vector3f(-0.047f, 0.068f, -0.096f);
 	/** The Hand Drill's crank knob, frame by frame. */
 	private static final Vector3f[] CRANK_KNOB = {
-			new Vector3f(-0.170f, 0.385f, -0.084f), new Vector3f(-0.159f, 0.353f, -0.161f), new Vector3f(-0.155f, 0.276f, -0.192f),
-			new Vector3f(-0.159f, 0.200f, -0.161f), new Vector3f(-0.170f, 0.168f, -0.084f), new Vector3f(-0.181f, 0.200f, -0.008f),
-			new Vector3f(-0.185f, 0.276f, 0.023f), new Vector3f(-0.181f, 0.353f, -0.008f)};
+			new Vector3f(-0.207f, 0.191f, -0.281f), new Vector3f(-0.231f, 0.176f, -0.332f), new Vector3f(-0.249f, 0.135f, -0.369f),
+			new Vector3f(-0.255f, 0.078f, -0.383f), new Vector3f(-0.249f, 0.022f, -0.369f), new Vector3f(-0.231f, -0.019f, -0.332f),
+			new Vector3f(-0.207f, -0.034f, -0.281f), new Vector3f(-0.184f, -0.019f, -0.230f), new Vector3f(-0.166f, 0.022f, -0.193f),
+			new Vector3f(-0.160f, 0.078f, -0.179f), new Vector3f(-0.166f, 0.135f, -0.193f), new Vector3f(-0.184f, 0.176f, -0.230f)};
 
 	private DrillHands() {
 	}
@@ -38,7 +39,7 @@ public final class DrillHands {
 		if (stack.is(Drills.HAND_DRILL)) {
 			return new GunHands.Anchors(GRIP, CRANK_KNOB[Math.floorMod(frame, CRANK_KNOB.length)]);
 		}
-		return new GunHands.Anchors(GRIP, stack.is(Drills.STEEL_DRILL) ? STEEL_HANDLE : HEAVY_HANDLE);
+		return new GunHands.Anchors(GRIP, HANDLE);
 	}
 
 	/** A fast shudder, scaled by how fast the bit turns; the hands ride along. */

@@ -1,302 +1,663 @@
 """Builds the drills' assets: the Hand Drill, Steel Drill, Tungsten Carbide Drill and Star Drill, their bits, the motor
 and crank sounds, recipes with recipe-book advancements, tags and language entries.
 
-Every drill is a held 3D model in as few boxes as hold its shape, painted from its own small atlas of flat colours and
-smooth ramps (no speckle). The bit is a twisted square bar: each segment is turned 22.5 degrees past the one behind
-it, so turning the whole bit another 22.5 degrees per frame makes the flutes run down it. The spinning parts are
-their own models, one per frame, which mymod:drill_spin picks (DrillSpin on the client); the Hand Drill's crank, gear
-wheel and bit turn together over eight frames, the motor drills' bits over four. In the inventory, on the ground and
-in item frames the drill shows its first frame.
+Every drill is a big two-handed mining drill of one family: a long stepped conical bit whose tiers turn a little more each
+step, with a pair of ground flights on every tier that wind down it like an auger; a radial chuck of chunky clamp jaws
+and a toothed drive ring behind it; a boxy framed body with recessed panels and proud trim; and a cross of handles at
+the back with end caps. The tiers differ in material and fittings: the Hand Drill is wood framed in brass with an iron
+bit and a side crank, the Steel Drill a steel motor drill with a finned motor, an exhaust and a kerosene tank, the
+Tungsten Carbide Drill a heavy gunmetal one in hazard yellow with a bigger bit, tank and reinforced chuck, and the Star
+Drill a sleek star steel one whose bit tip, chuck inserts and core glow with star crystal.
 
-The drills are held like the long guns: two-handed, the shooting hand on the pistol grip, the off hand on the side
-handle (or, on the Hand Drill, on the crank's knob, which goes round with it). The first-person grip points printed at
-the end go in DrillHands; keep them in step with the models.
+Textures are clean: one smooth ramp per material, lit from the top with a bright specular top edge on metals, grain
+lines on wood, ribs on rubber, no speckle. Every face's texture is cut from the top of its swatch so the highlight edge
+always shows. A geometric check (coplanar()) refuses any two faces that share a plane, face the same way and overlap,
+whatever their rotations.
 
-Model space is in pixels: the bit runs along z at x = 8, y = BORE with its tip toward -z, +x is the drill's right.
+The spinning parts (bit, chuck, drive ring) are their own models, one per frame, which mymod:drill_spin picks
+(DrillSpin on the client). There are FRAMES of them: a motor drill's bit is symmetric over half a turn, which its frames
+cover 15 degrees apiece; the Hand Drill's crank and bit go once round together over its frames. In the inventory, on the
+ground and in item frames the drill shows its first frame.
+
+The drills are held two-handed at the chest: the main hand on the bottom handle of the rear cross, the off hand on its
+left handle (or, on the Hand Drill, on the crank's knob, which goes round with it). The first-person grip points printed
+at the end go in DrillHands; keep them in step with the models.
+
+Model space is in pixels: the bit runs along z at x = AX, y = AY with its tip toward -z, +x is the drill's right.
 
 Usage: python3 tools/gen_drills.py src/main/resources/assets/mymod"""
 import json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave
 from collections import OrderedDict
 
 sys.path.insert(0, os.path.dirname(__file__))
-from gunkit import (Kit, check, rotate, rx, rz, write, model, ref, range_dispatch, composite, display, display_matrix, apply,
-                    placed, centred, bounds_centre, look, mix, copy, S2, element_rotation)
+from gunkit import (Kit, rotate, rx, rz, write, model, ref, range_dispatch, composite, display, display_matrix, apply,
+                    placed, centred, bounds_centre, look, mix, copy, element_rotation, FACES, DIRS)
 
 ASSETS = sys.argv[1]
 DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data"))
 TEX = os.path.join(ASSETS, "textures")
 MODELS, ITEMS = os.path.join(ASSETS, "models", "item"), os.path.join(ASSETS, "items")
 
-# Where long guns put the shooting hand (as in gen_napalm.py: the M4's grip point, in the held item's space).
-FP_GRIP_TARGET = (-0.022 * 16, 0.119 * 16, 0.156 * 16)
+AX, AY = 8.0, 8.0          # the drill's axis
+FRAMES = 12                # spin frames, every drill (DrillSpin.FRAMES)
+MOTOR_STEP = 15.0          # degrees a motor drill's bit turns per frame: half a turn (its symmetry) over the frames
+HAND_STEP = 360.0 / FRAMES # the Hand Drill's crank and bit, per frame: once round over the frames
+
+# First person: held low at the chest, the bit pointing ahead a little in toward the crosshair.
+FP_ROT = [0, 25, 0]
+FP_SCALE = 0.58
+FP_GRIP_TARGET = (2.4, -2.4, -3.0)
+# Third person, in the crossbow hold: the main hand's grip point lands in the hand.
 TP_GRIP_TARGET = (0.0, 1.01 + 0.65 * (4.507 - 8), -1.23 + 0.65 * (12.2 - 8))
-FP_ROT = [0, -8, 0]
-FP_SCALE = 0.6
-TP_SCALE = 0.65
-# Inventory icons lie on the diagonal like the long guns', tip to the upper left, rolled a little to show their tops.
-GUI_ROT = look([-S2, S2, 0], [S2 * math.cos(math.radians(25)), S2 * math.cos(math.radians(25)), math.sin(math.radians(25))])
-STEP = 22.5          # how far the bit turns each frame
+TP_SCALE = 0.55
+
+
+def _icon_rotation():
+    """The reference's three-quarter view: the bit toward the viewer and down to the left, the top and left flank showing."""
+    m = [-0.8, -0.42, 0.42]
+    n = math.sqrt(sum(v * v for v in m))
+    m = [v / n for v in m]
+    up = [0.0, 1.0, 0.0]
+    d = sum(up[i] * m[i] for i in range(3))
+    top = [up[i] - d * m[i] for i in range(3)]
+    n = math.sqrt(sum(v * v for v in top))
+    return look(m, [v / n for v in top])
+
+
+GUI_ROT = _icon_rotation()
 
 
 # ============================================================================================================ paint
 
 
-def flat(kit, colour):
-    return lambda x, y, w, h: kit.rgb(colour)
+def rgba(c, a=255):
+    return ((c >> 16) & 255, (c >> 8) & 255, c & 255, a)
 
 
-def ramp(kit, top, bottom):
-    """A smooth ramp, lighter at the top of the swatch: Minecraft's face shading does the rest."""
-    return lambda x, y, w, h: kit.rgb(mix(top, bottom, y / max(1, h - 1)))
+def metal(hi, a, b, lo):
+    """A metal ramp lit from above: a bright specular top row, a smooth fall from a to b, a dark bottom row."""
+    def f(x, y, w, h):
+        return rgba(hi if y == 0 else lo if y == h - 1 else mix(a, b, (y - 1) / (h - 3)))
+    return f
 
 
-def glow(kit, centre, edge):
-    """A soft radial glow, bright in the middle: for the lit windows and crystal."""
-    return lambda x, y, w, h: kit.rgb(mix(centre, edge, min(1.0, math.hypot(x + 0.5 - w / 2, y + 0.5 - h / 2) / (w / 2))))
+def grained(hi, a, b, grain, vertical=False):
+    """Wood: a ramp with a lit top row and three gently waving grain lines, along u (or along v when vertical)."""
+    def f(x, y, w, h):
+        c = hi if y == 0 else mix(a, b, y / (h - 1))
+        along, across = (y, x) if vertical else (x, y)
+        for k, line in enumerate((3, 8, 12)):
+            if across == line + round(0.8 * math.sin(along * 0.45 + k * 2.1)):
+                c = mix(c, grain, 0.5)
+        return rgba(c)
+    return f
 
 
-def atlas(name, swatches, seed):
-    """A drill's atlas: swatches is a list of (name, painter(kit)), laid out four to a row, each 4 x 4 model units."""
-    kit = Kit(name, "item/" + name, seed=seed)
-    for i, (sw, painter) in enumerate(swatches):
-        u, v = (i % 4) * 4, (i // 4) * 4
-        kit.swatch(sw, u, v, u + 4, v + 4, painter(kit))
-    kit.save(TEX)
-    return kit
+def rings(a, b, ring):
+    """End grain (a picture): growth rings round the middle."""
+    def f(x, y, w, h):
+        r = math.hypot(x + 0.5 - w / 2, y + 0.5 - h / 2)
+        c = mix(a, b, min(1.0, r / (w / 2)))
+        if int(r) in (2, 5):
+            c = mix(c, ring, 0.45)
+        return rgba(c)
+    return f
 
 
-RUBBER = ("rubber", lambda k: ramp(k, 0x3A3D42, 0x1F2124))
+def recess(shadow, a, b):
+    """A recessed panel: the frame's shadow across its top two rows, then a soft dark ramp."""
+    def f(x, y, w, h):
+        return rgba(shadow if y < 2 else mix(a, b, (y - 2) / (h - 3)))
+    return f
 
-HAND = atlas("hand_drill", [
-    ("wood", lambda k: ramp(k, 0xB98250, 0x80552F)),
-    ("wood_end", lambda k: flat(k, 0x6E4628)),
-    ("iron", lambda k: ramp(k, 0xD6DADF, 0x9299A1)),
-    ("iron_dark", lambda k: ramp(k, 0x6F757D, 0x464B52)),
-    ("copper", lambda k: ramp(k, 0xE59A68, 0xAE5A34)),
-    ("copper_dark", lambda k: flat(k, 0x8C4A2A)),
-], 701)
 
-STEEL = atlas("steel_drill", [
-    ("steel", lambda k: ramp(k, 0xBFC5CC, 0x868D96)),
-    ("steel_dark", lambda k: ramp(k, 0x5C626A, 0x3C4148)),
-    RUBBER,
-    ("red", lambda k: ramp(k, 0xD84A32, 0x9C2C1C)),
-    ("bit", lambda k: ramp(k, 0xE2E7EC, 0x9AA2AC)),
-], 702)
+def ribbed(a, b, rib):
+    """Rubber grip: a dark ramp ribbed every fourth row."""
+    def f(x, y, w, h):
+        c = mix(a, b, y / (h - 1))
+        return rgba(mix(c, rib, 0.6) if y % 4 == 3 else c)
+    return f
 
-CARBIDE = atlas("tungsten_carbide_drill", [
-    ("body", lambda k: ramp(k, 0x5E656E, 0x3B4047)),
-    ("body_dark", lambda k: ramp(k, 0x34383E, 0x222529)),
-    RUBBER,
-    ("amber", lambda k: ramp(k, 0xF2B62A, 0xC4800F)),
-    ("carbide", lambda k: ramp(k, 0x8995A5, 0x4E5764)),
-    ("edge", lambda k: flat(k, 0xD8E4EE)),
-    ("glow", lambda k: glow(k, 0xC8FFB0, 0x46D83A)),
-], 703)
 
-STAR = atlas("star_drill", [
-    ("body", lambda k: ramp(k, 0x2C3F8E, 0x16205A)),
-    ("body_dark", lambda k: ramp(k, 0x1A2352, 0x0E1333)),
-    RUBBER,
-    ("trim", lambda k: ramp(k, 0xD3DBEA, 0x8E9AB6)),
-    ("crystal", lambda k: ramp(k, 0xC8FAFF, 0x5CC8EA)),
-    ("violet", lambda k: ramp(k, 0x7A5CD8, 0x4C34A8)),
-    ("core", lambda k: glow(k, 0xF4FBFF, 0x63D0EE)),
-], 704)
+def stripes(yellow, yellow_dark, black):
+    """Hazard stripes, four texels wide, on the diagonal."""
+    def f(x, y, w, h):
+        return rgba(mix(yellow, yellow_dark, y / (h - 1)) if ((x + y) // 4) % 2 == 0 else black)
+    return f
+
+
+def glow(centre, edge):
+    """A soft radial glow (a picture), bright in the middle."""
+    def f(x, y, w, h):
+        return rgba(mix(centre, edge, min(1.0, math.hypot(x + 0.5 - w / 2, y + 0.5 - h / 2) / (w / 2))))
+    return f
+
+
+class DrillKit(Kit):
+    """A drill's atlas: 128 texels square, swatches of 16 x 16 texels (2 x 2 model UV units) eight to a row. top: the
+    material for up faces of a material; grain: (along u, along v, end) swatches of a grained material."""
+
+    def __init__(self, name, seed):
+        super().__init__(name, "item/" + name, seed=seed, size=128)
+        self.n, self.top, self.grain = 0, {}, {}
+
+    def paint(self, name, f, picture=False):
+        u, v = (self.n % 8) * 2, (self.n // 8) * 2
+        self.n += 1
+        self.swatch(name, u, v, u + 2, v + 2, f, picture)
+
+    def metal(self, name, hi, a, b, lo, top=None):
+        self.paint(name, metal(hi, a, b, lo))
+        if top:
+            self.paint(name + "_top", metal(*top))
+            self.top[name] = name + "_top"
+
+    def wood(self, name, hi, a, b, grain, end):
+        self.paint(name + "_h", grained(hi, a, b, grain))
+        self.paint(name + "_v", grained(hi, a, b, grain, vertical=True))
+        self.paint(name + "_end", rings(*end), picture=True)
+        self.grain[name] = (name + "_h", name + "_v", name + "_end")
+
+    def uv(self, name, du, dv):
+        """Two texels a pixel, cut from the top of the swatch (so its lit edge shows) at a varying spot along u."""
+        (u0, v0, u1, v1), picture = self.sw[name]
+        if picture:
+            return [u0, v0, u1, v1]
+        t = 16.0 / self.size
+        su = min(u1 - u0, max(du * 2 * t, t))
+        sv = min(v1 - v0, max(dv * 2 * t, 2 * t))
+        ou = self.rnd.uniform(0, (u1 - u0) - su)
+        return [round(u0 + ou, 4), v0, round(u0 + ou + su, 4), round(v0 + sv, 4)]
+
+    def save(self, textures_root):
+        super().save(textures_root)
+
+
+def zrot(angle, cx=AX, cy=AY, z=0.0):
+    a = ((angle + 180.0) % 360.0) - 180.0
+    return None if abs(a) < 1e-9 else ("z", round(a, 4), (cx, cy, z))
+
+
+def part(k, out, x0, y0, z0, x1, y1, z1, mat, rot=None, emit=False, name=None, **faces):
+    """A box of one material: a grained one runs its grain along the box's longest side (end grain on the ends), a
+    metal with a top variant uses it on the up face. faces: per-face overrides (None drops the face)."""
+    fm = {}
+    base = mat
+    if mat in k.grain:
+        h, v, end = k.grain[mat]
+        ext = {"x": abs(x1 - x0), "y": abs(y1 - y0), "z": abs(z1 - z0)}
+        long = max(ext, key=ext.get)
+        for f in FACES:
+            a, b = DIRS[f]
+            fm[f] = h if a == long else v if b == long else end
+        base = h
+    elif mat in k.top:
+        fm["up"] = k.top[mat]
+    fm.update(faces)
+    return k.box(out, x0, y0, z0, x1, y1, z1, base, rot=rot, emit=emit, name=name, **fm)
+
+
+def square(k, out, z0, z1, half, mat, angle=0.0, emit=False, name=None, cx=AX, cy=AY, **faces):
+    """A square bar along z on the axis (or about cx, cy), turned by angle."""
+    return part(k, out, cx - half, cy - half, z0, cx + half, cy + half, z1, mat, rot=zrot(angle, cx, cy, z0), emit=emit,
+                name=name, **faces)
+
+
+def star8(k, out, z0, z1, half, mat, angle=0.0, inner=0.9, emit=False, name=None, cx=AX, cy=AY):
+    """Two squares an eighth turn apart: a round-ish eight-pointed section. The second is set in at its ends."""
+    square(k, out, z0, z1, half, mat, angle, emit=emit, name=name, cx=cx, cy=cy)
+    square(k, out, z0 + 0.03, z1 - 0.03, half * inner, mat, angle + 45, emit=emit, cx=cx, cy=cy)
+
+
+# ======================================================================================================== z-fight
+
+_CORNERS = {
+    "north": lambda a, b: [(b[0], b[1], a[2]), (a[0], b[1], a[2]), (a[0], a[1], a[2]), (b[0], a[1], a[2])],
+    "south": lambda a, b: [(a[0], b[1], b[2]), (b[0], b[1], b[2]), (b[0], a[1], b[2]), (a[0], a[1], b[2])],
+    "east": lambda a, b: [(b[0], b[1], b[2]), (b[0], b[1], a[2]), (b[0], a[1], a[2]), (b[0], a[1], b[2])],
+    "west": lambda a, b: [(a[0], b[1], a[2]), (a[0], b[1], b[2]), (a[0], a[1], b[2]), (a[0], a[1], a[2])],
+    "up": lambda a, b: [(a[0], b[1], a[2]), (b[0], b[1], a[2]), (b[0], b[1], b[2]), (a[0], b[1], b[2])],
+    "down": lambda a, b: [(a[0], a[1], b[2]), (b[0], a[1], b[2]), (b[0], a[1], a[2]), (a[0], a[1], a[2])],
+}
+_NORMALS = {"north": (0, 0, -1), "south": (0, 0, 1), "east": (1, 0, 0), "west": (-1, 0, 0), "up": (0, 1, 0), "down": (0, -1, 0)}
+
+
+def _faces(elements):
+    for i, e in enumerate(elements):
+        r = element_rotation(e)
+        for face in e["faces"]:
+            q = _CORNERS[face](e["from"], e["to"])
+            n = _NORMALS[face]
+            if r:
+                m, o = r
+                q = [[v + o[a] for a, v in enumerate(apply(m, [p[c] - o[c] for c in range(3)]))] for p in q]
+                n = apply(m, list(n))
+            yield i, face, [list(p) for p in q], list(n)
+
+
+def _clip(subject, clipper):
+    """Sutherland-Hodgman: the part of convex polygon subject inside convex (counter-clockwise) polygon clipper."""
+    out = subject
+    for k in range(len(clipper)):
+        a, b = clipper[k], clipper[(k + 1) % len(clipper)]
+        inside = lambda p: (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]) >= -1e-9
+        inp, out = out, []
+        for j in range(len(inp)):
+            p, q = inp[j], inp[(j + 1) % len(inp)]
+            if inside(q):
+                if not inside(p):
+                    out.append(_cross(a, b, p, q))
+                out.append(q)
+            elif inside(p):
+                out.append(_cross(a, b, p, q))
+        if not out:
+            return []
+    return out
+
+
+def _cross(a, b, p, q):
+    d1 = (b[0] - a[0], b[1] - a[1])
+    d2 = (q[0] - p[0], q[1] - p[1])
+    den = d1[0] * d2[1] - d1[1] * d2[0]
+    t = ((a[0] - p[0]) * d1[1] - (a[1] - p[1]) * d1[0]) / den if abs(den) > 1e-12 else 0.0
+    return (p[0] + t * d2[0], p[1] + t * d2[1])
+
+
+def _area(poly):
+    return sum(poly[i][0] * poly[(i + 1) % len(poly)][1] - poly[(i + 1) % len(poly)][0] * poly[i][1] for i in range(len(poly))) / 2
+
+
+def coplanar(elements, gap=0.015):
+    """Every pair of faces, whatever their elements' rotations, that face the same way, lie within gap of one plane and
+    overlap: these z-fight. Returns (element, face, element, face, overlap area)."""
+    faces = list(_faces(elements))
+    hits = []
+    for x in range(len(faces)):
+        i, fi, qi, ni = faces[x]
+        di = sum(ni[c] * qi[0][c] for c in range(3))
+        # A basis in the plane.
+        ref = (1, 0, 0) if abs(ni[0]) < 0.9 else (0, 1, 0)
+        u = [ni[1] * ref[2] - ni[2] * ref[1], ni[2] * ref[0] - ni[0] * ref[2], ni[0] * ref[1] - ni[1] * ref[0]]
+        un = math.sqrt(sum(v * v for v in u))
+        u = [v / un for v in u]
+        v = [ni[1] * u[2] - ni[2] * u[1], ni[2] * u[0] - ni[0] * u[2], ni[0] * u[1] - ni[1] * u[0]]
+        flat = lambda q: [(sum(p[c] * u[c] for c in range(3)), sum(p[c] * v[c] for c in range(3))) for p in q]
+        pi = flat(qi)
+        if _area(pi) < 0:
+            pi.reverse()
+        for y in range(x + 1, len(faces)):
+            j, fj, qj, nj = faces[y]
+            if i == j or sum(ni[c] * nj[c] for c in range(3)) < 0.9999:
+                continue
+            if abs(sum(ni[c] * qj[0][c] for c in range(3)) - di) > gap:
+                continue
+            pj = flat(qj)
+            if _area(pj) < 0:
+                pj.reverse()
+            overlap = _clip(pj, pi)
+            a = abs(_area(overlap)) if len(overlap) >= 3 else 0.0
+            if a > 1e-3:
+                hits.append((i, elements[i].get("name", fi), fi, j, elements[j].get("name", fj), fj, round(a, 4)))
+    return hits
+
+
+def check(name, elements):
+    hits = coplanar(elements)
+    for h in hits:
+        print("z-fight:", name, h)
+    if hits:
+        raise SystemExit(name + " has coplanar overlapping faces")
+    for e in elements:
+        for v in e["from"] + e["to"]:
+            assert -16 <= v <= 32, (name, e)
 
 
 # ============================================================================================================ parts
 
 
-def twist(kit, out, cx, cy, z_tip, z_back, side, segments, mat, emit=False):
-    """A twisted square bar along z from z_back forward to z_tip, each segment turned STEP past the one behind it.
-    Every other segment is set in a hair at its ends so the caps never share a plane."""
-    length = (z_back - z_tip) / segments
-    for i in range(segments):
-        z1 = z_back - i * length
-        z0 = z1 - length
-        inset = 0.01 if i % 2 else 0.0
-        h = side / 2
-        kit.box(out, cx - h, cy - h, z0 + inset, cx + h, cy + h, z1 - inset, mat, emit=emit,
-                rot=("z", STEP * i, (cx, cy, z0)) if (STEP * i) % 90 else None)
+def bit(k, tiers, tip, core, flight, tip_mat, twist=40.0, flight_out=0.8, glow_from=None):
+    """The stepped conical bit: tiers (z0, z1, half) from the back, each an eight-pointed bar turned twist past the one
+    behind, with two ground flights a half turn apart standing out of it and running a little past its front, so they
+    wind down the bit like an auger; then a pointed tip (z0, half). Tiers from glow_from on are tip_mat and glow."""
+    out = []
+    for i, (z0, z1, h) in enumerate(tiers):
+        a = twist * i
+        lit = glow_from is not None and i >= glow_from
+        star8(k, out, z0, z1, h, tip_mat if lit else core, a, emit=lit, name=f"tier_{i}")
+        for s in (0, 180):
+            part(k, out, AX + h * 0.5, AY - 0.32, z0 - 0.3, AX + h + flight_out, AY + 0.32, z1 - 0.4, flight,
+                 rot=zrot(a + 22.5 + s), name="flight" if s == 0 else None)
+    a = twist * len(tiers)
+    z0, h = tip
+    front = tiers[-1][0]
+    lit = glow_from is not None
+    square(k, out, z0 + (front - z0) * 0.45, front + 0.02, h, tip_mat, a + 22.5, emit=lit, name="tip")
+    square(k, out, z0, z0 + (front - z0) * 0.45 + 0.02, h * 0.5, tip_mat, a + 67.5, emit=lit)
     return out
 
 
-def point(kit, out, cx, cy, z_tip, z_base, side, mat, emit=False):
-    """The bit's point: two stubby squares, the front one smaller and turned, to read as a tapering tip."""
-    mid = (z_tip + z_base) / 2
-    kit.box(out, cx - side * 0.35, cy - side * 0.35, mid, cx + side * 0.35, cy + side * 0.35, z_base - 0.01, mat, emit=emit,
-            rot=("z", 45, (cx, cy, mid)))
-    kit.box(out, cx - side * 0.18, cy - side * 0.18, z_tip, cx + side * 0.18, cy + side * 0.18, mid + 0.01, mat, emit=emit)
+def chuck(k, out, z0, z1, core_half, jaw_r, jaw_w, core_mat, jaw_mat, jaw_front=None, ring=None, insert=None):
+    """The chuck: a collar on the axis with eight chunky clamp jaws round it (four bars through the axis, each two
+    jaws, staggered a hair along z), and behind it the toothed drive ring (half, tooth radius, material, z length).
+    insert: (material, glow) bars poking out of each jaw's face."""
+    star8(k, out, z0 + 0.4, z1, core_half, core_mat, 22.5, inner=0.95, name="chuck_collar")
+    for j in range(4):
+        d = 0.03 * j
+        part(k, out, AX - jaw_r, AY - jaw_w / 2, z0 + d, AX + jaw_r, AY + jaw_w / 2, z1 - 0.5 - d, jaw_mat,
+             rot=zrot(22.5 + 45 * j), name="jaw" if j == 0 else None, **({"north": jaw_front} if jaw_front else {}))
+        if insert:
+            mat, lit = insert
+            part(k, out, AX - jaw_r - 0.35, AY - 0.45, z0 + 0.6 + d, AX + jaw_r + 0.35, AY + 0.45, z1 - 1.2 - d, mat,
+                 rot=zrot(22.5 + 45 * j), emit=lit, name="insert" if j == 0 else None)
+    if ring:
+        half, tooth, mat, length = ring
+        star8(k, out, z1, z1 + length, half, mat, 0, inner=0.95, name="drive_ring")
+        for j in range(4):
+            d = 0.03 * j
+            part(k, out, AX - tooth, AY - 0.6, z1 + 0.1 + d, AX + tooth, AY + 0.6, z1 + length - 0.1 - d, mat, rot=zrot(45 * j))
     return out
 
 
-def spun(parts, frame, pivot, step=STEP):
-    """The spinning parts turned on for this frame, about the bore."""
-    return rotate(copy(parts), rz(step * frame), pivot)
+def framed_body(k, out, z0, z1, plate, core, post, frame_mat, panel_mat, post_mat, band_mat, bands, plate_depth=1.0,
+                chamfer=False):
+    """The boxy body from z0 to z1: a frame plate at each end (half plate), the recessed panel box between (half core),
+    a trim post along each long edge standing proud of the panels (outer half post; turned an eighth for a chamfered
+    edge), and bands round the middle at the given z."""
+    part(k, out, AX - plate, AY - plate, z0, AX + plate, AY + plate, z0 + plate_depth, frame_mat, name="front_plate")
+    part(k, out, AX - plate, AY - plate, z1 - plate_depth, AX + plate, AY + plate, z1, frame_mat, name="rear_plate")
+    part(k, out, AX - core, AY - core, z0 + plate_depth, AX + core, AY + core, z1 - plate_depth, panel_mat, name="panels",
+         north=None, south=None)
+    s = 1.3
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            if chamfer:
+                c = core - 0.15
+                h = 0.85
+                part(k, out, AX + sx * c - h, AY + sy * c - h, z0 + plate_depth, AX + sx * c + h, AY + sy * c + h,
+                     z1 - plate_depth, post_mat, rot=zrot(45, AX + sx * c, AY + sy * c, z0), name="trim", north=None, south=None)
+            else:
+                x = (AX + sx * (post - s), AX + sx * post)
+                y = (AY + sy * (post - s), AY + sy * post)
+                part(k, out, min(x), min(y), z0 + plate_depth, max(x), max(y), z1 - plate_depth, post_mat, name="post",
+                     north=None, south=None)
+    for bz, bw in bands:
+        bh = core + 0.18
+        part(k, out, AX - bh, AY - bh, bz, AX + bh, AY + bh, bz + bw, band_mat, name="band")
+    return out
 
 
-# ======================================================================================================= the drills
+def rear_cross(k, out, z0, reach, hub_mat, bar_mat, cap_mat, grips=None, cap_glow=False):
+    """The cross of handles at the back from z0: a hub on the axis, a bar across and a bar up and down through it
+    out to reach, and a cap on every end. grips: (material, [(axis, sign)]) sleeves on the handles held."""
+    star8(k, out, z0, z0 + 2.2, 2.3, hub_mat, 0, name="hub")
+    square(k, out, z0 + 2.2, z0 + 2.8, 1.2, hub_mat, 45)
+    zc0, zc1 = z0 + 0.4, z0 + 1.8
+    part(k, out, AX - reach, AY - 0.8, zc0, AX + reach, AY + 0.8, zc1, bar_mat, name="cross_bar")
+    part(k, out, AX - 0.8, AY - reach, zc0 + 0.05, AX + 0.8, AY + reach, zc1 - 0.05, bar_mat, name="cross_upright")
+    c = 1.15
+    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        x, y = AX + dx * (reach + 0.5), AY + dy * (reach + 0.5)
+        part(k, out, x - c, y - c, zc0 - 0.35, x + c, y + c, zc1 + 0.35, cap_mat, emit=cap_glow, name="cap")
+    if grips:
+        mat, which = grips
+        for axis, sign in which:
+            a, b = 3.0, reach - 0.8
+            if axis == "y":
+                y0, y1 = sorted((AY + sign * a, AY + sign * b))
+                part(k, out, AX - 1.0, y0, zc0 - 0.12, AX + 1.0, y1, zc1 + 0.12, mat, name="grip")
+            else:
+                x0, x1 = sorted((AX + sign * a, AX + sign * b))
+                part(k, out, x0, AY - 1.0, zc0 - 0.12, x1, AY + 1.0, zc1 + 0.12, mat, name="grip")
+    # The handles held: the bottom one (main hand) and the left one (off hand), halfway along their free length.
+    return (AX, AY - (reach + 3.0) / 2 - 0.4, (zc0 + zc1) / 2), (AX - (reach + 3.0) / 2 - 0.4, AY, (zc0 + zc1) / 2)
+
+
+def spun(parts, angle):
+    return rotate(copy(parts), rz(angle), (AX, AY, 0))
 
 
 class Drill:
-    """One drill: its static body, its spinning parts per frame, grip points and how many frames it has."""
+    """One drill: its static body, its spinning parts per frame, grip points and the bit on its own."""
 
-    def __init__(self, name, kit, body, frames, moving, grip, support, bit_part):
-        self.name, self.kit, self.body, self.frames, self.moving = name, kit, body, frames, moving
+    def __init__(self, name, kit, body, moving, grip, support, bit_part):
+        self.name, self.kit, self.body, self.moving = name, kit, body, moving
         self.grip, self.support, self.bit_part = grip, support, bit_part
 
 
+# ======================================================================================================= the drills
+# Palettes from vanilla: oak and dark oak planks, gold block (brass), iron block and ingot, anvil and heavy core
+# (gunmetal), yellow concrete, and the mod's steel, tungsten carbide, star steel, star crystal and rubber.
+
+BODY_Z = (2.0, 12.6)
+CROSS_Z = 12.6
+REACH = 8.2
+
 # ---------------------------------------------------------------------------------------------------- Hand Drill
-# An egg-beater drill held like a gun: a twisted iron bit in a chuck, an iron spine, a copper gear wheel on the left
-# side turned by a crank with a wooden knob, and a wooden pistol grip at the back.
-H_BORE = 10.0
-WHEEL = (5.0, H_BORE + 0.6, 4.6)       # the gear wheel's centre: on the left of the spine, a little above the bore
-WHEEL_R = 3.6
-CRANK_R = 2.9
+# Closest to the reference: an oak body framed in light oak with brass bands and dark recessed panels, an iron bit in a
+# polished chuck, dark oak cross handles with light caps, and a brass gear wheel on the left turned by a crank.
+HAND = DrillKit("hand_drill", 701)
+HAND.wood("oak", 0xD8B47A, 0xB8945F, 0x8F7040, 0x7A5A30, (0xA88A58, 0x6E5430, 0x5A4220))
+HAND.wood("dark_oak", 0x6A4A28, 0x4F3218, 0x2E1D0C, 0x241608, (0x4A2F17, 0x2A1A0B, 0x1A1006))
+HAND.paint("panel", recess(0x1E140A, 0x3E2912, 0x2C1C0C))
+HAND.metal("brass", 0xFFF0A8, 0xF2C04A, 0xB07A22, 0x6E4610, top=(0xFFF6C8, 0xFFE07A, 0xE0A838, 0xB07A22))
+HAND.metal("iron", 0xFFFFFF, 0xE2E2E2, 0xA8A8A8, 0x6E6E6E, top=(0xFFFFFF, 0xF2F2F2, 0xD8D8D8, 0xB8B8B8))
+HAND.metal("gunmetal", 0x9AA2B0, 0x6A707A, 0x3D4046, 0x26282C, top=(0xB0B8C4, 0x7C838E, 0x5A6068, 0x3D4046))
+HAND.metal("edge", 0xFFFFFF, 0xD0D6DE, 0x98A0AA, 0x5E656F)
+HAND.metal("cap", 0xFFF2CC, 0xF0CC88, 0xD0A060, 0x9A7038, top=(0xFFF8E0, 0xFADBA0, 0xE8BC78, 0xD0A060))
+HAND.save(TEX)
+
+WHEEL = (AX - 4.95, AY + 0.3, 7.2)     # the crank's gear wheel, on the left flank
+WHEEL_R = 3.5
+CRANK_R = 3.1
 
 
 def hand_bit():
-    out = []
-    twist(HAND, out, 8, H_BORE, -8.6, -2.6, 1.3, 4, "iron")
-    point(HAND, out, 8, H_BORE, -10.2, -8.6, 1.3, "iron")
+    return bit(HAND, [(-4.8, -1.8, 2.9), (-7.4, -4.8, 2.4), (-9.9, -7.4, 1.9), (-12.2, -9.9, 1.4), (-14.2, -12.2, 0.95)],
+               (-15.8, 0.6), "gunmetal", "edge", "gunmetal")
+
+
+def hand_spinning():
+    out = hand_bit()
+    chuck(HAND, out, -2.6, 1.0, 2.9, 5.0, 2.3, "iron", "iron", ring=(3.6, 4.5, "brass", 1.0))
     return out
 
 
 def hand_drill():
     k = HAND
-    body = []
-    k.box(body, 7.2, H_BORE - 0.8, -0.4, 8.8, H_BORE + 0.8, 10.2, "iron_dark", name="spine")
-    k.box(body, 6.4, H_BORE - 0.3, 4.2, 7.2, H_BORE + 1.5, 5.0, "iron_dark", name="axle_bracket")
-    k.box(body, 7.0, 3.6, 8.4, 9.0, H_BORE - 0.8, 10.8, "wood", rot=("x", -14, (8.0, H_BORE - 0.8, 9.6)), name="grip",
-          down="wood_end")
-    k.box(body, 6.8, H_BORE - 1.0, 10.2, 9.2, H_BORE + 1.0, 11.4, "wood", name="butt", south="wood_end")
+    body = framed_body(k, [], BODY_Z[0], BODY_Z[1], 4.75, 4.2, 4.5, "oak", "panel", "oak", "brass", [(4.6, 0.9), (9.4, 0.9)])
+    part(k, body, AX - 1.6, AY + 4.38, 5.9, AX + 1.6, AY + 4.62, 8.7, "brass", name="nameplate")
+    # The gear wheel's bearing: a brass boss on the left flank, and a bracket under it.
+    part(k, body, WHEEL[0] + 0.55, WHEEL[1] - 1.0, WHEEL[2] - 1.0, AX - 4.2, WHEEL[1] + 1.0, WHEEL[2] + 1.0, "brass", name="boss")
+    grip, support = rear_cross(k, body, CROSS_Z, REACH, "iron", "dark_oak", "cap")
+    still = hand_spinning()
 
     def moving(frame):
-        """The crank goes round 45 degrees a frame, and through its gears turns the bit twice as fast."""
         crank = []
         wx, wy, wz = WHEEL
-        # The gear wheel: two squares a quarter turn apart make an eight-toothed wheel; its hub behind.
-        s = WHEEL_R / math.sqrt(2)
-        k.box(crank, wx, wy - s, wz - s, wx + 0.6, wy + s, wz + s, "copper", name="gear_wheel")
-        k.box(crank, wx + 0.02, wy - s, wz - s, wx + 0.58, wy + s, wz + s, "copper", rot=("x", 45, (wx, wy, wz)))
-        k.box(crank, wx + 0.6, wy - 0.6, wz - 0.6, wx + 1.4, wy + 0.6, wz + 0.6, "copper_dark", name="hub")
-        # The crank arm out to the knob, on the wheel's outer face.
-        k.box(crank, wx - 0.6, wy - 0.45, wz - 0.45, wx, wy + CRANK_R + 0.45, wz + 0.45, "iron_dark", name="crank")
-        k.box(crank, wx - 3.0, wy + CRANK_R - 0.65, wz - 0.65, wx - 0.6, wy + CRANK_R + 0.65, wz + 0.65, "wood", name="knob",
-              west="wood_end")
-        rotate(crank, rx(-45 * frame), WHEEL)
-        bit = hand_bit()
-        k.box(bit, 8 - 1.25, H_BORE - 1.25, -2.6, 8 + 1.25, H_BORE + 1.25, -0.4, "iron_dark", name="chuck")
-        return crank + spun(bit, frame, (8, H_BORE, 0))
+        s = WHEEL_R / math.sqrt(2) * 1.08
+        part(k, crank, wx - 0.3, wy - s, wz - s, wx + 0.3, wy + s, wz + s, "brass", name="gear_wheel")
+        part(k, crank, wx - 0.27, wy - s, wz - s, wx + 0.27, wy + s, wz + s, "brass", rot=("x", 45, (wx, wy, wz)))
+        part(k, crank, wx - 0.9, wy - 0.7, wz - 0.7, wx - 0.3, wy + 0.7, wz + 0.7, "iron", name="crank_hub")
+        part(k, crank, wx - 1.5, wy - 0.45, wz - 0.5, wx - 0.9, wy + CRANK_R + 0.5, wz + 0.5, "iron", name="crank_arm")
+        part(k, crank, wx - 4.1, wy + CRANK_R - 0.7, wz - 0.7, wx - 1.5, wy + CRANK_R + 0.7, wz + 0.7, "dark_oak", name="knob")
+        part(k, crank, wx - 4.6, wy + CRANK_R - 0.55, wz - 0.55, wx - 4.1, wy + CRANK_R + 0.55, wz + 0.55, "cap")
+        rotate(crank, rx(-HAND_STEP * frame), WHEEL)
+        return spun(still, HAND_STEP * frame) + crank
 
     knobs = []
-    for f in range(8):
-        a = math.radians(-45 * f)
-        # The knob's middle, turned with the crank about the wheel's axle (x).
+    for f in range(FRAMES):
+        a = math.radians(-HAND_STEP * f)
         y, z = CRANK_R * math.cos(a), CRANK_R * math.sin(a)
-        knobs.append((WHEEL[0] - 1.8, WHEEL[1] + y, WHEEL[2] + z))
-    return Drill("hand_drill", k, body, 8, moving, (8.0, 6.4, 10.4), knobs, hand_bit)
+        knobs.append((WHEEL[0] - 2.9, WHEEL[1] + y, WHEEL[2] + z))
+    return Drill("hand_drill", k, body, moving, grip, knobs, hand_bit)
+
+
+# --------------------------------------------------------------------------------------------- the motor drills
+
+
+def motor_drill(name, k, bit_fn, chuck_args, body_args, extras):
+    body = framed_body(k, [], BODY_Z[0], BODY_Z[1], *body_args["frame"], **body_args.get("kw", {}))
+    grip, support = rear_cross(k, body, CROSS_Z, REACH, *body_args["cross"], **body_args.get("cross_kw", {}))
+    extras(k, body)
+    still = bit_fn()
+    chuck(k, still, *chuck_args[0], **chuck_args[1])
+
+    def moving(frame):
+        return spun(still, MOTOR_STEP * frame)
+
+    return Drill(name, k, body, moving, grip, [support] * FRAMES, bit_fn)
+
+
+def finned_motor(k, out, block, fin, fins=4):
+    """A motor block on top of the body with cooling fins across it."""
+    part(k, out, AX - 3.0, AY + 4.75, 3.6, AX + 3.0, AY + 7.2, 10.6, block, name="motor")
+    for i in range(fins):
+        z = 4.2 + i * 1.5
+        part(k, out, AX - 3.5, AY + 4.95, z, AX + 3.5, AY + 7.7, z + 0.5, fin, name="fin" if i == 0 else None)
+
+
+def side_tank(k, out, cx, cy, z0, z1, r, mat, strap, cap):
+    """A fuel tank along z beside the body: an octagonal drum, two straps round it and a filler cap on top."""
+    a = 2 * r * math.tan(math.pi / 8)
+    for i, (angle, w, h) in enumerate([(0, r, a / 2), (0, a / 2, r), (45, r, a / 2), (-45, r, a / 2)]):
+        d = 0.03 * i
+        part(k, out, cx - w, cy - h, z0 + d, cx + w, cy + h, z1 - d, mat, rot=zrot(angle, cx, cy, z0), name="tank" if i == 0 else None)
+    for z in (z0 + 1.0, z1 - 1.6):
+        part(k, out, cx - r - 0.2, cy - r - 0.2, z, cx + r + 0.2, cy + r + 0.2, z + 0.6, strap, name="strap")
+    part(k, out, cx - 0.6, cy + r - 0.3, z0 + 1.9, cx + 0.6, cy + r + 0.6, z0 + 3.1, cap, name="filler_cap")
 
 
 # ---------------------------------------------------------------------------------------------------- Steel Drill
-# A motor drill: a steel motor housing with a red band, a gearbox nose and chuck, a rubber pistol grip over a red
-# kerosene tank, and a rubber side handle out to the left for the off hand.
-S_BORE = 10.6
+STEEL = DrillKit("steel_drill", 702)
+STEEL.metal("steel", 0xE8F0F7, 0xA4AEB9, 0x6E7884, 0x48515B, top=(0xF4F8FC, 0xC4CCD4, 0xA4AEB9, 0x828D99))
+STEEL.metal("steel_dark", 0x828D99, 0x4D5661, 0x2C323A, 0x16191E, top=(0x9AA4AE, 0x5C6672, 0x48515B, 0x2C323A))
+STEEL.paint("panel", recess(0x16191E, 0x48515B, 0x323840))
+STEEL.metal("polished", 0xFFFFFF, 0xE6EAEE, 0xA8B0B8, 0x707880, top=(0xFFFFFF, 0xF4F6F8, 0xDCE0E4, 0xB8C0C8))
+STEEL.metal("bit", 0xA4AEB9, 0x6E7884, 0x3C434C, 0x22272E)
+STEEL.metal("edge", 0xFFFFFF, 0xDDE4EA, 0xA4AEB9, 0x6E7884)
+STEEL.metal("red", 0xF6A08A, 0xE0503C, 0xA82C1E, 0x6E1A10, top=(0xFFB8A0, 0xF06A52, 0xD84A34, 0xB83424))
+STEEL.paint("rubber", ribbed(0x45484E, 0x222327, 0x0E0E10))
+STEEL.metal("hose", 0x5A5E65, 0x313338, 0x1E1F23, 0x0E0E10)
+STEEL.save(TEX)
 
 
 def steel_bit():
-    out = []
-    twist(STEEL, out, 8, S_BORE, -8.4, -3.0, 1.4, 4, "bit")
-    point(STEEL, out, 8, S_BORE, -10.0, -8.4, 1.4, "bit")
-    return out
+    return bit(STEEL, [(-4.8, -1.8, 2.9), (-7.4, -4.8, 2.4), (-9.9, -7.4, 1.9), (-12.2, -9.9, 1.4), (-14.2, -12.2, 0.95)],
+               (-15.8, 0.6), "bit", "edge", "edge")
 
 
-def motor_body(k, bore, half_w, half_h, z_nose, z_front, z_back, body, dark, band, grip, tank, handle_mat):
-    """The housing every motor drill shares: nose, housing with a coloured band, rear cap, pistol grip with its trigger,
-    the fuel tank under it and the side handle. Returns the elements and the grip and side handle points."""
-    out = []
-    y0, y1 = bore - half_h, bore + half_h
-    k.box(out, 8 - half_w + 0.5, bore - half_h + 0.6, z_nose, 8 + half_w - 0.5, bore + half_h - 0.6, z_front, dark, name="nose")
-    k.box(out, 8 - half_w, y0, z_front, 8 + half_w, y1, z_back, body, name="housing")
-    mid = z_front + (z_back - z_front) * 0.25
-    k.box(out, 8 - half_w - 0.1, y0 - 0.1, mid, 8 + half_w + 0.1, y1 + 0.1, mid + 1.2, band, name="band")
-    k.box(out, 8 - half_w + 0.4, y0 + 0.4, z_back, 8 + half_w - 0.4, y1 - 0.4, z_back + 1.0, dark, name="rear_cap")
-    gz = z_back - 2.6
-    k.box(out, 7.0, y0 - 5.4, gz - 1.25, 9.0, y0, gz + 1.25, grip, rot=("x", -14, (8.0, y0, gz)), name="grip")
-    k.box(out, 7.6, y0 - 1.6, gz - 2.4, 8.4, y0, gz - 1.6, dark, name="trigger")
-    k.box(out, 8 - half_w + 0.3, y0 - 7.6, gz - 4.0, 8 + half_w - 0.3, y0 - 5.4, gz + 2.0, tank, name="tank")
-    hz = z_nose + (z_front - z_nose) / 2
-    k.box(out, 2.2, bore - 0.7, hz - 0.7, 8 - half_w + 0.5, bore + 0.7, hz + 0.7, handle_mat, name="side_handle")
-    return out, (8.0, y0 - 2.6, gz + 0.6), (3.6, bore, hz)
+def steel_extras(k, out):
+    finned_motor(k, out, "steel_dark", "steel")
+    # The exhaust: a stack up from the motor's left rear, its outlet turned back.
+    part(k, out, AX - 2.6, AY + 6.4, 10.0, AX - 1.4, AY + 9.6, 11.2, "steel_dark", name="exhaust")
+    part(k, out, AX - 2.75, AY + 9.1, 10.0, AX - 1.25, AY + 9.9, 12.2, "steel_dark", name="exhaust_outlet",
+         south="hose")
+    side_tank(k, out, AX + 6.6, AY - 1.0, 3.4, 11.0, 1.9, "red", "steel_dark", "polished")
+    # The fuel line: up from the tank's rear and across into the motor.
+    part(k, out, AX + 6.2, AY + 0.8, 9.6, AX + 7.0, AY + 6.4, 10.4, "hose", name="fuel_line")
+    part(k, out, AX + 3.0, AY + 5.7, 9.7, AX + 6.6, AY + 6.3, 10.3, "hose")
+    # The trigger, in front of the bottom handle.
+    part(k, out, AX - 0.4, AY - 6.2, CROSS_Z - 0.5, AX + 0.4, AY - 4.75, CROSS_Z + 0.4, "red", name="trigger")
 
 
 def steel_drill():
-    k = STEEL
-    body, grip, support = motor_body(k, S_BORE, 2.2, 2.6, -1.0, 1.4, 10.4, "steel", "steel_dark", "red", "rubber", "red", "rubber")
-
-    def moving(frame):
-        bit = steel_bit()
-        k.box(bit, 8 - 1.3, S_BORE - 1.3, -3.0, 8 + 1.3, S_BORE + 1.3, -1.0, "steel_dark", name="chuck")
-        return spun(bit, frame, (8, S_BORE, 0))
-
-    return Drill("steel_drill", k, body, 4, moving, grip, [support] * 4, steel_bit)
+    return motor_drill("steel_drill", STEEL, steel_bit,
+                       ((-2.6, 1.0, 2.9, 5.0, 2.3, "steel_dark", "polished"), {"ring": (3.6, 4.5, "steel_dark", 1.0)}),
+                       {"frame": (4.75, 4.2, 4.5, "steel", "panel", "steel_dark", "steel_dark", [(6.9, 0.8)]),
+                        "cross": ("steel_dark", "steel", "polished"),
+                        "cross_kw": {"grips": ("rubber", [("y", -1), ("x", -1)])}},
+                       steel_extras)
 
 
 # ------------------------------------------------------------------------------------------ Tungsten Carbide Drill
-# The heavy motor drill: a bigger gunmetal housing with an amber band and tank, and a broad carbide bit with a cross of
-# cutters at its tip (it bores 3x3). A glowing green window on the left of the housing shows it can burn a fuel rod.
-C_BORE = 10.8
+CARBIDE = DrillKit("tungsten_carbide_drill", 703)
+CARBIDE.metal("gunmetal", 0x9299AB, 0x4E5259, 0x313436, 0x202020, top=(0xA4ABBA, 0x5E656F, 0x4E5259, 0x3D3F43))
+CARBIDE.metal("gunmetal_dark", 0x5E656F, 0x313436, 0x202020, 0x121212)
+CARBIDE.paint("panel", recess(0x111214, 0x2C2E32, 0x1E2022))
+CARBIDE.metal("yellow", 0xFFF0A0, 0xFFD040, 0xE8A814, 0xA87008, top=(0xFFF6C0, 0xFFDC60, 0xF2B016, 0xD89A10))
+CARBIDE.paint("hazard", stripes(0xFFD040, 0xE8A814, 0x1E2022))
+CARBIDE.metal("carbide", 0xB8BCC4, 0x767A82, 0x45484E, 0x2C2E32)
+CARBIDE.metal("carbide_tip", 0xFFFFFF, 0xE4E8EE, 0xB8BCC4, 0x8A9098)
+CARBIDE.metal("polished", 0xFFFFFF, 0xD8DCE2, 0x9498A0, 0x5C6068, top=(0xFFFFFF, 0xE8ECF0, 0xC4C8CE, 0xA0A4AC))
+CARBIDE.paint("rubber", ribbed(0x45484E, 0x222327, 0x0E0E10))
+CARBIDE.metal("hose", 0x5A5E65, 0x313338, 0x1E1F23, 0x0E0E10)
+CARBIDE.paint("glow", glow(0xD8FFC0, 0x46D83A), picture=True)
+CARBIDE.save(TEX)
 
 
 def carbide_bit():
-    out = []
-    twist(CARBIDE, out, 8, C_BORE, -8.2, -3.4, 1.9, 3, "carbide")
-    # The cutting head: two crossed blades, their ground edges bright, and a centre point.
-    CARBIDE.box(out, 8 - 2.4, C_BORE - 0.45, -9.6, 8 + 2.4, C_BORE + 0.45, -8.2, "carbide", north="edge", name="cutter")
-    CARBIDE.box(out, 8 - 0.44, C_BORE - 2.4, -9.59, 8 + 0.44, C_BORE + 2.4, -8.21, "carbide", north="edge")
-    point(CARBIDE, out, 8, C_BORE, -11.0, -9.6, 1.6, "edge")
-    return out
+    return bit(CARBIDE, [(-5.2, -1.8, 3.4), (-8.0, -5.2, 2.8), (-10.6, -8.0, 2.2), (-12.9, -10.6, 1.6), (-14.6, -12.9, 1.1)],
+               (-15.9, 0.75), "carbide", "carbide_tip", "carbide_tip", flight_out=0.9)
+
+
+def carbide_extras(k, out):
+    finned_motor(k, out, "gunmetal_dark", "gunmetal", fins=5)
+    part(k, out, AX - 2.6, AY + 6.4, 10.0, AX - 1.4, AY + 9.8, 11.2, "gunmetal_dark", name="exhaust")
+    part(k, out, AX - 2.75, AY + 9.3, 10.0, AX - 1.25, AY + 10.1, 12.2, "yellow", name="exhaust_outlet", south="hose")
+    side_tank(k, out, AX + 7.3, AY - 1.2, 3.0, 11.6, 2.5, "yellow", "gunmetal_dark", "polished")
+    part(k, out, AX + 6.9, AY + 1.2, 10.15, AX + 7.7, AY + 6.4, 10.95, "hose", name="fuel_line")
+    part(k, out, AX + 3.0, AY + 5.7, 10.25, AX + 7.3, AY + 6.3, 10.85, "hose")
+    # Hazard stripes down the front plate's flanks, and the fuel rod window on the left.
+    for sx in (-1, 1):
+        x = AX + sx * 4.85
+        part(k, out, min(x, x + sx * 0.2), AY - 3.6, 2.2, max(x, x + sx * 0.2), AY + 3.6, 2.8, "hazard", name="hazard")
+    part(k, out, AX - 4.42, AY - 1.0, 6.0, AX - 4.2, AY + 1.6, 8.6, "glow", emit=True, name="fuel_window",
+         east=None, north=None, south=None, up=None, down=None)
+    part(k, out, AX - 0.4, AY - 6.2, CROSS_Z - 0.5, AX + 0.4, AY - 4.75, CROSS_Z + 0.4, "yellow", name="trigger")
 
 
 def carbide_drill():
-    k = CARBIDE
-    body, grip, support = motor_body(k, C_BORE, 2.8, 3.2, -1.0, 1.8, 11.6, "body", "body_dark", "amber", "rubber", "amber", "rubber")
-    k.box(body, 8 - 2.81, C_BORE - 0.6, 7.0, 8 - 2.8, C_BORE + 1.6, 9.6, "glow", emit=True, name="fuel_window",
-          north=None, south=None, east=None, up=None, down=None)
-
-    def moving(frame):
-        bit = carbide_bit()
-        k.box(bit, 8 - 1.6, C_BORE - 1.6, -3.4, 8 + 1.6, C_BORE + 1.6, -1.0, "body_dark", name="chuck")
-        return spun(bit, frame, (8, C_BORE, 0))
-
-    return Drill("tungsten_carbide_drill", k, body, 4, moving, grip, [support] * 4, carbide_bit)
+    return motor_drill("tungsten_carbide_drill", CARBIDE, carbide_bit,
+                       ((-2.8, 1.0, 3.2, 5.5, 2.7, "gunmetal_dark", "polished"),
+                        {"jaw_front": "yellow", "ring": (4.0, 5.0, "yellow", 1.0)}),
+                       {"frame": (4.75, 4.2, 4.5, "gunmetal", "panel", "yellow", "yellow", [(6.4, 0.7), (8.6, 0.7)]),
+                        "cross": ("gunmetal_dark", "gunmetal", "yellow"),
+                        "cross_kw": {"grips": ("rubber", [("y", -1), ("x", -1)])}},
+                       carbide_extras)
 
 
 # ---------------------------------------------------------------------------------------------------- Star Drill
-# The carbide drill's frame in star steel with silver trim, a glowing star crystal bit in a violet collar, and a star
-# crystal core shining from the housing's flank.
+STAR = DrillKit("star_drill", 704)
+STAR.metal("star_steel", 0x67ACE5, 0x3355B2, 0x1B2A6E, 0x0F1743, top=(0x8CC4F0, 0x4A70C8, 0x3355B2, 0x29429B))
+STAR.metal("star_dark", 0x3355B2, 0x1B2A6E, 0x0F1743, 0x0A0E2E)
+STAR.paint("panel", recess(0x0A0E2E, 0x1B2A6E, 0x111C4E))
+STAR.metal("trim", 0xFFFFFF, 0xD3DBEA, 0x9AA6C0, 0x5E6A88, top=(0xFFFFFF, 0xE6ECF6, 0xC4CEE0, 0x9AA6C0))
+STAR.metal("crystal", 0xF4FBFF, 0xB8F2FF, 0x63D0EE, 0x3A9CC8)
+STAR.metal("violet", 0xA678F1, 0x7A5BB5, 0x4C34A8, 0x2A1758)
+STAR.paint("core", glow(0xF4FBFF, 0x63D0EE), picture=True)
+STAR.paint("rubber", ribbed(0x3A3C52, 0x1C1E2C, 0x0A0B12))
+STAR.save(TEX)
 
 
 def star_bit():
-    out = []
-    twist(STAR, out, 8, C_BORE, -8.6, -3.4, 1.7, 4, "crystal", emit=True)
-    point(STAR, out, 8, C_BORE, -10.8, -8.6, 1.7, "crystal", emit=True)
-    return out
+    return bit(STAR, [(-4.8, -1.8, 2.9), (-7.4, -4.8, 2.4), (-9.9, -7.4, 1.9), (-12.2, -9.9, 1.4), (-14.2, -12.2, 0.95)],
+               (-15.9, 0.65), "star_dark", "trim", "crystal", glow_from=3)
+
+
+def star_extras(k, out):
+    # A smooth cowl over the motor instead of fins, stepped down at the front.
+    part(k, out, AX - 2.8, AY + 4.75, 4.0, AX + 2.8, AY + 6.6, 11.2, "star_steel", name="cowl")
+    part(k, out, AX - 1.9, AY + 6.6, 5.4, AX + 1.9, AY + 7.5, 10.4, "trim", name="cowl_top")
+    part(k, out, AX - 0.5, AY + 7.5, 6.4, AX + 0.5, AY + 7.8, 9.6, "crystal", emit=True, name="cowl_crystal")
+    # A slender tank of star steel on the right with a glowing gauge, and the star crystal core shining from both flanks.
+    side_tank(k, out, AX + 6.4, AY - 1.0, 3.6, 10.8, 1.7, "star_steel", "trim", "trim")
+    part(k, out, AX + 8.1, AY - 1.5, 5.6, AX + 8.2, AY - 0.5, 8.6, "core", emit=True, name="gauge",
+         west=None, north=None, south=None, up=None, down=None)
+    for sx in (-1, 1):
+        x0, x1 = (AX - 4.42, AX - 4.2) if sx < 0 else (AX + 4.2, AX + 4.42)
+        part(k, out, x0, AY - 1.4, 5.2, x1, AY + 1.4, 9.4, "core", emit=True, name="star_core",
+             **{("east" if sx < 0 else "west"): None, "north": None, "south": None, "up": None, "down": None})
+    part(k, out, AX - 0.4, AY - 6.2, CROSS_Z - 0.5, AX + 0.4, AY - 4.75, CROSS_Z + 0.4, "violet", name="trigger")
 
 
 def star_drill():
-    k = STAR
-    body, grip, support = motor_body(k, C_BORE, 2.8, 3.2, -1.0, 1.8, 11.6, "body", "body_dark", "trim", "rubber", "body_dark", "rubber")
-    k.box(body, 8 - 2.81, C_BORE - 0.6, 7.0, 8 - 2.8, C_BORE + 1.6, 9.6, "core", emit=True, name="star_core",
-          north=None, south=None, east=None, up=None, down=None)
-
-    def moving(frame):
-        bit = star_bit()
-        k.box(bit, 8 - 1.6, C_BORE - 1.6, -3.4, 8 + 1.6, C_BORE + 1.6, -1.0, "violet", name="collar")
-        return spun(bit, frame, (8, C_BORE, 0))
-
-    return Drill("star_drill", k, body, 4, moving, grip, [support] * 4, star_bit)
+    return motor_drill("star_drill", STAR, star_bit,
+                       ((-2.6, 1.0, 2.9, 5.0, 2.2, "violet", "trim"),
+                        {"insert": ("crystal", True), "ring": (3.6, 4.4, "star_dark", 1.0)}),
+                       {"frame": (4.75, 4.2, 4.5, "trim", "panel", "trim", "trim", [(7.0, 0.6)]), "kw": {"chamfer": True},
+                        "cross": ("star_dark", "star_steel", "crystal"),
+                        "cross_kw": {"grips": ("rubber", [("y", -1), ("x", -1)]), "cap_glow": True}},
+                       star_extras)
 
 
 # ======================================================================================================= displays
@@ -309,8 +670,7 @@ def fitted(rotation, elements, size, axes=(0, 1)):
     pts = []
     for e in elements:
         corners = [[(e["from"], e["to"])[(i >> a) & 1][a] for a in range(3)] for i in range(8)]
-        r = e.get("rotation")
-        if r:
+        if e.get("rotation"):
             rm, o = element_rotation(e)
             corners = [[v + o[a] for a, v in enumerate(apply(rm, [c[a] - o[a] for a in range(3)]))] for c in corners]
         pts += [apply(m, [v - 8 for v in c]) for c in corners]
@@ -320,9 +680,9 @@ def fitted(rotation, elements, size, axes=(0, 1)):
     return scale, [round(-(lo[a] + hi[a]) / 2 * scale, 3) for a in range(3)]
 
 
-def still_displays(elements, size=15.0):
+def still_displays(elements, size=16.0, rot=None):
     """In the inventory, in item frames and on the ground."""
-    rot = [round(v, 2) for v in GUI_ROT]
+    rot = [round(v, 2) for v in (rot or GUI_ROT)]
     scale, tr = fitted(rot, elements, size)
     flat_scale, flat_tr = fitted([0, 0, 0], elements, size * 0.6, (0, 1, 2))
     return [("gui", display(rot, tr, scale)), ("ground", display([0, 0, 0], [flat_tr[0], flat_tr[1] + 2.0, flat_tr[2]], flat_scale)),
@@ -343,7 +703,7 @@ def part_displays(elements):
             ("thirdperson_lefthand", display([0, 0, 0], centred([0, 0, 0], 0.6, c, 2.0), 0.6)),
             ("firstperson_righthand", display([0, -8, 0], centred([0, -8, 0], 0.6, c, 3.0), 0.6)),
             ("firstperson_lefthand", display([0, -8, 0], centred([0, -8, 0], 0.6, c, 3.0), 0.6))]
-    return OrderedDict(held + still_displays(elements, 13.0))
+    return OrderedDict(held + still_displays(elements, 14.0))
 
 
 def fp_point(displays, p):
@@ -358,31 +718,35 @@ def fp_point(displays, p):
 DRILLS = [hand_drill(), steel_drill(), carbide_drill(), star_drill()]
 BITS = {"iron_drill_bit": DRILLS[0], "steel_drill_bit": DRILLS[1], "carbide_drill_bit": DRILLS[2], "star_drill_bit": DRILLS[3]}
 STILL = ["gui", "ground", "fixed"]
+HANDS = {}
 
 for d in DRILLS:
     credit = f"mymod {d.name} - generated by tools/gen_drills.py"
     whole = d.body + d.moving(0)
-    check(d.name, whole)
     displays = held_displays(d.grip, whole)
     write(os.path.join(MODELS, d.name + ".json"), model(d.kit, d.body, displays, credit=credit))
     frames = []
-    for f in range(d.frames):
+    for f in range(FRAMES):
         parts = d.moving(f)
         check(f"{d.name}_spin_{f}", d.body + parts)
         write(os.path.join(MODELS, f"{d.name}_spin_{f}.json"), model(d.kit, parts, displays, credit=credit))
         frames.append(ref(f"{d.name}_spin_{f}"))
     still = composite(ref(d.name), frames[0])
-    spinning = composite(ref(d.name), range_dispatch("mymod:drill_spin", [(f, frames[f]) for f in range(1, d.frames)], frames[0]))
+    spinning = composite(ref(d.name), range_dispatch("mymod:drill_spin", [(f, frames[f]) for f in range(1, FRAMES)], frames[0]))
     write(os.path.join(ITEMS, d.name + ".json"), {"model": OrderedDict([
         ("type", "minecraft:select"), ("property", "minecraft:display_context"),
         ("cases", [OrderedDict([("when", STILL), ("model", still)])]), ("fallback", spinning)])})
-    print(f"{d.name}: {len(whole)} elements, {d.frames} frames")
-    print(f"   grip {fp_point(displays, d.grip)}  support {[fp_point(displays, s) for s in d.support[:d.frames]] if d.name == 'hand_drill' else fp_point(displays, d.support[0])}")
+    HANDS[d.name] = {"grip": fp_point(displays, d.grip), "support": [fp_point(displays, s) for s in d.support]}
+    print(f"{d.name}: {len(whole)} elements ({len(d.body)} body, {len(whole) - len(d.body)} spinning), {FRAMES} frames")
+    print(f"   grip {HANDS[d.name]['grip']}  support {HANDS[d.name]['support'] if d.name == 'hand_drill' else HANDS[d.name]['support'][0]}")
+if os.environ.get("DRILL_HANDS"):
+    write(os.environ["DRILL_HANDS"], HANDS)
 
 for name, d in BITS.items():
-    bit = d.bit_part()
-    check(name, bit)
-    write(os.path.join(MODELS, name + ".json"), model(d.kit, bit, part_displays(bit), credit=f"mymod {name} - generated by tools/gen_drills.py"))
+    bit_elements = d.bit_part()
+    check(name, bit_elements)
+    write(os.path.join(MODELS, name + ".json"), model(d.kit, bit_elements, part_displays(bit_elements),
+                                                      credit=f"mymod {name} - generated by tools/gen_drills.py"))
     write(os.path.join(ITEMS, name + ".json"), {"model": ref(name)})
 
 

@@ -23,12 +23,13 @@ import com.jheinz.mymod.drill.DrillItem;
  * How far each holder's drill has turned, and the item model property mymod:drill_spin, the frame of the spinning
  * parts to show (tools/gen_drills.py). While the holder drills (the local player holding attack; anyone else swinging,
  * which digging does every tick) and the drill runs, it spins up to speed in a quarter of a second, and coasts down over
- * half a second when they stop. The Hand Drill's crank goes round twice a second (eight frames a turn); a motor drill's
- * bit turns a quarter turn (its four frames, the bit's symmetry) ten times a second.
+ * half a second when they stop. Every drill has {@link #FRAMES} frames: the Hand Drill's crank and bit go round once over
+ * them, twice a second; a motor drill's bit turns half a turn over them (its symmetry), five times a second.
  */
 public final class DrillSpin {
-	private static final float HAND_FRAMES_PER_SECOND = 16.0f;
-	private static final float MOTOR_FRAMES_PER_SECOND = 40.0f;
+	public static final int FRAMES = 12;
+	private static final float HAND_FRAMES_PER_SECOND = 24.0f;
+	private static final float MOTOR_FRAMES_PER_SECOND = 60.0f;
 	private static final float SPIN_UP_PER_SECOND = 4.0f;
 	private static final float SPIN_DOWN_PER_SECOND = 2.0f;
 	private static final Map<LivingEntity, Spin> SPINS = new WeakHashMap<>();
@@ -50,8 +51,8 @@ public final class DrillSpin {
 		RangeSelectItemModelProperties.ID_MAPPER.put(MyMod.id("drill_spin"), Property.MAP_CODEC);
 	}
 
-	public static int frames(ItemStack stack) {
-		return stack.getItem() instanceof DrillItem drill && drill.engine() == DrillItem.Engine.HAND_CRANK ? 8 : 4;
+	private static boolean handCranked(ItemStack stack) {
+		return stack.getItem() instanceof DrillItem drill && drill.engine() == DrillItem.Engine.HAND_CRANK;
 	}
 
 	/** Whether the holder has the trigger down. */
@@ -73,8 +74,8 @@ public final class DrillSpin {
 		boolean running = stack.getItem() instanceof DrillItem drill && drilling(holder)
 				&& (drill.powered(stack) || holder instanceof Player player && player.hasInfiniteMaterials());
 		spin.speed = Mth.clamp(spin.speed + (running ? SPIN_UP_PER_SECOND : -SPIN_DOWN_PER_SECOND) * seconds, 0.0f, 1.0f);
-		float rate = frames(stack) == 8 ? HAND_FRAMES_PER_SECOND : MOTOR_FRAMES_PER_SECOND;
-		spin.angle = (spin.angle + spin.speed * rate * seconds) % 8.0f;
+		float rate = handCranked(stack) ? HAND_FRAMES_PER_SECOND : MOTOR_FRAMES_PER_SECOND;
+		spin.angle = (spin.angle + spin.speed * rate * seconds) % FRAMES;
 		return spin.speed;
 	}
 
@@ -95,7 +96,7 @@ public final class DrillSpin {
 	/** The frame of the drill's spinning parts to show in the holder's hands. */
 	public static int frame(LivingEntity holder, ItemStack stack) {
 		update(holder);
-		return Mth.floor(SPINS.get(holder).angle) % frames(stack);
+		return Mth.floor(SPINS.get(holder).angle) % FRAMES;
 	}
 
 	public static void clear() {
