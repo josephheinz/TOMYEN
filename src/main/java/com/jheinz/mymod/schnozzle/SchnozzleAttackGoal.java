@@ -16,6 +16,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.Vec3;
 
+import com.jheinz.mymod.silver.HolySilverArmor;
+
 /**
  * How the Schnozzle fights. It circles its target at range, drifting round and changing direction now and then,
  * and every {@value #VOLLEY_COOLDOWN}-odd ticks sniffs in hard for {@value #SNIFF_TICKS} ticks (nostrils flaring),
@@ -242,6 +244,10 @@ class SchnozzleAttackGoal extends Goal {
 				continue;
 			}
 			victim.hurtServer(level, schnozzle.damageSources().mobAttack(schnozzle), SNEEZE_DAMAGE);
+			if (HolySilverArmor.fullSet(victim)) {
+				// Holy silver turns the whole blast aside, not just its damage.
+				continue;
+			}
 			double resist = Mth.clamp(victim.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), 0.0, 1.0);
 			double push = SNEEZE_PUSH * (1.0 - 0.6 * distance / SNEEZE_RANGE) * (1.0 - 0.7 * resist);
 			victim.push(to.scale(1.0 / distance).scale(push).add(0.0, 0.5 * push / SNEEZE_PUSH, 0.0));

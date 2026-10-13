@@ -45,6 +45,8 @@ import com.jheinz.mymod.client.exoskeleton.ExoskeletonScreen;
 import com.jheinz.mymod.client.hogfire.HogfireClient;
 import com.jheinz.mymod.client.schnozzle.SchnozzleClient;
 import com.jheinz.mymod.client.skullcrane.SkullcraneClient;
+import com.jheinz.mymod.client.soul.SoulVacuumClient;
+import com.jheinz.mymod.client.silver.SilverClient;
 import com.jheinz.mymod.client.industry.IndustryClient;
 import com.jheinz.mymod.client.launcher.LauncherClient;
 import com.jheinz.mymod.client.lmg.M249Animation;
@@ -128,5 +130,7 @@ public class MyModClient implements ClientModInitializer {
 		HogfireClient.initialize();
 		SchnozzleClient.initialize();
 		SkullcraneClient.initialize();
+		SoulVacuumClient.initialize();
+		SilverClient.initialize();
 	}
 }

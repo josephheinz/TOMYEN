@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mymod:magmasteel"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mymod:magmasteel"
+      }
+    ]
+  }
+}

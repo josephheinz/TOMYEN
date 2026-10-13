@@ -1059,13 +1059,23 @@ shaped("pig_wings", "mymod:pig_wings", ["S S", "KSK", "K K"], {"S": "mymod:wing_
 shaped("pig_flight_harness", "mymod:pig_flight_harness", ["L L", "PSP", "L L"],
        {"L": "minecraft:leather", "P": PLATE, "S": "minecraft:saddle"}, PLATE, category="equipment")
 
-# --- Tags (files of our own; the shared pickaxe tag is edited by hand) ----------------------------------------------
+# --- Tags (shared with gen_silver.py and hand edits, so entries are added to what's there; the pickaxe tag is by hand) --
 TAGS = os.path.normpath(os.path.join(DATA, "..", "minecraft", "tags"))
-write_json(os.path.join(TAGS, "block", "mineable", "shovel.json"), {"values": ["mymod:oil_seep"]})
-write_json(os.path.join(TAGS, "block", "needs_stone_tool.json"), {"values": ["mymod:bauxite_ore", "mymod:aluminium_block"]})
-write_json(os.path.join(TAGS, "block", "needs_iron_tool.json"), {"values": ["mymod:steel_block"]})
-write_json(os.path.join(TAGS, "block", "ores.json"), {"values": ["mymod:bauxite_ore", "mymod:oil_shale", "mymod:deepslate_oil_shale"]})
-write_json(os.path.join(TAGS, "item", "ores.json"), {"values": ["mymod:bauxite_ore", "mymod:oil_shale", "mymod:deepslate_oil_shale"]})
+
+
+def add_to_tag(path, values):
+    existing = []
+    if os.path.exists(path):
+        with open(path) as f:
+            existing = json.load(f)["values"]
+    write_json(path, {"values": existing + [v for v in values if v not in existing]})
+
+
+add_to_tag(os.path.join(TAGS, "block", "mineable", "shovel.json"), ["mymod:oil_seep"])
+add_to_tag(os.path.join(TAGS, "block", "needs_stone_tool.json"), ["mymod:bauxite_ore", "mymod:aluminium_block"])
+add_to_tag(os.path.join(TAGS, "block", "needs_iron_tool.json"), ["mymod:steel_block"])
+add_to_tag(os.path.join(TAGS, "block", "ores.json"), ["mymod:bauxite_ore", "mymod:oil_shale", "mymod:deepslate_oil_shale"])
+add_to_tag(os.path.join(TAGS, "item", "ores.json"), ["mymod:bauxite_ore", "mymod:oil_shale", "mymod:deepslate_oil_shale"])
 
 # --- The Hogfire's engine loop ------------------------------------------------------------------------------------
 

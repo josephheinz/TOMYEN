@@ -8,11 +8,14 @@
 		"LivingEntityExoskeletonMixin",
 		"LivingEntityBulletArmorMixin",
 		"LivingEntityPowerArmorMixin",
+		"LivingEntityMagmasteelMixin",
+		"LiquidBlockMagmasteelMixin",
 		"MerchantMenuPaymentCardMixin",
 		"MerchantOfferPaymentCardMixin",
 		"MerchantResultSlotPaymentCardMixin",
 		"MobAccessor",
 		"MobHijackMixin",
+		"MobSoulSteelMixin",
 		"PlayerLongSwordMixin",
 		"PlayerPowerArmorMixin",
 		"PlayerSkullcraneGripMixin",
@@ -26,7 +29,9 @@
 		"ItemStackExoSocketsMixin",
 		"LivingEntityExoSocketsMixin",
 		"PiglinAiExoSocketsMixin",
-		"PlayerExoSocketsMixin"
+		"PlayerExoSocketsMixin",
+		"EnchantmentHelperEvilBaneMixin",
+		"LivingEntityHolySilverMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

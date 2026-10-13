@@ -25,7 +25,8 @@ import net.minecraft.world.phys.Vec3;
  * Punch (attack) to send out a slow orb of light; hold use to charge, and let go to fire a beam of light
  * straight ahead. The longer the charge (up to {@link #FULL_CHARGE_TICKS}), the stronger the beam. Holy
  * light only hurts the undead and the holy-vulnerable (see {@link HolyLight#HOLY_VULNERABLE}). Vampires can't come
- * within {@link #WARD_RADIUS} blocks of anyone holding one.
+ * within {@link #WARD_RADIUS} blocks of anyone holding one. The holy silver crucifix's orbs hit harder and its beam
+ * charges faster.
  */
 public class CrucifixItem extends Item {
 	public static final int MIN_CHARGE_TICKS = 10;
@@ -36,8 +37,18 @@ public class CrucifixItem extends Item {
 	/** Vampires can't come closer than this to someone holding a crucifix. */
 	public static final double WARD_RADIUS = 3.0;
 
+	private final float orbDamage;
+	private final int fullChargeTicks;
+
 	public CrucifixItem(Properties properties) {
+		this(properties, LightOrb.DAMAGE, FULL_CHARGE_TICKS);
+	}
+
+	/** @param fullChargeTicks how long the beam takes to charge fully */
+	public CrucifixItem(Properties properties, float orbDamage, int fullChargeTicks) {
 		super(properties);
+		this.orbDamage = orbDamage;
+		this.fullChargeTicks = fullChargeTicks;
 	}
 
 	/** Whether the entity holds a crucifix in either hand. */
@@ -52,7 +63,7 @@ public class CrucifixItem extends Item {
 		}
 		// Straight down the line of sight: none of the player's own movement carries over, unlike a thrown item.
 		Vec3 look = player.getViewVector(1.0f);
-		LightOrb orb = new LightOrb(level, player);
+		LightOrb orb = new LightOrb(level, player, orbDamage);
 		orb.shoot(look.x, look.y, look.z, LightOrb.SPEED, 0.0f);
 		level.addFreshEntity(orb);
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.2f,
@@ -81,8 +92,8 @@ public class CrucifixItem extends Item {
 		return ItemUseAnimation.NONE;
 	}
 
-	public static float charge(int ticksHeld) {
-		return Math.min(1.0f, (float) ticksHeld / FULL_CHARGE_TICKS);
+	public float charge(int ticksHeld) {
+		return Math.min(1.0f, (float) ticksHeld / fullChargeTicks);
 	}
 
 	@Override
@@ -97,7 +108,7 @@ public class CrucifixItem extends Item {
 				Vec3 pull = hand.subtract(from).scale(0.12);
 				level.addParticle(ParticleTypes.END_ROD, from.x, from.y, from.z, pull.x, pull.y, pull.z);
 			}
-		} else if (held == FULL_CHARGE_TICKS) {
+		} else if (held == fullChargeTicks) {
 			level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.5f, 1.2f);
 		}
 	}
