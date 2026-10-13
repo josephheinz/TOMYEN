@@ -42,9 +42,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * A skullcrane: a bone-white human skull kept flying by an antigrav emitter underneath, with red optic lenses in its
  * eye sockets, a servo-hinged jaw and four segmented servo arms ending in grabber claws. It hovers
- * {@value #MIN_HOVER}-{@value #MAX_HOVER} blocks off the ground with a twitchy drone jitter, and hunts in packs: it
- * keeps near its packmates (following the eldest, see {@link SkullcranePackGoal}), shares its target with them, and
- * calls them all in when it's hurt. Alone it can only scratch; a pack grabs its prey between them and carries it up
+ * {@value #MIN_HOVER}-{@value #MAX_HOVER} blocks off the ground with a drone's jitter, and hunts in packs: it
+ * keeps near its packmates (following its {@link SkullcraneLeader pack leader} if it has one, otherwise the eldest, see
+ * {@link SkullcranePackGoal}), shares its target with them, and calls them all in when it's hurt. A pack that loses
+ * its leader panics, scattering for a few seconds. Alone it can only scratch; a pack grabs its prey between them and carries it up
  * to drop it (see {@link SkullcraneHuntGoal} and {@link SkullcraneGrip}).
  *
  * <p>Undead after a fashion, so smite and holy light (it's in the {@code mymod:holy_vulnerable} tag) hurt it more,
@@ -58,6 +59,8 @@ public class Skullcrane extends Monster {
 	static final float LET_GO_DAMAGE = 5.0f;
 	/** How far off it counts other skullcranes as its pack. */
 	static final double PACK_RADIUS = 20.0;
+	/** Natural packs: one in this many comes with a leader (and always a pack of {@link Skullcranes#MAX_PACK}). */
+	private static final int LEADER_CHANCE = 3;
 	/** Natural spawns need fewer than {@link #CROWD_LIMIT} skullcranes this close (a couple of packs). */
 	private static final double CROWD_RADIUS = 64.0;
 	private static final int CROWD_LIMIT = 8;
@@ -84,6 +87,9 @@ public class Skullcrane extends Monster {
 	/** Ticks before it'll try to grab anything again. */
 	int grabCooldown;
 	private int alertTicks;
+	/** Scattering after its leader died: ticks left, and where from. */
+	private int panicTicks;
+	private Vec3 panicFrom = Vec3.ZERO;
 	// Client side: arms flared (0 to 1), claws clamped shut (0 to 1), jaw chattering (0 to 1).
 	private float flare;
 	private float flareO;
@@ -151,18 +157,37 @@ public class Skullcrane extends Monster {
 				&& level.getEntitiesOfClass(Skullcrane.class, new AABB(pos).inflate(CROWD_RADIUS)).size() < CROWD_LIMIT;
 	}
 
-	/** Marks the rest of a pack hatched from one spawn egg, so they don't each hatch a pack of their own. */
+	/**
+	 * Shared by one pack as it spawns: whether it's to have a leader, whether that's been spawned yet, and how many
+	 * skulls there are so far. Also marks the rest of a pack hatched from one spawn egg, so they don't each hatch a pack
+	 * of their own.
+	 */
 	private static final class PackData implements SpawnGroupData {
+		private final boolean led;
+		private boolean leaderSpawned;
+		private int members;
+
+		PackData(boolean led) {
+			this.led = led;
+		}
 	}
 
-	/** A spawn egg hatches a whole pack. */
+	/** Whether a spawn egg of this hatches a whole pack (a leader's hatches just the leader). */
+	protected boolean hatchesPack() {
+		return true;
+	}
+
+	/**
+	 * A spawn egg hatches a whole pack, and a natural pack may come with a leader: one in {@value #LEADER_CHANCE} do,
+	 * and every pack of {@link Skullcranes#MAX_PACK}.
+	 */
 	@Override
 	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
 			@Nullable SpawnGroupData groupData) {
 		groupData = super.finalizeSpawn(level, difficulty, reason, groupData);
-		if (reason == EntitySpawnReason.SPAWN_ITEM_USE && !(groupData instanceof PackData)) {
-			PackData pack = new PackData();
+		if (reason == EntitySpawnReason.SPAWN_ITEM_USE && hatchesPack() && !(groupData instanceof PackData)) {
 			int mates = Skullcranes.MIN_PACK - 1 + random.nextInt(Skullcranes.MAX_PACK - Skullcranes.MIN_PACK + 1);
+			PackData pack = new PackData(mates + 1 >= Skullcranes.MAX_PACK || random.nextInt(LEADER_CHANCE) == 0);
 			for (int i = 0; i < mates; i++) {
 				Skullcrane mate = Skullcranes.SKULLCRANE.create(level.getLevel(), EntitySpawnReason.MOB_SUMMONED);
 				if (mate == null) {
@@ -174,8 +199,33 @@ public class Skullcrane extends Monster {
 				mate.finalizeSpawn(level, difficulty, EntitySpawnReason.MOB_SUMMONED, pack);
 				level.addFreshEntityWithPassengers(mate);
 			}
+			if (pack.led) {
+				spawnLeader(level, difficulty, pack);
+			}
+		} else if (reason == EntitySpawnReason.NATURAL && hatchesPack()) {
+			PackData pack = groupData instanceof PackData data ? data : new PackData(random.nextInt(LEADER_CHANCE) == 0);
+			groupData = pack;
+			pack.members++;
+			if (!pack.leaderSpawned && (pack.led || pack.members >= Skullcranes.MAX_PACK)) {
+				spawnLeader(level, difficulty, pack);
+			}
 		}
 		return groupData;
+	}
+
+	/** A leader for the pack, just above this one if there's room. */
+	private void spawnLeader(ServerLevelAccessor level, DifficultyInstance difficulty, PackData pack) {
+		SkullcraneLeader leader = Skullcranes.SKULLCRANE_LEADER.create(level.getLevel(), EntitySpawnReason.MOB_SUMMONED);
+		if (leader == null) {
+			return;
+		}
+		leader.snapTo(getX(), getY() + 1.0, getZ(), random.nextFloat() * 360.0f, 0.0f);
+		if (!level.noCollision(leader)) {
+			return;
+		}
+		pack.leaderSpawned = true;
+		leader.finalizeSpawn(level, difficulty, EntitySpawnReason.MOB_SUMMONED, pack);
+		level.addFreshEntityWithPassengers(leader);
 	}
 
 	// Only stays put while it's after something (or named, which Mob handles).
@@ -225,6 +275,59 @@ public class Skullcrane extends Monster {
 	List<Skullcrane> packmates() {
 		return level().getEntitiesOfClass(Skullcrane.class, getBoundingBox().inflate(PACK_RADIUS),
 				other -> other != this && other.isAlive());
+	}
+
+	/** The nearest pack leader in range, if it isn't one itself. */
+	@Nullable SkullcraneLeader packLeader() {
+		if (this instanceof SkullcraneLeader) {
+			return null;
+		}
+		SkullcraneLeader nearest = null;
+		for (Skullcrane mate : packmates()) {
+			if (mate instanceof SkullcraneLeader leader && (nearest == null || distanceToSqr(leader) < distanceToSqr(nearest))) {
+				nearest = leader;
+			}
+		}
+		return nearest;
+	}
+
+	/** How many ordinary skulls' worth of lift it gives a grip. */
+	public int liftWeight() {
+		return 1;
+	}
+
+	/** Damage, all told, that knocks it loose while it's clamped on. */
+	protected float letGoDamage() {
+		return LET_GO_DAMAGE;
+	}
+
+	/** Where it's held, clamped on, relative to its victim's feet (see {@link SkullcraneGrip#holdOffset}). */
+	public Vec3 holdOffset(float bodyYaw, float width, float height, int slot, int count) {
+		return SkullcraneGrip.holdOffset(bodyYaw, width, height, slot, count);
+	}
+
+	public boolean isPanicking() {
+		return panicTicks > 0;
+	}
+
+	/** Its leader's down: it lets go of anything it's holding and scatters away from {@code from} for a while. */
+	void panic(Vec3 from, int ticks) {
+		if (grip != null) {
+			grip.drop(this, ticks);
+		}
+		panicFrom = from;
+		panicTicks = ticks;
+		super.setTarget(null);
+		getNavigation().stop();
+		playSound(Skullcranes.CHATTER, 1.0f, 1.4f + random.nextFloat() * 0.3f);
+	}
+
+	// Scattering, it won't take up a target.
+	@Override
+	public void setTarget(@Nullable LivingEntity target) {
+		if (target == null || panicTicks <= 0) {
+			super.setTarget(target);
+		}
 	}
 
 	void clampTo(SkullcraneGrip grip) {
@@ -329,6 +432,10 @@ public class Skullcrane extends Monster {
 		if (grip != null && (grip.isRemoved() || !isClamped())) {
 			grip = null;
 		}
+		if (panicTicks > 0) {
+			panicTicks--;
+			scatter();
+		}
 		LivingEntity victim = grip != null ? grip.victim() : null;
 		if (victim != null && getTarget() != victim) {
 			// Clamped on, it's after whatever it's holding, whoever hits it.
@@ -353,14 +460,29 @@ public class Skullcrane extends Monster {
 			}
 		}
 		if (target != null && --alertTicks <= 0) {
-			// The pack shares its prey.
+			// The pack shares its prey; a leader's prey is everyone's.
+			boolean leading = this instanceof SkullcraneLeader;
 			for (Skullcrane mate : packmates()) {
-				if (mate.getTarget() == null && mate.canAttack(target)) {
+				LivingEntity theirs = mate.getTarget();
+				if ((theirs == null || leading && theirs != target && !mate.isClamped()) && mate.canAttack(target)) {
 					mate.setTarget(target);
 				}
 			}
 			alertTicks = 10;
 		}
+	}
+
+	/** Flies off away from where its leader fell, picking a new spot every second or when it gets there. */
+	private void scatter() {
+		if (!getNavigation().isDone() && panicTicks % 20 != 0) {
+			return;
+		}
+		Vec3 away = position().subtract(panicFrom).horizontal();
+		away = away.lengthSqr() < 1.0e-4 ? new Vec3(random.nextGaussian(), 0.0, random.nextGaussian()) : away;
+		away = away.normalize().yRot((random.nextFloat() - 0.5f) * 1.2f).scale(8.0 + random.nextDouble() * 6.0);
+		double x = getX() + away.x;
+		double z = getZ() + away.z;
+		getNavigation().moveTo(x, cruiseY(x, z) + 2.0, z, 1.6);
 	}
 
 	/** Drone twitchiness: little random nudges, and a shove apart from any packmate it's bumping into. */
@@ -403,7 +525,7 @@ public class Skullcrane extends Monster {
 		chatter = Mth.approach(chatter, attacking && isAlive() ? 1.0f : 0.0f, 0.15f);
 		if (mode == CLAMPED && target instanceof LivingEntity victim) {
 			// Glued on where the grip holds it, rather than trailing behind its position updates.
-			setPos(victim.position().add(SkullcraneGrip.holdOffset(victim.yBodyRot, victim.getBbWidth(), victim.getBbHeight(), slot(), slots())));
+			setPos(victim.position().add(holdOffset(victim.yBodyRot, victim.getBbWidth(), victim.getBbHeight(), slot(), slots())));
 		}
 		if (isAlive() && random.nextInt(mode == CLAMPED ? 6 : 30) == 0) {
 			// The antigrav emitter underneath crackles.
@@ -441,7 +563,7 @@ public class Skullcrane extends Monster {
 		boolean hurt = super.hurtServer(level, source, damage);
 		if (hurt && grip != null && isAlive()) {
 			damageWhileClamped += damage;
-			if (damageWhileClamped >= LET_GO_DAMAGE) {
+			if (damageWhileClamped >= letGoDamage()) {
 				// Knocked loose.
 				grip.drop(this, SkullcraneGrip.REGROUP_TICKS / 2);
 			}

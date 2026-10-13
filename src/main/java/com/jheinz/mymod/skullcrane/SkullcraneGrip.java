@@ -41,8 +41,8 @@ import com.jheinz.mymod.tank.Tank;
  *
  * <ul>
  * <li>The first skull to clamp on makes the grip. Until there are {@link #holdersNeeded} of them (two for a
- * player-sized victim, one for a chicken or a child, {@value #POWER_ARMOR_HOLDERS} for someone in power armor) they
- * just cling on, weighing the victim down and scratching; after {@value #CLING_TICKS} ticks they give up.
+ * player-sized victim, one for a chicken or a child, {@value #POWER_ARMOR_HOLDERS} for someone in power armor; a pack
+ * leader counts as {@value SkullcraneLeader#LIFT_WEIGHT}, so it lifts a player alone) they just cling on, weighing the victim down and scratching; after {@value #CLING_TICKS} ticks they give up.
  * <li>With enough on, they lift off, rising {@value #LIFT_SPEED} blocks a tick with just enough of them and
  * proportionally faster with more, up to {@value #MAX_LIFT_SPEED}: 3 blocks a second with two on a player, 6 with four,
  * 8 at most. More skulls can clamp on on the way up (up to {@value #MAX_HOLDERS}).
@@ -165,6 +165,15 @@ public class SkullcraneGrip extends Entity {
 		victim.hurtServer(level, skull.damageSources().mobAttack(skull), (float) skull.getAttributeValue(Attributes.ATTACK_DAMAGE));
 	}
 
+	/** How much lift its holders give between them, in ordinary skulls. */
+	private int liftPower() {
+		int power = 0;
+		for (Skullcrane holder : holders) {
+			power += holder.liftWeight();
+		}
+		return power;
+	}
+
 	public boolean hasRoom() {
 		return holders.size() < MAX_HOLDERS;
 	}
@@ -181,7 +190,7 @@ public class SkullcraneGrip extends Entity {
 	void drop(Skullcrane skull, int cooldown) {
 		if (holders.remove(skull)) {
 			skull.detach(cooldown);
-			if (level() instanceof ServerLevel level && lifting && victim != null && holders.size() < holdersNeeded(victim)) {
+			if (level() instanceof ServerLevel level && lifting && victim != null && liftPower() < holdersNeeded(victim)) {
 				release(level);
 			} else {
 				placeHolders();
@@ -221,7 +230,7 @@ public class SkullcraneGrip extends Entity {
 		if (clingTicks++ % 10 == 0) {
 			victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, Math.min(holders.size(), 3) - 1), holders.get(0));
 		}
-		if (holders.size() >= holdersNeeded(victim)) {
+		if (liftPower() >= holdersNeeded(victim)) {
 			liftOff(level, victim);
 		} else if (clingTicks > CLING_TICKS) {
 			release(level);
@@ -256,11 +265,11 @@ public class SkullcraneGrip extends Entity {
 	/** Up, faster the more of them there are, until they're high enough or can't go any higher. */
 	private void lift(ServerLevel level, LivingEntity victim) {
 		int needed = holdersNeeded(victim);
-		if (victim.getVehicle() != this || holders.size() < needed || ++liftTicks > MAX_LIFT_TICKS) {
+		if (victim.getVehicle() != this || liftPower() < needed || ++liftTicks > MAX_LIFT_TICKS) {
 			release(level);
 			return;
 		}
-		double speed = Math.min(MAX_LIFT_SPEED, LIFT_SPEED * holders.size() / needed);
+		double speed = Math.min(MAX_LIFT_SPEED, LIFT_SPEED * liftPower() / needed);
 		AABB body = victim.getBoundingBox();
 		AABB above = new AABB(body.minX, body.maxY, body.minZ, body.maxX, body.maxY + HEADROOM + speed, body.maxZ).inflate(0.2, 0.0, 0.2);
 		boolean blocked = !level.noBlockCollision(null, above) || body.maxY + HEADROOM + speed > level.getMaxY();
@@ -313,9 +322,10 @@ public class SkullcraneGrip extends Entity {
 		Vec3 feet = lifting ? position() : held.position();
 		int count = holders.size();
 		for (int i = 0; i < count; i++) {
-			Vec3 offset = holdOffset(held.yBodyRot, held.getBbWidth(), held.getBbHeight(), i, count);
+			Skullcrane holder = holders.get(i);
+			Vec3 offset = holder.holdOffset(held.yBodyRot, held.getBbWidth(), held.getBbHeight(), i, count);
 			float yaw = (float) (Mth.atan2(-offset.z, -offset.x) * Mth.RAD_TO_DEG) - 90.0f;
-			holders.get(i).holdAt(feet.add(offset), yaw, i, count);
+			holder.holdAt(feet.add(offset), yaw, i, count);
 		}
 	}
 

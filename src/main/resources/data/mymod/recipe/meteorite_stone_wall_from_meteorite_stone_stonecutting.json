@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mymod:meteorite_stone",
+  "result": {
+    "count": 1,
+    "id": "mymod:meteorite_stone_wall"
+  }
+}

@@ -10,10 +10,12 @@ import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Prediction;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityTypes;
@@ -22,6 +24,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.enchantment.EnchantedItemInUse;
@@ -34,6 +37,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.jspecify.annotations.Nullable;
 
 import com.jheinz.mymod.ModComponents;
+import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.powerarmor.PowerArmorPieceItem;
 
@@ -42,6 +46,11 @@ import com.jheinz.mymod.powerarmor.PowerArmorPieceItem;
  * suit itself fills every armor slot: any item that equips to the head, chest, legs or feet (modded armor, a
  * turtle shell, a carved pumpkin, a mob head) or an elytra, but not another exoskeleton, a Neuralink or power
  * armor. One piece per armor slot, so a chestplate and an elytra rule each other out.
+ *
+ * <p>Gear ({@link #GEAR}, such as the Optic Monocle and the Servo Arm Backpack) is worn in an armor slot too, but in
+ * a socket it isn't armor: it doesn't take up its slot, so it goes in alongside a helmet, a chestplate or an elytra
+ * (one of each gear item). It still counts as worn in its slot for attributes and enchantments, and is drawn by its
+ * own renderer rather than as the slot's armor.
  *
  * <p>While the suit is worn its socketed pieces count as worn, through hooks in vanilla's own equipment code:
  * their attribute modifiers (and enchantment attributes) come with the suit's ({@link #forEachModifier}), their
@@ -57,6 +66,8 @@ public final class ExoSockets {
 	public static final int COUNT = 6;
 	public static final List<EquipmentSlot> ARMOR_SLOTS = List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS,
 			EquipmentSlot.FEET);
+	/** Wearables that socket as gear, not armor: they don't take up their armor slot. */
+	public static final TagKey<Item> GEAR = TagKey.create(Registries.ITEM, MyMod.id("exo_gear"));
 
 	private ExoSockets() {
 	}
@@ -66,8 +77,21 @@ public final class ExoSockets {
 		EntityElytraEvents.CUSTOM.register(ExoSockets::glide);
 	}
 
-	/** The armor slot a stack fills in a socket, or null if it isn't something the frame can wear. */
+	/** The armor slot a stack fills in a socket, or null if it isn't armor the frame can wear (gear isn't). */
 	public static @Nullable EquipmentSlot armorSlot(ItemStack stack) {
+		return isGear(stack) ? null : wornSlot(stack);
+	}
+
+	/** Whether a stack is gear: something wearable that sockets without taking up its armor slot. */
+	public static boolean isGear(ItemStack stack) {
+		return !stack.isEmpty() && stack.is(GEAR) && wornSlot(stack) != null;
+	}
+
+	/**
+	 * The armor slot a socketed stack counts as worn in (its armor slot, or the slot gear is worn in), or null if it
+	 * isn't something the frame can wear.
+	 */
+	public static @Nullable EquipmentSlot wornSlot(ItemStack stack) {
 		if (stack.isEmpty() || stack.getItem() instanceof ExoskeletonItem || stack.getItem() instanceof NeuralinkItem
 				|| stack.getItem() instanceof PowerArmorPieceItem) {
 			return null;
@@ -84,24 +108,31 @@ public final class ExoSockets {
 		return stack.has(DataComponents.GLIDER) && armorSlot(stack) == EquipmentSlot.CHEST;
 	}
 
-	/** Whether a stack goes in a socket at all: a module or something wearable. */
+	/** Whether a stack goes in a socket at all: a module or something wearable (armor or gear). */
 	public static boolean fits(ItemStack stack) {
-		return stack.getItem() instanceof ExoModuleItem || armorSlot(stack) != null;
+		return stack.getItem() instanceof ExoModuleItem || wornSlot(stack) != null;
 	}
 
-	/** Whether a stack may go in one of the sockets, given what's in the others. */
+	/**
+	 * Whether a stack may go in one of the sockets, given what's in the others: one piece of armor per armor slot, one
+	 * of each module and one of each gear item.
+	 */
 	public static boolean mayPlace(List<ItemStack> sockets, int socket, ItemStack stack) {
-		EquipmentSlot slot = armorSlot(stack);
-		ExoModule module = stack.getItem() instanceof ExoModuleItem item ? item.module() : null;
-		if (slot == null && module == null) {
+		if (!fits(stack)) {
 			return false;
 		}
+		EquipmentSlot slot = armorSlot(stack);
+		ExoModule module = stack.getItem() instanceof ExoModuleItem item ? item.module() : null;
+		boolean gear = isGear(stack);
 		for (int i = 0; i < sockets.size(); i++) {
 			ItemStack other = sockets.get(i);
 			if (i == socket || other.isEmpty()) {
 				continue;
 			}
-			if (slot != null ? armorSlot(other) == slot : other.getItem() instanceof ExoModuleItem item && item.module() == module) {
+			boolean clash = gear ? other.is(stack.getItem())
+					: slot != null ? armorSlot(other) == slot
+					: other.getItem() instanceof ExoModuleItem item && item.module() == module;
+			if (clash) {
 				return false;
 			}
 		}
@@ -138,12 +169,47 @@ public final class ExoSockets {
 		return armor(entity.getItemBySlot(EquipmentSlot.CHEST), slot);
 	}
 
-	/** Whether the exoskeleton an entity wears holds a piece that matches. */
+	/** The gear socketed in a suit (see {@link #GEAR}), or none. */
+	public static List<ItemStack> gear(ItemStack suit) {
+		if (!(suit.getItem() instanceof ExoskeletonItem) || isEmpty(suit)) {
+			return List.of();
+		}
+		return contents(suit).stream().filter(ExoSockets::isGear).toList();
+	}
+
+	/** The stack of an item socketed in the exoskeleton an entity wears, armor or gear (not a module), or empty. */
+	public static ItemStack socketed(LivingEntity entity, Item item) {
+		ItemStack suit = entity.getItemBySlot(EquipmentSlot.CHEST);
+		if (suit.getItem() instanceof ExoskeletonItem && !isEmpty(suit)) {
+			for (ItemStack stack : contents(suit)) {
+				if (stack.is(item) && wornSlot(stack) != null) {
+					return stack;
+				}
+			}
+		}
+		return ItemStack.EMPTY;
+	}
+
+	/** Whether the exoskeleton an entity wears has an item socketed, as armor or gear. */
+	public static boolean hasSocketed(LivingEntity entity, Item item) {
+		return !socketed(entity, item).isEmpty();
+	}
+
+	/** The armor pieces socketed in the exoskeleton an entity wears (not its modules or gear), or none. */
+	public static List<ItemStack> socketedArmor(LivingEntity entity) {
+		ItemStack suit = entity.getItemBySlot(EquipmentSlot.CHEST);
+		if (!(suit.getItem() instanceof ExoskeletonItem) || isEmpty(suit)) {
+			return List.of();
+		}
+		return contents(suit).stream().filter(stack -> armorSlot(stack) != null).toList();
+	}
+
+	/** Whether the exoskeleton an entity wears holds a piece (armor or gear) that matches. */
 	public static boolean wears(LivingEntity entity, Predicate<ItemStack> test) {
 		ItemStack suit = entity.getItemBySlot(EquipmentSlot.CHEST);
 		if (suit.getItem() instanceof ExoskeletonItem) {
 			for (ItemStack stack : contents(suit)) {
-				if (armorSlot(stack) != null && test.test(stack)) {
+				if (wornSlot(stack) != null && test.test(stack)) {
 					return true;
 				}
 			}
@@ -152,14 +218,14 @@ public final class ExoSockets {
 	}
 
 	/**
-	 * Edits copies of the socketed armor pieces (each with the slot it fills) and writes any change back to the
-	 * suit: durability, or a piece used up.
+	 * Edits copies of the socketed pieces, armor and gear (each with the slot it counts as worn in), and writes any
+	 * change back to the suit: durability, or a piece used up.
 	 */
 	static void edit(ItemStack suit, BiConsumer<EquipmentSlot, ItemStack> edit) {
 		NonNullList<ItemStack> sockets = contents(suit);
 		List<ItemStack> before = sockets.stream().map(ItemStack::copy).toList();
 		for (ItemStack stack : sockets) {
-			EquipmentSlot slot = armorSlot(stack);
+			EquipmentSlot slot = wornSlot(stack);
 			if (slot != null) {
 				edit.accept(slot, stack);
 			}
@@ -175,13 +241,13 @@ public final class ExoSockets {
 	// ------------------------------------------------------------------------------------------ vanilla hooks
 
 	/**
-	 * The attribute modifiers the socketed pieces give, each as if worn in its own slot (enchantment attributes
-	 * included). Vanilla adds and removes these along with the suit's own whenever the suit changes, so they come
+	 * The attribute modifiers the socketed pieces (armor and gear) give, each as if worn in its own slot (enchantment
+	 * attributes included): a socketed Servo Arm Backpack's reach, say. Vanilla adds and removes these along with the suit's own whenever the suit changes, so they come
 	 * and go as it's put on, taken off or a piece breaks.
 	 */
 	public static void forEachModifier(ItemStack suit, BiConsumer<Holder<Attribute>, AttributeModifier> consumer) {
 		for (ItemStack stack : contents(suit)) {
-			EquipmentSlot slot = armorSlot(stack);
+			EquipmentSlot slot = wornSlot(stack);
 			if (slot != null && !stack.isBroken()) {
 				stack.forEachModifier(slot, consumer);
 			}

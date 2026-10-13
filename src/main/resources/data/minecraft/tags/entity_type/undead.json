@@ -1,6 +1,7 @@
 {
   "values": [
     "mymod:vampire",
-    "mymod:skullcrane"
+    "mymod:skullcrane",
+    "mymod:skullcrane_leader"
   ]
 }

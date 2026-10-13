@@ -1341,6 +1341,36 @@
       }
     ]
   },
+  "meteor_whistle": {
+    "subtitle": "subtitles.mymod.meteor_whistle",
+    "sounds": [
+      {
+        "name": "minecraft:item/elytra/elytra_loop",
+        "pitch": 1.7
+      }
+    ]
+  },
+  "meteor_impact": {
+    "subtitle": "subtitles.mymod.meteor_impact",
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:random/explode2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:random/explode3",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:random/explode4",
+        "pitch": 0.55
+      }
+    ]
+  },
   "mech_step": {
     "subtitle": "subtitles.mymod.mech_step",
     "sounds": [

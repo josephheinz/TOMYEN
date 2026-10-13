@@ -24,14 +24,16 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 
+import com.jheinz.mymod.meteorite.Meteorites;
+import com.jheinz.mymod.meteorite.StarlightLensItem;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.neuralink.NeuralinkModule;
 import com.jheinz.mymod.tungsten.Tungsten;
 import com.jheinz.mymod.uranium.Uranium;
 
 /**
- * Finds the ores around a player wearing an x-ray module. It cycles through the chunk sections in range a
- * few per tick, nearest first, so the whole area is refreshed about once a second without a hitch, and skips
+ * Finds the ores around a player wearing an x-ray module (or looking through a Starlight Lens at night). It cycles
+ * through the chunk sections in range a few per tick, nearest first, so the whole area is refreshed about once a second without a hitch, and skips
  * sections whose block palette has no ore at all.
  */
 public final class OreScanner {
@@ -60,7 +62,8 @@ public final class OreScanner {
 	public static void tick(Minecraft minecraft) {
 		Player player = minecraft.player;
 		ClientLevel level = minecraft.level;
-		if (player == null || level == null || !NeuralinkItem.isActive(player, NeuralinkModule.XRAY)) {
+		if (player == null || level == null || !NeuralinkItem.isActive(player, NeuralinkModule.XRAY)
+				&& !StarlightLensItem.isRevealing(player)) {
 			reset();
 			return;
 		}
@@ -188,6 +191,7 @@ public final class OreScanner {
 		if (state.is(Blocks.NETHER_QUARTZ_ORE)) return 0xF2EDE4;
 		if (state.is(Uranium.URANIUM_ORES)) return 0x9CFF3A;
 		if (state.is(Tungsten.TUNGSTEN_ORE)) return 0x8C96A8;
+		if (state.is(Meteorites.METEORIC_IRON_ORE)) return 0x9C8CFF;
 		return state.is(BlockTags.ORES) ? 0xFFFFFF : 0;
 	}
 }

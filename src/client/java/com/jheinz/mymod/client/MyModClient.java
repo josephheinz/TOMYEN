@@ -58,6 +58,8 @@ import com.jheinz.mymod.client.mech.MechClient;
 import com.jheinz.mymod.client.powerarmor.PowerArmorClient;
 import com.jheinz.mymod.client.tank.TankClient;
 import com.jheinz.mymod.client.uranium.UraniumClient;
+import com.jheinz.mymod.client.meteorite.MeteorRenderer;
+import com.jheinz.mymod.meteorite.Meteorites;
 import com.jheinz.mymod.station.ModMenus;
 
 public class MyModClient implements ClientModInitializer {
@@ -105,6 +107,7 @@ public class MyModClient implements ClientModInitializer {
 		ModelLayerRegistry.registerModelLayer(VampireModel.LAYER, VampireModel::createBodyLayer);
 		ModelLayerRegistry.registerModelLayer(VampireCloakModel.LAYER, VampireCloakModel::createBodyLayer);
 		EntityRendererRegistry.register(ModEntities.LIGHT_ORB, LightOrbRenderer::new);
+		EntityRendererRegistry.register(Meteorites.METEOR, MeteorRenderer::new);
 		ClientPlayNetworking.registerGlobalReceiver(ModNetworking.LightBeam.TYPE, (payload, context) -> HolyBeams.receive(payload));
 		LevelRenderEvents.COLLECT_SUBMITS.register(HolyBeams::submit);
 		ParticleProviderRegistry.getInstance().register(ModParticles.LASER_DOT, LaserDotParticle.Provider::new);

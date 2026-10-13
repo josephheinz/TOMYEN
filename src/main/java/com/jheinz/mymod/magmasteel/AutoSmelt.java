@@ -39,7 +39,7 @@ public final class AutoSmelt {
 			return;
 		}
 		ItemInstance tool = context.getOptional(LootContextParams.TOOL);
-		if (tool == null || !isMagmasteelTool(tool) || hasSilkTouch(tool)) {
+		if (tool == null || !Magmasteel.SET.minesWith(tool) || hasSilkTouch(tool)) {
 			return;
 		}
 		ServerLevel level = context.getLevel();
@@ -76,10 +76,6 @@ public final class AutoSmelt {
 		level.sendParticles(ParticleTypes.SMOKE, origin.x, origin.y + 0.2, origin.z, 3, 0.2, 0.2, 0.2, 0.01);
 		level.playSound(null, origin.x, origin.y, origin.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.25f,
 				1.6f + context.getRandom().nextFloat() * 0.3f);
-	}
-
-	private static boolean isMagmasteelTool(ItemInstance tool) {
-		return Magmasteel.SET.tools().stream().anyMatch(tool::is);
 	}
 
 	private static boolean hasSilkTouch(ItemInstance tool) {

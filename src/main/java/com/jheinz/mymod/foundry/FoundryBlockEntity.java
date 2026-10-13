@@ -28,7 +28,9 @@ import com.jheinz.mymod.ModBlocks;
  * <p>
  * While it burns, the Foundry heats up by {@link #TEMPERATURE_RISE}°C a tick to {@link #MAX_TEMPERATURE}, and cools
  * by {@link #TEMPERATURE_FALL} a tick when it's idle. A recipe with a minimum temperature (aluminium's 1400°C, say)
- * burns heat while the Foundry warms up but only makes progress once it's hot enough.
+ * burns heat while the Foundry warms up but only makes progress once it's hot enough. One with a maximum (a quench,
+ * like froststeel's) holds the Foundry at that temperature while it works, and waits, unlit, while a hotter Foundry
+ * cools down to it.
  */
 public class FoundryBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
 	public static final int INPUT_COUNT = 2;
@@ -50,7 +52,9 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 	public static final int DATA_TEMPERATURE = 4;
 	/** The current recipe's minimum temperature, or 0. */
 	public static final int DATA_REQUIRED_TEMPERATURE = 5;
-	public static final int DATA_COUNT = 6;
+	/** The current recipe's maximum temperature, or 0. */
+	public static final int DATA_MAX_TEMPERATURE = 6;
+	public static final int DATA_COUNT = 7;
 
 	private static final int[] TOP_SLOTS = {0, 1};
 	private static final int[] SIDE_SLOTS = {FUEL_SLOT};
@@ -64,6 +68,7 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 	private int progressTotal;
 	private int temperature = AMBIENT_TEMPERATURE;
 	private int requiredTemperature;
+	private int maxTemperature;
 
 	private final ContainerData data = new ContainerData() {
 		@Override
@@ -75,6 +80,7 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 				case DATA_PROGRESS_TOTAL -> progressTotal;
 				case DATA_TEMPERATURE -> temperature;
 				case DATA_REQUIRED_TEMPERATURE -> requiredTemperature;
+				case DATA_MAX_TEMPERATURE -> maxTemperature;
 				default -> 0;
 			};
 		}
@@ -88,6 +94,7 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 				case DATA_PROGRESS_TOTAL -> progressTotal = value;
 				case DATA_TEMPERATURE -> temperature = value;
 				case DATA_REQUIRED_TEMPERATURE -> requiredTemperature = value;
+				case DATA_MAX_TEMPERATURE -> maxTemperature = value;
 				default -> {
 				}
 			}
@@ -114,9 +121,13 @@ public class FoundryBlockEntity extends BaseContainerBlockEntity implements Worl
 			changed = true;
 		}
 
-		boolean smelting = canSmelt && foundry.heat > 0;
+		// A quench won't start in a Foundry hotter than it allows: the Foundry sits unlit until it has cooled down to it.
+		boolean tooHot = canSmelt && recipe.hasMaxTemperature() && foundry.temperature > recipe.maxTemperature();
+		boolean smelting = canSmelt && foundry.heat > 0 && !tooHot;
 		foundry.requiredTemperature = recipe == null ? 0 : recipe.minTemperature();
-		int temperature = smelting ? Math.min(MAX_TEMPERATURE, foundry.temperature + TEMPERATURE_RISE)
+		foundry.maxTemperature = recipe == null ? 0 : recipe.maxTemperature();
+		int ceiling = recipe != null && recipe.hasMaxTemperature() ? recipe.maxTemperature() : MAX_TEMPERATURE;
+		int temperature = smelting ? Math.min(ceiling, foundry.temperature + TEMPERATURE_RISE)
 				: Math.max(AMBIENT_TEMPERATURE, foundry.temperature - TEMPERATURE_FALL);
 		if (temperature != foundry.temperature) {
 			foundry.temperature = temperature;

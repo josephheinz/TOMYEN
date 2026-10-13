@@ -1,5 +1,7 @@
 {
   "values": [
-    "mymod:tungsten_ore"
+    "mymod:tungsten_ore",
+    "mymod:star_steel_block",
+    "mymod:voidsteel_block"
   ]
 }

@@ -14,15 +14,20 @@ import net.minecraft.world.item.ItemStack;
  * the inputs. An upgrade recipe turns its {@code upgrades} ingredient into the result, keeping that item's data
  * (a Neuralink's installed modules, say). A recipe with a {@code minTemperature} (in °C) only makes progress once
  * the Foundry has heated up that far (see {@link FoundryBlockEntity#MAX_TEMPERATURE}); most have none. A
- * {@code finish} step, if any, works on the result after that (a fusion core's recharge adds its charge, say).
+ * {@code finish} step, if any, works on the result after that (a fusion core's recharge adds its charge, say). A
+ * cold recipe (a quench) has a {@code maxTemperature} instead: the Foundry holds at that while it works, and a hotter
+ * one has to cool down to it before it starts.
  */
 public record FoundryRecipe(Item resultItem, int resultCount, int cookTicks, List<Cost> costs, @Nullable Item upgrades, int minTemperature,
-		@Nullable UnaryOperator<ItemStack> finish) {
+		int maxTemperature, @Nullable UnaryOperator<ItemStack> finish) {
+	/** A recipe's {@code maxTemperature} when it has none. */
+	public static final int NO_MAXIMUM = 0;
+
 	public record Cost(Item item, int count) {
 	}
 
 	public FoundryRecipe(Item resultItem, int resultCount, int cookTicks, List<Cost> costs, @Nullable Item upgrades) {
-		this(resultItem, resultCount, cookTicks, costs, upgrades, 0, null);
+		this(resultItem, resultCount, cookTicks, costs, upgrades, 0, NO_MAXIMUM, null);
 	}
 
 	public FoundryRecipe(Item resultItem, int resultCount, int cookTicks, List<Cost> costs) {
@@ -31,12 +36,21 @@ public record FoundryRecipe(Item resultItem, int resultCount, int cookTicks, Lis
 
 	/** This recipe, needing the Foundry at least this hot. */
 	public FoundryRecipe withMinTemperature(int temperature) {
-		return new FoundryRecipe(resultItem, resultCount, cookTicks, costs, upgrades, temperature, finish);
+		return new FoundryRecipe(resultItem, resultCount, cookTicks, costs, upgrades, temperature, maxTemperature, finish);
+	}
+
+	/** This recipe, needing the Foundry no hotter than this. */
+	public FoundryRecipe withMaxTemperature(int temperature) {
+		return new FoundryRecipe(resultItem, resultCount, cookTicks, costs, upgrades, minTemperature, temperature, finish);
+	}
+
+	public boolean hasMaxTemperature() {
+		return maxTemperature != NO_MAXIMUM;
 	}
 
 	/** This recipe, with a step that works on each result (a copy of the upgraded item, for an upgrade recipe). */
 	public FoundryRecipe withFinish(UnaryOperator<ItemStack> step) {
-		return new FoundryRecipe(resultItem, resultCount, cookTicks, costs, upgrades, minTemperature, step);
+		return new FoundryRecipe(resultItem, resultCount, cookTicks, costs, upgrades, minTemperature, maxTemperature, step);
 	}
 
 	/** What smelting these inputs gives. */

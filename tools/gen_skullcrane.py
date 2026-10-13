@@ -1,18 +1,20 @@
 """Paints the Skullcrane (its entity texture and the glow layer for its lenses and antigrav emitter, UVs matching
-client/skullcrane/SkullcraneModel) and the Servo Drone's brass-and-green repaint of it, the worn monocle and backpack
-(client/skullcrane/ServoGearRenderer), its spawn egg, the Servo Arm and Optic Lens items and the Grapple Claw, Optic
-Monocle, Servo Arm Backpack and Servo Drone made from them, and writes their item models and definitions. On the data side it writes the Skullcrane's loot table, the recipes that use its drops (with recipe-book
-advancements), and adds it to the mymod:holy_vulnerable and minecraft:undead entity tags.
+client/skullcrane/SkullcraneModel), its pack leader's amber-eyed, bronze-crested version and the Servo Drone's
+brass-and-green repaint of it, the worn monocle and backpack (client/skullcrane/ServoGearRenderer), the spawn eggs,
+the Servo Arm, Optic Lens and Leader Core items and the Grapple Claw, Optic Monocle, Servo Arm Backpack and Servo Drone
+made from them, and writes their item models and definitions. Everything is
+flat-shaded from fixed palettes, so a rerun gives the same files. On the data side it writes the Skullcrane's loot
+table, the recipes that use its drops (with recipe-book advancements), and adds both to the mymod:holy_vulnerable and
+minecraft:undead entity tags.
 
 Usage: python3 tools/gen_skullcrane.py src/main/resources/assets/mymod"""
-import json, math, os, random, struct, sys, zlib
+import json, math, os, struct, sys, zlib
 from collections import OrderedDict
 
 ASSETS = sys.argv[1]  # .../assets/mymod
 TEX = os.path.join(ASSETS, "textures")
 DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
 MC_DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "minecraft"))
-rnd = random.Random(31)
 
 
 def png(path, w, h, px):
@@ -63,12 +65,10 @@ CLEAR = (0, 0, 0, 0)
 def clamp(v): return max(0, min(255, int(round(v))))
 
 
-def mix(a, b, t): return tuple(a[i] + (b[i] - a[i]) * t for i in range(3))
 
 
-def col(c, shade=1.0, jitter=0, a=255):
-    d = rnd.uniform(-jitter, jitter) if jitter else 0
-    return (clamp(c[0] * shade + d), clamp(c[1] * shade + d), clamp(c[2] * shade + d), a)
+def col(c, shade=1.0, a=255):
+    return (clamp(c[0] * shade), clamp(c[1] * shade), clamp(c[2] * shade), a)
 
 
 class Canvas:
@@ -94,253 +94,218 @@ class Canvas:
         png(os.path.join(TEX, rel), self.w, self.h, self.px)
 
 
-def faces(u, v, w, h, d):
-    """A model cube's faces in the standard layout, as integer rectangles. 'top' and 'bottom' are as seen in the world
-    (the model is upside down); in both, the front edge is the last row."""
-    w, h, d = math.ceil(w), math.ceil(h), math.ceil(d)
-    return {"top": (u + d, v, w, d), "bottom": (u + d + w, v, w, d), "right": (u, v + d, d, h),
-            "front": (u + d, v + d, w, h), "left": (u + d + w, v + d, d, h), "back": (u + 2 * d + w, v + d, w, h)}
-
-
 # ---------------------------------------------------------------------------------------------- palette
+# Item sprites below use these.
 BONE = (226, 216, 190)
 BONE_LIGHT = (240, 234, 214)
 BONE_SHADE = (190, 178, 148)
 BONE_STAIN = (172, 156, 120)
-CRACK = (92, 80, 62)
 SOCKET = (22, 16, 14)
 TOOTH = (236, 228, 200)
-GUM = (120, 100, 78)
 METAL = (112, 118, 126)
 METAL_LIGHT = (160, 168, 176)
 METAL_DARK = (62, 66, 74)
 BOLT = (196, 200, 204)
 BRASS = (186, 146, 70)
 BRASS_DARK = (126, 94, 40)
-RUBBER = (30, 30, 34)
 LENS = (214, 26, 30)
 LENS_HOT = (255, 140, 110)
-LENS_RIM = (70, 20, 20)
-EMITTER = (110, 220, 255)
-EMITTER_HOT = (220, 250, 255)
 
-tex = Canvas(64, 64)
-glow = Canvas(64, 64)
-
-
-def bone(shade=1.0, stain=0.08):
-    """Old bone: pale, mottled, with brownish stains."""
-    def f(x, y):
-        n = rnd.random()
-        if n < stain:
-            return col(BONE_STAIN, shade, 5)
-        if n < stain + 0.12:
-            return col(BONE_LIGHT, shade, 3)
-        if n < stain + 0.24:
-            return col(BONE_SHADE, shade, 4)
-        return col(BONE, shade, 5)
-    return f
+# The entity textures are flat-shaded from a handful of tones each, light to dark: no noise, no dithering.
+BONE_RAMP = [(242, 236, 216), (226, 216, 190), (204, 191, 160), (174, 159, 128), (128, 111, 88)]
+MOUTH = (74, 52, 44)
+STEEL_RAMP = [(150, 157, 168), (98, 104, 115), (64, 68, 77), (42, 44, 50)]
+BRASS_RAMP = [(236, 196, 112), (192, 146, 66), (136, 97, 42), (92, 64, 28)]
+RED_LENS = {"lens": (220, 32, 36), "hot": (255, 168, 140), "rim": (120, 18, 22)}
+GREEN_LENS = {"lens": (56, 214, 98), "hot": (206, 255, 218), "rim": (24, 104, 48)}
+CYAN_EMITTER = {"lens": (96, 214, 250), "hot": (224, 250, 255), "rim": (40, 90, 112)}
+GREEN_EMITTER = {"lens": (110, 236, 150), "hot": (226, 255, 232), "rim": (36, 96, 56)}
+AMBER_LENS = {"lens": (255, 168, 30), "hot": (255, 240, 180), "rim": (140, 76, 10)}
+BRONZE_RAMP = [(214, 152, 84), (172, 110, 52), (122, 74, 34), (82, 48, 22)]
 
 
-def metal(base=METAL, shade=1.0, bolts=False):
-    def f(x, y):
-        if bolts and (x in (0, max(0, f.w - 1))) and (y in (0, max(0, f.h - 1))):
-            return col(BOLT, shade, 3)
-        n = rnd.random()
-        if n < 0.12:
-            return col(mix(base, METAL_LIGHT, 0.5), shade, 4)
-        if n < 0.24:
-            return col(mix(base, METAL_DARK, 0.5), shade, 4)
-        return col(base, shade, 6)
-    f.w, f.h = 99, 99
-    return f
+def faces(u, v, w, h, d):
+    """A model cube's faces in the texture, as (u, v, width, height), laid out as the game lays them out, fractional
+    sizes and all. 'top' and 'bottom' are as seen in the world (the model is upside down); in both, the front edge is
+    the last row. In 'right' the front edge is the last column, in 'left' the first."""
+    return {"top": (u + d, v, w, d), "bottom": (u + d + w, v, w, d), "right": (u, v + d, d, h),
+            "front": (u + d, v + d, w, h), "left": (u + d + w, v + d, d, h), "back": (u + 2 * d + w, v + d, w, h)}
 
 
-def paint_cube(canvas, u, v, w, h, d, fn, front=None, top=None, bottom=None, back=None):
-    shades = {"top": 1.08, "bottom": 0.78, "front": 1.0, "back": 0.9, "right": 0.94, "left": 0.94}
-    special = {"front": front, "top": top, "bottom": bottom, "back": back}
-    for name, rect in faces(u, v, w, h, d).items():
-        f = special.get(name) or fn(shades[name])
-        canvas.rect(*rect, f)
+def paint(canvas, u, v, w, h, d, painters):
+    """painters: face name -> f(x, y, fw, fh) -> colour, with x, y the texel within the face and fw, fh its size
+    rounded up; missing faces stay clear. A texel goes to the face its middle falls in, so on a fractional cube a texel
+    straddling two faces shows on both."""
+    for name, (fu, fv, fw, fh) in faces(u, v, w, h, d).items():
+        f = painters.get(name)
+        if f is None:
+            continue
+        for py in range(math.floor(fv), math.ceil(fv + fh)):
+            for px in range(math.floor(fu), math.ceil(fu + fw)):
+                x, y = px + 0.5 - fu, py + 0.5 - fv
+                if 0 <= x < fw and 0 <= y < fh:
+                    canvas.set(px, py, f(int(x), int(y), math.ceil(fw), math.ceil(fh)))
 
 
-def crack(u, v, w, h, n, length=(3, 7)):
-    """Hairline cracks wandering across a face."""
-    for _ in range(n):
-        x, y = rnd.randrange(w), rnd.randrange(h)
-        for _ in range(rnd.randint(*length)):
-            if 0 <= x < w and 0 <= y < h:
-                tex.set(u + x, v + y, col(CRACK, 1.0, 6))
-            x += rnd.choice((-1, 0, 1))
-            y += rnd.choice((0, 1, 1))
+def tone(ramp, i):
+    return ramp[max(0, min(len(ramp) - 1, i))] + (255,)
 
 
-# Cranium, with the face on the front: sockets, the nose hole, cracks, and a bolted plate scar.
-def face(x, y):
-    # 10 wide, 8 tall: sockets on rows 4-7 in columns 1-3 and 6-8, the nose hole between them below.
-    for cx in (2.5, 7.5):
-        dx, dy = (x + 0.5 - cx) / 1.6, (y + 0.5 - 5.6) / 1.6
-        r = dx * dx + dy * dy
-        if r < 0.8:
-            return col(SOCKET, 1.0, 3)
-        if r < 1.3:
-            return col(BONE_SHADE, 0.75, 4)
-    if x in (4, 5) and y >= 6:
-        return col(SOCKET, 1.0, 3)
-    if x in (4, 5) and y == 5:
-        return col(BONE_SHADE, 0.75, 3)
-    return bone(1.0, 0.05)(x, y)
+def flat(c):
+    return lambda x, y, w, h: c + (255,)
 
 
-paint_cube(tex, 0, 0, 10, 8, 10, lambda s: bone(s), front=face)
-for name, rect in faces(0, 0, 10, 8, 10).items():
-    if name != "bottom":
-        crack(*rect, 2 if name in ("top", "left", "right") else 1)
-# A jagged crack running from the crown down the forehead.
-fu, fv, _, _ = faces(0, 0, 10, 8, 10)["front"]
-for x, y in ((6, 0), (6, 1), (5, 2), (5, 3)):
-    tex.set(fu + x, fv + y, col(CRACK))
-paint_cube(tex, 40, 0, 8, 6, 1, lambda s: bone(s * 0.95))
-paint_cube(tex, 40, 7, 10, 1.5, 1, lambda s: bone(s * 1.04, 0.03))
+def skull_textures(bone, metal, lens, emitter, trim=None, arms=1.0):
+    """The skullcrane's texture and glow layer (UVs as in client/skullcrane/SkullcraneModel), in the given ramps; with
+    a trim ramp, a leader's, with its crest and horn plates and its arms that much longer."""
+    tex, glow = Canvas(64, 32), Canvas(64, 32)
 
-# Upper jaw: a row of teeth along the front with dark gaps, bone round the rest.
-def teeth(x, y):
-    if y == 0:
-        return col(GUM, 1.0, 4)
-    return col(SOCKET) if x % 2 == 1 and rnd.random() < 0.5 else col(TOOTH, 1.0, 5)
+    # Cranium, 10 x 8 x 10 at (0, 0). Lit from above: a pale crown, shading down the sides to a dark underside.
+    # One crack runs from the crown down over the left brow.
+    crack = {("top", 6, 6), ("top", 6, 7), ("top", 7, 8), ("top", 7, 9), ("front", 7, 0), ("front", 8, 1)}
+
+    def cracked(name, f):
+        return lambda x, y, w, h: tone(bone, 4) if (name, x, y) in crack else f(x, y, w, h)
+
+    def crown(x, y, w, h):
+        edge = min(x, y, w - 1 - x, h - 1 - y)
+        return tone(bone, 0 if edge >= 1 else 1)
+
+    def side(x, y, w, h):
+        return tone(bone, 1 if y < 5 else 2 if y < 7 else 3)
+
+    def back(x, y, w, h):
+        return tone(bone, 1 if y < 3 else 2 if y < 6 else 3)
+
+    def underside(x, y, w, h):
+        if 1 <= x <= 8 and y >= 5:  # the roof of the mouth, over the jaw
+            return MOUTH + (255,)
+        return tone(bone, 3)
+
+    # The face, drawn out: 0-4 the bone ramp, D the dark of the sockets, nose and mouth. The lenses cover the sockets'
+    # middles (columns 2-3 and 6-7, rows 4-5); the bottom row is the upper teeth.
+    FACE = ["0000000000",
+            "1111111111",
+            "1122112211",
+            "12DD22DD21",
+            "1DDD33DDD1",
+            "1DDD33DDD1",
+            "2233DD3322",
+            "3003003003"]
+
+    def face(x, y, w, h):
+        c = FACE[y][x]
+        return MOUTH + (255,) if c == "D" else tone(bone, int(c))
+
+    paint(tex, 0, 0, 10, 8, 10, {"top": cracked("top", crown), "front": cracked("front", face), "right": side, "left": side,
+                                 "back": back, "bottom": underside})
+
+    # Jaw, 8 x 2 x 5 at (0, 18): lower teeth along the front, the inside of the mouth on top.
+    def chin(x, y, w, h):
+        if y == 0:
+            return tone(bone, 3) if x in (0, 2, 5, 7) else tone(bone, 0)
+        return tone(bone, 2)
+
+    paint(tex, 0, 18, 8, 2, 5, {"top": flat(MOUTH), "front": chin, "right": lambda x, y, w, h: tone(bone, 2 + y),
+                                "left": lambda x, y, w, h: tone(bone, 2 + y), "back": flat(bone[3]), "bottom": flat(bone[3])})
+
+    # Lenses, 2 x 2 x 1 at (40, 0): solid colour with one bright glint, a darker rim round the sides.
+    def lens_face(x, y, w, h):
+        return lens["hot" if (x, y) == (0, 0) else "lens"] + (255,)
+
+    rim = flat(lens["rim"])
+    paint(tex, 40, 0, 2, 2, 1, {"front": lens_face, "right": rim, "left": rim, "top": rim, "bottom": rim, "back": rim})
+    paint(glow, 40, 0, 2, 2, 1, {"front": lens_face})
+
+    # Emitter, 3 x 1 x 3 at (40, 4): a dark housing with a glowing plate underneath.
+    def plate(x, y, w, h):
+        return emitter["hot" if (x, y) == (1, 1) else "lens"] + (255,)
+
+    housing = flat(metal[2])
+    paint(tex, 40, 4, 3, 1, 3, {"top": housing, "right": housing, "left": housing, "front": housing, "back": housing,
+                                "bottom": plate})
+    paint(glow, 40, 4, 3, 1, 3, {"bottom": plate})
+
+    # Arm segments at (40, 10), (48, 10) and (56, 10), and the pincer prong at (60, 10): plain metal, a highlight
+    # down one edge, a darker band at the tip end.
+    def strut(lit):
+        return lambda x, y, w, h: tone(metal, 2 if y == h - 1 else 0 if lit and x == 0 and w > 1 else 1)
+
+    def prong(x, y, w, h):
+        return tone(metal, 0 if y == h - 1 else 1)
+
+    for u, (t, length) in zip((40, 48, 56), ((1.5, 4.5), (1.25, 4.0), (1.0, 3.5))):
+        paint(tex, u, 10, t, length * arms, t, {"front": strut(True), "right": strut(False), "left": strut(False),
+                                                "back": strut(False), "top": flat(metal[2]), "bottom": flat(metal[2])})
+    paint(tex, 60, 10, 0.5, 2.5, 0.5, {name: prong for name in ("front", "right", "left", "back", "top", "bottom")})
+    if trim:
+        # The crest, 2 x 2 x 8 at (26, 18), and a horn plate, 1 x 4 x 3 at (46, 18): bronze, lit along the top.
+        def plate(x, y, w, h):
+            return tone(trim, 0 if y == 0 else 1 if y < h - 1 else 2)
+
+        sides = {name: plate for name in ("front", "right", "left", "back")}
+        paint(tex, 26, 18, 2, 2, 8, dict(sides, top=flat(trim[0]), bottom=flat(trim[3])))
+        paint(tex, 46, 18, 1, 4, 3, dict(sides, top=flat(trim[0]), bottom=flat(trim[3])))
+    return tex, glow
 
 
-paint_cube(tex, 0, 18, 8, 1.5, 5, lambda s: bone(s * 0.95), front=teeth)
-
-# Optic lenses: red with a hot centre and a dark rim; the same on the glow layer.
-def lens(c):
-    def f(x, y):
-        if (x, y) == (1, 1):
-            return col(LENS_HOT)
-        if x == 1 or y == 1:
-            return col(LENS, 1.1)
-        return col(LENS if c is tex else LENS, 0.85)
-    return f
-
-
-for canvas in (tex, glow):
-    rect = faces(26, 18, 2.5, 2.5, 0.5)
-    for name, (ru, rv, rw, rh) in rect.items():
-        if name == "front":
-            canvas.rect(ru, rv, rw, rh, lens(canvas))
-        elif canvas is tex:
-            canvas.rect(ru, rv, rw, rh, lambda x, y: col(LENS_RIM, 1.0, 4))
-
-# Bolted plates on the crown and the temple.
-paint_cube(tex, 40, 10, 5, 0.6, 6, lambda s: metal(METAL, s))
-fu, fv, fw, fh = faces(40, 10, 5, 0.6, 6)["top"]
-for x, y in ((0, 0), (fw - 1, 0), (0, fh - 1), (fw - 1, fh - 1)):
-    tex.set(fu + x, fv + y, col(BOLT))
-paint_cube(tex, 34, 18, 0.6, 4, 5, lambda s: metal(METAL, s))
-for name in ("right", "left"):
-    fu, fv, fw, fh = faces(34, 18, 0.6, 4, 5)[name]
-    for x, y in ((0, 0), (fw - 1, 0), (0, fh - 1), (fw - 1, fh - 1)):
-        tex.set(fu + x, fv + y, col(BOLT))
-
-# Mandible: lower teeth along the top front edge, bone below.
-def lower_teeth(x, y):
-    if y == 0:
-        return col(SOCKET) if x % 2 == 0 and rnd.random() < 0.4 else col(TOOTH, 1.0, 5)
-    return bone(0.9)(x, y)
-
-
-paint_cube(tex, 0, 25, 7, 1.5, 5, lambda s: bone(s * 0.95), front=lower_teeth)
-crack(*faces(0, 25, 7, 1.5, 5)["bottom"], 1, (2, 4))
-# Hinge pistons: brass rods with dark ends.
-paint_cube(tex, 24, 25, 0.8, 2.2, 0.8, lambda s: (lambda x, y: col(BRASS_DARK if y == 2 else BRASS, s, 6)))
-
-# Antigrav emitter: a dark housing with a vented rim, and a glowing plate underneath.
-paint_cube(tex, 46, 18, 4, 1.5, 4, lambda s: (lambda x, y: col(METAL_DARK if (x + y) % 2 else METAL, s, 5)))
-def emitter(c):
-    def f(x, y):
-        if (x, y) == (1, 1):
-            return col(EMITTER_HOT)
-        return col(EMITTER, 0.9 if (x + y) % 2 else 1.0, 6)
-    return f
-
-
-paint_cube(tex, 46, 24, 3, 0.5, 3, lambda s: (lambda x, y: col(METAL_DARK, s, 4)), bottom=emitter(tex), top=emitter(tex))
-for name in ("bottom", "top"):
-    glow.rect(*faces(46, 24, 3, 0.5, 3)[name], emitter(glow))
-
-# Cables: black rubber with a red band near the end.
-paint_cube(tex, 58, 0, 0.8, 3.5, 0.8, lambda s: (lambda x, y: col((150, 30, 30) if y == 2 else RUBBER, s, 4)))
-
-# Arms: gunmetal servo housings with a bright bolt, struts with grip rings, brass pistons alongside.
-for s in range(3):
-    paint_cube(tex, s * 8, 32, 2, 2, 2, lambda sh: (lambda x, y: col(BOLT if (x, y) == (0, 0) else METAL_DARK, sh, 5)))
-    paint_cube(tex, s * 8, 36, 1.2, 4, 1.2, lambda sh: (lambda x, y: col(METAL_LIGHT if y % 3 == 2 else METAL, sh, 6)))
-paint_cube(tex, 24, 32, 0.6, 3, 0.6, lambda s: (lambda x, y: col(BRASS if y < 2 else (200, 200, 205), s, 5)))
-paint_cube(tex, 28, 32, 2, 1.5, 2, lambda s: (lambda x, y: col(METAL_DARK, s, 4)))
-paint_cube(tex, 36, 32, 0.7, 1.6, 0.7, lambda s: (lambda x, y: col(METAL_LIGHT, s, 6)))
-paint_cube(tex, 40, 32, 0.6, 1.3, 0.6, lambda s: (lambda x, y: col(METAL_DARK if y == 1 else METAL_LIGHT, s, 4)))
-
+tex, glow = skull_textures(BONE_RAMP, STEEL_RAMP, RED_LENS, CYAN_EMITTER)
 tex.save("entity/skullcrane/skullcrane.png")
 glow.save("entity/skullcrane/skullcrane_glow.png")
+# The Servo Drone: the same skull with brass arms and green lenses and emitter.
+tex, glow = skull_textures(BONE_RAMP, BRASS_RAMP, GREEN_LENS, GREEN_EMITTER)
+tex.save("entity/skullcrane/servo_drone.png")
+glow.save("entity/skullcrane/servo_drone_glow.png")
+# The pack leader: amber lenses and emitter, a bronze crest and horns, longer arms.
+tex, glow = skull_textures(BONE_RAMP, STEEL_RAMP, AMBER_LENS, AMBER_LENS, trim=BRONZE_RAMP, arms=1.3)
+tex.save("entity/skullcrane/skullcrane_leader.png")
+glow.save("entity/skullcrane/skullcrane_leader_glow.png")
 
-
-# The Servo Drone: the skullcrane's texture with its steel turned brass and its lenses and emitter green.
-def tame(c):
-    r, g, b, a = c
-    if a == 0:
-        return c
-    if r > 150 and g < 90 and b < 90:  # red lens
-        return (clamp(g * 0.6), clamp(r * 0.95), clamp(b * 0.6 + 30), a)
-    if b > 200 and g > 180 and r < 230:  # cyan emitter
-        return (clamp(r * 0.5), g, clamp(b * 0.55), a)
-    if abs(r - b) < 25 and abs(r - g) < 25 and 40 < r < 215:  # steel
-        return (clamp(r * 1.12 + 18), clamp(g * 0.92 + 4), clamp(b * 0.5), a)
-    return c
-
-
-drone = Canvas(64, 64)
-drone.px = [tame(c) for c in tex.px]
-drone_glow = Canvas(64, 64)
-drone_glow.px = [tame(c) for c in glow.px]
-drone.save("entity/skullcrane/servo_drone.png")
-drone_glow.save("entity/skullcrane/servo_drone_glow.png")
-
-# Worn gear (client/skullcrane/ServoGearRenderer): the monocle's band, rim and lens; the backpack's casing, power
-# cell, arm struts, servo joints and claw fingers.
+# Worn gear (client/skullcrane/ServoGearRenderer): the monocle's band, rim and lens; the backpack's spine pack, power
+# cell, arm segments and claw prongs.
 gear = Canvas(64, 32)
 gear_glow = Canvas(64, 32)
-LEATHER = (88, 58, 38)
-CELL = (90, 210, 255)
+LEATHER = (96, 64, 42)
+CELL = {"lens": (96, 214, 250), "hot": (224, 250, 255)}
+ALL = ("top", "bottom", "front", "back", "right", "left")
 
 
-def paint_on(canvas, u, v, w, h, d, f):
-    for name, rect in faces(u, v, w, h, d).items():
-        canvas.rect(*rect, f)
+def every(f):
+    return {name: f for name in ALL}
 
 
-paint_on(gear, 0, 0, 8.6, 0.6, 8.6, lambda x, y: col(LEATHER, 1.0, 6))
-paint_on(gear, 36, 0, 3, 0.5, 0.5, lambda x, y: col(METAL_LIGHT, 1.0, 6))
-paint_on(gear, 44, 0, 0.5, 2.5, 0.5, lambda x, y: col(METAL_LIGHT, 1.0, 6))
+def lens_glint(x, y, w, h):
+    return (RED_LENS["hot"] if (x, y) == (0, 0) else RED_LENS["lens"]) + (255,)
+
+
+paint(gear, 0, 0, 8.6, 0.6, 8.6, every(flat(LEATHER)))
+paint(gear, 36, 0, 3, 0.5, 0.5, every(flat(STEEL_RAMP[0])))
+paint(gear, 44, 0, 0.5, 2.5, 0.5, every(flat(STEEL_RAMP[0])))
 for canvas in (gear, gear_glow):
-    paint_on(canvas, 48, 0, 2, 2.5, 0.3, lambda x, y: col(LENS_HOT if (x, y) == (0, 0) else LENS, 1.0, 6))
+    paint(canvas, 48, 0, 2, 2.5, 0.3, every(lens_glint))
 
 
-# Casing: steel with a bolt in each corner and vents across the back.
-def casing(x, y):
-    if (x, y) in ((0, 0), (5, 0), (0, 6), (5, 6)):
-        return col(BOLT)
-    if y in (2, 4) and 1 <= x <= 4:
-        return col(METAL_DARK)
-    return metal(METAL)(x, y)
+# Spine pack, 4 x 8 x 2 at (0, 10): plain steel, a highlight along the top edge and a darker border.
+def casing(x, y, w, h):
+    if y == 0:
+        return tone(STEEL_RAMP, 0)
+    return tone(STEEL_RAMP, 2 if x in (0, w - 1) or y == h - 1 else 1)
 
 
-paint_on(gear, 0, 10, 6, 7, 2.5, casing)
+paint(gear, 0, 10, 4, 8, 2, every(casing))
 for canvas in (gear, gear_glow):
-    paint_on(canvas, 18, 10, 3, 4, 1, lambda x, y: col(CELL if (x + y) % 3 else (220, 250, 255), 1.0, 8))
-paint_on(gear, 26, 10, 1.2, 5, 1.2, lambda x, y: col(METAL_LIGHT if y % 3 == 2 else METAL, 1.0, 6))
-paint_on(gear, 34, 10, 1, 4, 1, lambda x, y: col(BRASS if y < 2 else METAL, 1.0, 6))
-paint_on(gear, 38, 10, 1.8, 1.8, 1.8, lambda x, y: col(BOLT if (x, y) == (0, 0) else METAL_DARK, 1.0, 5))
-paint_on(gear, 46, 10, 0.6, 2, 0.6, lambda x, y: col(METAL_LIGHT if y == 0 else METAL_DARK, 1.0, 5))
+    paint(canvas, 12, 10, 2, 3, 0.5, every(lambda x, y, w, h: CELL["hot" if (x, y) == (0, 1) else "lens"] + (255,)))
+
+
+# Arm segments (each running 0.25 back past its joint) at (18, 10), (24, 10), (30, 10) and (36, 10), and a claw prong
+# at (40, 10): a highlight down one edge, a darker band at the far end.
+def gear_strut(lit):
+    return lambda x, y, w, h: tone(STEEL_RAMP, 2 if y == 0 else 0 if lit and x == 0 and w > 1 else 1)
+
+
+for u, t, length in ((18, 1.5, 5.5), (24, 1.25, 5.0), (30, 1.25, 4.5), (36, 1.0, 4.0)):
+    paint(gear, u, 10, t, length + 0.25, t, dict(every(gear_strut(False)), front=gear_strut(True)))
+paint(gear, 40, 10, 0.5, 2.0, 0.5, every(lambda x, y, w, h: tone(STEEL_RAMP, 0 if y == 0 else 1)))
 gear.save("entity/skullcrane/servo_gear.png")
 gear_glow.save("entity/skullcrane/servo_gear_glow.png")
 
@@ -381,38 +346,66 @@ for y in range(16):
         r = math.hypot(x + 0.5 - 8, y + 0.5 - 8)
         if r < 4.6:
             light = (8 - x) + (8 - y)
-            lens_item.set(x, y, col(LENS_HOT if r < 1.2 else LENS, 1.0 + 0.04 * light, 4))
+            lens_item.set(x, y, col(LENS_HOT if r < 1.2 else LENS, 1.0 + 0.04 * light))
         elif r < 6.2:
-            lens_item.set(x, y, col(METAL_LIGHT if (x + y) % 5 == 0 else METAL, 1.0, 5))
+            lens_item.set(x, y, col(METAL_LIGHT if (x + y) % 5 == 0 else METAL))
         elif r < 7.0:
             lens_item.set(x, y, col(METAL_DARK))
 for x, y in ((6, 5), (5, 6), (6, 6)):
     lens_item.set(x, y, col((255, 230, 220)))
 lens_item.save("item/optic_lens.png")
 
-# Spawn egg: the shopping cart egg's outline, repainted bone with red lens spots and a steel band.
+# Spawn eggs: the shopping cart egg's outline, repainted bone with lens spots and a band: red and steel for the
+# skullcrane, amber and bronze for its leader.
 w, h, cart_egg = read_png(os.path.join(TEX, "item/shopping_cart_spawn_egg.png"))
 mask = [p[3] > 0 for p in cart_egg]
 xs = [i % w for i in range(w * h) if mask[i]]
 ys = [i // w for i in range(w * h) if mask[i]]
 cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
 SPOTS = [(6, 6), (10, 6)]
-egg = Canvas(w, h)
-for i in range(w * h):
-    if not mask[i]:
-        continue
-    x, y = i % w, i // w
-    outline = not all(0 <= x + dx < w and 0 <= y + dy < h and mask[(y + dy) * w + x + dx] for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-    if outline:
-        egg.px[i] = col((70, 64, 56))
-    elif any(abs(x - sx) + abs(y - sy) <= 1 for sx, sy in SPOTS):
-        egg.px[i] = col(LENS if (x, y) not in SPOTS else LENS_HOT)
-    elif y == round(cy) + 2:
-        egg.px[i] = col(METAL)
-    else:
-        light = (cx - x) + (cy - y)
-        egg.px[i] = col(BONE_LIGHT if light > 5 else BONE if light > 1 else BONE_SHADE if light > -4 else BONE_STAIN)
-egg.save("item/skullcrane_spawn_egg.png")
+
+
+def spawn_egg(lens, hot, band, name):
+    egg = Canvas(w, h)
+    for i in range(w * h):
+        if not mask[i]:
+            continue
+        x, y = i % w, i // w
+        outline = not all(0 <= x + dx < w and 0 <= y + dy < h and mask[(y + dy) * w + x + dx] for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+        if outline:
+            egg.px[i] = col((70, 64, 56))
+        elif any(abs(x - sx) + abs(y - sy) <= 1 for sx, sy in SPOTS):
+            egg.px[i] = col(lens if (x, y) not in SPOTS else hot)
+        elif y == round(cy) + 2:
+            egg.px[i] = col(band)
+        else:
+            light = (cx - x) + (cy - y)
+            egg.px[i] = col(BONE_LIGHT if light > 5 else BONE if light > 1 else BONE_SHADE if light > -4 else BONE_STAIN)
+    egg.save("item/%s.png" % name)
+
+
+spawn_egg(LENS, LENS_HOT, METAL, "skullcrane_spawn_egg")
+spawn_egg(AMBER_LENS["lens"], AMBER_LENS["hot"], BRONZE_RAMP[1], "skullcrane_leader_spawn_egg")
+
+# Leader Core: an amber core in a bronze cage, with a glint.
+LEADER_CORE = ["................",
+               "......kkkk......",
+               "....kkBBBBkk....",
+               "...kBAAAAAABk...",
+               "...kAHHAAAAAk...",
+               "..kBAHWAAAAABk..",
+               "..kBAAAAAAAABk..",
+               "..kBAAAAAAAABk..",
+               "..kBAAAAAAADBk..",
+               "..kBAAAAAADDBk..",
+               "...kAAAADDDDk...",
+               "...kBADDDDDBk...",
+               "....kkBBBBkk....",
+               "......kkkk......",
+               "................",
+               "................"]
+sprite(LEADER_CORE, {"k": col(BRONZE_RAMP[3]), "B": col(BRONZE_RAMP[1]), "A": col(AMBER_LENS["lens"]),
+                     "H": col(AMBER_LENS["hot"]), "W": col((255, 252, 236)), "D": col((206, 116, 20))}).save("item/leader_core.png")
 
 # Grapple Claw: a claw on a coil of cable, the cable trailing off to a grip.
 GRAPPLE = ["................",
@@ -440,9 +433,9 @@ for y in range(16):
     for x in range(16):
         r = math.hypot(x + 0.5 - 7, y + 0.5 - 6)
         if r < 3.4:
-            monocle.set(x, y, col(LENS_HOT if r < 1.0 else LENS, 1.0 + 0.05 * ((7 - x) + (6 - y)), 4))
+            monocle.set(x, y, col(LENS_HOT if r < 1.0 else LENS, 1.0 + 0.05 * ((7 - x) + (6 - y))))
         elif r < 4.8:
-            monocle.set(x, y, col(METAL_LIGHT if (x + y) % 4 == 0 else METAL, 1.0, 5))
+            monocle.set(x, y, col(METAL_LIGHT if (x + y) % 4 == 0 else METAL))
 for x, y in ((6, 4), (5, 5)):
     monocle.set(x, y, col((255, 230, 220)))
 for i, (x, y) in enumerate(((10, 10), (11, 11), (11, 12), (12, 13), (12, 14), (13, 15))):
@@ -501,8 +494,8 @@ def write(path, obj):
         f.write("\n")
 
 
-for name in ("skullcrane_spawn_egg", "servo_arm", "optic_lens", "grapple_claw", "optic_monocle", "servo_arm_backpack",
-             "servo_drone"):
+for name in ("skullcrane_spawn_egg", "skullcrane_leader_spawn_egg", "servo_arm", "optic_lens", "leader_core", "grapple_claw",
+             "optic_monocle", "servo_arm_backpack", "servo_drone"):
     write(os.path.join(MODELS, name + ".json"),
           OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/" + name})]))
     write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
@@ -520,6 +513,21 @@ write(os.path.join(DATA, "loot_table/entities/skullcrane.json"), OrderedDict([
     ("pools", [drop("mymod:servo_arm", 0, 2), drop("mymod:optic_lens", 0, 1), drop("minecraft:bone", 0, 2),
                drop("mymod:tech_scrap", 0, 1, 0.5)]),
     ("random_sequence", "mymod:entities/skullcrane")]))
+
+# The leader: more of everything, and now and then (killed by a player) its Leader Core.
+write(os.path.join(DATA, "loot_table/entities/skullcrane_leader.json"), OrderedDict([
+    ("type", "minecraft:entity"),
+    ("pools", [drop("mymod:servo_arm", 2, 4), drop("mymod:optic_lens", 1, 3), drop("minecraft:bone", 1, 4),
+               drop("mymod:tech_scrap", 1, 2, 1.0),
+               OrderedDict([
+                   ("condition", {"type": "minecraft:all_of", "terms": [
+                       {"type": "minecraft:killed_by_player"},
+                       OrderedDict([("type", "minecraft:random_chance_with_enchanted_bonus"),
+                                    ("enchanted_chance", {"type": "minecraft:linear", "base": 0.45, "per_level_above_first": 0.1}),
+                                    ("enchantment", "minecraft:looting"), ("unenchanted_chance", 0.35)])]}),
+                   ("entries", [{"type": "minecraft:item", "name": "mymod:leader_core"}]),
+                   ("rolls", 1)])]),
+    ("random_sequence", "mymod:entities/skullcrane_leader")]))
 
 
 def advancement(name, ingredient, category="misc"):
@@ -569,6 +577,19 @@ def tag_add(path, entry):
     write(path, {"values": values})
 
 
-tag_add(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), "mymod:skullcrane")
-tag_add(os.path.join(MC_DATA, "tags/entity_type/undead.json"), "mymod:skullcrane")
+# A Leader Core overclocks a Servo Arm Backpack: it fetches items from further off (see ServoGear).
+OVERCLOCKED_LORE = [OrderedDict([("translate", key), ("color", color), ("italic", False)]) for key, color in (
+    ("item.mymod.servo_arm_backpack.pickup", "gray"), ("item.mymod.servo_arm_backpack.overclocked", "gold"),
+    ("item.mymod.servo_gear.socket", "gray"))]
+write(os.path.join(DATA, "recipe", "servo_arm_backpack_overclocked.json"), OrderedDict([
+    ("type", "minecraft:crafting_shapeless"), ("category", "equipment"),
+    ("ingredients", ["mymod:servo_arm_backpack", "mymod:leader_core"]),
+    ("result", OrderedDict([("count", 1), ("id", "mymod:servo_arm_backpack"), ("components", OrderedDict([
+        ("minecraft:custom_data", {"overclocked": True}), ("minecraft:enchantment_glint_override", True),
+        ("minecraft:lore", OVERCLOCKED_LORE)]))]))]))
+advancement("servo_arm_backpack_overclocked", "mymod:leader_core", "equipment")
+
+for entity in ("mymod:skullcrane", "mymod:skullcrane_leader"):
+    tag_add(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), entity)
+    tag_add(os.path.join(MC_DATA, "tags/entity_type/undead.json"), entity)
 print("done")

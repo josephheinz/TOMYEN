@@ -113,16 +113,19 @@ class SkullcraneHuntGoal extends Goal {
 		harry(level, target);
 	}
 
-	/** Whether enough of the pack (counting itself) are close by, after the same prey and ready, to lift it. */
+	/**
+	 * Whether enough of the pack (counting itself) are close by, after the same prey and ready, to lift it: a leader
+	 * counts for several (see {@link Skullcrane#liftWeight}), so it can lift a player alone.
+	 */
 	private boolean packReady(LivingEntity target) {
-		int ready = 1;
+		int ready = skull.liftWeight();
 		int needed = SkullcraneGrip.holdersNeeded(target);
 		for (Skullcrane mate : skull.packmates()) {
 			if (ready >= needed) {
 				break;
 			}
 			if (mate.getTarget() == target && !mate.isClamped() && mate.grabCooldown == 0 && mate.distanceTo(target) < GATHER_RANGE) {
-				ready++;
+				ready += mate.liftWeight();
 			}
 		}
 		return ready >= needed && skull.distanceTo(target) < GATHER_RANGE;

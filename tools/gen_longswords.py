@@ -1,12 +1,16 @@
-"""Builds the seven long swords (wooden, stone, copper, iron, golden, diamond, netherite): one flat texture each, made
-from that tier's vanilla sword the way the recipe makes the item, by laying three swords end to end on the diagonal.
+"""Builds the eleven long swords: one flat texture each, made from that tier's sword the way the recipe makes the item,
+by laying three swords end to end on the diagonal. The seven vanilla tiers' (wooden, stone, copper, iron, golden,
+diamond, netherite) come from vanilla's swords, the mod metals' (magmasteel, soul steel, froststeel, voidsteel) from
+the mod's own sword textures (tools/gen_soul_metals.py and tools/gen_frost_void_metals.py, run first).
 
 The vanilla sword sprite (16x16) runs from the pommel at the lower left to the point at the upper right. Its blade is
 a band five texels wide across the diagonal, every row of it the row below moved one texel up and right. The long
 sword keeps the vanilla hilt (pommel, grip and crossguard) where it is, at the lower left of a 32x32 canvas, and
 lays three copies of the blade along the same diagonal, each starting where the one before ends, the last reaching
 the canvas's upper right corner. Only the last copy keeps the point: the others carry the straight blade on through
-the texels where their point would be. Every texel is a vanilla one, outline and shading included.
+the texels where their point would be. Every texel is the sword's own, outline and shading included. A mod metal's
+sword may carry accents off its blade (soul steel's wisps, froststeel's crystals of frost): those stay with the point,
+on the last copy only.
 
 The vanilla textures are read from the Minecraft client jar Loom has already downloaded (see client_jar()), so the
 output follows whatever the jar has. The item model is a flat item/handheld one, like a vanilla sword's, used in
@@ -23,6 +27,7 @@ from gunkit import display, display_matrix, placed, png, write
 
 ASSETS = sys.argv[1] if len(sys.argv) > 1 else None
 TIERS = ["wooden", "stone", "copper", "iron", "golden", "diamond", "netherite"]
+MOD_TIERS = ["magmasteel", "soul_steel", "froststeel", "voidsteel"]
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ======================================================================================================= vanilla
@@ -116,17 +121,18 @@ SEGMENTS = 3
 SIZE = 16 + STEP * (SEGMENTS - 1)   # 32: the vanilla sprite's span, plus the two extra blades
 
 
-def long_sword(px):
-    """The long sword's SIZE x SIZE texture from the vanilla sword's 16x16 pixels."""
-    blade, hilt = {}, {}
+def long_sword(px, accents=False):
+    """The long sword's SIZE x SIZE texture from a sword's 16x16 pixels; with accents, texels past the crossguard off
+    the blade are allowed and go with the point."""
+    blade, hilt, off_blade = {}, {}, {}
     for y in range(16):
         for x in range(16):
             c = px[y * 16 + x]
             if c[3] == 0:
                 continue
             p, q = x - y, x + y
-            (blade if p >= BASE and q in BAND else hilt)[(x, y)] = c
-            if p >= BASE and q not in BAND:
+            (blade if p >= BASE and q in BAND else off_blade if p >= BASE else hilt)[(x, y)] = c
+            if p >= BASE and q not in BAND and not accents:
                 sys.exit(f"vanilla sword texel ({x}, {y}) lies past the crossguard outside the blade: layout changed")
     # Every texel of a copied stretch must be there, or the copies would leave holes where they meet.
     for p in range(BASE, BASE + 2 * STEP):
@@ -154,6 +160,8 @@ def long_sword(px):
                     back = p - 2 * ((p - STRAIGHT + 1) // 2)
                     c = blade[((back + q) // 2, (q - back) // 2)]
             put(x + STEP * k, y - STEP * k, c)
+    for (x, y), c in off_blade.items():
+        put(x + STEP * (SEGMENTS - 1), y - STEP * (SEGMENTS - 1), c)
     return out
 
 
@@ -224,12 +232,16 @@ def main():
     print("vanilla textures from", jar)
     ds = displays()
     with zipfile.ZipFile(jar) as z:
-        for tier in TIERS:
+        for tier in TIERS + MOD_TIERS:
             name = f"{tier}_long_sword"
-            w, h, px = read_png(z.read(f"assets/minecraft/textures/item/{tier}_sword.png"))
+            if tier in MOD_TIERS:
+                with open(os.path.join(ASSETS, "textures", "item", f"{tier}_sword.png"), "rb") as f:
+                    w, h, px = read_png(f.read())
+            else:
+                w, h, px = read_png(z.read(f"assets/minecraft/textures/item/{tier}_sword.png"))
             if (w, h) != (16, 16):
                 sys.exit(f"{tier}_sword.png is {w}x{h}, not 16x16")
-            png(os.path.join(ASSETS, "textures", "item", name + ".png"), SIZE, SIZE, long_sword(px))
+            png(os.path.join(ASSETS, "textures", "item", name + ".png"), SIZE, SIZE, long_sword(px, accents=tier in MOD_TIERS))
             write(os.path.join(ASSETS, "models", "item", name + ".json"), OrderedDict([
                 ("parent", "minecraft:item/handheld"),
                 ("textures", OrderedDict(layer0=f"mymod:item/{name}")),

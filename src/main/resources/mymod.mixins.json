@@ -10,6 +10,9 @@
 		"LivingEntityPowerArmorMixin",
 		"LivingEntityMagmasteelMixin",
 		"LiquidBlockMagmasteelMixin",
+		"LivingEntityFroststeelMixin",
+		"PowderSnowBlockFroststeelMixin",
+		"ProjectileVoidsteelMixin",
 		"MerchantMenuPaymentCardMixin",
 		"MerchantOfferPaymentCardMixin",
 		"MerchantResultSlotPaymentCardMixin",
@@ -36,7 +39,9 @@
 		"EntityNapalmRainMixin",
 		"EnchantmentHelperDragonscaleMixin",
 		"EnderDragonScalesMixin",
-		"EntityDragonscaleFireMixin"
+		"EntityDragonscaleFireMixin",
+		"LivingEntityStarSteelMixin",
+		"PlayerStarSteelMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

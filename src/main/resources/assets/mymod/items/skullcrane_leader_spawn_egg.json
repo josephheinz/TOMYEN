@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mymod:item/skullcrane_leader_spawn_egg"
+  }
+}

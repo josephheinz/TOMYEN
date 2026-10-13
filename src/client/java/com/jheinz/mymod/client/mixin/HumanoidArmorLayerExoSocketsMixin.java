@@ -19,7 +19,8 @@ import com.jheinz.mymod.exoskeleton.ExoSockets;
 /**
  * After the worn exoskeleton (the chest piece), the chestplate socketed in it is drawn the way vanilla draws a
  * worn one: armor model, texture, trim and glint. An elytra in the chest socket has no armor layers, so this
- * draws nothing for it; WingsLayerExoSocketsMixin puts it on the back.
+ * draws nothing for it; WingsLayerExoSocketsMixin puts it on the back. Socketed gear (the Optic Monocle, the Servo
+ * Arm Backpack) isn't any slot's armor, so it's drawn here too, each in the slot it's worn in, by its own renderer.
  */
 @Mixin(HumanoidArmorLayer.class)
 public abstract class HumanoidArmorLayerExoSocketsMixin {
@@ -36,6 +37,12 @@ public abstract class HumanoidArmorLayerExoSocketsMixin {
 		ItemStack chestplate = ExoSockets.armor(state.chestEquipment, EquipmentSlot.CHEST);
 		if (!chestplate.isEmpty()) {
 			renderArmorPiece(poseStack, collector, chestplate, EquipmentSlot.CHEST, light, state);
+		}
+		for (ItemStack gear : ExoSockets.gear(state.chestEquipment)) {
+			EquipmentSlot slot = ExoSockets.wornSlot(gear);
+			if (slot != null) {
+				renderArmorPiece(poseStack, collector, gear, slot, light, state);
+			}
 		}
 	}
 }

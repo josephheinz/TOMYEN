@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mymod:polished_meteorite_stone",
+  "result": {
+    "count": 2,
+    "id": "mymod:polished_meteorite_stone_slab"
+  }
+}

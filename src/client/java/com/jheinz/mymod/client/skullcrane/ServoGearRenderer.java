@@ -1,10 +1,16 @@
 package com.jheinz.mymod.client.skullcrane;
 
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -14,15 +20,16 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.skullcrane.Skullcranes;
@@ -32,9 +39,13 @@ import com.jheinz.mymod.skullcrane.Skullcranes;
  * which vanilla's armor layer is pointed at), as Fabric armor renderers following the wearer's head and body.
  * <ul>
  * <li>The monocle: a steel-rimmed red lens over the right eye on a thin band round the head, the lens glowing.
- * <li>The backpack: a steel casing on the back with a glowing power cell, and two servo arms that rise from it and
- * bend forward over the shoulders, swaying and twitching their claws.
+ * <li>The backpack: a steel spine pack with a glowing power cell, and four long segmented arms that rise from it and
+ * curl over the shoulders and head, each ending in a three-pronged claw. They sway idly, and reach out for the items
+ * the backpack fetches (see {@link ServoArmsClient} and {@link ServoArmRig}).
  * </ul>
+ * The arms' targets are in the world; they're brought into the wearer's body space here, through the pose the wearer
+ * is drawn with, and the arms' pose for the frame goes with the wearer's render state to be applied when the model is
+ * set up.
  */
 public final class ServoGearRenderer {
 	private static final Identifier TEXTURE = MyMod.id("textures/entity/skullcrane/servo_gear.png");
@@ -42,6 +53,11 @@ public final class ServoGearRenderer {
 	private static final RenderType GLOW = RenderTypes.eyes(MyMod.id("textures/entity/skullcrane/servo_gear_glow.png"));
 	static final ModelLayerLocation MONOCLE = new ModelLayerLocation(MyMod.id("optic_monocle"), "main");
 	static final ModelLayerLocation BACKPACK = new ModelLayerLocation(MyMod.id("servo_arm_backpack"), "main");
+	/** This frame's arm pose, from {@link ServoArmRig#pose}. */
+	private static final RenderStateDataKey<float[]> ARM_POSE = RenderStateDataKey.create(() -> "mymod:servo_arm_pose");
+	/** Texture slots of the arm segments, root to tip, and of a claw prong. */
+	private static final int[][] SEGMENT_UV = {{18, 10}, {24, 10}, {30, 10}, {36, 10}};
+	private static final int[] PRONG_UV = {40, 10};
 
 	private ServoGearRenderer() {
 	}
@@ -71,61 +87,92 @@ public final class ServoGearRenderer {
 			Gear model = new Gear(context.bakeLayer(BACKPACK));
 			return (poseStack, collector, stack, state, slot, light, wearerModel) -> {
 				if (slot == EquipmentSlot.CHEST) {
-					model.animateArms(state.ageInTicks);
+					state.setData(ARM_POSE, armPose(poseStack, state, wearerModel));
 					submit(poseStack, collector, state, light, wearerModel, model);
 				}
 			};
 		}, Skullcranes.SERVO_ARM_BACKPACK);
+		ServoArmsClient.initialize();
 	}
 
 	private static void submit(PoseStack poseStack, SubmitNodeCollector collector, HumanoidRenderState state, int light,
 			HumanoidModel<HumanoidRenderState> wearerModel, Gear model) {
-		ArmorRenderer.submitTransformCopyingModel(wearerModel, state, model, state, false, collector, poseStack, RENDER_TYPE, light,
+		// The gear's own set-up runs after it's copied the wearer's pose, to put the arms where they go.
+		ArmorRenderer.submitTransformCopyingModel(wearerModel, state, model, state, true, collector, poseStack, RENDER_TYPE, light,
 				OverlayTexture.NO_OVERLAY, state.outlineColor);
-		ArmorRenderer.submitTransformCopyingModel(wearerModel, state, model, state, false, collector, poseStack, GLOW, light,
+		ArmorRenderer.submitTransformCopyingModel(wearerModel, state, model, state, true, collector, poseStack, GLOW, light,
 				OverlayTexture.NO_OVERLAY, 0);
+	}
+
+	/**
+	 * The arms' pose for a wearer this frame: at rest, or reaching for what the wearer's arms are after, their targets
+	 * taken from the world through the pose stack (camera-relative, at the model's root) and the wearer's body part.
+	 */
+	private static float[] armPose(PoseStack poseStack, HumanoidRenderState state, HumanoidModel<HumanoidRenderState> wearerModel) {
+		ServoArmsClient.Arms arms = state instanceof AvatarRenderState avatar ? ServoArmsClient.get(avatar.id) : null;
+		if (arms == null) {
+			return ServoArmRig.pose(state.ageInTicks, null, null);
+		}
+		Minecraft minecraft = Minecraft.getInstance();
+		float partialTicks = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+		Matrix4f toModel = new Matrix4f(poseStack.last().pose()).invert();
+		Vec3 camera = minecraft.gameRenderer.mainCamera().position();
+		ModelPart body = wearerModel.body;
+		Quaternionf unrotate = new Quaternionf().rotationZYX(body.zRot, body.yRot, body.xRot).conjugate();
+		Vector3f[] targets = new Vector3f[ServoArmRig.ARMS];
+		float[] progress = new float[ServoArmRig.ARMS];
+		for (int i = 0; i < ServoArmRig.ARMS; i++) {
+			Vec3 target = arms.target(i);
+			progress[i] = arms.progress(i, partialTicks);
+			if (target != null) {
+				Vector3f local = toModel.transformPosition((float) (target.x - camera.x), (float) (target.y - camera.y), (float) (target.z - camera.z),
+						new Vector3f());
+				targets[i] = unrotate.transform(local.mul(16.0f).sub(body.x, body.y, body.z));
+			}
+		}
+		return ServoArmRig.pose(state.ageInTicks, targets, progress);
 	}
 
 	/** A humanoid with nothing on it but the gear, so its parts can copy the wearer's pose. */
 	private static class Gear extends HumanoidModel<HumanoidRenderState> {
-		private final ModelPart[] arms = new ModelPart[2];
-		private final ModelPart[] elbows = new ModelPart[2];
-		private final ModelPart[][] fingers = new ModelPart[2][3];
+		/** Each arm's segments, root to tip, then its prongs; or null for the monocle. */
+		private final ModelPart[][] arms;
 
 		Gear(ModelPart root) {
 			super(root);
-			if (body.hasChild("arm_0")) {
-				for (int side = 0; side < 2; side++) {
-					arms[side] = body.getChild("arm_" + side);
-					elbows[side] = arms[side].getChild("elbow");
-					for (int f = 0; f < 3; f++) {
-						fingers[side][f] = elbows[side].getChild("finger_" + f);
+			if (body.hasChild("arm_0_0")) {
+				arms = new ModelPart[ServoArmRig.ARMS][ServoArmRig.PARTS_PER_ARM];
+				for (int a = 0; a < ServoArmRig.ARMS; a++) {
+					for (int p = 0; p < ServoArmRig.PARTS_PER_ARM; p++) {
+						arms[a][p] = body.getChild("arm_" + a + "_" + p);
 					}
 				}
+			} else {
+				arms = null;
 			}
 		}
 
+		/** Keeps the pose copied from the wearer, and puts the backpack's arms where this frame's pose has them. */
 		@Override
 		public void setupAnim(HumanoidRenderState state) {
-			super.setupAnim(state);
-			animateArms(state.ageInTicks);
-		}
-
-		/** The backpack's arms sway a little and their claws twitch open and shut. */
-		void animateArms(float age) {
-			if (arms[0] == null) {
+			if (arms == null) {
 				return;
 			}
-			for (int side = 0; side < 2; side++) {
-				float sign = side == 0 ? -1.0f : 1.0f;
-				float phase = side * 2.3f;
-				arms[side].xRot = 0.35f + 0.06f * Mth.sin(age * 0.07f + phase);
-				arms[side].zRot = sign * (0.3f + 0.05f * Mth.sin(age * 0.09f + phase));
-				elbows[side].xRot = 1.5f + 0.12f * Mth.sin(age * 0.11f + phase) + (Mth.floor(age / 13.0f + side) % 3 == 0 ? 0.08f : 0.0f);
-				float open = 0.25f + 0.2f * Math.max(0.0f, Mth.sin(age * 0.05f + phase));
-				for (int f = 0; f < 3; f++) {
-					// Negative opens: out from the forearm.
-					fingers[side][f].xRot = -open;
+			float[] pose = state.getData(ARM_POSE);
+			if (pose == null) {
+				pose = ServoArmRig.pose(state.ageInTicks, null, null);
+			}
+			for (int a = 0; a < ServoArmRig.ARMS; a++) {
+				for (int p = 0; p < ServoArmRig.PARTS_PER_ARM; p++) {
+					ModelPart part = arms[a][p];
+					int at = (a * ServoArmRig.PARTS_PER_ARM + p) * ServoArmRig.FLOATS;
+					part.x = pose[at];
+					part.y = pose[at + 1];
+					part.z = pose[at + 2];
+					part.xRot = pose[at + 3];
+					part.yRot = pose[at + 4];
+					part.zRot = pose[at + 5];
+					part.yScale = pose[at + 6];
 				}
 			}
 		}
@@ -160,28 +207,27 @@ public final class ServoGearRenderer {
 		return LayerDefinition.create(mesh, 64, 32);
 	}
 
+	/**
+	 * The spine pack and its power cell, then each arm's segments (pointing up their own -y, from their joint, and
+	 * running a little back under the one before) and prongs, all directly on the body to be posed every frame.
+	 */
 	private static LayerDefinition createBackpack() {
 		MeshDefinition mesh = new MeshDefinition();
 		PartDefinition body = emptyHumanoid(mesh)[1];
 		body.addOrReplaceChild("pack", CubeListBuilder.create()
-				.texOffs(0, 10).addBox(-3.0f, 1.0f, 2.0f, 6.0f, 7.0f, 2.5f)
-				.texOffs(18, 10).addBox(-1.5f, 2.5f, 4.5f, 3.0f, 4.0f, 1.0f),
+				.texOffs(0, 10).addBox(-2.0f, 0.5f, 2.0f, 4.0f, 8.0f, 2.0f)
+				.texOffs(12, 10).addBox(-1.0f, 3.0f, 4.0f, 2.0f, 3.0f, 0.5f),
 				PartPose.ZERO);
-		for (int side = 0; side < 2; side++) {
-			float x = side == 0 ? -2.3f : 2.3f;
-			PartDefinition arm = body.addOrReplaceChild("arm_" + side, CubeListBuilder.create()
-					.texOffs(38, 10).addBox(-0.9f, -0.9f, -0.9f, 1.8f, 1.8f, 1.8f)
-					.texOffs(26, 10).addBox(-0.6f, -5.5f, -0.6f, 1.2f, 5.0f, 1.2f),
-					PartPose.offset(x, 1.5f, 3.6f));
-			PartDefinition elbow = arm.addOrReplaceChild("elbow", CubeListBuilder.create()
-					.texOffs(38, 10).addBox(-0.9f, -0.9f, -0.9f, 1.8f, 1.8f, 1.8f)
-					.texOffs(34, 10).addBox(-0.5f, -4.5f, -0.5f, 1.0f, 4.0f, 1.0f),
-					PartPose.offset(0.0f, -5.5f, 0.0f));
-			for (int f = 0; f < 3; f++) {
-				float angle = f * Mth.TWO_PI / 3.0f;
-				// Fingers point on along the forearm (up, in its frame), splayed by xRot.
-				elbow.addOrReplaceChild("finger_" + f, CubeListBuilder.create().texOffs(46, 10).addBox(-0.3f, -2.0f, -0.3f, 0.6f, 2.0f, 0.6f),
-						PartPose.offsetAndRotation(Mth.sin(angle) * 0.4f, -4.5f, Mth.cos(angle) * 0.4f, 0.0f, angle, 0.0f));
+		for (int a = 0; a < ServoArmRig.ARMS; a++) {
+			for (int s = 0; s < ServoArmRig.SEGMENTS; s++) {
+				float thick = ServoArmRig.SEGMENT_SIZE[s][0];
+				float length = ServoArmRig.SEGMENT_SIZE[s][1];
+				body.addOrReplaceChild("arm_" + a + "_" + s, CubeListBuilder.create().texOffs(SEGMENT_UV[s][0], SEGMENT_UV[s][1])
+						.addBox(-thick / 2.0f, -length, -thick / 2.0f, thick, length + ServoArmRig.OVERLAP, thick), PartPose.ZERO);
+			}
+			for (int k = 0; k < ServoArmRig.PRONGS; k++) {
+				body.addOrReplaceChild("arm_" + a + "_" + (ServoArmRig.SEGMENTS + k), CubeListBuilder.create().texOffs(PRONG_UV[0], PRONG_UV[1])
+						.addBox(-0.25f, -ServoArmRig.PRONG_LENGTH, -0.25f, 0.5f, ServoArmRig.PRONG_LENGTH, 0.5f), PartPose.ZERO);
 			}
 		}
 		return LayerDefinition.create(mesh, 64, 32);

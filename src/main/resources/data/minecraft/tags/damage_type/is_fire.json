@@ -1,7 +1,6 @@
 {
   "values": [
     "mymod:napalm",
-    "mymod:napalm_burn",
-    "mymod:dragon_roar"
+    "mymod:napalm_burn"
   ]
 }
