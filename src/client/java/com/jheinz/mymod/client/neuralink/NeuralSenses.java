@@ -35,6 +35,8 @@ import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.napalm.FlamethrowerItem;
 import com.jheinz.mymod.launcher.RocketLauncherItem;
+import com.jheinz.mymod.minigun.MinigunItem;
+import com.jheinz.mymod.minigun.RotaryGun;
 import com.jheinz.mymod.neuralink.MindReader;
 import com.jheinz.mymod.neuralink.NeuralNetworking;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
@@ -258,7 +260,10 @@ public final class NeuralSenses {
 		MagazineContents loaded = held.get(ModComponents.LOADED_MAGAZINE);
 		// A launcher holds a single rocket rather than a magazine; a flamethrower's tank reads as a percentage.
 		Item rocket = gun instanceof RocketLauncherItem ? RocketLauncherItem.loadedRocket(held) : null;
-		int rounds = gun instanceof RocketLauncherItem ? (rocket == null ? 0 : 1) : loaded == null ? 0 : loaded.rounds();
+		// A Minigun has no magazine: it counts every 5.56 round carried.
+		boolean belt = gun instanceof MinigunItem;
+		int rounds = gun instanceof RocketLauncherItem ? (rocket == null ? 0 : 1) : belt ? RotaryGun.carried(player)
+				: loaded == null ? 0 : loaded.rounds();
 		int capacity = gun instanceof RocketLauncherItem ? 1 : gun.capacity(held);
 		boolean tank = gun instanceof FlamethrowerItem;
 		Font font = minecraft.font;
@@ -267,7 +272,7 @@ public final class NeuralSenses {
 		String count = tank ? Math.round(100.0f * rounds / capacity) + "%" : String.valueOf(rounds);
 		int countColor = empty ? argb(Util.getMillis() % 500 < 250 ? 0xFF : 0x60, 0xFF3B30) : argb(0xFF, NeuralinkModule.SMART_LINK.color());
 		graphics.text(font, count, x, y, countColor, true);
-		if (!tank) {
+		if (!tank && !belt) {
 			graphics.text(font, "/" + capacity, x + font.width(count) + 1, y, DIM, true);
 		}
 		String mode = Component.translatable(gun instanceof RocketLauncherItem
@@ -276,11 +281,11 @@ public final class NeuralSenses {
 				: tank ? "hud.mymod.smart_link.fuel" : gun.fireMode(held).translationKey() + ".short").getString().toUpperCase(Locale.ROOT);
 		graphics.text(font, empty ? Component.translatable("hud.mymod.smart_link.reload").getString() : mode, x, y + 10,
 				empty ? argb(0xFF, 0xFF3B30) : DIM, true);
-		// A thin gauge of the magazine under it all.
+		// A thin gauge of the magazine under it all (a Minigun's heat).
 		int gauge = 30;
+		float fill = belt ? MinigunItem.state(held).heat() : rounds / (float) Math.max(1, capacity);
 		graphics.fill(x, y + 20, x + gauge, y + 21, argb(0x50, CYAN));
-		graphics.fill(x, y + 20, x + Math.round(gauge * rounds / (float) Math.max(1, capacity)), y + 21,
-				argb(0xFF, NeuralinkModule.SMART_LINK.color()));
+		graphics.fill(x, y + 20, x + Math.round(gauge * fill), y + 21, argb(0xFF, NeuralinkModule.SMART_LINK.color()));
 	}
 
 	private static void vitals(GuiGraphicsExtractor graphics, Minecraft minecraft, LocalPlayer player) {

@@ -26,6 +26,7 @@ import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.meteorite.Meteorites;
 import com.jheinz.mymod.lmg.MachineGuns;
 import com.jheinz.mymod.napalm.Napalm;
+import com.jheinz.mymod.minigun.Miniguns;
 import com.jheinz.mymod.longsword.LongSwords;
 import com.jheinz.mymod.magmasteel.Magmasteel;
 import com.jheinz.mymod.mech.Mechs;
@@ -89,6 +90,7 @@ public class MyMod implements ModInitializer {
 		ShoddyGuns.initialize();
 		MachineGuns.initialize();
 		Napalm.initialize();
+		Miniguns.initialize();
 		LongSwords.initialize();
 		Banking.initialize();
 		NeuralCore.initialize();

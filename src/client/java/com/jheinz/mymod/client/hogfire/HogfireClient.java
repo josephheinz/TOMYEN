@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.phys.AABB;
 
 import com.jheinz.mymod.MyMod;
@@ -19,7 +20,8 @@ import com.jheinz.mymod.hogfire.Hogfires;
 
 /**
  * The Hogfire's client side. Flying one, the pilot's view and keys go to the server every tick (forward and back
- * work the throttle, jump is the afterburner); the server flies it and the flight panel shows how it's doing.
+ * work the throttle, jump is the afterburner, attack fires a gun mount); the server flies it and the flight panel
+ * shows how it's doing.
  * Every geared-up Hogfire nearby gets an engine sound that follows it.
  */
 public final class HogfireClient {
@@ -37,6 +39,11 @@ public final class HogfireClient {
 		ClientTickEvents.END_CLIENT_TICK.register(HogfireClient::tick);
 	}
 
+	/** Whether this player is flying a Hogfire with a gun mount, so attack is its trigger. */
+	public static boolean gunner(LocalPlayer player) {
+		return player != null && player.getVehicle() instanceof Hogfire hogfire && hogfire.pilot() == player && hogfire.hasGunMount();
+	}
+
 	private static void tick(Minecraft client) {
 		if (client.player == null || client.level == null) {
 			ENGINES.clear();
@@ -44,7 +51,8 @@ public final class HogfireClient {
 		}
 		if (client.player.getVehicle() instanceof Hogfire hogfire && hogfire.pilot() == client.player) {
 			ClientPlayNetworking.send(new Hogfires.Controls(client.player.getYRot(), client.player.getXRot(),
-					client.options.keyUp.isDown(), client.options.keyDown.isDown(), client.options.keyJump.isDown()));
+					client.options.keyUp.isDown(), client.options.keyDown.isDown(), client.options.keyJump.isDown(),
+					gunner(client.player) && client.options.keyAttack.isDown()));
 		}
 		ENGINES.values().removeIf(HogfireEngineSound::isStopped);
 		AABB hearing = client.player.getBoundingBox().inflate(HEARING);

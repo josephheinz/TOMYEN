@@ -24,8 +24,8 @@ import net.minecraft.world.item.Rarity;
 import com.jheinz.mymod.MyMod;
 
 /**
- * The Hogfire, a rocket-powered flying pig: its entity, the three pieces of gear that make one out of a pig, its
- * engine sound, and the packet its pilot flies it with.
+ * The Hogfire, a rocket-powered flying pig: its entity, the three pieces of gear that make one out of a pig (and the
+ * gun mount that can go on it), its engine sound, and the packet its pilot flies it with.
  */
 public final class Hogfires {
 	/** A pig in flight gear. Tracked every tick, since it's fast. */
@@ -38,6 +38,8 @@ public final class Hogfires {
 	public static final Item PIG_FLIGHT_HARNESS = gear("pig_flight_harness", Hogfire.HARNESS);
 	public static final Item PIG_WINGS = gear("pig_wings", Hogfire.WINGS);
 	public static final Item ROCKET_ENGINE = gear("rocket_engine", Hogfire.ENGINE);
+	/** A Minigun on a saddle plate, fitted to the pig's shoulders any time after the harness (see Hogfire#fitGun). */
+	public static final Item GUN_MOUNT = gunMount("hogfire_gun_mount");
 
 	public static final SoundEvent ENGINE_SOUND = sound("hogfire_engine");
 
@@ -46,11 +48,12 @@ public final class Hogfires {
 
 	/**
 	 * Sent every tick by a Hogfire's pilot: where they're looking (the pig steers towards it), and whether
-	 * they're holding throttle up (forward), throttle down (back) and the afterburner (jump).
+	 * they're holding throttle up (forward), throttle down (back), the afterburner (jump) and the mounted gun's
+	 * trigger (attack).
 	 */
-	public record Controls(float yaw, float pitch, boolean throttleUp, boolean throttleDown, boolean afterburner)
+	public record Controls(float yaw, float pitch, boolean throttleUp, boolean throttleDown, boolean afterburner, boolean fire)
 			implements CustomPacketPayload {
-		public static final Controls NEUTRAL = new Controls(0.0f, 0.0f, false, false, false);
+		public static final Controls NEUTRAL = new Controls(0.0f, 0.0f, false, false, false, false);
 		public static final Type<Controls> TYPE = new Type<>(MyMod.id("hogfire_controls"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Controls> CODEC = StreamCodec.composite(
 				ByteBufCodecs.FLOAT, Controls::yaw,
@@ -58,6 +61,7 @@ public final class Hogfires {
 				ByteBufCodecs.BOOL, Controls::throttleUp,
 				ByteBufCodecs.BOOL, Controls::throttleDown,
 				ByteBufCodecs.BOOL, Controls::afterburner,
+				ByteBufCodecs.BOOL, Controls::fire,
 				Controls::new);
 
 		@Override
@@ -70,6 +74,11 @@ public final class Hogfires {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, MyMod.id(name));
 		return Registry.register(BuiltInRegistries.ITEM, key,
 				new HogfireGearItem(new Item.Properties().setId(key).stacksTo(1).rarity(Rarity.UNCOMMON), stage));
+	}
+
+	private static Item gunMount(String name) {
+		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, MyMod.id(name));
+		return Registry.register(BuiltInRegistries.ITEM, key, new HogfireGunMountItem(new Item.Properties().setId(key).stacksTo(1).rarity(Rarity.RARE)));
 	}
 
 	private static <T extends net.minecraft.world.entity.Entity> EntityType<T> entity(String name, EntityType.Builder<T> builder) {

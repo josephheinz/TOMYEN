@@ -17,6 +17,7 @@ import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.client.launcher.LauncherAnimation;
 import com.jheinz.mymod.client.shoddy.ShoddyGunClient;
 import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.minigun.Miniguns;
 import com.jheinz.mymod.napalm.Napalm;
 
 /**
@@ -73,6 +74,9 @@ public final class GunHands {
 		} else if (gun == Napalm.FLAMETHROWER) {
 			// The shooting hand on the rear grip, the off hand on the front grip (tools/gen_napalm.py).
 			return rifle(-0.022f, 0.119f, 0.156f, 0.034f, 0.133f, -0.242f);
+		} else if (gun == Miniguns.MINIGUN) {
+			// Held at the hip: the shooting hand on the rear grip, the off hand up on the carry handle (tools/gen_minigun.py).
+			return rifle(0.053f, -0.0185f, 0.106f, 0.0654f, 0.2846f, -0.0121f);
 		} else if (gun == ModItems.GLOCK || gun == ModItems.M1911 || gun == ModItems.REVOLVER_357) {
 			return pistol(-0.020f, 0.131f, -0.181f);
 		}

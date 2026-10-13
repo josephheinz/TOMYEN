@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.client.shoddy.ShoddyGunClient;
 import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.minigun.Miniguns;
 import com.jheinz.mymod.napalm.Napalm;
 
 /**
@@ -53,6 +54,9 @@ public record GunDisplay(Vector3f translation, float yaw, float scale) {
 		} else if (gun == Napalm.FLAMETHROWER) {
 			// tools/gen_napalm.py prints this.
 			return display(0.0f, 2.894f, -0.009f, -8, 0.55f);
+		} else if (gun == Miniguns.MINIGUN) {
+			// tools/gen_minigun.py prints this.
+			return display(1.287f, 1.754f, -2.481f, -6, 0.5f);
 		}
 		return null;
 	}

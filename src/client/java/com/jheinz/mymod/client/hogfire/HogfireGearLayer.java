@@ -1,6 +1,7 @@
 package com.jheinz.mymod.client.hogfire;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.animal.pig.PigModel;
@@ -32,13 +33,20 @@ import com.jheinz.mymod.hogfire.Hogfire;
  * spine strap, seat pad and steel flank plates; a wing out of each side, a spar along the leading edge and duralumin
  * skin behind it; and the rocket engine strapped on behind the seat, a fuel pod either side, its bell nozzle past the
  * pig's tail. With the engine lit, a flame (drawn full-bright) streams from the nozzle, longer with more throttle.
- * On the ground the wings fold up a little and twitch as it walks. UVs match tools/gen_industry.py.
+ * On the ground the wings fold up a little and twitch as it walks. UVs match tools/gen_industry.py. A gun mount is
+ * its own item model, drawn on the shoulders.
  */
 public class HogfireGearLayer extends RenderLayer<PigRenderState, PigModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(MyMod.id("hogfire"), "gear");
 	private static final Identifier TEXTURE = MyMod.id("textures/entity/hogfire/gear.png");
 	private static final RenderType BASE = RenderTypes.entityCutout(TEXTURE);
 	private static final RenderType GLOW = RenderTypes.eyes(TEXTURE);
+	// The gun mount: its bore and muzzle in its item model (tools/gen_minigun.py), and where they go on the pig.
+	private static final float GUN_BORE_Y = 9.0f;
+	private static final float GUN_MUZZLE_Z = -14.0f;
+	private static final float MOUNT_SCALE = 0.5f;
+	private static final float MOUNT_BORE_Y = 6.0f;
+	private static final float MOUNT_MUZZLE_Z = -16.0f;
 
 	private final Gear gear;
 	private final Gear flame;
@@ -94,6 +102,25 @@ public class HogfireGearLayer extends RenderLayer<PigRenderState, PigModel> {
 		if (hogState.engineRunning) {
 			collector.submitModel(flame, hogState, poseStack, GLOW, light, OverlayTexture.NO_OVERLAY, 0);
 		}
+		if (hogState.gunMount) {
+			submitGunMount(poseStack, collector, light, hogState);
+		}
+	}
+
+	/**
+	 * The gun mount, its saddle plate on the shoulders in front of the seat and the barrels running out over the head.
+	 * Model space here is y down with the nose toward -z; the item model is y up, drawn about its centre (8, 8, 8). Half a
+	 * turn round z stands it the right way up with its muzzle still forward; then at half size its bore goes to y 6 and
+	 * its muzzle to z -16, just past the snout, where Hogfire fires it from (MOUNT_MUZZLE_UP and _FORWARD).
+	 */
+	private static void submitGunMount(PoseStack poseStack, SubmitNodeCollector collector, int light, HogfireRenderState state) {
+		poseStack.pushPose();
+		poseStack.translate(0.0f, (MOUNT_BORE_Y + (GUN_BORE_Y - 8.0f) * MOUNT_SCALE) / 16.0f,
+				(MOUNT_MUZZLE_Z - (GUN_MUZZLE_Z - 8.0f) * MOUNT_SCALE) / 16.0f);
+		poseStack.rotateDegrees(Axis.ZP, 180.0f);
+		poseStack.scale(MOUNT_SCALE, MOUNT_SCALE, MOUNT_SCALE);
+		state.mountedGun.submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
+		poseStack.popPose();
 	}
 
 	/** The gear (or, for the glow pass, only the flame), posed for one pig. */

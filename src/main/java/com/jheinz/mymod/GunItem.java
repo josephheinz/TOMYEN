@@ -453,7 +453,8 @@ public class GunItem extends Item {
 		}
 	}
 
-	private static void hit(ServerLevel level, Player shooter, Ammo round, Entity target) {
+	/** One round striking a target: its damage (with any silver bite), and a DU round's fire. */
+	public static void hit(ServerLevel level, Player shooter, Ammo round, Entity target) {
 		DamageSource source = new DamageSource(
 				level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(round.damageType()), shooter);
 		target.hurtServer(level, source, round.damage() * EvilBane.multiplier(round.item(), target));

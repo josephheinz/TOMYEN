@@ -8,13 +8,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
+import com.jheinz.mymod.client.minigun.MinigunHud;
 import com.jheinz.mymod.hogfire.Hogfire;
 import com.jheinz.mymod.hogfire.HogfireFlight;
+import com.jheinz.mymod.minigun.MinigunState;
+import com.jheinz.mymod.minigun.RotaryGun;
 
 /**
  * The Hogfire's flight panel, centred above the hotbar's status bars (clear of the Neuralink's panels at the left):
  * fuel gauge with the minutes left at this throttle, throttle bar, airspeed, altitude, and an afterburner light.
- * Above it, a flashing STALL warning while it's too slow to fly.
+ * With a gun mount or Fae Dust on it, a strip along the top: the gun's heat and the 5.56 rounds the pilot carries, and
+ * how long it stays fae-light. Above it all, a flashing STALL warning while it's too slow to fly.
  */
 public final class HogfireHud {
 	private static final int WIDTH = 182;
@@ -30,6 +34,9 @@ public final class HogfireHud {
 	private static final int WARNING = 0xFFFF4A3D;
 	private static final int AFTERBURNER = 0xFF7DA8FF;
 	private static final int BAR_BACK = 0xFF2A3038;
+	private static final int FAE = 0xFFE7A8FF;
+	/** The gun and Fae Dust strip, when there's either. */
+	private static final int STRIP_HEIGHT = 12;
 
 	private HogfireHud() {
 	}
@@ -52,7 +59,7 @@ public final class HogfireHud {
 		boolean low = fuel < 0.1f;
 		graphics.text(font, Component.translatable("hud.mymod.hogfire.fuel"), x0 + 4, y0 + 3, DIM, false);
 		bar(graphics, x0 + 4, y0 + 14, 56, fuel, low && blink ? WARNING : FUEL);
-		float burn = hogfire.throttle() + (hogfire.afterburner() ? HogfireFlight.AFTERBURNER_BURN : 0.0f);
+		float burn = (hogfire.throttle() + (hogfire.afterburner() ? HogfireFlight.AFTERBURNER_BURN : 0.0f)) * HogfireFlight.burnFactor(hogfire);
 		if (burn > 0.0f && hogfire.fuel() > 0) {
 			int seconds = (int) (hogfire.fuel() / burn / 20.0f);
 			String left = seconds / 60 + ":" + String.format("%02d", seconds % 60);
@@ -74,7 +81,12 @@ public final class HogfireHud {
 			graphics.fill(x1 - 9, y0 + 3, x1 - 4, y0 + 4, 0xFFFFFFFF);
 		}
 
-		boolean stalling = !hogfire.onGround() && !hogfire.isInWater() && hogfire.airspeed() < HogfireFlight.STALL_SPEED;
+		if (hogfire.hasGunMount() || hogfire.faeLight()) {
+			y0 -= STRIP_HEIGHT;
+			strip(graphics, font, minecraft, hogfire, x0, y0, blink);
+		}
+
+		boolean stalling = !hogfire.onGround() && !hogfire.isInWater() && hogfire.airspeed() < HogfireFlight.stallSpeed(hogfire);
 		if (stalling && blink) {
 			Component stall = Component.translatable("hud.mymod.hogfire.stall");
 			int w = font.width(stall) + 8;
@@ -84,6 +96,31 @@ public final class HogfireHud {
 			graphics.centeredText(font, Component.translatable("hud.mymod.hogfire.afterburner"), graphics.guiWidth() / 2, y0 - 11, AFTERBURNER);
 		} else if (hogfire.fuel() <= 0) {
 			graphics.centeredText(font, Component.translatable("hud.mymod.hogfire.gliding"), graphics.guiWidth() / 2, y0 - 11, FUEL);
+		}
+	}
+
+	/**
+	 * The strip on top of the panel: the gun mount's heat bar and the rounds the pilot has for it (OVERHEAT flashing
+	 * when it's locked out) on the left, and the fae-light time left on the right.
+	 */
+	private static void strip(GuiGraphicsExtractor graphics, Font font, Minecraft minecraft, Hogfire hogfire, int x0, int y0, boolean blink) {
+		graphics.fill(x0, y0, x0 + WIDTH, y0 + STRIP_HEIGHT + 1, BACK);
+		graphics.outline(x0, y0, WIDTH, STRIP_HEIGHT + 1, FRAME);
+		if (hogfire.hasGunMount()) {
+			MinigunState gun = hogfire.gunState();
+			graphics.text(font, Component.translatable("hud.mymod.hogfire.gun"), x0 + 4, y0 + 3, DIM, false);
+			MinigunHud.heatBar(graphics, x0 + 26, y0 + 5, 40, gun);
+			int rounds = RotaryGun.carried(minecraft.player);
+			Component count = gun.overheated() ? Component.translatable("hud.mymod.minigun.overheated")
+					: Component.translatable("hud.mymod.minigun.rounds", rounds);
+			int colour = gun.overheated() ? (blink ? WARNING : DIM) : rounds == 0 && !minecraft.player.hasInfiniteMaterials() ? WARNING : TEXT;
+			graphics.text(font, count, x0 + 70, y0 + 3, colour, false);
+		}
+		if (hogfire.faeLight()) {
+			int seconds = hogfire.faeTicks() / 20;
+			String left = seconds / 60 + ":" + String.format("%02d", seconds % 60);
+			Component fae = Component.translatable("hud.mymod.hogfire.fae", left);
+			graphics.text(font, fae, x0 + WIDTH - 4 - font.width(fae), y0 + 3, FAE, false);
 		}
 	}
 

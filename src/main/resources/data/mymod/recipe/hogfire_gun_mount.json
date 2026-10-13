@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": "minecraft:leather",
+    "P": "mymod:steel_plate",
+    "M": "mymod:minigun"
+  },
+  "pattern": [
+    "L L",
+    "PMP",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:hogfire_gun_mount"
+  }
+}

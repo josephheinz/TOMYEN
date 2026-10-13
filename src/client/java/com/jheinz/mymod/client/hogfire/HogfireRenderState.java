@@ -1,6 +1,7 @@
 package com.jheinz.mymod.client.hogfire;
 
 import net.minecraft.client.renderer.entity.state.PigRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 
 /** A pig's render state, plus its flight gear and attitude. */
 public class HogfireRenderState extends PigRenderState {
@@ -13,4 +14,7 @@ public class HogfireRenderState extends PigRenderState {
 	public boolean afterburner;
 	public float throttle;
 	public boolean flying;
+	/** The gun mount on its shoulders, if it has one: the Hogfire Gun Mount's item model, turning with its gun. */
+	public boolean gunMount;
+	public final ItemStackRenderState mountedGun = new ItemStackRenderState();
 }
