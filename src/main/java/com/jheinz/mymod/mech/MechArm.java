@@ -84,7 +84,8 @@ public final class MechArm {
 	static final float AUTOCANNON_DAMAGE = 9.0f;
 	static final float AUTOCANNON_BLAST = 1.2f;
 	static final int AUTOCANNON_RELOAD = 50;
-	private static final float AUTOCANNON_HEAT = 0.045f;
+	/** Net of the cooling between rounds, sustained fire overheats it after about 45 rounds. */
+	private static final float AUTOCANNON_HEAT = 0.07f;
 	private static final float AUTOCANNON_SPREAD = 0.5f;
 
 	static final int SPIN_UP_TICKS = 16;
