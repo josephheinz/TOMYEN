@@ -73,7 +73,7 @@ public final class ModItems {
 	public static final Item BULLET_556_TUNGSTEN = item("bullet_556_tungsten");
 	/** A depleted uranium penetrator: armor-piercing, and pyrophoric, so it sets what it hits alight. */
 	public static final Item BULLET_556_DEPLETED_URANIUM = item("bullet_556_depleted_uranium");
-	private static final List<Ammo> AMMO_556 = List.of(
+	public static final List<Ammo> AMMO_556 = List.of(
 			new Ammo(BULLET_556_FMJ, 6.0f, ModDamageTypes.BULLET, 0xD08A4E),
 			new Ammo(BULLET_556_GREEN_TIP, 5.5f, ModDamageTypes.PENETRATOR_BULLET, 0x6CC24A),
 			new Ammo(BULLET_556_AP, 5.0f, ModDamageTypes.ARMOR_PIERCING_BULLET, 0xB4B4B4),
@@ -95,7 +95,7 @@ public final class ModItems {
 	public static final Item BULLET_CASING_762 = item("bullet_casing_762");
 	public static final Item BULLET_762_FMJ = item("bullet_762_fmj");
 	public static final Item BULLET_762_AP = item("bullet_762_ap");
-	private static final List<Ammo> AMMO_762 = List.of(
+	public static final List<Ammo> AMMO_762 = List.of(
 			new Ammo(BULLET_762_FMJ, 7.5f, ModDamageTypes.BULLET, 0xD08A4E),
 			new Ammo(BULLET_762_AP, 6.5f, ModDamageTypes.ARMOR_PIERCING_BULLET, 0xB4B4B4));
 

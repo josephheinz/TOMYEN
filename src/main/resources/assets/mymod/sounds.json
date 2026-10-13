@@ -1340,5 +1340,188 @@
         "volume": 1.0
       }
     ]
+  },
+  "mech_step": {
+    "subtitle": "subtitles.mymod.mech_step",
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/walk1",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk2",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk3",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk4",
+        "pitch": 0.45
+      }
+    ]
+  },
+  "mech_land": {
+    "subtitle": "subtitles.mymod.mech_land",
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_land",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "mech_jets": {
+    "subtitle": "subtitles.mymod.mech_jets",
+    "sounds": [
+      {
+        "name": "minecraft:mob/ghast/fireball4",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:item/firecharge/use1",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "mech_hatch_open": {
+    "subtitle": "subtitles.mymod.mech_hatch_open",
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_trapdoor/open1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open2",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "mech_hatch_close": {
+    "subtitle": "subtitles.mymod.mech_hatch_close",
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_trapdoor/close1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close2",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "mech_power_up": {
+    "subtitle": "subtitles.mymod.mech_power_up",
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/activate",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "mech_power_down": {
+    "subtitle": "subtitles.mymod.mech_power_down",
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/deactivate",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "mech_autocannon": {
+    "subtitle": "subtitles.mymod.mech_autocannon",
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:random/explode2",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:random/explode3",
+        "pitch": 1.5
+      }
+    ]
+  },
+  "mech_rotary": {
+    "subtitle": "subtitles.mymod.mech_rotary",
+    "sounds": [
+      {
+        "name": "minecraft:fire/ignite",
+        "pitch": 1.9
+      },
+      {
+        "name": "minecraft:random/click",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "mech_rotary_spin": {
+    "subtitle": "subtitles.mymod.mech_rotary_spin",
+    "sounds": [
+      {
+        "name": "minecraft:minecart/base",
+        "pitch": 1.6
+      }
+    ]
+  },
+  "mech_punch": {
+    "subtitle": "subtitles.mymod.mech_punch",
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/throw",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:random/anvil_land",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "mech_grab": {
+    "subtitle": "subtitles.mymod.mech_grab",
+    "sounds": [
+      {
+        "name": "minecraft:block/chain/break1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/chain/break2",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "mech_throw": {
+    "subtitle": "subtitles.mymod.mech_throw",
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/throw",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "mech_reload": {
+    "subtitle": "subtitles.mymod.mech_reload",
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_door/close1",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:block/iron_door/close2",
+        "pitch": 1.3
+      }
+    ]
+  },
+  "mech_smoke": {
+    "subtitle": "subtitles.mymod.mech_smoke",
+    "sounds": [
+      {
+        "name": "minecraft:random/bow",
+        "pitch": 0.4
+      }
+    ]
   }
 }

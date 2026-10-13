@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": "mymod:steel_plate",
+    "A": "mymod:mech_actuator",
+    "T": "mymod:tungsten_carbide",
+    "B": "mymod:steel_block"
+  },
+  "pattern": [
+    "PAP",
+    "T T",
+    "B B"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:mech_legs"
+  }
+}

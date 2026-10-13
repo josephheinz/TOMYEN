@@ -54,6 +54,7 @@ import com.jheinz.mymod.client.launcher.LauncherClient;
 import com.jheinz.mymod.client.lmg.M249Animation;
 import com.jheinz.mymod.client.napalm.NapalmClient;
 import com.jheinz.mymod.client.shotgun.ShotgunAnimation;
+import com.jheinz.mymod.client.mech.MechClient;
 import com.jheinz.mymod.client.powerarmor.PowerArmorClient;
 import com.jheinz.mymod.client.tank.TankClient;
 import com.jheinz.mymod.client.uranium.UraniumClient;
@@ -130,6 +131,7 @@ public class MyModClient implements ClientModInitializer {
 		LauncherClient.initialize();
 		BankClient.initialize();
 		PowerArmorClient.initialize();
+		MechClient.initialize();
 		IndustryClient.initialize();
 		UraniumClient.initialize();
 		HogfireClient.initialize();

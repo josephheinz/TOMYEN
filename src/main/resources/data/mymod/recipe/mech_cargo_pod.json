@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "mymod:duralumin_sheet",
+    "C": "minecraft:chest",
+    "R": "mymod:rubber"
+  },
+  "pattern": [
+    "DDD",
+    "DCD",
+    "RRR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:mech_cargo_pod"
+  }
+}

@@ -24,6 +24,7 @@ import com.jheinz.mymod.lmg.MachineGuns;
 import com.jheinz.mymod.napalm.Napalm;
 import com.jheinz.mymod.longsword.LongSwords;
 import com.jheinz.mymod.magmasteel.Magmasteel;
+import com.jheinz.mymod.mech.Mechs;
 import com.jheinz.mymod.shotgun.Shotguns;
 import com.jheinz.mymod.powerarmor.PowerArmors;
 import com.jheinz.mymod.schnozzle.Schnozzles;
@@ -81,6 +82,7 @@ public class MyMod implements ModInitializer {
 		Banking.initialize();
 		NeuralCore.initialize();
 		PowerArmors.initialize();
+		Mechs.initialize();
 		Schnozzles.initialize();
 		Skullcranes.initialize();
 		linkBlockItems();
