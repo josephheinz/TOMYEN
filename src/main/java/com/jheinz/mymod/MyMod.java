@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jheinz.mymod.bank.Banking;
+import com.jheinz.mymod.cathode.CathodeWalkers;
 import com.jheinz.mymod.fae.Fae;
 import com.jheinz.mymod.dragonscale.Dragonscales;
 import com.jheinz.mymod.hogfire.Hogfires;
@@ -89,6 +90,7 @@ public class MyMod implements ModInitializer {
 		PowerArmors.initialize();
 		Schnozzles.initialize();
 		Skullcranes.initialize();
+		CathodeWalkers.initialize();
 		linkBlockItems();
 	}
 

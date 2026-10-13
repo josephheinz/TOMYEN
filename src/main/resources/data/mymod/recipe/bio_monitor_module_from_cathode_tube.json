@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mymod:cathode_tube",
+    "mymod:tech_scrap",
+    "minecraft:glistering_melon_slice"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:bio_monitor_module"
+  }
+}
