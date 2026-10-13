@@ -1,0 +1,52 @@
+{
+  "ambient_light": 0.15,
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "additions": {
+        "sound": "mymod:feywild_additions",
+        "tick_chance": 0.006
+      },
+      "loop": "mymod:feywild_loop"
+    },
+    "minecraft:audio/background_music": {
+      "default": {
+        "max_delay": 9000,
+        "min_delay": 3000,
+        "replace_current_music": true,
+        "sound": "mymod:music.feywild"
+      }
+    },
+    "minecraft:gameplay/bed_rule": {
+      "can_set_spawn": "never",
+      "can_sleep": "never",
+      "error_message": {
+        "translate": "block.mymod.bed.feywild"
+      }
+    },
+    "minecraft:gameplay/respawn_anchor_works": false,
+    "minecraft:gameplay/sky_light_level": 0.6,
+    "minecraft:visual/ambient_light_color": "#2a2440",
+    "minecraft:visual/cloud_color": "#99c8b8ff",
+    "minecraft:visual/fog_color": "#4a9a9e",
+    "minecraft:visual/moon_angle": 290.0,
+    "minecraft:visual/sky_color": "#5a3a9e",
+    "minecraft:visual/sky_light_color": "#b49cff",
+    "minecraft:visual/sky_light_factor": 0.55,
+    "minecraft:visual/star_angle": 30.0,
+    "minecraft:visual/star_brightness": 0.45,
+    "minecraft:visual/sun_angle": 100.0,
+    "minecraft:visual/sunrise_sunset_color": "#a0ff8fd8",
+    "minecraft:visual/water_fog_color": "#3a2a7a"
+  },
+  "coordinate_scale": 1.0,
+  "has_ceiling": false,
+  "has_ender_dragon_fight": false,
+  "has_fixed_time": true,
+  "has_skylight": true,
+  "height": 256,
+  "infiniburn": "#minecraft:infiniburn_overworld",
+  "logical_height": 256,
+  "min_y": 0,
+  "monster_spawn_block_light_limit": 0,
+  "monster_spawn_light_level": 0
+}

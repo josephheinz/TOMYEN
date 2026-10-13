@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jheinz.mymod.bank.Banking;
+import com.jheinz.mymod.fae.Fae;
 import com.jheinz.mymod.hogfire.Hogfires;
 import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.neuralink.NeuralCore;
@@ -63,6 +64,7 @@ public class MyMod implements ModInitializer {
 		NeuralCore.initialize();
 		PowerArmors.initialize();
 		Schnozzles.initialize();
+		Fae.initialize();
 	}
 
 	public static Identifier id(String path) {

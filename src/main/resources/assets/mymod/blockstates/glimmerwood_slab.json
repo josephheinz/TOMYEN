@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mymod:block/glimmerwood_slab"
+    },
+    "type=double": {
+      "model": "mymod:block/glimmerwood_planks"
+    },
+    "type=top": {
+      "model": "mymod:block/glimmerwood_slab_top"
+    }
+  }
+}

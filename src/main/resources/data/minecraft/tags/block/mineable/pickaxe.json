@@ -11,6 +11,8 @@
     "mymod:aluminium_block",
     "mymod:pump_jack",
     "mymod:refinery",
-    "mymod:metal_press"
+    "mymod:metal_press",
+    "mymod:fae_silver_ore",
+    "mymod:fairy_in_a_bottle"
   ]
 }

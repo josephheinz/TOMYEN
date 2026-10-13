@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.8,
+  "group": "fae_silver_ingot",
+  "ingredient": "mymod:raw_fae_silver",
+  "result": {
+    "id": "mymod:fae_silver_ingot"
+  }
+}

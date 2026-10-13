@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mymod:glimmerwood_door",
+            "state": {
+              "half": "lower"
+            }
+          },
+          "name": "mymod:glimmerwood_door"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "mymod:blocks/glimmerwood_door"
+}

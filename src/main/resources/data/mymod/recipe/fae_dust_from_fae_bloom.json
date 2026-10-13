@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:fae_bloom"
+  ],
+  "result": {
+    "count": 2,
+    "id": "mymod:fae_dust"
+  }
+}
