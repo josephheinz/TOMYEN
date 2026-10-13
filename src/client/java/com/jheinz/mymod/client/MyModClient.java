@@ -40,6 +40,7 @@ import com.jheinz.mymod.client.neuralink.NeuralTrigger;
 import com.jheinz.mymod.client.neuralink.NeuralinkScreen;
 import com.jheinz.mymod.client.neuralink.NeuralinkVision;
 import com.jheinz.mymod.client.neuralink.OreScanner;
+import com.jheinz.mymod.client.dragonscale.DragonscaleClient;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonRenderer;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonScreen;
 import com.jheinz.mymod.client.hogfire.HogfireClient;
@@ -126,5 +127,6 @@ public class MyModClient implements ClientModInitializer {
 		IndustryClient.initialize();
 		HogfireClient.initialize();
 		SchnozzleClient.initialize();
+		DragonscaleClient.initialize();
 	}
 }

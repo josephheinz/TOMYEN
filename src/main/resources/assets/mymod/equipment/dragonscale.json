@@ -1,0 +1,24 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mymod:dragonscale"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "mymod:dragonscale"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mymod:dragonscale"
+      }
+    ],
+    "wings": [
+      {
+        "texture": "mymod:dragonscale"
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "mymod:dragon_fossil",
+  "spine_length": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 10,
+    "max_inclusive": 15
+  },
+  "scale_fossils": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 2,
+    "max_inclusive": 4
+  },
+  "integrity": 0.85
+}

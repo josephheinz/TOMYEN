@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jheinz.mymod.bank.Banking;
+import com.jheinz.mymod.dragonscale.Dragonscales;
 import com.jheinz.mymod.hogfire.Hogfires;
 import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.neuralink.NeuralCore;
@@ -45,6 +46,7 @@ public class MyMod implements ModInitializer {
 		ModCreativeTabs.initialize();
 		ModBlocks.initialize();
 		Industry.initialize();
+		Dragonscales.initialize();
 		Hogfires.initialize();
 		ModEntities.initialize();
 		ModMenus.initialize();

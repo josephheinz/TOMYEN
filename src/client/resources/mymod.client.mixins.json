@@ -29,6 +29,7 @@
 		"HumanoidMobRendererExoSocketsMixin",
 		"LivingEntityRendererExoSocketsMixin",
 		"WingsLayerExoSocketsMixin",
+		"WingsLayerDragonscaleMixin",
 		"ItemLayerRenderStateInvoker",
 		"ItemStackRenderStateAccessor",
 		"WhipArmPoseMixin",

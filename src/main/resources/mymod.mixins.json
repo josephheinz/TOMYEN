@@ -25,7 +25,10 @@
 		"ItemStackExoSocketsMixin",
 		"LivingEntityExoSocketsMixin",
 		"PiglinAiExoSocketsMixin",
-		"PlayerExoSocketsMixin"
+		"PlayerExoSocketsMixin",
+		"EnchantmentHelperDragonscaleMixin",
+		"EnderDragonScalesMixin",
+		"EntityDragonscaleFireMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
