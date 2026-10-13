@@ -172,8 +172,11 @@ public class ExoskeletonItem extends Item {
 		tooltip.accept(Component.translatable("item.mymod.exoskeleton.wear").withStyle(ChatFormatting.GRAY));
 	}
 
-	/** What a socketed stack is there as: a module, an elytra, or the armor for one slot. */
+	/** What a socketed stack is there as: a module, gear, an elytra, or the armor for one slot. */
 	public static Component socketKind(ItemStack socketed) {
+		if (ExoSockets.isGear(socketed)) {
+			return Component.translatable("container.mymod.exoskeleton.kind.gear");
+		}
 		EquipmentSlot slot = ExoSockets.armorSlot(socketed);
 		if (slot == null) {
 			return Component.translatable("container.mymod.exoskeleton.kind.module");

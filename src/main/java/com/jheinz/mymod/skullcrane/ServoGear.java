@@ -131,10 +131,13 @@ public final class ServoGear {
 				.toList());
 	}
 
-	/** What something wears in a slot or has socketed in the exoskeleton it wears, if it's this item. */
+	/**
+	 * What something wears in a slot or has socketed in the exoskeleton it wears, if it's this item. Socketed, it's gear
+	 * (see {@link ExoSockets#GEAR}), so it can sit alongside a helmet or a chestplate.
+	 */
 	private static ItemStack worn(LivingEntity entity, EquipmentSlot slot, Item item) {
 		ItemStack stack = entity.getItemBySlot(slot);
-		return stack.is(item) ? stack : ExoSockets.worn(entity, slot).is(item) ? ExoSockets.worn(entity, slot) : ItemStack.EMPTY;
+		return stack.is(item) ? stack : ExoSockets.socketed(entity, item);
 	}
 
 	public static boolean wearsMonocle(LivingEntity entity) {
