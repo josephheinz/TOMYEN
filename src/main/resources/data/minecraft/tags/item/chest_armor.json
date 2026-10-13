@@ -2,6 +2,8 @@
   "values": [
     "mymod:plate_carrier",
     "mymod:magmasteel_chestplate",
-    "mymod:soul_steel_chestplate"
+    "mymod:soul_steel_chestplate",
+    "mymod:froststeel_chestplate",
+    "mymod:voidsteel_chestplate"
   ]
 }

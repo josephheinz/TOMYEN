@@ -14,6 +14,7 @@ import com.jheinz.mymod.neuralink.NeuralCore;
 import com.jheinz.mymod.neuralink.NeuralinkEffects;
 import com.jheinz.mymod.exoskeleton.ExoSockets;
 import com.jheinz.mymod.exoskeleton.ExoskeletonEffects;
+import com.jheinz.mymod.froststeel.Froststeel;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.lmg.MachineGuns;
 import com.jheinz.mymod.longsword.LongSwords;
@@ -24,6 +25,7 @@ import com.jheinz.mymod.schnozzle.Schnozzles;
 import com.jheinz.mymod.skullcrane.Skullcranes;
 import com.jheinz.mymod.soul.Souls;
 import com.jheinz.mymod.tank.Tanks;
+import com.jheinz.mymod.voidsteel.Voidsteel;
 import com.jheinz.mymod.station.ModMenus;
 
 public class MyMod implements ModInitializer {
@@ -50,6 +52,8 @@ public class MyMod implements ModInitializer {
 		Industry.initialize();
 		Magmasteel.initialize();
 		Souls.initialize();
+		Froststeel.initialize();
+		Voidsteel.initialize();
 		Hogfires.initialize();
 		ModEntities.initialize();
 		ModMenus.initialize();

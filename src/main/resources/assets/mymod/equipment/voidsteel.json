@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mymod:voidsteel"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mymod:voidsteel"
+      }
+    ]
+  }
+}

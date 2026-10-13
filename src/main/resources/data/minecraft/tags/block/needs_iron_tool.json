@@ -2,6 +2,7 @@
   "values": [
     "mymod:steel_block",
     "mymod:magmasteel_block",
-    "mymod:soul_steel_block"
+    "mymod:soul_steel_block",
+    "mymod:froststeel_block"
   ]
 }

@@ -1,6 +1,8 @@
 {
   "values": [
     "mymod:magmasteel_shovel",
-    "mymod:soul_steel_shovel"
+    "mymod:soul_steel_shovel",
+    "mymod:froststeel_shovel",
+    "mymod:voidsteel_shovel"
   ]
 }

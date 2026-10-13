@@ -1,6 +1,8 @@
 {
   "values": [
     "mymod:magmasteel_ingot",
-    "mymod:soul_steel_ingot"
+    "mymod:soul_steel_ingot",
+    "mymod:froststeel_ingot",
+    "mymod:voidsteel_ingot"
   ]
 }

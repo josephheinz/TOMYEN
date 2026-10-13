@@ -10,10 +10,12 @@ import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.foundry.FoundryRecipe.Cost;
+import com.jheinz.mymod.froststeel.Froststeel;
 import com.jheinz.mymod.industry.IndustryRecipes;
 import com.jheinz.mymod.magmasteel.Magmasteel;
 import com.jheinz.mymod.powerarmor.PowerArmorRecipes;
 import com.jheinz.mymod.soul.SoulSteel;
+import com.jheinz.mymod.voidsteel.Voidsteel;
 
 /** Everything the Foundry smelts. Built from code, so client and server always agree. */
 public final class FoundryRecipes {
@@ -28,9 +30,12 @@ public final class FoundryRecipes {
 			PowerArmorRecipes.foundry(),
 			// Steel, aluminium, duralumin and shale oil for the oil industry.
 			IndustryRecipes.foundry(),
-			// Magmasteel (iron and a magma block) and soul steel (steel and Soul Charges).
+			// Magmasteel (iron and a magma block), soul steel (steel and Soul Charges), froststeel (iron quenched with
+			// blue ice, kept cool) and voidsteel (steel and Void Flux).
 			Magmasteel.foundry(),
-			SoulSteel.foundry()).flatMap(List::stream).toList();
+			SoulSteel.foundry(),
+			Froststeel.foundry(),
+			Voidsteel.foundry()).flatMap(List::stream).toList();
 
 	private FoundryRecipes() {
 	}

@@ -138,6 +138,15 @@ public final class ExoSockets {
 		return armor(entity.getItemBySlot(EquipmentSlot.CHEST), slot);
 	}
 
+	/** The armor pieces socketed in the exoskeleton an entity wears (not its modules), or none. */
+	public static List<ItemStack> socketedArmor(LivingEntity entity) {
+		ItemStack suit = entity.getItemBySlot(EquipmentSlot.CHEST);
+		if (!(suit.getItem() instanceof ExoskeletonItem) || isEmpty(suit)) {
+			return List.of();
+		}
+		return contents(suit).stream().filter(stack -> armorSlot(stack) != null).toList();
+	}
+
 	/** Whether the exoskeleton an entity wears holds a piece that matches. */
 	public static boolean wears(LivingEntity entity, Predicate<ItemStack> test) {
 		ItemStack suit = entity.getItemBySlot(EquipmentSlot.CHEST);

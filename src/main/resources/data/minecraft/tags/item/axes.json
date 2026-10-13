@@ -1,6 +1,8 @@
 {
   "values": [
     "mymod:magmasteel_axe",
-    "mymod:soul_steel_axe"
+    "mymod:soul_steel_axe",
+    "mymod:froststeel_axe",
+    "mymod:voidsteel_axe"
   ]
 }

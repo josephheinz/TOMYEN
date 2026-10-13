@@ -6,6 +6,10 @@
     "mymod:iron_long_sword",
     "mymod:golden_long_sword",
     "mymod:diamond_long_sword",
-    "mymod:netherite_long_sword"
+    "mymod:netherite_long_sword",
+    "mymod:magmasteel_long_sword",
+    "mymod:soul_steel_long_sword",
+    "mymod:froststeel_long_sword",
+    "mymod:voidsteel_long_sword"
   ]
 }

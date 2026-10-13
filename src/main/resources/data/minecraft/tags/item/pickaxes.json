@@ -1,6 +1,8 @@
 {
   "values": [
     "mymod:magmasteel_pickaxe",
-    "mymod:soul_steel_pickaxe"
+    "mymod:soul_steel_pickaxe",
+    "mymod:froststeel_pickaxe",
+    "mymod:voidsteel_pickaxe"
   ]
 }

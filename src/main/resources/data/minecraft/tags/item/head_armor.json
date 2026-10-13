@@ -1,6 +1,8 @@
 {
   "values": [
     "mymod:magmasteel_helmet",
-    "mymod:soul_steel_helmet"
+    "mymod:soul_steel_helmet",
+    "mymod:froststeel_helmet",
+    "mymod:voidsteel_helmet"
   ]
 }
