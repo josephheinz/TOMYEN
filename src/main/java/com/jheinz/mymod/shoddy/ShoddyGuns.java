@@ -42,7 +42,7 @@ public final class ShoddyGuns {
 			MyMod.id("shoddy_state"),
 			DataComponentType.<ShoddyState>builder().persistent(ShoddyState.CODEC).networkSynchronized(ShoddyState.STREAM_CODEC).build());
 
-	// Pitched-down existing reports and vanilla bits (see sounds.json): cruder, louder, cheaper.
+	// Their own recordings (see tools/import_gun_sounds.py): a dulled .22LR, a field-recorded Mosin, a dropped 20 gauge and an SKS.
 	public static final SoundEvent PIPE_PISTOL_SHOT = sound("pipe_pistol_shot");
 	public static final SoundEvent PIPE_RIFLE_SHOT = sound("pipe_rifle_shot");
 	public static final SoundEvent BLUNDERBUSS_SHOT = sound("blunderbuss_shot");
