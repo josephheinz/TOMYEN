@@ -23,6 +23,17 @@ public final class ModSounds {
 	public static final SoundEvent BOLT_DOWN = register("bolt_down");
 	public static final SoundEvent MAG_OUT = register("mag_out");
 	public static final SoundEvent MAG_IN = register("mag_in");
+	// Pistols' own handling (rack_* and mag_* are the rifles' charging handle and magazine).
+	public static final SoundEvent PISTOL_SLIDE_BACK = register("pistol_slide_back");
+	public static final SoundEvent PISTOL_SLIDE_FORWARD = register("pistol_slide_forward");
+	public static final SoundEvent PISTOL_MAG_OUT = register("pistol_mag_out");
+	public static final SoundEvent PISTOL_MAG_IN = register("pistol_mag_in");
+	// The .357's cylinder and hammer.
+	public static final SoundEvent REVOLVER_CYLINDER_OPEN = register("revolver_cylinder_open");
+	public static final SoundEvent REVOLVER_LOAD = register("revolver_load");
+	public static final SoundEvent REVOLVER_CYLINDER_CLOSE = register("revolver_cylinder_close");
+	public static final SoundEvent REVOLVER_SPIN = register("revolver_spin");
+	public static final SoundEvent REVOLVER_HAMMER = register("revolver_hammer");
 	public static final SoundEvent SHOPPING_CART_RATTLE = register("shopping_cart_rattle");
 	public static final SoundEvent SHOPPING_CART_GROWL = register("shopping_cart_growl");
 	public static final SoundEvent SHOPPING_CART_ROLL = register("shopping_cart_roll");

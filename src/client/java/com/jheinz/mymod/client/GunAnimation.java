@@ -499,12 +499,16 @@ public final class GunAnimation {
 
 	private static Cue[] cues(Running run) {
 		return switch (run.kind()) {
-			case RACK -> new Cue[] {new Cue(0.22f, ModSounds.RACK_BACK, 1.0f), new Cue(0.58f, ModSounds.RACK_FORWARD, 1.0f)};
+			case RACK -> new Cue[] {new Cue(0.22f, rackBack(run), 1.0f), new Cue(0.58f, rackForward(run), 1.0f)};
 			case BOLT -> new Cue[] {new Cue(0.14f, ModSounds.BOLT_UP, 1.0f), new Cue(0.22f, ModSounds.BOLT_BACK, 1.0f),
 					new Cue(0.44f, ModSounds.BOLT_FORWARD, 1.0f), new Cue(0.6f, ModSounds.BOLT_DOWN, 1.0f)};
-			case RELOAD -> new Cue[] {new Cue(0.15f, ModSounds.MAG_OUT, 1.0f), new Cue(0.66f, ModSounds.MAG_IN, 1.0f)};
-			case LOAD_ROUND -> new Cue[] {new Cue(0.38f, ModSounds.MAG_IN, 1.5f)};
-			case SPEEDLOAD -> new Cue[] {new Cue(0.45f, ModSounds.MAG_IN, 1.15f), new Cue(0.75f, ModSounds.RACK_FORWARD, 1.3f)};
+			case RELOAD -> pistolMagazine(run.item())
+					? new Cue[] {new Cue(0.15f, ModSounds.PISTOL_MAG_OUT, 1.0f), new Cue(0.66f, ModSounds.PISTOL_MAG_IN, 1.0f)}
+					: new Cue[] {new Cue(0.15f, ModSounds.MAG_OUT, 1.0f), new Cue(0.66f, ModSounds.MAG_IN, 1.0f)};
+			// Only the revolver loads loose rounds.
+			case LOAD_ROUND -> new Cue[] {new Cue(0.38f, ModSounds.REVOLVER_LOAD, 1.0f)};
+			case SPEEDLOAD -> new Cue[] {new Cue(0.1f, ModSounds.REVOLVER_CYLINDER_OPEN, 1.0f), new Cue(0.45f, ModSounds.REVOLVER_LOAD, 0.95f),
+					new Cue(0.75f, ModSounds.REVOLVER_CYLINDER_CLOSE, 1.0f)};
 			// The server plays the fill itself; these are the hose coming off, the canister going on and the valve.
 			case REFUEL -> new Cue[] {new Cue(0.24f, ModSounds.MAG_OUT, 0.6f), new Cue(0.48f, ModSounds.MAG_IN, 0.55f),
 					new Cue(0.76f, ModSounds.RACK_BACK, 1.7f)};
@@ -512,10 +516,30 @@ public final class GunAnimation {
 					? new Cue[] {new Cue(0.6f, ModSounds.BOLT_UP, 1.1f), new Cue(0.66f, ModSounds.BOLT_BACK, 1.2f),
 							new Cue(0.74f, ModSounds.BOLT_FORWARD, 1.2f), new Cue(0.78f, ModSounds.BOLT_DOWN, 1.1f)}
 					: run.motion().work() == Kind.RACK
-							? new Cue[] {new Cue(0.6f, ModSounds.RACK_BACK, 1.2f), new Cue(0.75f, ModSounds.RACK_FORWARD, 1.25f)}
-							// The revolver's cylinder (or the flamethrower's valve) gets a spin instead.
-							: new Cue[] {new Cue(0.6f, ModSounds.MAG_IN, 1.7f), new Cue(0.66f, ModSounds.MAG_IN, 1.9f)};
+							? new Cue[] {new Cue(0.6f, rackBack(run), 1.2f), new Cue(0.75f, rackForward(run), 1.25f)}
+							// The revolver's cylinder gets a spin and the hammer is thumbed back; the flamethrower's valve clicks.
+							: run.item() == ModItems.REVOLVER_357
+									? new Cue[] {new Cue(0.6f, ModSounds.REVOLVER_SPIN, 1.0f), new Cue(0.72f, ModSounds.REVOLVER_HAMMER, 1.0f)}
+									: new Cue[] {new Cue(0.6f, ModSounds.MAG_IN, 1.7f), new Cue(0.66f, ModSounds.MAG_IN, 1.9f)};
 		};
+	}
+
+	/** Pistols rack a slide; the rifles and SMGs pull a charging handle. */
+	private static boolean pistolSlide(Item item) {
+		return item == ModItems.GLOCK || item == ModItems.M1911;
+	}
+
+	/** Magazines that go up the grip. */
+	private static boolean pistolMagazine(Item item) {
+		return pistolSlide(item) || item == ModItems.MAC10;
+	}
+
+	private static SoundEvent rackBack(Running run) {
+		return pistolSlide(run.item()) ? ModSounds.PISTOL_SLIDE_BACK : ModSounds.RACK_BACK;
+	}
+
+	private static SoundEvent rackForward(Running run) {
+		return pistolSlide(run.item()) ? ModSounds.PISTOL_SLIDE_FORWARD : ModSounds.RACK_FORWARD;
 	}
 
 	// ----------------------------------------------------------------------------------------------- timeline

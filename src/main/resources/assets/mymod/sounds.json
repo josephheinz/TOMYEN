@@ -26,19 +26,46 @@
   "remington_870_shot": {
     "subtitle": "subtitles.mymod.remington_870_shot",
     "sounds": [
-      "mymod:remington_870_shot"
+      "mymod:remington_870_shot",
+      {
+        "name": "mymod:remington_870_shot_2",
+        "pitch": 0.97
+      },
+      {
+        "name": "mymod:remington_870_shot_3",
+        "pitch": 1.02,
+        "volume": 0.95
+      }
     ]
   },
   "spas12_shot": {
     "subtitle": "subtitles.mymod.spas12_shot",
     "sounds": [
-      "mymod:spas12_shot"
+      "mymod:spas12_shot",
+      {
+        "name": "mymod:spas12_shot_2",
+        "pitch": 0.98
+      },
+      {
+        "name": "mymod:spas12_shot_3",
+        "pitch": 1.02,
+        "volume": 0.95
+      }
     ]
   },
   "m249_shot": {
     "subtitle": "subtitles.mymod.m249_shot",
     "sounds": [
-      "mymod:m249_shot"
+      "mymod:m249_shot",
+      {
+        "name": "mymod:m249_shot_2",
+        "pitch": 0.98
+      },
+      {
+        "name": "mymod:m249_shot_3",
+        "pitch": 1.02,
+        "volume": 0.95
+      }
     ]
   },
   "minigun_spin_up": {
@@ -68,19 +95,22 @@
   "pump_back": {
     "subtitle": "subtitles.mymod.pump_back",
     "sounds": [
-      "mymod:pump_back"
+      "mymod:pump_back",
+      "mymod:pump_back_2"
     ]
   },
   "pump_forward": {
     "subtitle": "subtitles.mymod.pump_forward",
     "sounds": [
-      "mymod:pump_forward"
+      "mymod:pump_forward",
+      "mymod:pump_forward_2"
     ]
   },
   "shell_insert": {
     "subtitle": "subtitles.mymod.shell_insert",
     "sounds": [
-      "mymod:shell_insert"
+      "mymod:shell_insert",
+      "mymod:shell_insert_2"
     ]
   },
   "feed_cover_open": {
@@ -98,61 +128,138 @@
   "belt_rattle": {
     "subtitle": "subtitles.mymod.belt_rattle",
     "sounds": [
-      "mymod:belt_rattle"
+      "mymod:belt_rattle",
+      "mymod:belt_rattle_2"
     ]
   },
   "m4_shot": {
     "subtitle": "subtitles.mymod.m4_shot",
     "sounds": [
-      "mymod:m4_shot"
+      "mymod:m4_shot",
+      {
+        "name": "mymod:m4_shot_2",
+        "pitch": 0.98
+      },
+      {
+        "name": "mymod:m4_shot_3",
+        "pitch": 1.02,
+        "volume": 0.95
+      }
     ]
   },
   "glock_shot": {
     "subtitle": "subtitles.mymod.glock_shot",
     "sounds": [
-      "mymod:glock_shot"
+      "mymod:glock_shot",
+      {
+        "name": "mymod:glock_shot_2",
+        "pitch": 0.98
+      },
+      {
+        "name": "mymod:glock_shot_3",
+        "pitch": 1.02,
+        "volume": 0.95
+      }
     ]
   },
   "akm_shot": {
     "subtitle": "subtitles.mymod.akm_shot",
     "sounds": [
-      "mymod:akm_shot"
+      "mymod:akm_shot",
+      {
+        "name": "mymod:akm_shot_2",
+        "pitch": 0.98
+      },
+      {
+        "name": "mymod:akm_shot_3",
+        "pitch": 1.02,
+        "volume": 0.95
+      }
     ]
   },
   "awp_shot": {
     "subtitle": "subtitles.mymod.awp_shot",
     "sounds": [
-      "mymod:awp_shot"
+      "mymod:awp_shot",
+      {
+        "name": "mymod:awp_shot_2",
+        "pitch": 0.97
+      }
     ]
   },
   "galil_shot": {
     "subtitle": "subtitles.mymod.galil_shot",
     "sounds": [
-      "mymod:galil_shot"
+      "mymod:galil_shot",
+      {
+        "name": "mymod:galil_shot_2",
+        "pitch": 0.98
+      },
+      {
+        "name": "mymod:galil_shot_3",
+        "pitch": 1.02,
+        "volume": 0.95
+      }
     ]
   },
   "magnum_shot": {
     "subtitle": "subtitles.mymod.magnum_shot",
     "sounds": [
-      "mymod:magnum_shot"
+      "mymod:magnum_shot",
+      {
+        "name": "mymod:magnum_shot_2",
+        "pitch": 0.97
+      },
+      {
+        "name": "mymod:magnum_shot_3",
+        "pitch": 1.02,
+        "volume": 0.95
+      }
     ]
   },
   "mp5_shot": {
     "subtitle": "subtitles.mymod.mp5_shot",
     "sounds": [
-      "mymod:mp5_shot"
+      "mymod:mp5_shot",
+      {
+        "name": "mymod:mp5_shot_2",
+        "pitch": 0.98
+      },
+      {
+        "name": "mymod:mp5_shot_3",
+        "pitch": 1.02,
+        "volume": 0.95
+      }
     ]
   },
   "mac10_shot": {
     "subtitle": "subtitles.mymod.mac10_shot",
     "sounds": [
-      "mymod:mac10_shot"
+      "mymod:mac10_shot",
+      {
+        "name": "mymod:mac10_shot_2",
+        "pitch": 1.03,
+        "volume": 0.95
+      },
+      {
+        "name": "mymod:mac10_shot_3",
+        "pitch": 0.98
+      }
     ]
   },
   "m1911_shot": {
     "subtitle": "subtitles.mymod.m1911_shot",
     "sounds": [
-      "mymod:m1911_shot"
+      "mymod:m1911_shot",
+      {
+        "name": "mymod:m1911_shot_2",
+        "pitch": 0.97
+      },
+      {
+        "name": "mymod:m1911_shot_3",
+        "pitch": 1.02,
+        "volume": 0.95
+      }
     ]
   },
   "rack_back": {
@@ -164,7 +271,8 @@
   "rack_forward": {
     "subtitle": "subtitles.mymod.rack_forward",
     "sounds": [
-      "mymod:rack_forward"
+      "mymod:rack_forward",
+      "mymod:rack_forward_2"
     ]
   },
   "bolt_up": {
@@ -194,13 +302,15 @@
   "mag_out": {
     "subtitle": "subtitles.mymod.mag_out",
     "sounds": [
-      "mymod:mag_out"
+      "mymod:mag_out",
+      "mymod:mag_out_2"
     ]
   },
   "mag_in": {
     "subtitle": "subtitles.mymod.mag_in",
     "sounds": [
-      "mymod:mag_in"
+      "mymod:mag_in",
+      "mymod:mag_in_2"
     ]
   },
   "shopping_cart_rattle": {
@@ -1686,6 +1796,10 @@
       {
         "name": "minecraft:mob/ghast/fireball4",
         "pitch": 0.55
+      },
+      {
+        "name": "minecraft:item/firecharge/use1",
+        "pitch": 0.5
       }
     ]
   },
@@ -1870,6 +1984,16 @@
       {
         "name": "mymod:glock_shot",
         "pitch": 0.7
+      },
+      "mymod:pipe_pistol_shot",
+      {
+        "name": "mymod:pipe_pistol_shot_2",
+        "pitch": 0.95
+      },
+      {
+        "name": "mymod:pipe_pistol_shot_3",
+        "pitch": 1.04,
+        "volume": 0.95
       }
     ]
   },
@@ -1884,6 +2008,16 @@
         "name": "mymod:awp_shot",
         "volume": 0.9,
         "pitch": 0.9
+      },
+      "mymod:pipe_rifle_shot",
+      {
+        "name": "mymod:pipe_rifle_shot_2",
+        "pitch": 0.96
+      },
+      {
+        "name": "mymod:pipe_rifle_shot_3",
+        "pitch": 1.03,
+        "volume": 0.95
       }
     ]
   },
@@ -1897,6 +2031,11 @@
       {
         "name": "mymod:spas12_shot",
         "pitch": 0.66
+      },
+      "mymod:blunderbuss_shot",
+      {
+        "name": "mymod:blunderbuss_shot_2",
+        "pitch": 0.95
       }
     ]
   },
@@ -1910,6 +2049,16 @@
       {
         "name": "mymod:mp5_shot",
         "pitch": 0.76
+      },
+      "mymod:junk_repeater_shot",
+      {
+        "name": "mymod:junk_repeater_shot_2",
+        "pitch": 0.96
+      },
+      {
+        "name": "mymod:junk_repeater_shot_3",
+        "pitch": 1.04,
+        "volume": 0.95
       }
     ]
   },
@@ -1925,7 +2074,9 @@
         "name": "minecraft:random/wood_click",
         "volume": 0.8,
         "pitch": 1.4
-      }
+      },
+      "mymod:misfire_click",
+      "mymod:misfire_click_2"
     ]
   },
   "gun_jam": {
@@ -2333,6 +2484,62 @@
         "name": "minecraft:item/crossbow/loading_end",
         "pitch": 1.4
       }
+    ]
+  },
+  "pistol_slide_back": {
+    "subtitle": "subtitles.mymod.pistol_slide_back",
+    "sounds": [
+      "mymod:pistol_slide_back"
+    ]
+  },
+  "pistol_slide_forward": {
+    "subtitle": "subtitles.mymod.pistol_slide_forward",
+    "sounds": [
+      "mymod:pistol_slide_forward",
+      "mymod:pistol_slide_forward_2"
+    ]
+  },
+  "pistol_mag_out": {
+    "subtitle": "subtitles.mymod.pistol_mag_out",
+    "sounds": [
+      "mymod:pistol_mag_out"
+    ]
+  },
+  "pistol_mag_in": {
+    "subtitle": "subtitles.mymod.pistol_mag_in",
+    "sounds": [
+      "mymod:pistol_mag_in"
+    ]
+  },
+  "revolver_cylinder_open": {
+    "subtitle": "subtitles.mymod.revolver_cylinder_open",
+    "sounds": [
+      "mymod:revolver_cylinder_open"
+    ]
+  },
+  "revolver_load": {
+    "subtitle": "subtitles.mymod.revolver_load",
+    "sounds": [
+      "mymod:revolver_load",
+      "mymod:revolver_load_2"
+    ]
+  },
+  "revolver_cylinder_close": {
+    "subtitle": "subtitles.mymod.revolver_cylinder_close",
+    "sounds": [
+      "mymod:revolver_cylinder_close"
+    ]
+  },
+  "revolver_spin": {
+    "subtitle": "subtitles.mymod.revolver_spin",
+    "sounds": [
+      "mymod:revolver_spin"
+    ]
+  },
+  "revolver_hammer": {
+    "subtitle": "subtitles.mymod.revolver_hammer",
+    "sounds": [
+      "mymod:revolver_hammer"
     ]
   }
 }
