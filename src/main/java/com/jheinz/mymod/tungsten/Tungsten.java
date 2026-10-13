@@ -10,7 +10,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
@@ -28,6 +27,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.material.MapColor;
 
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.drill.DrillItem;
 import com.jheinz.mymod.industry.Industry;
 
 /**
@@ -35,7 +35,8 @@ import com.jheinz.mymod.industry.Industry;
  * <p>
  * The ore is wolframite, found only in deepslate, deep down and rarely: three tries a chunk at a small vein (size 5,
  * so one to five blocks) spread evenly between y -64 and -16, any block that would touch air left out half the time
- * (worldgen/feature and worldgen/placed_feature ore_tungsten). It needs a diamond pickaxe. Raw tungsten only melts in a Foundry run up to
+ * (worldgen/feature and worldgen/placed_feature ore_tungsten). It's too hard for pickaxes: it takes a drill, a Hand
+ * Drill at least (mymod:needs_drill, see {@link DrillItem}). Raw tungsten only melts in a Foundry run up to
  * {@link TungstenRecipes#INGOT_TEMPERATURE}, slowly; an ingot carburised with coal at
  * {@link TungstenRecipes#CARBIDE_TEMPERATURE} becomes tungsten carbide, the hard material the drill, tungsten-core
  * 5.56 rounds and the tungsten sabot are made of.
@@ -43,8 +44,8 @@ import com.jheinz.mymod.industry.Industry;
 public final class Tungsten {
 	/** What repairs the drill. */
 	public static final TagKey<Item> TOOL_MATERIALS = TagKey.create(Registries.ITEM, MyMod.id("tungsten_tool_materials"));
-	/** Very durable, a little slower to dig than diamond, and harvests whatever netherite does. */
-	public static final ToolMaterial CARBIDE = new ToolMaterial(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 4000, 7.0f, 4.0f, 12, TOOL_MATERIALS);
+	/** Very durable and fast, and harvests whatever netherite does and all drill-only rock. */
+	public static final ToolMaterial CARBIDE = new ToolMaterial(DrillItem.INCORRECT_FOR_POWERED_DRILL, 4000, 12.0f, 4.0f, 12, TOOL_MATERIALS);
 
 	public static final Block TUNGSTEN_ORE = block("tungsten_ore", properties -> new DropExperienceBlock(UniformInt.of(3, 7), properties),
 			BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).instrument(NoteBlockInstrument.BASEDRUM)
@@ -59,9 +60,13 @@ public final class Tungsten {
 	public static final Item TUNGSTEN_INGOT = item("tungsten_ingot");
 	public static final Item TUNGSTEN_NUGGET = item("tungsten_nugget");
 	public static final Item TUNGSTEN_CARBIDE = item("tungsten_carbide");
-	/** Digs 3x3 unless the player sneaks; very durable, and as slow to swing as an axe. */
-	public static final Item TUNGSTEN_CARBIDE_DRILL = register("tungsten_carbide_drill", TungstenDrillItem::new,
-			new Item.Properties().pickaxe(CARBIDE, 1.0f, -3.4f).rarity(Rarity.RARE));
+	/**
+	 * The heavy motor drill (see {@link com.jheinz.mymod.drill.Drills}): burns kerosene or a uranium fuel rod, digs 3x3
+	 * unless switched off or the player sneaks; very durable, and as slow to swing as an axe.
+	 */
+	public static final Item TUNGSTEN_CARBIDE_DRILL = register("tungsten_carbide_drill",
+			properties -> new DrillItem(properties, DrillItem.Engine.HEAVY, true, true),
+			DrillItem.properties(CARBIDE, -3.4f).rarity(Rarity.RARE));
 
 	private static final ResourceKey<PlacedFeature> ORE_TUNGSTEN = ResourceKey.create(Registries.PLACED_FEATURE, MyMod.id("ore_tungsten"));
 	private static final ResourceKey<CreativeModeTab> INDUSTRY_TAB = ResourceKey.create(Registries.CREATIVE_MODE_TAB, MyMod.id("industry"));
@@ -93,6 +98,5 @@ public final class Tungsten {
 			output.insertAfter(Industry.ALUMINIUM_BLOCK, RAW_TUNGSTEN, RAW_TUNGSTEN_BLOCK, TUNGSTEN_INGOT, TUNGSTEN_NUGGET, TUNGSTEN_BLOCK,
 					TUNGSTEN_CARBIDE, TUNGSTEN_CARBIDE_DRILL);
 		});
-		TungstenDrillItem.initialize();
 	}
 }

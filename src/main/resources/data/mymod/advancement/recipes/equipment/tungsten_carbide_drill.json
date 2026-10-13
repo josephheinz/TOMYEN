@@ -5,6 +5,16 @@
       "conditions": {
         "items": [
           {
+            "items": "mymod:carbide_drill_bit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_item_1": {
+      "conditions": {
+        "items": [
+          {
             "items": "mymod:tungsten_carbide"
           }
         ]
@@ -21,6 +31,7 @@
   "requirements": [
     [
       "has_item",
+      "has_item_1",
       "has_the_recipe"
     ]
   ],

@@ -41,6 +41,7 @@ import com.jheinz.mymod.client.neuralink.NeuralinkScreen;
 import com.jheinz.mymod.client.neuralink.NeuralinkVision;
 import com.jheinz.mymod.client.neuralink.OreScanner;
 import com.jheinz.mymod.client.dragonscale.DragonscaleClient;
+import com.jheinz.mymod.client.drill.DrillClient;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonRenderer;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonScreen;
 import com.jheinz.mymod.client.fae.FaeClient;
@@ -135,6 +136,7 @@ public class MyModClient implements ClientModInitializer {
 		PowerArmorClient.initialize();
 		IndustryClient.initialize();
 		UraniumClient.initialize();
+		DrillClient.initialize();
 		HogfireClient.initialize();
 		SchnozzleClient.initialize();
 		SkullcraneClient.initialize();

@@ -46,7 +46,9 @@ import com.jheinz.mymod.MyMod;
  * comes out of them.
  * <p>
  * A meteorite's core is built like a geode: a crust of Meteorite Stone, a layer of Meteoric Iron Ore, and a hollow
- * lined with Budding Star Crystal, which grows Star Crystal buds into clusters the way budding amethyst does. Raw
+ * lined with Budding Star Crystal, which grows Star Crystal buds into clusters the way budding amethyst does. The
+ * crust and ore are too hard for pickaxes, which chip through for nothing: Meteorite Stone takes a drill (a Hand Drill
+ * will do), Meteoric Iron Ore a running motor drill (see {@link com.jheinz.mymod.drill.DrillItem}). Raw
  * meteoric iron only smelts in a Foundry at {@link MeteoriteRecipes#METEORIC_IRON_TEMPERATURE}; alloyed with star
  * crystal it makes Star Steel ({@link StarSteel}), the best tools and armor there are by night. Star crystal shards
  * also make the Star Lantern and the Starlight Lens.

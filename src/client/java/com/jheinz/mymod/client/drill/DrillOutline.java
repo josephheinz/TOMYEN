@@ -1,4 +1,4 @@
-package com.jheinz.mymod.client.tungsten;
+package com.jheinz.mymod.client.drill;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
@@ -13,11 +13,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.jheinz.mymod.tungsten.TungstenDrillItem;
+import com.jheinz.mymod.drill.DrillArea;
 
 /**
- * Outlines everything a Tungsten Carbide Drill is about to dig: the block outline grows to take in the neighbours
- * {@link TungstenDrillItem#area} picks, merged into one shape, so a wall of stone shows a single 3x3 square.
+ * Outlines everything a drill digging 3x3 is about to dig: the block outline grows to take in the neighbours
+ * {@link DrillArea#area} picks, merged into one shape, so a wall of stone shows a single 3x3 square. Only while 3x3 is
+ * switched on, the drill runs and the player isn't sneaking.
  */
 public final class DrillOutline {
 	private DrillOutline() {
@@ -30,14 +31,14 @@ public final class DrillOutline {
 	private static void extend(LevelExtractionContext context, HitResult hit) {
 		BlockOutlineRenderState outline = context.levelState().blockOutlineRenderState;
 		LocalPlayer player = Minecraft.getInstance().player;
-		if (outline == null || player == null || !TungstenDrillItem.digsArea(player) || !(hit instanceof BlockHitResult blockHit)
+		if (outline == null || player == null || !DrillArea.digsArea(player) || !(hit instanceof BlockHitResult blockHit)
 				|| !blockHit.getBlockPos().equals(outline.pos())) {
 			return;
 		}
 		BlockPos centre = outline.pos();
 		VoxelShape shape = outline.shape();
 		CollisionContext collision = CollisionContext.of(player);
-		for (BlockPos pos : TungstenDrillItem.area(context.level(), player.getMainHandItem(), centre, blockHit.getDirection())) {
+		for (BlockPos pos : DrillArea.area(context.level(), player.getMainHandItem(), centre, blockHit.getDirection())) {
 			shape = Shapes.or(shape, context.level().getBlockState(pos).getShape(context.level(), pos, collision)
 					.move(pos.getX() - centre.getX(), pos.getY() - centre.getY(), pos.getZ() - centre.getZ()));
 		}
