@@ -77,7 +77,8 @@ public final class ModItems {
 	public static final Item BULLET_556_TUNGSTEN = item("bullet_556_tungsten");
 	/** A depleted uranium penetrator: armor-piercing, and pyrophoric, so it sets what it hits alight. */
 	public static final Item BULLET_556_DEPLETED_URANIUM = item("bullet_556_depleted_uranium");
-	private static final List<Ammo> AMMO_556 = List.of(
+	/** Every 5.56 round; the Minigun feeds any of them straight from the inventory. */
+	public static final List<Ammo> AMMO_556 = List.of(
 			new Ammo(BULLET_556_FMJ, 6.0f, ModDamageTypes.BULLET, 0xD08A4E),
 			new Ammo(BULLET_556_GREEN_TIP, 5.5f, ModDamageTypes.PENETRATOR_BULLET, 0x6CC24A),
 			new Ammo(BULLET_556_AP, 5.0f, ModDamageTypes.ARMOR_PIERCING_BULLET, 0xB4B4B4),

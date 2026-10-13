@@ -8,17 +8,22 @@ import net.minecraft.client.renderer.entity.PigRenderer;
 import net.minecraft.client.renderer.entity.state.PigRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.animal.pig.Pig;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 
 import com.jheinz.mymod.hogfire.Hogfire;
 import com.jheinz.mymod.hogfire.HogfireFlight;
+import com.jheinz.mymod.hogfire.Hogfires;
 
 /**
- * A Hogfire is drawn as the pig it is (variant and all), wearing its {@link HogfireGearLayer gear}, and tilted to
- * its flight attitude: pitched with its nose and rolled into its turns about the middle of its body.
+ * A Hogfire is drawn as the pig it is (variant and all), wearing its {@link HogfireGearLayer gear} (and gun mount),
+ * and tilted to its flight attitude: pitched with its nose and rolled into its turns about the middle of its body.
  */
 public class HogfireRenderer extends PigRenderer {
 	/** Height of the middle of the body, which it pitches and rolls about. */
 	private static final float BODY_CENTRE = (float) HogfireFlight.BODY_CENTRE;
+
+	private ItemStack mountStack;
 
 	public HogfireRenderer(EntityRendererProvider.Context context) {
 		super(context);
@@ -41,6 +46,16 @@ public class HogfireRenderer extends PigRenderer {
 			hogState.engineRunning = hogfire.engineRunning();
 			hogState.afterburner = hogfire.afterburner();
 			hogState.throttle = hogfire.throttle();
+			hogState.gunMount = hogfire.hasGunMount();
+			if (hogState.gunMount) {
+				if (mountStack == null) {
+					mountStack = new ItemStack(Hogfires.GUN_MOUNT);
+				}
+				// Owned by the pig, so the mount's barrels turn with its gun.
+				itemModelResolver.updateForLiving(hogState.mountedGun, mountStack, ItemDisplayContext.NONE, hogfire);
+			} else {
+				hogState.mountedGun.clear();
+			}
 			// Flying, it holds its head level with its body rather than looking about.
 			if (hogState.flying) {
 				state.xRot = 0.0f;

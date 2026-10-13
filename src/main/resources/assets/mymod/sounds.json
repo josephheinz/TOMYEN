@@ -41,6 +41,30 @@
       "mymod:m249_shot"
     ]
   },
+  "minigun_spin_up": {
+    "subtitle": "subtitles.mymod.minigun_spin_up",
+    "sounds": [
+      "mymod:minigun_spin_up"
+    ]
+  },
+  "minigun_spin": {
+    "subtitle": "subtitles.mymod.minigun_spin",
+    "sounds": [
+      "mymod:minigun_spin"
+    ]
+  },
+  "minigun_fire": {
+    "subtitle": "subtitles.mymod.minigun_fire",
+    "sounds": [
+      "mymod:minigun_fire"
+    ]
+  },
+  "minigun_spin_down": {
+    "subtitle": "subtitles.mymod.minigun_spin_down",
+    "sounds": [
+      "mymod:minigun_spin_down"
+    ]
+  },
   "pump_back": {
     "subtitle": "subtitles.mymod.pump_back",
     "sounds": [

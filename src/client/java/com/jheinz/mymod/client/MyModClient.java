@@ -52,6 +52,7 @@ import com.jheinz.mymod.client.silver.SilverClient;
 import com.jheinz.mymod.client.industry.IndustryClient;
 import com.jheinz.mymod.client.launcher.LauncherClient;
 import com.jheinz.mymod.client.lmg.M249Animation;
+import com.jheinz.mymod.client.minigun.MinigunClient;
 import com.jheinz.mymod.client.napalm.NapalmClient;
 import com.jheinz.mymod.client.shotgun.ShotgunAnimation;
 import com.jheinz.mymod.client.powerarmor.PowerArmorClient;
@@ -141,6 +142,7 @@ public class MyModClient implements ClientModInitializer {
 		SoulVacuumClient.initialize();
 		SilverClient.initialize();
 		NapalmClient.initialize();
+		MinigunClient.initialize();
 		FaeClient.initialize();
 		DragonscaleClient.initialize();
 	}

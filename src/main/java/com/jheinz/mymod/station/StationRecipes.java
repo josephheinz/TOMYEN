@@ -13,6 +13,7 @@ import net.minecraft.world.item.Items;
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.minigun.Miniguns;
 import com.jheinz.mymod.napalm.Napalm;
 import com.jheinz.mymod.powerarmor.PowerArmorRecipes;
 import com.jheinz.mymod.silver.Silver;
@@ -174,8 +175,8 @@ public final class StationRecipes {
 			recipe(ModItems.ARMOR_PLATE_LEVEL_2, 1, cost(Items.IRON_INGOT, 5), cost(Items.LEATHER, 1)),
 			// Ceramic strike face on a steel backer.
 			recipe(ModItems.ARMOR_PLATE_LEVEL_3, 1, cost(Items.CLAY_BALL, 4), cost(Items.IRON_INGOT, 2), cost(Items.DIAMOND, 1))),
-			// The Mk I power armor torso.
-			PowerArmorRecipes.station().stream()).toList();
+			// The Mk I power armor torso, and the power armor Minigun and its parts.
+			Stream.concat(PowerArmorRecipes.station().stream(), Miniguns.station().stream())).toList();
 
 	static {
 		// Matching is by ingredient set, so two recipes with the same set would make the later one uncraftable.

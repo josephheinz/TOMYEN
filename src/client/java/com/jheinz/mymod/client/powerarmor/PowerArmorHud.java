@@ -33,6 +33,9 @@ import org.jspecify.annotations.Nullable;
 import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.client.neuralink.NeuralSenses;
 import com.jheinz.mymod.client.neuralink.NeuralStyle;
+import com.jheinz.mymod.minigun.MinigunItem;
+import com.jheinz.mymod.minigun.MinigunState;
+import com.jheinz.mymod.minigun.RotaryGun;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.neuralink.NeuralinkModule;
 import com.jheinz.mymod.powerarmor.FusionCoreItem;
@@ -58,7 +61,7 @@ import static com.jheinz.mymod.client.neuralink.NeuralStyle.brackets;
  * the edges when the core is low or a piece is nearly broken.
  * <li>A compass strip across the top, with altitude and vertical speed under it and any warnings under those.
  * <li>The power panel top right (under any effect icons): fusion core, thrusters and their heat, the repulsor
- * and unibeam, and the helmet's air underwater.
+ * and unibeam, a held Minigun's rounds and heat, and the helmet's air underwater.
  * <li>The suit's silhouette on the left, each piece coloured by condition and outlined in its mark's colour.
  * <li>Round the crosshair: repulsor and unibeam readiness, the unibeam charging, the exit hold, and while flying,
  * airspeed over a throttle gauge (hover, cruise, boost) and height above the ground.
@@ -333,7 +336,8 @@ public final class PowerArmorHud {
 		long now = Util.getMillis();
 		int x1 = graphics.guiWidth() - 6, x0 = x1 - PANEL_WIDTH, y0 = 6 + effectsHeight(player);
 		boolean underwater = status != null && status.airMax() > 0 && status.air() < status.airMax();
-		int rows = 4 + (underwater ? 1 : 0);
+		boolean minigun = player.getMainHandItem().getItem() instanceof MinigunItem;
+		int rows = 4 + (underwater ? 1 : 0) + (minigun ? 1 : 0);
 		int y1 = y0 + 8 + rows * 13;
 		graphics.fill(x0, y0, x1, y1, GLASS);
 		brackets(graphics, x0, y0, x1, y1, 5, 1, argb(0xFF, AMBER));
@@ -376,6 +380,16 @@ public final class PowerArmorHud {
 		readout(graphics, font, x, right, y, Component.translatable("hud.mymod.power_armor.unibeam").getString(), uniState,
 				!stats.unibeamWorks() ? RED : charging ? 0xFFFFFF : unibeam > 0 ? AMBER : ARC, stats.unibeamWorks() ? uniBar : 0.0f);
 		y += 13;
+
+		// A Minigun in hand: the 5.56 rounds carried for it, over its heat.
+		if (minigun) {
+			MinigunState gun = MinigunItem.state(player.getMainHandItem());
+			String value = gun.overheated() ? Component.translatable("hud.mymod.minigun.overheated").getString()
+					: Component.translatable("hud.mymod.minigun.rounds", RotaryGun.carried(player)).getString();
+			int colour = gun.overheated() ? (now % 400 < 200 ? RED : AMBER) : gun.heat() > 0.6f ? AMBER : ARC;
+			readout(graphics, font, x, right, y, Component.translatable("hud.mymod.power_armor.minigun").getString(), value, colour, gun.heat());
+			y += 13;
+		}
 
 		if (underwater) {
 			float air = status.air() / (float) status.airMax();

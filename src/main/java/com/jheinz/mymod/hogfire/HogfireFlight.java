@@ -10,6 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import com.jheinz.mymod.fae.Fae;
+
 /**
  * How a Hogfire flies: an arcade plane, simulated on the server one tick at a time. Speeds are in blocks a tick
  * (×20 for m/s); angles in degrees, with Minecraft's pitch (positive is nose down).
@@ -31,6 +33,8 @@ import net.minecraft.world.phys.Vec3;
  * <li>Crashing: flying into a wall faster than {@value #CRASH_SPEED} (12 m/s), or hitting the ground sinking faster
  * than {@value #CRASH_SINK} (10 m/s), hurts pig and pilot (4 hearts and up, more the faster) and throws the pilot
  * off.
+ * <li>Fae Dust: while it's fae-light ({@link Hogfire#faeLight}) it burns 60% of the usual fuel ({@value #FAE_BURN}) and
+ * holds its height down to {@value #FAE_STALL_SPEED} (7.6 m/s), trailing a faint sparkle.
  * </ul>
  */
 public final class HogfireFlight {
@@ -45,6 +49,8 @@ public final class HogfireFlight {
 	/** Gravity along the flight path: how much a climb slows it, or a dive speeds it up. */
 	public static final float GRAVITY_ALONG = 0.04f;
 	public static final float STALL_SPEED = 0.45f;
+	public static final float FAE_STALL_SPEED = 0.38f;
+	public static final float FAE_BURN = 0.6f;
 	public static final float TAKEOFF_SPEED = 0.4f;
 	public static final float SINK = 0.12f;
 	/** Where the nose falls to in a full stall. */
@@ -70,6 +76,16 @@ public final class HogfireFlight {
 	public static final float CONTRAIL_SPEED = 1.3f;
 
 	private HogfireFlight() {
+	}
+
+	/** The speed below which it can't hold its height: a little lower while it's fae-light. */
+	public static float stallSpeed(Hogfire pig) {
+		return pig.faeLight() ? FAE_STALL_SPEED : STALL_SPEED;
+	}
+
+	/** How much of the usual fuel it burns: less while it's fae-light. */
+	public static float burnFactor(Hogfire pig) {
+		return pig.faeLight() ? FAE_BURN : 1.0f;
 	}
 
 	/** One tick of flight, on the server. */
@@ -98,12 +114,13 @@ public final class HogfireFlight {
 		float thrust = 0.0f;
 		if (fuelled) {
 			thrust = throttle * THRUST + (afterburner ? AFTERBURNER_THRUST : 0.0f);
-			pig.burn(throttle + (afterburner ? AFTERBURNER_BURN : 0.0f));
+			pig.burn((throttle + (afterburner ? AFTERBURNER_BURN : 0.0f)) * burnFactor(pig));
 		}
 
 		// Steering.
 		float speed = pig.airspeed();
-		float lift = Mth.clamp(speed / STALL_SPEED, 0.0f, 1.0f);
+		float stall = stallSpeed(pig);
+		float lift = Mth.clamp(speed / stall, 0.0f, 1.0f);
 		float yaw = pig.getYRot();
 		float pitch = pig.getXRot();
 		float wantedPitch = Mth.clamp(controls.pitch(), MAX_CLIMB, MAX_DIVE);
@@ -135,7 +152,7 @@ public final class HogfireFlight {
 			}
 		}
 		speed = Math.max(0.0f, speed);
-		lift = Mth.clamp(speed / STALL_SPEED, 0.0f, 1.0f);
+		lift = Mth.clamp(speed / stall, 0.0f, 1.0f);
 
 		Vec3 heading = Vec3.directionFromRotation(pitch, yaw);
 		Vec3 velocity = heading.scale(speed);
@@ -217,10 +234,16 @@ public final class HogfireFlight {
 				.add(pig.getX(), pig.getY() + BODY_CENTRE, pig.getZ());
 	}
 
-	/** Flame and smoke from the nozzle, and contrails off the wingtips at speed. */
+	/** Flame and smoke from the nozzle, contrails off the wingtips at speed, and a fae-light pig's sparkle. */
 	static void effects(Hogfire pig) {
 		Level level = pig.level();
 		RandomSource random = pig.getRandom();
+		if (pig.faeLight() && random.nextInt(pig.onGround() ? 4 : 1) == 0) {
+			// Shed off the back and the wings, hanging where they fall, so in flight they stream out behind.
+			double span = pig.hasWings() ? 2.4 : 0.8;
+			Vec3 at = point(pig, (random.nextDouble() - 0.5) * span, 0.6 + random.nextDouble() * 0.4, -0.3 - random.nextDouble() * 0.5);
+			level.addParticle(Fae.SPARKLE, at.x, at.y, at.z, 0.0, -0.01, 0.0);
+		}
 		if (pig.engineRunning()) {
 			Vec3 nozzle = point(pig, 0.0, 1.09, -0.95);
 			// Shot out backwards and left hanging in the air, so they trail behind it.

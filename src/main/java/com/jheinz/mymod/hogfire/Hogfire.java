@@ -33,7 +33,11 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
+import com.jheinz.mymod.Ammo;
+import com.jheinz.mymod.fae.Fae;
 import com.jheinz.mymod.industry.Industry;
+import com.jheinz.mymod.minigun.MinigunState;
+import com.jheinz.mymod.minigun.RotaryGun;
 
 /**
  * A Hogfire: a pig in a flight harness, with wings and a rocket engine strapped to its back once they're fitted.
@@ -49,6 +53,13 @@ import com.jheinz.mymod.industry.Industry;
  * no controlling passenger in vanilla's sense. On the ground it walks like a pig, steered by the pilot's look.
  * <p>
  * Without a pilot it's just a pig, except that with wings on it flutters down from a height instead of falling.
+ * <p>
+ * Extras, either any time after the harness: a {@link HogfireGunMountItem gun mount} on its shoulders, which the pilot
+ * fires with attack (5.56 from their own inventory, the same works and numbers as the handheld Minigun, see
+ * {@link RotaryGun}), aimed where they look within {@value #MOUNT_ARC} degrees of the nose; and Fae Dust, each pinch
+ * making it fae-light for {@value #FAE_TICKS_PER_DUST} ticks (5 minutes, up to {@value #MAX_FAE_TICKS}), which
+ * {@link HogfireFlight} turns into lighter fuel burn and a lower stall speed, trailing sparkles. Shears take the gun
+ * mount off before any of the flight gear.
  */
 public class Hogfire extends Pig {
 	public static final int HARNESS = 1;
@@ -61,8 +72,22 @@ public class Hogfire extends Pig {
 	private static final EntityDataAccessor<Float> DATA_AIRSPEED = SynchedEntityData.defineId(Hogfire.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> DATA_BANK = SynchedEntityData.defineId(Hogfire.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Boolean> DATA_AFTERBURNER = SynchedEntityData.defineId(Hogfire.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DATA_GUN_MOUNT = SynchedEntityData.defineId(Hogfire.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> DATA_GUN_SPIN = SynchedEntityData.defineId(Hogfire.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> DATA_GUN_HEAT = SynchedEntityData.defineId(Hogfire.class, EntityDataSerializers.FLOAT);
+	/** Bit 0: overheated; bit 1: fired this tick. */
+	private static final EntityDataAccessor<Byte> DATA_GUN_FLAGS = SynchedEntityData.defineId(Hogfire.class, EntityDataSerializers.BYTE);
+	private static final EntityDataAccessor<Integer> DATA_FAE = SynchedEntityData.defineId(Hogfire.class, EntityDataSerializers.INT);
 	/** How fast an unpiloted pig with wings sinks, in blocks a tick. */
 	private static final double FLUTTER_SINK = 0.12;
+	public static final int FAE_TICKS_PER_DUST = 6000;
+	public static final int MAX_FAE_TICKS = FAE_TICKS_PER_DUST * 4;
+	/** The mounted gun aims where the pilot looks, up to this far off the nose. */
+	public static final float MOUNT_ARC = 20.0f;
+	private static final float MOUNT_SPREAD = 1.2f;
+	/** The mounted gun's muzzle, up from the feet and forward of the middle (HogfireGearLayer draws it there). */
+	public static final double MOUNT_MUZZLE_UP = 1.125;
+	public static final double MOUNT_MUZZLE_FORWARD = 1.0;
 
 	/** Server: the pilot's latest controls, and how many ticks ago they came. */
 	private Hogfires.Controls controls = Hogfires.Controls.NEUTRAL;
@@ -91,6 +116,11 @@ public class Hogfire extends Pig {
 		entityData.define(DATA_AIRSPEED, 0.0f);
 		entityData.define(DATA_BANK, 0.0f);
 		entityData.define(DATA_AFTERBURNER, false);
+		entityData.define(DATA_GUN_MOUNT, false);
+		entityData.define(DATA_GUN_SPIN, 0.0f);
+		entityData.define(DATA_GUN_HEAT, 0.0f);
+		entityData.define(DATA_GUN_FLAGS, (byte) 0);
+		entityData.define(DATA_FAE, 0);
 	}
 
 	// --- Gear -----------------------------------------------------------------------------------------------
@@ -150,8 +180,16 @@ public class Hogfire extends Pig {
 		return InteractionResult.SUCCESS;
 	}
 
-	/** Shears take off the last piece fitted; without the harness it's a plain pig again. */
+	/** Shears take off the gun mount, then the last piece fitted; without the harness it's a plain pig again. */
 	private InteractionResult unfit(Player player, ItemStack shears, InteractionHand hand) {
+		if (level() instanceof ServerLevel level && hasGunMount()) {
+			spawnAtLocation(level, new ItemStack(Hogfires.GUN_MOUNT), 0.5f);
+			shears.hurtAndBreak(1, player, hand.asEquipmentSlot());
+			playSound(SoundEvents.SHEEP_SHEAR, 1.0f, 1.0f);
+			setGunMount(false);
+			setGunState(MinigunState.IDLE);
+			return InteractionResult.SUCCESS;
+		}
 		if (level() instanceof ServerLevel level) {
 			int gear = gear();
 			spawnAtLocation(level, new ItemStack(gearItem(gear)), 0.5f);
@@ -173,6 +211,125 @@ public class Hogfire extends Pig {
 					setThrottle(0.0f);
 				}
 			}
+		}
+		return InteractionResult.SUCCESS;
+	}
+
+	// --- Gun mount ---------------------------------------------------------------------------------------------
+
+	public boolean hasGunMount() {
+		return entityData.get(DATA_GUN_MOUNT);
+	}
+
+	private void setGunMount(boolean mounted) {
+		entityData.set(DATA_GUN_MOUNT, mounted);
+	}
+
+	/** The mounted gun's spin, heat and firing. */
+	public MinigunState gunState() {
+		byte flags = entityData.get(DATA_GUN_FLAGS);
+		return new MinigunState(entityData.get(DATA_GUN_SPIN), entityData.get(DATA_GUN_HEAT), (flags & 1) != 0, (flags & 2) != 0);
+	}
+
+	private void setGunState(MinigunState state) {
+		entityData.set(DATA_GUN_SPIN, state.spin());
+		entityData.set(DATA_GUN_HEAT, state.heat());
+		entityData.set(DATA_GUN_FLAGS, (byte) ((state.overheated() ? 1 : 0) | (state.firing() ? 2 : 0)));
+	}
+
+	/** Straps the gun mount on, if there isn't one already. The harness is all it needs. */
+	private InteractionResult fitGun(Player player, ItemStack mount) {
+		if (hasGunMount()) {
+			if (!level().isClientSide()) {
+				player.sendOverlayMessage(Component.translatable("entity.mymod.hogfire.gun_already_fitted").withStyle(ChatFormatting.RED));
+			}
+			return InteractionResult.FAIL;
+		}
+		if (!level().isClientSide()) {
+			setGunMount(true);
+			mount.consume(1, player);
+			playSound(SoundEvents.ANVIL_PLACE, 0.6f, 1.4f);
+			playSound(SoundEvents.ARMOR_EQUIP_IRON.value(), 1.0f, 0.9f);
+		}
+		return InteractionResult.SUCCESS;
+	}
+
+	/**
+	 * One tick of the mounted gun, on the server: the pilot's trigger spins it up and fires it, and with no pilot (or
+	 * the trigger let go) it spins down and cools.
+	 */
+	private void tickGun(ServerLevel level) {
+		Player pilot = pilot();
+		boolean trigger = pilot != null && controls().fire();
+		MinigunState before = gunState();
+		if (!trigger && before.equals(MinigunState.IDLE)) {
+			return;
+		}
+		boolean[] dry = {false};
+		MinigunState next = RotaryGun.tick(before, trigger, 1.0f, () -> {
+			boolean fired = fireGun(level, pilot);
+			dry[0] = !fired;
+			return fired;
+		});
+		if (dry[0] && level.getGameTime() % 6 == 0) {
+			playSound(SoundEvents.DISPENSER_FAIL, 0.5f, 1.4f);
+			pilot.sendOverlayMessage(Component.translatable("item.mymod.minigun.no_ammo").withStyle(ChatFormatting.RED));
+		}
+		if (next.overheated() && !before.overheated()) {
+			playSound(SoundEvents.FIRE_EXTINGUISH, 0.8f, 0.7f);
+			if (pilot != null) {
+				pilot.sendOverlayMessage(Component.translatable("item.mymod.minigun.overheated").withStyle(ChatFormatting.RED));
+			}
+		}
+		setGunState(next);
+	}
+
+	/** Fires one round from the mount, where the pilot looks (within the mount's arc of the nose). */
+	private boolean fireGun(ServerLevel level, Player pilot) {
+		Ammo round = RotaryGun.takeRound(pilot);
+		if (round == null) {
+			return false;
+		}
+		Hogfires.Controls controls = controls();
+		Vec3 heading = Vec3.directionFromRotation(getXRot(), getYRot());
+		Vec3 aim = RotaryGun.within(heading, Vec3.directionFromRotation(controls.pitch(), controls.yaw()), MOUNT_ARC);
+		Vec3 muzzle = HogfireFlight.point(this, 0.0, MOUNT_MUZZLE_UP, MOUNT_MUZZLE_FORWARD);
+		RotaryGun.shoot(level, pilot, muzzle, RotaryGun.stray(aim, MOUNT_SPREAD, getRandom()), muzzle, round, this);
+		return true;
+	}
+
+	// --- Fae Dust ---------------------------------------------------------------------------------------------
+
+	/** Ticks of fae-lightness left. */
+	public int faeTicks() {
+		return entityData.get(DATA_FAE);
+	}
+
+	private void setFaeTicks(int ticks) {
+		entityData.set(DATA_FAE, Mth.clamp(ticks, 0, MAX_FAE_TICKS));
+	}
+
+	/** Dusted with Fae Dust: lighter on fuel and slower to stall (see HogfireFlight). */
+	public boolean faeLight() {
+		return faeTicks() > 0;
+	}
+
+	/** A pinch of Fae Dust: {@value #FAE_TICKS_PER_DUST} more ticks of lightness, up to the cap. */
+	private InteractionResult dust(Player player, ItemStack dust) {
+		if (faeTicks() + FAE_TICKS_PER_DUST > MAX_FAE_TICKS) {
+			if (!level().isClientSide()) {
+				player.sendOverlayMessage(Component.translatable("entity.mymod.hogfire.fae_full").withStyle(ChatFormatting.LIGHT_PURPLE));
+			}
+			return InteractionResult.FAIL;
+		}
+		if (level() instanceof ServerLevel level) {
+			setFaeTicks(faeTicks() + FAE_TICKS_PER_DUST);
+			dust.consume(1, player);
+			level.sendParticles(Fae.SPARKLE, getX(), getY() + 0.7, getZ(), 30, 0.5, 0.4, 0.5, 0.02);
+			playSound(SoundEvents.AMETHYST_BLOCK_CHIME, 1.0f, 1.4f);
+			playSound(getAmbientSound(), 1.0f, 1.8f);
+			int minutes = Mth.ceil(faeTicks() / 1200.0f);
+			player.sendOverlayMessage(Component.translatable("entity.mymod.hogfire.fae_light", minutes).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
 		return InteractionResult.SUCCESS;
 	}
@@ -248,7 +405,7 @@ public class Hogfire extends Pig {
 	/** The pilot's controls, or (if they've stopped arriving) hands off, holding the last heading. */
 	Hogfires.Controls controls() {
 		if (controlsAge > HogfireFlight.CONTROLS_TIMEOUT) {
-			return new Hogfires.Controls(controls.yaw(), controls.pitch(), false, false, false);
+			return new Hogfires.Controls(controls.yaw(), controls.pitch(), false, false, false, false);
 		}
 		return controls;
 	}
@@ -274,6 +431,12 @@ public class Hogfire extends Pig {
 		if (held.is(Items.SHEARS)) {
 			return unfit(player, held, hand);
 		}
+		if (held.is(Hogfires.GUN_MOUNT)) {
+			return fitGun(player, held);
+		}
+		if (held.is(Fae.FAE_DUST)) {
+			return dust(player, held);
+		}
 		if (held.getItem() instanceof HogfireGearItem item) {
 			return fit(player, held, item);
 		}
@@ -292,7 +455,7 @@ public class Hogfire extends Pig {
 			}
 			if (!level().isClientSide()) {
 				// Hold the heading it's on until the pilot's controls start arriving.
-				setControls(new Hogfires.Controls(getYRot(), 0.0f, false, false, false));
+				setControls(new Hogfires.Controls(getYRot(), 0.0f, false, false, false, false));
 				player.startRiding(this);
 				playSound(getAmbientSound(), 1.0f, 1.3f);
 			}
@@ -366,6 +529,12 @@ public class Hogfire extends Pig {
 			if (bank() != 0.0f && pilot() == null) {
 				setBank(Mth.approach(bank(), 0.0f, 4.0f));
 			}
+			if (hasGunMount() && level() instanceof ServerLevel level) {
+				tickGun(level);
+			}
+			if (faeTicks() > 0) {
+				setFaeTicks(faeTicks() - 1);
+			}
 		}
 	}
 
@@ -390,6 +559,9 @@ public class Hogfire extends Pig {
 		for (int stage = HARNESS; stage <= gear(); stage++) {
 			spawnAtLocation(level, gearItem(stage));
 		}
+		if (hasGunMount()) {
+			spawnAtLocation(level, Hogfires.GUN_MOUNT);
+		}
 	}
 
 	/** Only a pilot rides it, and only once it's fully geared. */
@@ -406,6 +578,8 @@ public class Hogfire extends Pig {
 		output.putInt("gear", gear());
 		output.putInt("fuel", fuel());
 		output.putFloat("throttle", throttle());
+		output.putBoolean("gun_mount", hasGunMount());
+		output.putInt("fae_ticks", faeTicks());
 	}
 
 	@Override
@@ -414,5 +588,7 @@ public class Hogfire extends Pig {
 		setGear(Mth.clamp(input.getIntOr("gear", HARNESS), HARNESS, ENGINE));
 		setFuel(input.getIntOr("fuel", 0));
 		setThrottle(input.getFloatOr("throttle", 0.0f));
+		setGunMount(input.getBooleanOr("gun_mount", false));
+		setFaeTicks(input.getIntOr("fae_ticks", 0));
 	}
 }
