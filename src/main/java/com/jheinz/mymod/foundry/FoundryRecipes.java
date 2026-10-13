@@ -14,6 +14,7 @@ import com.jheinz.mymod.industry.IndustryRecipes;
 import com.jheinz.mymod.magmasteel.Magmasteel;
 import com.jheinz.mymod.powerarmor.PowerArmorRecipes;
 import com.jheinz.mymod.soul.SoulSteel;
+import com.jheinz.mymod.tungsten.TungstenRecipes;
 
 /** Everything the Foundry smelts. Built from code, so client and server always agree. */
 public final class FoundryRecipes {
@@ -28,6 +29,8 @@ public final class FoundryRecipes {
 			PowerArmorRecipes.foundry(),
 			// Steel, aluminium, duralumin and shale oil for the oil industry.
 			IndustryRecipes.foundry(),
+			// Tungsten and its carbide.
+			TungstenRecipes.foundry(),
 			// Magmasteel (iron and a magma block) and soul steel (steel and Soul Charges).
 			Magmasteel.foundry(),
 			SoulSteel.foundry()).flatMap(List::stream).toList();

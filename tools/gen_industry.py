@@ -1059,7 +1059,7 @@ shaped("pig_wings", "mymod:pig_wings", ["S S", "KSK", "K K"], {"S": "mymod:wing_
 shaped("pig_flight_harness", "mymod:pig_flight_harness", ["L L", "PSP", "L L"],
        {"L": "minecraft:leather", "P": PLATE, "S": "minecraft:saddle"}, PLATE, category="equipment")
 
-# --- Tags (shared with gen_silver.py and hand edits, so entries are added to what's there; the pickaxe tag is by hand) --
+# --- Tags (shared with gen_silver.py, gen_ores_tu.py and hand edits, so entries are added to what's there; the pickaxe tag is by hand) --
 TAGS = os.path.normpath(os.path.join(DATA, "..", "minecraft", "tags"))
 
 

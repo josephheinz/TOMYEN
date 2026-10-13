@@ -28,6 +28,8 @@ import com.jheinz.mymod.skullcrane.Skullcranes;
 import com.jheinz.mymod.soul.Souls;
 import com.jheinz.mymod.silver.Silver;
 import com.jheinz.mymod.tank.Tanks;
+import com.jheinz.mymod.tungsten.Tungsten;
+import com.jheinz.mymod.uranium.Uranium;
 import com.jheinz.mymod.station.ModMenus;
 
 public class MyMod implements ModInitializer {
@@ -55,6 +57,8 @@ public class MyMod implements ModInitializer {
 		Magmasteel.initialize();
 		Souls.initialize();
 		Silver.initialize();
+		Tungsten.initialize();
+		Uranium.initialize();
 		Hogfires.initialize();
 		ModEntities.initialize();
 		ModMenus.initialize();

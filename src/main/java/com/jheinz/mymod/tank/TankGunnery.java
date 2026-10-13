@@ -1,5 +1,7 @@
 package com.jheinz.mymod.tank;
 
+import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -32,7 +34,8 @@ import com.jheinz.mymod.bank.Collectors;
  * A {@link Tank}'s weapons, on the server: the main gun and its breech, the coaxial machine gun, the smoke
  * launchers and the fire control. The crew's readouts are synced through the tank's entity data.
  * <p>
- * <b>Main gun.</b> Loading is by hand: the gunner picks the next round type (APFSDS or HE) and orders a reload,
+ * <b>Main gun.</b> Loading is by hand: the gunner picks the next round type (steel, tungsten or depleted uranium
+ * APFSDS, or HE; the selector skips types the rack has none of, unless it has none at all) and orders a reload,
  * which takes one round of that type from the {@link TankRack} and keeps the breech LOADING for
  * {@link #RELOAD_TICKS} (longer with a damaged gun): the breech opens, the round is rammed, the breech closes and
  * the loader calls "UP!". Only then can it fire, which empties the breech again. An empty rack means no reload.
@@ -100,7 +103,8 @@ public final class TankGunnery {
 	// --- Readouts (synced) --------------------------------------------------------------------------------------
 
 	private void syncBreech() {
-		tank.sync(Tank.BREECH, breech | breechRound.ordinal() << 2 | selected.ordinal() << 4);
+		// Two bits of breech state, then three bits for each round.
+		tank.sync(Tank.BREECH, breech | breechRound.ordinal() << 2 | selected.ordinal() << 5);
 		tank.sync(Tank.LOAD, loadLeft | loadTotal << 12);
 	}
 
@@ -117,6 +121,9 @@ public final class TankGunnery {
 		int he = Math.min(1023, rack.count(Tanks.HE_SHELL));
 		int powder = Math.min(1023, rack.count(Items.GUNPOWDER));
 		tank.sync(Tank.RACK, apfsds | he << 10 | powder << 20);
+		int tungsten = Math.min(1023, rack.count(Tanks.TUNGSTEN_APFSDS_SHELL));
+		int uranium = Math.min(1023, rack.count(Tanks.DU_APFSDS_SHELL));
+		tank.sync(Tank.RACK_SPECIAL, tungsten | uranium << 10);
 	}
 
 	void syncAll() {
@@ -191,8 +198,19 @@ public final class TankGunnery {
 		lasedRange = range > 0.0 && range < 5000.0 ? range : 0.0;
 	}
 
+	/** Steps the selector to the next round type the rack holds, or with an empty rack simply the next type. */
 	void cycleRound() {
-		selected = selected == ShellType.APFSDS ? ShellType.HE : ShellType.APFSDS;
+		List<ShellType> order = ShellType.SELECTABLE;
+		int at = Math.max(0, order.indexOf(selected));
+		ShellType next = order.get((at + 1) % order.size());
+		for (int i = 1; i <= order.size(); i++) {
+			ShellType candidate = order.get((at + i) % order.size());
+			if (rack.count(candidate.item()) > 0) {
+				next = candidate;
+				break;
+			}
+		}
+		selected = next;
 		syncBreech();
 	}
 

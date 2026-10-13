@@ -2,6 +2,7 @@
   "values": [
     "mymod:bleeding",
     "mymod:neural_overload",
-    "mymod:optic_laser"
+    "mymod:optic_laser",
+    "mymod:radiation"
   ]
 }

@@ -133,6 +133,8 @@ public class Tank extends PathfinderMob implements Collector {
 	static final EntityDataAccessor<Integer> LOAD = SynchedEntityData.defineId(Tank.class, EntityDataSerializers.INT);
 	/** APFSDS, HE and gunpowder in the rack, ten bits each. */
 	static final EntityDataAccessor<Integer> RACK = SynchedEntityData.defineId(Tank.class, EntityDataSerializers.INT);
+	/** Tungsten and depleted uranium APFSDS in the rack, ten bits each. */
+	static final EntityDataAccessor<Integer> RACK_SPECIAL = SynchedEntityData.defineId(Tank.class, EntityDataSerializers.INT);
 	static final EntityDataAccessor<Byte> SMOKE = SynchedEntityData.defineId(Tank.class, EntityDataSerializers.BYTE);
 	/** Coax heat in thousandths, and bit 16 when it's jammed. */
 	static final EntityDataAccessor<Integer> COAX = SynchedEntityData.defineId(Tank.class, EntityDataSerializers.INT);
@@ -191,6 +193,7 @@ public class Tank extends PathfinderMob implements Collector {
 		builder.define(BREECH, 0);
 		builder.define(LOAD, 0);
 		builder.define(RACK, 0);
+		builder.define(RACK_SPECIAL, 0);
 		builder.define(SMOKE, (byte) TankGunnery.MAX_SMOKE);
 		builder.define(COAX, 0);
 		builder.define(PARTS, TankPart.ALL_SOUND);
@@ -777,11 +780,11 @@ public class Tank extends PathfinderMob implements Collector {
 	}
 
 	public ShellType breechRound() {
-		return ShellType.byOrdinal(entityData.get(BREECH) >> 2 & 3);
+		return ShellType.byOrdinal(entityData.get(BREECH) >> 2 & 7);
 	}
 
 	public ShellType nextRound() {
-		return ShellType.byOrdinal(entityData.get(BREECH) >> 4 & 3);
+		return ShellType.byOrdinal(entityData.get(BREECH) >> 5 & 7);
 	}
 
 	/** The round the fire control lays the gun for: the one in the breech, or the next one if it's empty. */
@@ -799,7 +802,23 @@ public class Tank extends PathfinderMob implements Collector {
 
 	public int rackCount(ShellType type) {
 		int packed = entityData.get(RACK);
-		return type == ShellType.APFSDS ? packed & 1023 : type == ShellType.HE ? packed >> 10 & 1023 : 0;
+		int special = entityData.get(RACK_SPECIAL);
+		return switch (type) {
+			case APFSDS -> packed & 1023;
+			case HE -> packed >> 10 & 1023;
+			case TUNGSTEN_APFSDS -> special & 1023;
+			case DU_APFSDS -> special >> 10 & 1023;
+			case COLLECTOR -> 0;
+		};
+	}
+
+	/** Every main gun round in the rack. */
+	public int rackRounds() {
+		int total = 0;
+		for (ShellType type : ShellType.SELECTABLE) {
+			total += rackCount(type);
+		}
+		return total;
 	}
 
 	public int rackGunpowder() {

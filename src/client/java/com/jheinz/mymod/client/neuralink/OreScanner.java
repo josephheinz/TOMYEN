@@ -26,6 +26,8 @@ import net.minecraft.world.level.chunk.status.ChunkStatus;
 
 import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.neuralink.NeuralinkModule;
+import com.jheinz.mymod.tungsten.Tungsten;
+import com.jheinz.mymod.uranium.Uranium;
 
 /**
  * Finds the ores around a player wearing an x-ray module. It cycles through the chunk sections in range a
@@ -184,6 +186,8 @@ public final class OreScanner {
 		if (state.is(BlockItemTags.COAL_ORES.block())) return 0x8C8C8C;
 		if (state.is(Blocks.ANCIENT_DEBRIS)) return 0xB0603A;
 		if (state.is(Blocks.NETHER_QUARTZ_ORE)) return 0xF2EDE4;
+		if (state.is(Uranium.URANIUM_ORES)) return 0x9CFF3A;
+		if (state.is(Tungsten.TUNGSTEN_ORE)) return 0x8C96A8;
 		return state.is(BlockTags.ORES) ? 0xFFFFFF : 0;
 	}
 }

@@ -61,7 +61,7 @@ def client_jar():
 
 def read_png(data):
     """Pixels (RGBA tuples, row by row) of a non-interlaced PNG: greyscale, RGB, palette or RGBA, any bit depth up
-    to 8 (vanilla's item textures are 4 and 8 bit palette ones)."""
+    to 8 (vanilla's item textures are 4 and 8 bit palette ones), with a tRNS transparent colour if there is one."""
     pos, idat, palette, alpha = 8, b"", b"", b""
     while pos < len(data):
         n, kind = struct.unpack(">I4s", data[pos:pos + 8])
@@ -95,9 +95,11 @@ def read_png(data):
                 i = s[0]
                 px.append(tuple(palette[3 * i:3 * i + 3]) + (alpha[i] if i < len(alpha) else 255,))
             elif colour in (0, 4):
-                px.append((s[0],) * 3 + ((s[1],) if colour == 4 else (255,)))
+                clear = colour == 0 and len(alpha) >= 2 and s[0] == struct.unpack(">H", alpha[:2])[0]
+                px.append((s[0],) * 3 + ((s[1],) if colour == 4 else (0 if clear else 255,)))
             else:
-                px.append(tuple(s) + ((255,) if colour == 2 else ()))
+                clear = colour == 2 and len(alpha) >= 6 and tuple(s) == struct.unpack(">HHH", alpha[:6])
+                px.append(tuple(s) + ((0 if clear else 255,) if colour == 2 else ()))
     return w, h, px
 
 

@@ -69,13 +69,19 @@ public final class ModItems {
 	// (see EvilBane); against anything else they're FMJ. A dropped silver round turns holy in crucifix light.
 	public static final Item BULLET_556_SILVER = round("bullet_556_silver", EvilBane.SILVER);
 	public static final Item BULLET_556_HOLY_SILVER = round("bullet_556_holy_silver", EvilBane.HOLY_SILVER);
+	/** A tungsten carbide penetrator: past almost any armor, and on through the first target into a second. */
+	public static final Item BULLET_556_TUNGSTEN = item("bullet_556_tungsten");
+	/** A depleted uranium penetrator: armor-piercing, and pyrophoric, so it sets what it hits alight. */
+	public static final Item BULLET_556_DEPLETED_URANIUM = item("bullet_556_depleted_uranium");
 	private static final List<Ammo> AMMO_556 = List.of(
 			new Ammo(BULLET_556_FMJ, 6.0f, ModDamageTypes.BULLET, 0xD08A4E),
 			new Ammo(BULLET_556_GREEN_TIP, 5.5f, ModDamageTypes.PENETRATOR_BULLET, 0x6CC24A),
 			new Ammo(BULLET_556_AP, 5.0f, ModDamageTypes.ARMOR_PIERCING_BULLET, 0xB4B4B4),
 			new Ammo(BULLET_556_HOLLOW_POINT, 9.0f, ModDamageTypes.HOLLOW_POINT_BULLET, 0xE05A4E),
 			new Ammo(BULLET_556_SILVER, 6.0f, ModDamageTypes.BULLET, 0xC9D3E0),
-			new Ammo(BULLET_556_HOLY_SILVER, 6.0f, ModDamageTypes.BULLET, 0xFFE9A0));
+			new Ammo(BULLET_556_HOLY_SILVER, 6.0f, ModDamageTypes.BULLET, 0xFFE9A0),
+			new Ammo(BULLET_556_TUNGSTEN, 5.5f, ModDamageTypes.TUNGSTEN_CORE_BULLET, 0x5E6A78, 1, 0.0f),
+			new Ammo(BULLET_556_DEPLETED_URANIUM, 5.5f, ModDamageTypes.DEPLETED_URANIUM_BULLET, 0x8FA65A, 0, 4.0f));
 
 	// 9x19mm Parabellum: Glock
 	public static final Item BULLET_CASING_9MM = item("bullet_casing_9mm");

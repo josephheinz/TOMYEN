@@ -15,6 +15,8 @@ import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.powerarmor.PowerArmorRecipes;
 import com.jheinz.mymod.silver.Silver;
 import com.jheinz.mymod.station.StationRecipe.Cost;
+import com.jheinz.mymod.tungsten.Tungsten;
+import com.jheinz.mymod.uranium.Uranium;
 
 /** Everything the Weapon Station can make. Built from code, so client and server always agree. */
 public final class StationRecipes {
@@ -35,6 +37,11 @@ public final class StationRecipes {
 					cost(ModItems.BULLET_CASING_556, 4), cost(Items.GUNPOWDER, 1), cost(Silver.SILVER_NUGGET, 1)),
 			recipe(ModItems.BULLET_556_HOLY_SILVER, 4,
 					cost(ModItems.BULLET_CASING_556, 4), cost(Items.GUNPOWDER, 1), cost(Silver.HOLY_SILVER_NUGGET, 1)),
+			// A real tungsten carbide penetrator, and a depleted uranium one.
+			recipe(ModItems.BULLET_556_TUNGSTEN, 8,
+					cost(ModItems.BULLET_CASING_556, 8), cost(Items.GUNPOWDER, 2), cost(Tungsten.TUNGSTEN_CARBIDE, 1)),
+			recipe(ModItems.BULLET_556_DEPLETED_URANIUM, 8,
+					cost(ModItems.BULLET_CASING_556, 8), cost(Items.GUNPOWDER, 2), cost(Uranium.DEPLETED_URANIUM, 1)),
 			// 9mm: smaller cases, less powder per round.
 			recipe(ModItems.BULLET_CASING_9MM, 12, cost(Items.COPPER_INGOT, 1), cost(Items.GOLD_NUGGET, 1)),
 			recipe(ModItems.BULLET_9MM_FMJ, 8,

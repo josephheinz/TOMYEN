@@ -53,6 +53,7 @@ import com.jheinz.mymod.client.lmg.M249Animation;
 import com.jheinz.mymod.client.shotgun.ShotgunAnimation;
 import com.jheinz.mymod.client.powerarmor.PowerArmorClient;
 import com.jheinz.mymod.client.tank.TankClient;
+import com.jheinz.mymod.client.uranium.UraniumClient;
 import com.jheinz.mymod.station.ModMenus;
 
 public class MyModClient implements ClientModInitializer {
@@ -127,6 +128,7 @@ public class MyModClient implements ClientModInitializer {
 		BankClient.initialize();
 		PowerArmorClient.initialize();
 		IndustryClient.initialize();
+		UraniumClient.initialize();
 		HogfireClient.initialize();
 		SchnozzleClient.initialize();
 		SkullcraneClient.initialize();

@@ -4,6 +4,9 @@
     "mymod:oil_shale",
     "mymod:deepslate_oil_shale",
     "mymod:silver_ore",
-    "mymod:deepslate_silver_ore"
+    "mymod:deepslate_silver_ore",
+    "mymod:tungsten_ore",
+    "mymod:uranium_ore",
+    "mymod:deepslate_uranium_ore"
   ]
 }

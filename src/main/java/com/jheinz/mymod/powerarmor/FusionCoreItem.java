@@ -14,7 +14,8 @@ import net.minecraft.world.item.component.TooltipDisplay;
 /**
  * What powers a suit of power armor. Its charge ({@link PowerArmors#FUSION_CHARGE}, absent means full) is
  * {@link #MAX_CHARGE} units: an hour of walking for a Mk I torso (see {@link PowerArmor} for what drains it).
- * It shows as a bar like durability. A spent core is recharged in the Foundry with redstone blocks.
+ * It shows as a bar like durability. A spent core is recharged in the Foundry: a third of the way with redstone
+ * blocks, or all the way with enriched uranium (see {@link PowerArmorRecipes}).
  */
 public class FusionCoreItem extends Item {
 	public static final int MAX_CHARGE = 72000;

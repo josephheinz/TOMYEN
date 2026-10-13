@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "W": "mymod:tungsten_ingot",
+    "S": "mymod:steel_ingot",
+    "G": "minecraft:gunpowder",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    " W ",
+    " S ",
+    "GCG"
+  ],
+  "result": {
+    "count": 2,
+    "id": "mymod:tungsten_apfsds_shell"
+  }
+}
