@@ -49,8 +49,8 @@ public final class CathodeWalkers {
 
 	public static final EntityType<CathodeWalker> CATHODE_WALKER = entity("cathode_walker",
 			EntityType.Builder.of(CathodeWalker::new, MobCategory.MONSTER)
-					.sized(0.9f, 1.7f)
-					.eyeHeight(1.35f)
+					.sized(0.9f, 1.8f)
+					.eyeHeight(1.45f)
 					.clientTrackingRange(8)
 					.notInPeaceful());
 

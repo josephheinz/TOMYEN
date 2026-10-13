@@ -17,7 +17,9 @@ events (vanilla sounds, repitched) to sounds.json and its lang entries to en_us.
 the rest of both files as they are.
 
 With --preview DIR it also renders the model in software (front, side, three-quarter, mid-strut and mid-kick, and
-the screen in each state) to DIR/preview_cathode_walker*.png.
+the screen in each state) to DIR/preview_cathode_walker*.png, and a sheet of the legs (front, side, three-quarter
+and back, the feet close up, the strut cycle and the kick) to DIR/preview_cathode_legs.png. Before writing anything
+it checks the model for faces that would z-fight and texture rects that overlap, and stops if it finds any.
 
 Usage: python3 tools/gen_cathode_walker.py src/main/resources/assets/mymod [--preview DIR]"""
 import json, math, os, random, sys, zipfile
@@ -83,11 +85,25 @@ def steve(x, y):
 
 
 STEVE = vanilla("entity/player/wide/steve")
-# Steve's skin, light to dark: his cheek highlight, the arm's two tones, his jaw, and the shadow under his nose.
-SKIN = [steve(11, 10), steve(10, 10), steve(44, 25), steve(44, 24), steve(45, 24), steve(11, 13)]
-# His trousers, light to dark, and a lighter fold for where they're rolled up.
+# Steve's skin, light to dark: his cheek highlight, the face's two mid tones, its shade, the underside of his chin in
+# two tones, and the shadow under his nose.
+SKIN = [steve(11, 10), steve(10, 10), steve(13, 10), steve(9, 10), steve(16, 2), steve(16, 0), steve(11, 13)]
+MOUTH, EYE_WHITE = steve(11, 14), steve(9, 12)
+
+
+def mix(a, b, t):
+    return tuple(int(round(a[k] + (b[k] - a[k]) * t)) for k in range(3))
+
+
+# Toe tips a little pinker (flushed toward his mouth's red), the undersides of them a step darker; toenails pale, his
+# skin halfway to the white of his eye, their free edges paler still.
+PINK = mix(SKIN[1], scale(MOUTH, 1.5), 0.55)
+PINK_DARK = mix(PINK, SKIN[4], 0.5)
+NAIL = mix(SKIN[0], EYE_WHITE, 0.45)
+NAIL_TIP = mix(SKIN[0], EYE_WHITE, 0.65)
+# His trousers, light to dark, and the faded inside of the denim for where they're rolled up.
 TROUSERS = [steve(4, 20), steve(4, 24), steve(5, 24)]
-CUFF = scale(TROUSERS[0], 1.22)
+CUFF = mix(TROUSERS[0], EYE_WHITE, 0.22)
 # His shoes' greys, for the bezel, the knobs and the screen's surround.
 GREYS = [steve(5, 30), steve(4, 30), steve(4, 31), steve(0, 31)]
 # Jungle planks, light to dark.
@@ -104,27 +120,77 @@ DARK_GLASS = [(52, 62, 68), (34, 40, 45), (24, 28, 32), (14, 16, 18)]
 
 # ---------------------------------------------------------------------------------------------- the model
 # Kept in step with client/cathode/CathodeWalkerModel: (name, parent, pivot, rest rotation, cubes), each cube
-# (u, v, x, y, z, w, h, d). Ten cubes: the cabinet and its screen, two antennas, and a thigh, shin and foot a leg.
-HIP_Y = 9.0
-CABINET = (0, 0, -8, -12, -5.5, 16, 12, 11)
-SCREEN = (0, 23, -7, -11, -6.5, 11, 9, 1)
-ANTENNA = (24, 23, -0.5, -9, -0.5, 1, 9, 1)
-THIGH = (0, 33, -2, 0, -2, 4, 7, 4)
-SHIN = (16, 33, -2, 0, -2, 4, 6, 4)
-FOOT = (32, 33, -2, 0, -4, 4, 2, 6)
+# (u, v, w, h, d, x0, y0, z0, x1, y1, z1): where it sits on the texture and its size there, then its corners in its
+# part's space. Where the two differ the game grows or shrinks the cube about its centre (a CubeDeformation per axis),
+# which is how the skinny legs and the toes get sizes in fractions of a pixel while their textures stay whole texels.
+#
+# Model space is in pixels, y down, the front toward -z; the ground is y = 24. The legs are thin and long: a hip of
+# baggy rolled-up jeans, a thigh 2.5 across, a knobbly knee, a shin 2 across with a calf behind it, and a bare foot of
+# heel, instep, outer sole, ball and five toes, each toe its own part so it can curl and splay.
+def cube(u, v, size, lo, hi):
+    return (u, v) + tuple(size) + tuple(lo) + tuple(hi)
+
+
+GROUND = 24.0
+HIP_Y = 7.0                        # hips at rest: legs of 8 + 7 + 2 reach the ground
+THIGH_LEN, SHIN_LEN, SOLE = 8.0, 7.0, 2.0
+LEG_X = 3.5
+CABINET = cube(0, 0, (16, 12, 11), (-8, -12, -5.5), (8, 0, 5.5))
+# The screen bulges a pixel out of the front, its back sunk a fifth of a pixel into the cabinet.
+SCREEN = cube(0, 23, (11, 9, 1), (-7, -11, -6.5), (4, -2, -5.3))
+ANTENNA = cube(24, 23, (1, 9, 1), (-0.5, -9, -0.5), (0.5, 0, 0.5))
+# Thigh part, about the hip: the jeans (their top sunk into the cabinet), the rolled cuff round their hem, the thigh.
+JEANS = cube(0, 33, (3, 3, 3), (-1.7, -0.5, -1.7), (1.7, 2.5, 1.7))
+JEAN_CUFF = cube(12, 33, (3, 2, 3), (-1.95, 2.0, -1.95), (1.95, 3.4, 1.95))
+THIGH = cube(24, 33, (2, 5, 2), (-1.25, 2.9, -1.25), (1.25, 8.1, 1.25))
+# Shin part, about the knee: the kneecap (the back of it a hollow behind the thigh), the shin, the calf.
+KNEE = cube(32, 33, (3, 3, 3), (-1.35, -1.3, -1.5), (1.35, 1.3, 1.15))
+SHIN = cube(44, 33, (2, 6, 2), (-1.0, 1.0, -1.0), (1.0, 7.3, 1.0))
+CALF = cube(52, 33, (2, 3, 2), (-1.15, 1.6, -0.6), (1.15, 4.4, 1.45))
+# Foot part, about the ankle, sole on the ground at y = 2. x here runs toward the other foot (the big toe's side), so
+# the right foot is this one mirrored. The instep stops short of the ground on the inside, the arch; the outer sole
+# under it doesn't quite reach it either, so it never shares a plane with the heel or the ball.
+HEEL = cube(0, 42, (2, 2, 3), (-1.15, -0.4, -1.2), (1.2, 2.0, 1.5))
+INSTEP = cube(10, 42, (3, 1, 3), (-1.3, 0.3, -3.9), (1.35, 1.55, -1.0))
+OUTER = cube(22, 42, (1, 1, 3), (-1.0, 1.45, -4.1), (-0.05, 1.9, -1.1))
+BALL = cube(30, 42, (3, 1, 2), (-1.65, 0.75, -5.3), (1.7, 2.0, -3.6))
+FOOT = [HEEL, INSTEP, OUTER, BALL]
+# The toes, big toe first: (u, v, x0, x1, height, length), each hinged at the bottom of its root, sunk 0.2 into the
+# ball, a tenth of a pixel off the ground. Each smaller and shorter than the last, with a gap between each.
+TOE_Y, TOE_Z = 1.9, -5.1
+TOE_SPECS = [(40, 42, 0.85, 1.9, 0.95, 1.7), (46, 42, 0.05, 0.71, 0.75, 1.5), (52, 42, -0.62, -0.04, 0.7, 1.35),
+             (58, 42, -1.23, -0.71, 0.62, 1.15), (0, 47, -1.78, -1.32, 0.55, 0.9)]
+TOE_PIVOTS = [((x0 + x1) / 2, TOE_Y, TOE_Z) for _, _, x0, x1, _, _ in TOE_SPECS]
+TOES = [cube(u, v, (1, 1, 2), (x0 - px, -hgt, -ln), (x1 - px, 0.0, 0.0))
+        for (u, v, x0, x1, hgt, ln), (px, _, _) in zip(TOE_SPECS, TOE_PIVOTS)]
 ANTENNA_TILT, ANTENNA_SPLAY = -0.2, 0.45
-PARTS = [
-    ("hips", None, (0, HIP_Y, 0), (0, 0, 0), []),
-    ("cabinet", "hips", (0, 0, 0), (0, 0, 0), [CABINET, SCREEN]),
-    ("antenna_0", "cabinet", (-2, -12, 2.5), (ANTENNA_TILT, 0, -ANTENNA_SPLAY), [ANTENNA]),
-    ("antenna_1", "cabinet", (2, -12, 2.5), (ANTENNA_TILT, 0, ANTENNA_SPLAY), [ANTENNA]),
-    ("leg_0", "hips", (-3.5, 0, 0), (0, 0, 0), [THIGH]),
-    ("shin_0", "leg_0", (0, 7, 0), (0, 0, 0), [SHIN]),
-    ("foot_0", "shin_0", (0, 6, 0), (0, 0, 0), [FOOT]),
-    ("leg_1", "hips", (3.5, 0, 0), (0, 0, 0), [THIGH]),
-    ("shin_1", "leg_1", (0, 7, 0), (0, 0, 0), [SHIN]),
-    ("foot_1", "shin_1", (0, 6, 0), (0, 0, 0), [FOOT]),
-]
+
+
+def mirrored(c, flip):
+    """A cube with its x flipped when flip is -1."""
+    if flip > 0:
+        return c
+    u, v, w, h, d, x0, y0, z0, x1, y1, z1 = c
+    return (u, v, w, h, d, -x1, y0, z0, -x0, y1, z1)
+
+
+def build_parts():
+    parts = [("hips", None, (0, HIP_Y, 0), (0, 0, 0), []),
+             ("cabinet", "hips", (0, 0, 0), (0, 0, 0), [CABINET, SCREEN]),
+             ("antenna_0", "cabinet", (-2, -12, 2.5), (ANTENNA_TILT, 0, -ANTENNA_SPLAY), [ANTENNA]),
+             ("antenna_1", "cabinet", (2, -12, 2.5), (ANTENNA_TILT, 0, ANTENNA_SPLAY), [ANTENNA])]
+    for i in (0, 1):
+        side = -1 if i == 0 else 1
+        flip = -side  # the foot's +x, toward the other leg
+        parts += [("leg_%d" % i, "hips", (side * LEG_X, 0, 0), (0, 0, 0), [JEANS, JEAN_CUFF, THIGH]),
+                  ("shin_%d" % i, "leg_%d" % i, (0, THIGH_LEN, 0), (0, 0, 0), [KNEE, SHIN, CALF]),
+                  ("foot_%d" % i, "shin_%d" % i, (0, SHIN_LEN, 0), (0, 0, 0), [mirrored(c, flip) for c in FOOT])]
+        for j, (toe, (px, py, pz)) in enumerate(zip(TOES, TOE_PIVOTS)):
+            parts.append(("toe_%d_%d" % (i, j), "foot_%d" % i, (flip * px, py, pz), (0, 0, 0), [mirrored(toe, flip)]))
+    return parts
+
+
+PARTS = build_parts()
 
 
 def faces(u, v, w, h, d):
@@ -137,8 +203,7 @@ def faces(u, v, w, h, d):
 
 def paint(canvas, cube, painters):
     """painters: face name -> f(x, y, w, h) -> colour (or None to leave it)."""
-    u, v, _, _, _, w, h, d = cube
-    for name, (fu, fv, fw, fh) in faces(u, v, w, h, d).items():
+    for name, (fu, fv, fw, fh) in faces(*cube[:5]).items():
         f = painters.get(name)
         if f is None:
             continue
@@ -228,63 +293,71 @@ def entity_texture():
     paint(tex, ANTENNA, {name: rod for name in ("front", "right", "left", "back")} | {"top": flat(CHROME[0]),
                                                                                       "bottom": flat(CHROME[2])})
 
-    # Legs. Thigh, 4 x 7 x 4: trousers rolled up above the knee (the fold a shade lighter), bare skin below. Lit from
-    # the front, a highlight down the middle of the shin and thigh, the back of the leg a step darker.
-    def leg_face(shade, cuffed):
-        def f(x, y, w, h):
-            if cuffed and y <= 1:
-                return TROUSERS[min(2, shade)]
-            if cuffed and y == 2:
-                return scale(CUFF, 1.0 - 0.08 * shade)
-            tone = 2 + shade
-            if shade == 0 and x == 1:
-                tone = 1
-            return SKIN[min(len(SKIN) - 1, tone)]
-        return f
+    # Legs and feet: Steve's skin, lit from the front and above, each face a short deliberate ramp (no noise); shadow
+    # gathers under the cuff, under the knee, in the hollow behind it, under the arch and in the creases at the toes.
+    def sk(t):
+        return SKIN[max(0, min(len(SKIN) - 1, int(round(t))))]
 
-    def leg_top(cuffed):
-        return flat(TROUSERS[1] if cuffed else SKIN[3])
+    def grid(rows):
+        """A face painted from a grid of skin tones, row by row."""
+        return lambda x, y, w, h: sk(rows[min(y, len(rows) - 1)][min(x, len(rows[0]) - 1)])
 
-    paint(tex, THIGH, {"front": leg_face(0, True), "right": leg_face(1, True), "left": leg_face(1, True),
-                       "back": leg_face(2, True), "top": leg_top(True), "bottom": flat(SKIN[3])})
+    def sides(f):
+        """Both side faces from one painter f(c, y, w, h), c counting columns back from the front edge."""
+        return {"right": lambda x, y, w, h: f(w - 1 - x, y, w, h), "left": lambda x, y, w, h: f(x, y, w, h)}
 
-    # Shin, 4 x 6 x 4: the knee a touch darker along its top row, a bony highlight down the front.
-    def shin_face(shade):
-        def f(x, y, w, h):
-            tone = 2 + shade
-            if shade == 0 and x == 1 and 1 <= y:
-                tone = 1
-            if y == 0:
-                tone += 1
-            return SKIN[min(len(SKIN) - 1, tone)]
-        return f
+    def tone(t):
+        return flat(sk(t))
 
-    paint(tex, SHIN, {"front": shin_face(0), "right": shin_face(1), "left": shin_face(1), "back": shin_face(2),
-                      "top": flat(SKIN[3]), "bottom": flat(SKIN[3])})
-
-    # Foot, 4 x 2 x 6, bare: toes along the front (lighter tips, a dark line between the big toe and the rest), the
-    # top of the foot lit, the sole a darker pink-brown.
-    def foot_front(x, y, w, h):
-        if y == 0:
-            return SKIN[1] if x != 1 else SKIN[3]
-        return SKIN[3] if x != 1 else SKIN[4]
-
-    def foot_top(x, y, w, h):
-        if y == h - 1:  # the toes
-            return SKIN[0] if x in (0, 2) else SKIN[2] if x == 3 else SKIN[4]
-        return SKIN[1] if x in (1, 2) else SKIN[2]
-
-    def foot_side(x, y, w, h):
-        return SKIN[3 if y == 0 else 4]
-
-    paint(tex, FOOT, {"front": foot_front, "top": foot_top, "right": foot_side, "left": foot_side,
-                      "back": foot_side, "bottom": flat(SKIN[4])})
+    # Jeans, 3 x 3 x 3: baggy round the skinny thigh, lighter where the light catches the top of them.
+    paint(tex, JEANS, {"front": lambda x, y, w, h: TROUSERS[0 if y < 2 else 1],
+                       "back": lambda x, y, w, h: TROUSERS[1 if y < 1 else 2], "top": flat(TROUSERS[1]),
+                       "bottom": flat(TROUSERS[2]),
+                       **sides(lambda c, y, w, h: TROUSERS[(0 if c == 0 else 1) + (1 if y == 2 else 0)])})
+    # The rolled cuff, 3 x 2 x 3: the faded inside of the denim, its rolled lip lit, the fold under it in shade.
+    paint(tex, JEAN_CUFF, {"front": lambda x, y, w, h: CUFF if y == 0 else scale(CUFF, 0.88),
+                      "back": lambda x, y, w, h: scale(CUFF, 0.9 if y == 0 else 0.8),
+                      "top": flat(mix(CUFF, EYE_WHITE, 0.12)), "bottom": flat(scale(CUFF, 0.7)),
+                      **sides(lambda c, y, w, h: scale(CUFF, (1.0 if y == 0 else 0.88) * (1.0 if c == 0 else 0.94)))})
+    # Thigh, 2 x 5 x 2: a highlight down the front; shadowed just under the cuff.
+    under_cuff = [2, 1, 0, 0, 0]
+    paint(tex, THIGH, {"front": lambda x, y, w, h: sk(2 - (x == 0) + under_cuff[y]),
+                       "back": lambda x, y, w, h: sk(4 + under_cuff[y] // 2), "top": tone(3), "bottom": tone(3),
+                       **sides(lambda c, y, w, h: sk(3 - (c == 0) + under_cuff[y]))})
+    # Knee, 3 x 3 x 3: a bony cap lit in the middle, its underside shaded, the hollow behind it creased.
+    paint(tex, KNEE, {"front": grid([[2, 1, 2], [1, 0, 1], [3, 2, 3]]), "back": grid([[4], [5], [4]]),
+                      "top": tone(2), "bottom": tone(4),
+                      **sides(lambda c, y, w, h: sk(2 + min(c, 1) + (y == 2)))})
+    # Shin, 2 x 6 x 2: the shin bone's highlight down the front, shaded under the knee.
+    paint(tex, SHIN, {"front": lambda x, y, w, h: sk(2 - (x == 0) + (y == 0)),
+                      "back": tone(4), "top": tone(3), "bottom": tone(4),
+                      **sides(lambda c, y, w, h: sk(3 + (y == 0)))})
+    # Calf, 2 x 3 x 2: the swell lit along its top, falling into shade toward the ankle.
+    paint(tex, CALF, {"back": grid([[2], [3], [4]]), "front": tone(4), "top": tone(2), "bottom": tone(5),
+                      **sides(lambda c, y, w, h: sk(3 if c == 0 else 2 + y))})
+    # Heel, 2 x 2 x 3: the ankle lit, shading down to the ground and toward the arch.
+    paint(tex, HEEL, {"back": grid([[3], [4]]), "front": tone(5), "top": tone(3), "bottom": tone(5),
+                      **sides(lambda c, y, w, h: sk(2 + y + (c == 0)))})
+    # Instep, 3 x 1 x 3: the top of the foot lit along its ridge; the arch under it dark.
+    paint(tex, INSTEP, {"top": grid([[2, 1, 2], [1, 0, 1], [2, 1, 2]]), "bottom": tone(5), "front": tone(3),
+                        "back": tone(3), **sides(lambda c, y, w, h: sk(3))})
+    paint(tex, OUTER, {"top": tone(4), "bottom": tone(5), "front": tone(5), "back": tone(5),
+                       **sides(lambda c, y, w, h: sk(4))})
+    # Ball, 3 x 1 x 2: its top darkening into the knuckles where the toes join; its front, between the toes, a crease.
+    paint(tex, BALL, {"top": grid([[2, 1, 2], [3, 2, 3]]), "front": tone(5), "back": tone(4), "bottom": tone(5),
+                      **sides(lambda c, y, w, h: sk(3))})
+    # Toes, 1 x 1 x 2 each: a pale nail on the front of the top, pink tips, a darker crease at the root and underneath.
+    for n, toe in enumerate(TOES):
+        nail = NAIL_TIP if n == 0 else NAIL
+        paint(tex, toe, {"top": lambda x, y, w, h, nail=nail: nail if y == h - 1 else SKIN[1], "front": flat(PINK),
+                         "back": tone(5), "bottom": lambda x, y, w, h: PINK_DARK if y == h - 1 else SKIN[4],
+                         **sides(lambda c, y, w, h: PINK if c == 0 else SKIN[3])})
     return tex
 
 
 # ---------------------------------------------------------------------------------------------- screen frames
 SW, SH = 11, 9
-SCREEN_FACE = faces(*SCREEN[:2], *SCREEN[5:8])["front"]
+SCREEN_FACE = faces(*SCREEN[:5])["front"]
 
 
 def corner(x, y):
@@ -634,9 +707,9 @@ SHADE = {"top": 1.0, "bottom": 0.5, "front": 0.82, "back": 0.82, "right": 0.62, 
 
 def face_quads(cube):
     """(face name, origin, u edge, v edge, texture rect) in part space."""
-    u, v, x0, y0, z0, w, h, d = cube
-    x1, y1, z1 = x0 + w, y0 + h, z0 + d
-    rects = faces(u, v, w, h, d)
+    x0, y0, z0, x1, y1, z1 = cube[5:]
+    w, h, d = x1 - x0, y1 - y0, z1 - z0
+    rects = faces(*cube[:5])
     return [
         ("front", (x0, y0, z0), (w, 0, 0), (0, h, 0), rects["front"]),
         ("back", (x1, y0, z1), (-w, 0, 0), (0, h, 0), rects["back"]),
@@ -647,12 +720,18 @@ def face_quads(cube):
     ]
 
 
-def render(tex, pose, yaw, glow=None, size=(300, 380), px_scale=10, centre=(0, 6.0)):
-    """Orthographic, looking at the mob's front with yaw turning it; pose: part -> (xRot, yRot, zRot, dy)."""
+def render(tex, pose, yaw, glow=None, size=(300, 440), px_scale=10, pitch=0.0, target=(0, 5.0, 0), ground=True):
+    """Orthographic, looking at the mob's front with yaw turning it and pitch tipping the view down onto it, centred
+    on target; pose: part -> (xRot, yRot, zRot, dy). A faint line marks the ground in level views."""
     W, H = size
     img = [(58, 60, 66, 255) if ((x // 20 + y // 20) % 2) else (66, 68, 74, 255) for y in range(H) for x in range(W)]
     depth = [1e9] * (W * H)
-    cy_, sy_ = math.cos(yaw), math.sin(yaw)
+    cy_, sy_, cp, sp = math.cos(yaw), math.sin(yaw), math.cos(pitch), math.sin(pitch)
+
+    def view(p):
+        x, z = p[0] * cy_ - p[2] * sy_, p[0] * sy_ + p[2] * cy_
+        return (x, p[1] * cp - z * sp, z * cp + p[1] * sp)
+    centre = view(target)
     world = {}
     for name, parent, pivot, rest, cubes in PARTS:
         rx, ry, rz, dy = pose.get(name, (0, 0, 0, 0))
@@ -672,10 +751,9 @@ def render(tex, pose, yaw, glow=None, size=(300, 380), px_scale=10, centre=(0, 6
                 for fname, origin, ue, ve, (fu, fv, fw, fh) in face_quads(cube):
                     O = tuple(o[i] + mat_vec(m, origin)[i] for i in range(3))
                     U, V = mat_vec(m, ue), mat_vec(m, ve)
-
-                    def view(p):
-                        return (p[0] * cy_ - p[2] * sy_, p[1], p[0] * sy_ + p[2] * cy_)
-                    O2, U2, V2 = view(O), view(U), view(V)
+                    O2 = view(O)
+                    U2 = tuple(view(tuple(O[i] + U[i] for i in range(3)))[k] - O2[k] for k in range(3))
+                    V2 = tuple(view(tuple(O[i] + V[i] for i in range(3)))[k] - O2[k] for k in range(3))
                     det = U2[0] * V2[1] - U2[1] * V2[0]
                     if abs(det) < 1e-6:
                         continue
@@ -704,36 +782,138 @@ def render(tex, pose, yaw, glow=None, size=(300, 380), px_scale=10, centre=(0, 6
                                 img[i] = (int(c[0] * s), int(c[1] * s), int(c[2] * s), 255)
                             elif c[3] and z <= depth[i] + 1e-3:
                                 img[i] = tuple(min(255, img[i][k] + c[k]) for k in range(3)) + (255,)
+    if ground and pitch == 0:
+        gy = int(round((GROUND - centre[1]) * px_scale + H / 2))
+        for sx in range(W):
+            if 0 <= gy < H and depth[gy * W + sx] == 1e9:
+                img[gy * W + sx] = (120, 150, 110, 255)
     return W, H, img
 
 
+def kick_angles(a):
+    """The kicking thigh's and shin's angles, as CathodeWalkerModel.kick."""
+    if a < 0.3:
+        t = a / 0.3
+        return -1.25 * t, 1.7 * t
+    if a < 0.55:
+        t = (a - 0.3) / 0.25
+        return -1.25 - 0.4 * t, 1.7 * (1 - t)
+    t = (a - 0.55) / 0.45
+    return -1.65 * (1 - t), 0.0
+
+
+def strike_of(a):
+    return math.sin(min(1.0, a / 0.55) * math.pi / 2) * (1.0 if a < 0.55 else 1.0 - (a - 0.55) / 0.45) if a > 0 else 0.0
+
+
+def reach(thigh, shin, foot, curl):
+    """How far below the hip a posed leg's lowest point is: the back of the heel, the front of the ball or the tip of
+    the big toe. As CathodeWalkerModel.reach."""
+    a2, a3 = thigh + shin, thigh + shin + foot
+
+    def down(a, y, z):
+        return y * math.cos(a) - z * math.sin(a)
+    toe = down(a3, TOE_Y, TOE_Z) + down(a3 + curl, 0.0, -TOE_SPECS[0][5])
+    return (THIGH_LEN * math.cos(thigh) + SHIN_LEN * math.cos(a2)
+            + max(down(a3, SOLE, HEEL[10]), down(a3, SOLE, BALL[7]), toe))
+
+
 def strut_pose(phase, amount=1.0, kick=0.0, lean=0.0):
-    """The walk and kick, as CathodeWalkerModel does them (simplified: no head turn, no idle)."""
-    pose = {}
+    """The walk and kick, as CathodeWalkerModel does them (no head turn, no idle): high knees, the heel peeling up
+    and the toes bending back on the push-off, the toes clawing in the air and splaying as the foot lands, and the
+    hips set so the lower foot stands exactly on the ground."""
+    pose, reaches = {}, []
     for i in (0, 1):
-        c = math.sin(phase + i * math.pi)
+        p = phase + i * math.pi
+        c, k = math.sin(p), math.cos(p)
         thigh = amount * (-1.3 * c if c > 0 else -0.45 * c)
         shin = amount * (1.55 * max(0.0, c) ** 0.8 + 0.15)
+        push = amount * 2 * max(0.0, -c) * max(0.0, k)
+        land = amount * 2 * max(0.0, -c) * max(0.0, -k)
+        curl = -0.6 * push + 0.3 * amount * max(0.0, c)
         if i == 0 and kick > 0:
-            if kick < 0.3:
-                t = kick / 0.3
-                thigh, shin = -1.25 * t, 1.7 * t
-            elif kick < 0.55:
-                t = (kick - 0.3) / 0.25
-                thigh, shin = -1.25 - 0.4 * t, 1.7 * (1 - t)
-            else:
-                t = (kick - 0.55) / 0.45
-                thigh, shin = -1.65 * (1 - t), 0.0
-        foot = -(thigh + shin) * 0.85
+            thigh, shin = kick_angles(kick)
+            push = land = 0.0
+            curl = -0.7 * strike_of(kick)
+        foot = -(thigh + shin) * 0.85 + 0.45 * push
         pose["leg_%d" % i] = (thigh, 0, 0, 0)
         pose["shin_%d" % i] = (shin, 0, 0, 0)
         pose["foot_%d" % i] = (foot, 0, 0, 0)
+        flip = 1 if i == 0 else -1
+        for j, (px, _, _) in enumerate(TOE_PIVOTS):
+            pose["toe_%d_%d" % (i, j)] = (curl, -flip * (px - 0.1) * 0.22 * land, 0, 0)
+        reaches.append(reach(thigh, shin, foot, curl))
     c = math.sin(phase)
-    pose["hips"] = (0, 0, 0, -0.9 * amount * abs(c))
-    strike = math.sin(min(1.0, kick / 0.55) * math.pi / 2) if kick else 0.0
-    pose["cabinet"] = (0.12 * lean * amount - 0.3 * strike * (1 - max(0, kick - 0.55) / 0.45), 0.15 * amount * c,
-                       0.1 * amount * c, 0)
+    pose["hips"] = (0, 0, 0, GROUND - max(reaches) - HIP_Y)
+    strike = strike_of(kick)
+    pose["cabinet"] = (0.12 * lean * amount - 0.3 * strike, 0.15 * amount * c, 0.1 * amount * c, 0)
     return pose
+
+
+# ---------------------------------------------------------------------------------------------- checks
+def world_cubes():
+    """Every cube at rest as (part, cube, rotation, its corners in that rotation's frame)."""
+    world, out = {}, []
+    for name, parent, pivot, rest, cubes in PARTS:
+        local = rot_zyx(*rest)
+        if parent:
+            pm, po = world[parent]
+            m = mat_mul(pm, local)
+            o = tuple(po[i] + mat_vec(pm, pivot)[i] for i in range(3))
+        else:
+            m, o = local, pivot
+        world[name] = (m, o)
+        mt = [[m[j][i] for j in range(3)] for i in range(3)]
+        off = mat_vec(mt, o)
+        for c in cubes:
+            lo = tuple(c[5 + k] + off[k] for k in range(3))
+            hi = tuple(c[8 + k] + off[k] for k in range(3))
+            out.append((name, c, tuple(round(v, 6) for row in m for v in row), lo, hi))
+    return out
+
+
+def zfight_check(tol=0.06):
+    """Faces that would fight at rest: two cubes in the same frame with parallel faces facing the same way closer
+    than tol and overlapping (they'd flicker), or facing each other in the same plane and overlapping (touching,
+    which the game draws both of). Returns the clashes."""
+    cubes, hits = world_cubes(), []
+    for a in range(len(cubes)):
+        for b in range(a + 1, len(cubes)):
+            na, ca, ma, la, ha = cubes[a]
+            nb, cb, mb, lb, hb = cubes[b]
+            if ma != mb:
+                continue
+            for axis in range(3):
+                others = [k for k in range(3) if k != axis]
+                area = 1.0
+                for k in others:
+                    area *= max(0.0, min(ha[k], hb[k]) - max(la[k], lb[k]))
+                if area < 1e-4:
+                    continue
+                for sa, pa in ((-1, la[axis]), (1, ha[axis])):
+                    for sb, pb in ((-1, lb[axis]), (1, hb[axis])):
+                        if (sa == sb and abs(pa - pb) < tol) or (sa != sb and abs(pa - pb) < 1e-4):
+                            hits.append("%s %s / %s %s: %s%s at %.2f" % (na, ca[:2], nb, cb[:2], "-+"[sa > 0], "xyz"[axis], pa))
+    return hits
+
+
+def uv_check():
+    """Cubes whose texture rects overlap each other or run off the 64 x 64 texture."""
+    owner, seen, hits = {}, set(), []
+    for _, _, _, _, cubes in PARTS:
+        for c in cubes:
+            if c[:5] in seen:
+                continue
+            seen.add(c[:5])
+            for fu, fv, fw, fh in faces(*c[:5]).values():
+                for y in range(fv, fv + fh):
+                    for x in range(fu, fu + fw):
+                        if not (0 <= x < 64 and 0 <= y < 64):
+                            hits.append("%s off the texture" % (c[:2],))
+                        elif owner.get((x, y), c[:5]) != c[:5]:
+                            hits.append("%s overlaps %s at %d,%d" % (c[:2], owner[(x, y)][:2], x, y))
+                        owner[(x, y)] = c[:5]
+    return sorted(set(hits))
 
 
 def save_preview(path, panels, cols):
@@ -745,6 +925,21 @@ def save_preview(path, panels, cols):
         ox, oy = (n % cols) * pw, (n // cols) * ph
         for y in range(h):
             out[(oy + y) * W + ox:(oy + y) * W + ox + w] = img[y * w:(y + 1) * w]
+    png(path, W, H, out)
+
+
+def save_rows(path, rows):
+    """Rows of panels, each row's panels the same size, stacked."""
+    W = max(sum(p[0] for p in row) for row in rows)
+    H = sum(row[0][1] for row in rows)
+    out, oy = [(40, 40, 44, 255)] * (W * H), 0
+    for row in rows:
+        ox = 0
+        for w, h, img in row:
+            for y in range(h):
+                out[(oy + y) * W + ox:(oy + y) * W + ox + w] = img[y * w:(y + 1) * w]
+            ox += w
+        oy += row[0][1]
     png(path, W, H, out)
 
 
@@ -761,6 +956,9 @@ def blow_up(canvas, k, bg=(58, 60, 66)):
 
 # ---------------------------------------------------------------------------------------------- main
 def main():
+    clashes = zfight_check() + uv_check()
+    if clashes:
+        sys.exit("model clashes:\n  " + "\n  ".join(clashes))
     tex = entity_texture()
     tex.save("entity/cathode_walker/cathode_walker.png")
     frames = OrderedDict()
@@ -899,10 +1097,27 @@ def main():
         views = [render(tex, rest, 0.0, frames["static_0"]), render(tex, rest, math.pi / 2, frames["static_0"]),
                  render(tex, rest, 0.6, frames["face"]), render(tex, rest, math.pi, None)]
         save_preview(os.path.join(PREVIEW, "preview_cathode_walker.png"), views, 4)
+        # The legs sheet: front, side, three-quarter and back; the right foot close up (three-quarter from above,
+        # side, from above, pushing off, landing); the strut cycle side on; the kick.
+        foot = (-LEG_X, GROUND - 1.5, -2.5)
+        feet = [render(tex, rest, 0.6, size=(240, 240), px_scale=24, pitch=0.5, target=foot),
+                render(tex, rest, math.pi / 2, size=(240, 240), px_scale=24, target=foot),
+                render(tex, rest, -1.1, size=(240, 240), px_scale=24, pitch=0.25, target=foot),
+                render(tex, strut_pose(-math.pi / 4 + math.pi), math.pi / 2 + 0.5, size=(240, 240), px_scale=20,
+                       pitch=0.2, target=(LEG_X, GROUND - 2.5, 2.5)),
+                render(tex, strut_pose(math.pi / 4), 0.5, size=(240, 240), px_scale=20, pitch=0.9,
+                       target=(LEG_X, GROUND - 1.5, -2.5))]
+        cycle = [render(tex, strut_pose(n * math.pi / 4, 1.0, lean=1.0), math.pi / 2, frames["face"], size=(150, 260),
+                        px_scale=6) for n in range(8)]
+        kicks = [render(tex, strut_pose(math.pi / 2, 0.0, kick=k), math.pi / 2 + 0.3, frames["face"], size=(150, 260),
+                        px_scale=6) for k in (0.15, 0.3, 0.45, 0.6, 0.85)]
+        rows = [[render(tex, rest, a, frames["face"]) for a in (0.0, math.pi / 2, 0.6, math.pi)], feet, cycle, kicks]
+        save_rows(os.path.join(PREVIEW, "preview_cathode_legs.png"), rows)
         anims = [render(tex, strut_pose(p, 1.0, lean=1.0), math.pi / 2, frames["face"]) for p in (0.0, math.pi / 4, math.pi / 2, 3 * math.pi / 4)]
         anims += [render(tex, strut_pose(math.pi / 2, 0.0, kick=k), math.pi / 2 + 0.3, frames["face"]) for k in (0.2, 0.45, 0.6, 0.85)]
         save_preview(os.path.join(PREVIEW, "preview_cathode_walker_anim.png"), anims, 4)
-        screens = [render(tex, rest, 0.0, f, size=(200, 150), px_scale=11, centre=(0, 3.0)) for f in frames.values()]
+        screens = [render(tex, rest, 0.0, f, size=(200, 150), px_scale=11, target=(0, 3.0 + HIP_Y - 9, 0), ground=False)
+                   for f in frames.values()]
         save_preview(os.path.join(PREVIEW, "preview_cathode_walker_screens.png"), screens, 6)
         sheet = [blow_up(tex, 6)]
         save_preview(os.path.join(PREVIEW, "preview_cathode_walker_texture.png"), sheet, 1)
