@@ -21,9 +21,15 @@ import com.jheinz.mymod.MyMod;
  * reach forward and the pincers open wide; near the prey they straighten toward it. Clamped on, they reach down onto
  * the victim's shoulders and the pincers close, trembling with the strain. The jaw chatters as it attacks, the skull
  * bobs and sways as it hovers, and dying, its arms go limp and its jaw drops.
+ *
+ * <p>A pack leader's ({@link #LEADER_LAYER}) is the same with a bronze crest along its crown, a horn plate swept back
+ * from each temple, and arms {@value #LEADER_ARMS} times as long; its renderer scales it all up.
  */
 public class SkullcraneModel extends EntityModel<SkullcraneRenderState> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(MyMod.id("skullcrane"), "main");
+	public static final ModelLayerLocation LEADER_LAYER = new ModelLayerLocation(MyMod.id("skullcrane_leader"), "main");
+	/** How much longer a leader's arm segments are. */
+	private static final float LEADER_ARMS = 1.3f;
 
 	/** Where each arm hangs from, relative to the skull's middle: a pair behind the jaw, a pair further back. */
 	private static final float[][] ARMS = {{-3.5f, 2.0f, 1.0f}, {3.5f, 2.0f, 1.0f}, {-3.0f, 2.0f, 4.0f}, {3.0f, 2.0f, 4.0f}};
@@ -62,6 +68,14 @@ public class SkullcraneModel extends EntityModel<SkullcraneRenderState> {
 	}
 
 	public static LayerDefinition createBodyLayer() {
+		return createLayer(false);
+	}
+
+	public static LayerDefinition createLeaderLayer() {
+		return createLayer(true);
+	}
+
+	private static LayerDefinition createLayer(boolean leader) {
 		MeshDefinition mesh = new MeshDefinition();
 		// The skull sits at the bottom of the hitbox, its arms hanging below it.
 		PartDefinition body = mesh.getRoot().addOrReplaceChild("body", CubeListBuilder.create(), PartPose.offset(0.0f, 24.0f, 0.0f));
@@ -76,6 +90,17 @@ public class SkullcraneModel extends EntityModel<SkullcraneRenderState> {
 				PartPose.offset(0.0f, -5.0f, 0.0f));
 		skull.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(0, 18).addBox(-4.0f, 0.0f, -5.0f, 8.0f, 2.0f, 5.0f),
 				PartPose.offset(0.0f, 2.0f, 0.0f));
+		if (leader) {
+			// A crest along the crown, and a horn plate swept up and back from each temple.
+			skull.addOrReplaceChild("crest", CubeListBuilder.create().texOffs(26, 18).addBox(-1.0f, -2.0f, -4.0f, 2.0f, 2.0f, 8.0f),
+					PartPose.offset(0.0f, -6.0f, 0.0f));
+			for (int side = 0; side < 2; side++) {
+				float sign = side == 0 ? -1.0f : 1.0f;
+				skull.addOrReplaceChild("horn_" + side, CubeListBuilder.create().texOffs(46, 18).addBox(-0.5f, -4.0f, -1.5f, 1.0f, 4.0f, 3.0f),
+						PartPose.offsetAndRotation(sign * 5.0f, -4.0f, 0.5f, -0.45f, 0.0f, sign * 0.35f));
+			}
+		}
+		float armLength = leader ? LEADER_ARMS : 1.0f;
 		int[][] slots = {{40, 10}, {48, 10}, {56, 10}};
 		for (int a = 0; a < ARMS.length; a++) {
 			PartDefinition parent = skull;
@@ -83,7 +108,7 @@ public class SkullcraneModel extends EntityModel<SkullcraneRenderState> {
 			PartPose pose = PartPose.offset(ARMS[a][0], ARMS[a][1], ARMS[a][2]);
 			for (int s = 0; s < SEGMENTS.length; s++) {
 				float thick = SEGMENTS[s][0];
-				float length = SEGMENTS[s][1];
+				float length = SEGMENTS[s][1] * armLength;
 				parent = parent.addOrReplaceChild(name, CubeListBuilder.create()
 						.texOffs(slots[s][0], slots[s][1]).addBox(-thick / 2.0f, 0.0f, -thick / 2.0f, thick, length, thick), pose);
 				name = "segment";
@@ -91,7 +116,7 @@ public class SkullcraneModel extends EntityModel<SkullcraneRenderState> {
 			}
 			for (int p = 0; p < 2; p++) {
 				parent.addOrReplaceChild("prong_" + p, CubeListBuilder.create().texOffs(60, 10).addBox(-0.25f, 0.0f, -0.25f, 0.5f, 2.5f, 0.5f),
-						PartPose.offset(p == 0 ? -0.25f : 0.25f, SEGMENTS[SEGMENTS.length - 1][1] - OVERLAP, 0.0f));
+						PartPose.offset(p == 0 ? -0.25f : 0.25f, SEGMENTS[SEGMENTS.length - 1][1] * armLength - OVERLAP, 0.0f));
 			}
 		}
 		return LayerDefinition.create(mesh, 64, 32);

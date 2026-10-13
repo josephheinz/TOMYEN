@@ -1,9 +1,10 @@
 """Paints the Skullcrane (its entity texture and the glow layer for its lenses and antigrav emitter, UVs matching
-client/skullcrane/SkullcraneModel) and the Servo Drone's brass-and-green repaint of it, the worn monocle and backpack
-(client/skullcrane/ServoGearRenderer), its spawn egg, the Servo Arm and Optic Lens items and the Grapple Claw, Optic
-Monocle, Servo Arm Backpack and Servo Drone made from them, and writes their item models and definitions. Everything is
+client/skullcrane/SkullcraneModel), its pack leader's amber-eyed, bronze-crested version and the Servo Drone's
+brass-and-green repaint of it, the worn monocle and backpack (client/skullcrane/ServoGearRenderer), the spawn eggs,
+the Servo Arm, Optic Lens and Leader Core items and the Grapple Claw, Optic Monocle, Servo Arm Backpack and Servo Drone
+made from them, and writes their item models and definitions. Everything is
 flat-shaded from fixed palettes, so a rerun gives the same files. On the data side it writes the Skullcrane's loot
-table, the recipes that use its drops (with recipe-book advancements), and adds it to the mymod:holy_vulnerable and
+table, the recipes that use its drops (with recipe-book advancements), and adds both to the mymod:holy_vulnerable and
 minecraft:undead entity tags.
 
 Usage: python3 tools/gen_skullcrane.py src/main/resources/assets/mymod"""
@@ -119,6 +120,8 @@ RED_LENS = {"lens": (220, 32, 36), "hot": (255, 168, 140), "rim": (120, 18, 22)}
 GREEN_LENS = {"lens": (56, 214, 98), "hot": (206, 255, 218), "rim": (24, 104, 48)}
 CYAN_EMITTER = {"lens": (96, 214, 250), "hot": (224, 250, 255), "rim": (40, 90, 112)}
 GREEN_EMITTER = {"lens": (110, 236, 150), "hot": (226, 255, 232), "rim": (36, 96, 56)}
+AMBER_LENS = {"lens": (255, 168, 30), "hot": (255, 240, 180), "rim": (140, 76, 10)}
+BRONZE_RAMP = [(214, 152, 84), (172, 110, 52), (122, 74, 34), (82, 48, 22)]
 
 
 def faces(u, v, w, h, d):
@@ -152,8 +155,9 @@ def flat(c):
     return lambda x, y, w, h: c + (255,)
 
 
-def skull_textures(bone, metal, lens, emitter):
-    """The skullcrane's texture and glow layer (UVs as in client/skullcrane/SkullcraneModel), in the given ramps."""
+def skull_textures(bone, metal, lens, emitter, trim=None, arms=1.0):
+    """The skullcrane's texture and glow layer (UVs as in client/skullcrane/SkullcraneModel), in the given ramps; with
+    a trim ramp, a leader's, with its crest and horn plates and its arms that much longer."""
     tex, glow = Canvas(64, 32), Canvas(64, 32)
 
     # Cranium, 10 x 8 x 10 at (0, 0). Lit from above: a pale crown, shading down the sides to a dark underside.
@@ -231,9 +235,17 @@ def skull_textures(bone, metal, lens, emitter):
         return tone(metal, 0 if y == h - 1 else 1)
 
     for u, (t, length) in zip((40, 48, 56), ((1.5, 4.5), (1.25, 4.0), (1.0, 3.5))):
-        paint(tex, u, 10, t, length, t, {"front": strut(True), "right": strut(False), "left": strut(False),
-                                         "back": strut(False), "top": flat(metal[2]), "bottom": flat(metal[2])})
+        paint(tex, u, 10, t, length * arms, t, {"front": strut(True), "right": strut(False), "left": strut(False),
+                                                "back": strut(False), "top": flat(metal[2]), "bottom": flat(metal[2])})
     paint(tex, 60, 10, 0.5, 2.5, 0.5, {name: prong for name in ("front", "right", "left", "back", "top", "bottom")})
+    if trim:
+        # The crest, 2 x 2 x 8 at (26, 18), and a horn plate, 1 x 4 x 3 at (46, 18): bronze, lit along the top.
+        def plate(x, y, w, h):
+            return tone(trim, 0 if y == 0 else 1 if y < h - 1 else 2)
+
+        sides = {name: plate for name in ("front", "right", "left", "back")}
+        paint(tex, 26, 18, 2, 2, 8, dict(sides, top=flat(trim[0]), bottom=flat(trim[3])))
+        paint(tex, 46, 18, 1, 4, 3, dict(sides, top=flat(trim[0]), bottom=flat(trim[3])))
     return tex, glow
 
 
@@ -244,9 +256,13 @@ glow.save("entity/skullcrane/skullcrane_glow.png")
 tex, glow = skull_textures(BONE_RAMP, BRASS_RAMP, GREEN_LENS, GREEN_EMITTER)
 tex.save("entity/skullcrane/servo_drone.png")
 glow.save("entity/skullcrane/servo_drone_glow.png")
+# The pack leader: amber lenses and emitter, a bronze crest and horns, longer arms.
+tex, glow = skull_textures(BONE_RAMP, STEEL_RAMP, AMBER_LENS, AMBER_LENS, trim=BRONZE_RAMP, arms=1.3)
+tex.save("entity/skullcrane/skullcrane_leader.png")
+glow.save("entity/skullcrane/skullcrane_leader_glow.png")
 
-# Worn gear (client/skullcrane/ServoGearRenderer): the monocle's band, rim and lens; the backpack's casing, power
-# cell, arm segments and pincer prongs.
+# Worn gear (client/skullcrane/ServoGearRenderer): the monocle's band, rim and lens; the backpack's spine pack, power
+# cell, arm segments and claw prongs.
 gear = Canvas(64, 32)
 gear_glow = Canvas(64, 32)
 LEATHER = (96, 64, 42)
@@ -269,25 +285,27 @@ for canvas in (gear, gear_glow):
     paint(canvas, 48, 0, 2, 2.5, 0.3, every(lens_glint))
 
 
-# Casing, 6 x 7 x 2: plain steel, a highlight along the top edge and a darker border.
+# Spine pack, 4 x 8 x 2 at (0, 10): plain steel, a highlight along the top edge and a darker border.
 def casing(x, y, w, h):
     if y == 0:
         return tone(STEEL_RAMP, 0)
     return tone(STEEL_RAMP, 2 if x in (0, w - 1) or y == h - 1 else 1)
 
 
-paint(gear, 0, 10, 6, 7, 2, every(casing))
+paint(gear, 0, 10, 4, 8, 2, every(casing))
 for canvas in (gear, gear_glow):
-    paint(canvas, 16, 10, 3, 4, 1, every(lambda x, y, w, h: CELL["hot" if (x, y) == (1, 1) else "lens"] + (255,)))
+    paint(canvas, 12, 10, 2, 3, 0.5, every(lambda x, y, w, h: CELL["hot" if (x, y) == (0, 1) else "lens"] + (255,)))
 
 
+# Arm segments (each running 0.25 back past its joint) at (18, 10), (24, 10), (30, 10) and (36, 10), and a claw prong
+# at (40, 10): a highlight down one edge, a darker band at the far end.
 def gear_strut(lit):
     return lambda x, y, w, h: tone(STEEL_RAMP, 2 if y == 0 else 0 if lit and x == 0 and w > 1 else 1)
 
 
-for u, t, length in ((26, 1.5, 5.5), (34, 1.25, 4.5)):
-    paint(gear, u, 10, t, length, t, dict(every(gear_strut(False)), front=gear_strut(True)))
-paint(gear, 42, 10, 0.5, 2.5, 0.5, every(lambda x, y, w, h: tone(STEEL_RAMP, 0 if y == 0 else 1)))
+for u, t, length in ((18, 1.5, 5.5), (24, 1.25, 5.0), (30, 1.25, 4.5), (36, 1.0, 4.0)):
+    paint(gear, u, 10, t, length + 0.25, t, dict(every(gear_strut(False)), front=gear_strut(True)))
+paint(gear, 40, 10, 0.5, 2.0, 0.5, every(lambda x, y, w, h: tone(STEEL_RAMP, 0 if y == 0 else 1)))
 gear.save("entity/skullcrane/servo_gear.png")
 gear_glow.save("entity/skullcrane/servo_gear_glow.png")
 
@@ -337,29 +355,57 @@ for x, y in ((6, 5), (5, 6), (6, 6)):
     lens_item.set(x, y, col((255, 230, 220)))
 lens_item.save("item/optic_lens.png")
 
-# Spawn egg: the shopping cart egg's outline, repainted bone with red lens spots and a steel band.
+# Spawn eggs: the shopping cart egg's outline, repainted bone with lens spots and a band: red and steel for the
+# skullcrane, amber and bronze for its leader.
 w, h, cart_egg = read_png(os.path.join(TEX, "item/shopping_cart_spawn_egg.png"))
 mask = [p[3] > 0 for p in cart_egg]
 xs = [i % w for i in range(w * h) if mask[i]]
 ys = [i // w for i in range(w * h) if mask[i]]
 cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
 SPOTS = [(6, 6), (10, 6)]
-egg = Canvas(w, h)
-for i in range(w * h):
-    if not mask[i]:
-        continue
-    x, y = i % w, i // w
-    outline = not all(0 <= x + dx < w and 0 <= y + dy < h and mask[(y + dy) * w + x + dx] for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-    if outline:
-        egg.px[i] = col((70, 64, 56))
-    elif any(abs(x - sx) + abs(y - sy) <= 1 for sx, sy in SPOTS):
-        egg.px[i] = col(LENS if (x, y) not in SPOTS else LENS_HOT)
-    elif y == round(cy) + 2:
-        egg.px[i] = col(METAL)
-    else:
-        light = (cx - x) + (cy - y)
-        egg.px[i] = col(BONE_LIGHT if light > 5 else BONE if light > 1 else BONE_SHADE if light > -4 else BONE_STAIN)
-egg.save("item/skullcrane_spawn_egg.png")
+
+
+def spawn_egg(lens, hot, band, name):
+    egg = Canvas(w, h)
+    for i in range(w * h):
+        if not mask[i]:
+            continue
+        x, y = i % w, i // w
+        outline = not all(0 <= x + dx < w and 0 <= y + dy < h and mask[(y + dy) * w + x + dx] for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+        if outline:
+            egg.px[i] = col((70, 64, 56))
+        elif any(abs(x - sx) + abs(y - sy) <= 1 for sx, sy in SPOTS):
+            egg.px[i] = col(lens if (x, y) not in SPOTS else hot)
+        elif y == round(cy) + 2:
+            egg.px[i] = col(band)
+        else:
+            light = (cx - x) + (cy - y)
+            egg.px[i] = col(BONE_LIGHT if light > 5 else BONE if light > 1 else BONE_SHADE if light > -4 else BONE_STAIN)
+    egg.save("item/%s.png" % name)
+
+
+spawn_egg(LENS, LENS_HOT, METAL, "skullcrane_spawn_egg")
+spawn_egg(AMBER_LENS["lens"], AMBER_LENS["hot"], BRONZE_RAMP[1], "skullcrane_leader_spawn_egg")
+
+# Leader Core: an amber core in a bronze cage, with a glint.
+LEADER_CORE = ["................",
+               "......kkkk......",
+               "....kkBBBBkk....",
+               "...kBAAAAAABk...",
+               "...kAHHAAAAAk...",
+               "..kBAHWAAAAABk..",
+               "..kBAAAAAAAABk..",
+               "..kBAAAAAAAABk..",
+               "..kBAAAAAAADBk..",
+               "..kBAAAAAADDBk..",
+               "...kAAAADDDDk...",
+               "...kBADDDDDBk...",
+               "....kkBBBBkk....",
+               "......kkkk......",
+               "................",
+               "................"]
+sprite(LEADER_CORE, {"k": col(BRONZE_RAMP[3]), "B": col(BRONZE_RAMP[1]), "A": col(AMBER_LENS["lens"]),
+                     "H": col(AMBER_LENS["hot"]), "W": col((255, 252, 236)), "D": col((206, 116, 20))}).save("item/leader_core.png")
 
 # Grapple Claw: a claw on a coil of cable, the cable trailing off to a grip.
 GRAPPLE = ["................",
@@ -448,8 +494,8 @@ def write(path, obj):
         f.write("\n")
 
 
-for name in ("skullcrane_spawn_egg", "servo_arm", "optic_lens", "grapple_claw", "optic_monocle", "servo_arm_backpack",
-             "servo_drone"):
+for name in ("skullcrane_spawn_egg", "skullcrane_leader_spawn_egg", "servo_arm", "optic_lens", "leader_core", "grapple_claw",
+             "optic_monocle", "servo_arm_backpack", "servo_drone"):
     write(os.path.join(MODELS, name + ".json"),
           OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/" + name})]))
     write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
@@ -467,6 +513,21 @@ write(os.path.join(DATA, "loot_table/entities/skullcrane.json"), OrderedDict([
     ("pools", [drop("mymod:servo_arm", 0, 2), drop("mymod:optic_lens", 0, 1), drop("minecraft:bone", 0, 2),
                drop("mymod:tech_scrap", 0, 1, 0.5)]),
     ("random_sequence", "mymod:entities/skullcrane")]))
+
+# The leader: more of everything, and now and then (killed by a player) its Leader Core.
+write(os.path.join(DATA, "loot_table/entities/skullcrane_leader.json"), OrderedDict([
+    ("type", "minecraft:entity"),
+    ("pools", [drop("mymod:servo_arm", 2, 4), drop("mymod:optic_lens", 1, 3), drop("minecraft:bone", 1, 4),
+               drop("mymod:tech_scrap", 1, 2, 1.0),
+               OrderedDict([
+                   ("condition", {"type": "minecraft:all_of", "terms": [
+                       {"type": "minecraft:killed_by_player"},
+                       OrderedDict([("type", "minecraft:random_chance_with_enchanted_bonus"),
+                                    ("enchanted_chance", {"type": "minecraft:linear", "base": 0.45, "per_level_above_first": 0.1}),
+                                    ("enchantment", "minecraft:looting"), ("unenchanted_chance", 0.35)])]}),
+                   ("entries", [{"type": "minecraft:item", "name": "mymod:leader_core"}]),
+                   ("rolls", 1)])]),
+    ("random_sequence", "mymod:entities/skullcrane_leader")]))
 
 
 def advancement(name, ingredient, category="misc"):
@@ -516,6 +577,19 @@ def tag_add(path, entry):
     write(path, {"values": values})
 
 
-tag_add(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), "mymod:skullcrane")
-tag_add(os.path.join(MC_DATA, "tags/entity_type/undead.json"), "mymod:skullcrane")
+# A Leader Core overclocks a Servo Arm Backpack: it fetches items from further off (see ServoGear).
+OVERCLOCKED_LORE = [OrderedDict([("translate", key), ("color", color), ("italic", False)]) for key, color in (
+    ("item.mymod.servo_arm_backpack.pickup", "gray"), ("item.mymod.servo_arm_backpack.overclocked", "gold"),
+    ("item.mymod.servo_gear.socket", "gray"))]
+write(os.path.join(DATA, "recipe", "servo_arm_backpack_overclocked.json"), OrderedDict([
+    ("type", "minecraft:crafting_shapeless"), ("category", "equipment"),
+    ("ingredients", ["mymod:servo_arm_backpack", "mymod:leader_core"]),
+    ("result", OrderedDict([("count", 1), ("id", "mymod:servo_arm_backpack"), ("components", OrderedDict([
+        ("minecraft:custom_data", {"overclocked": True}), ("minecraft:enchantment_glint_override", True),
+        ("minecraft:lore", OVERCLOCKED_LORE)]))]))]))
+advancement("servo_arm_backpack_overclocked", "mymod:leader_core", "equipment")
+
+for entity in ("mymod:skullcrane", "mymod:skullcrane_leader"):
+    tag_add(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), entity)
+    tag_add(os.path.join(MC_DATA, "tags/entity_type/undead.json"), entity)
 print("done")

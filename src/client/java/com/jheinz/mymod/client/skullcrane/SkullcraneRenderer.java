@@ -19,32 +19,50 @@ import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.skullcrane.Skullcrane;
-import com.jheinz.mymod.skullcrane.SkullcraneGrip;
+import com.jheinz.mymod.skullcrane.SkullcraneLeader;
 
 /**
  * Draws a skullcrane, with its lenses and antigrav emitter glowing on top (brighter as it hunts, dark once it's dead).
  * Clamped onto a victim it's drawn exactly where its grip holds it, worked out from the victim's own position this
  * frame, so the pack stays fixed over the victim's shoulders however fast they're carried up, and its arms reach
  * down onto the nearest shoulder. Otherwise its arms reach for a target close by and trail behind it as it flies,
- * all worked out here in model space.
+ * all worked out here in model space. A pack leader is drawn the same, {@value SkullcraneLeader#SCALE} times the size,
+ * with its own crested model and amber-eyed texture, its lenses at full glow.
  */
 public class SkullcraneRenderer extends MobRenderer<Skullcrane, SkullcraneRenderState, SkullcraneModel> {
 	private static final Identifier TEXTURE = MyMod.id("textures/entity/skullcrane/skullcrane.png");
 	private static final RenderType GLOW = RenderTypes.eyes(MyMod.id("textures/entity/skullcrane/skullcrane_glow.png"));
+	private static final Identifier LEADER_TEXTURE = MyMod.id("textures/entity/skullcrane/skullcrane_leader.png");
+	private static final RenderType LEADER_GLOW = RenderTypes.eyes(MyMod.id("textures/entity/skullcrane/skullcrane_leader_glow.png"));
 	/** Arms start reaching for a target this close, and are at full stretch within {@link #FULL_REACH}. */
 	private static final double REACH_START = 4.0;
 	private static final double FULL_REACH = 1.8;
 	/** How far above its feet its arms hang from. */
 	private static final double ARM_ROOT = 0.2;
 
+	private final boolean leader;
+	private final float scale;
+
 	public SkullcraneRenderer(EntityRendererProvider.Context context) {
-		super(context, new SkullcraneModel(context.bakeLayer(SkullcraneModel.LAYER)), 0.35f);
-		addLayer(new GlowLayer<>(this, GLOW));
+		this(context, false);
+	}
+
+	public SkullcraneRenderer(EntityRendererProvider.Context context, boolean leader) {
+		super(context, new SkullcraneModel(context.bakeLayer(leader ? SkullcraneModel.LEADER_LAYER : SkullcraneModel.LAYER)),
+				leader ? 0.35f * SkullcraneLeader.SCALE : 0.35f);
+		this.leader = leader;
+		scale = leader ? SkullcraneLeader.SCALE : 1.0f;
+		addLayer(new GlowLayer<>(this, leader ? LEADER_GLOW : GLOW));
 	}
 
 	@Override
 	public Identifier getTextureLocation(SkullcraneRenderState state) {
-		return TEXTURE;
+		return leader ? LEADER_TEXTURE : TEXTURE;
+	}
+
+	@Override
+	protected void scale(SkullcraneRenderState state, PoseStack poseStack) {
+		poseStack.scale(scale, scale, scale);
 	}
 
 	@Override
@@ -61,7 +79,7 @@ public class SkullcraneRenderer extends MobRenderer<Skullcrane, SkullcraneRender
 		state.chatter = skull.chatter(partialTicks);
 		state.attackAnim = skull.getSwingAnimation(partialTicks);
 		state.deathProgress = Math.min(1.0f, state.deathTime / 20.0f);
-		state.glow = state.deathTime > 0 ? 0.0f : 0.65f + 0.35f * Math.max(state.flare, state.clamp);
+		state.glow = state.deathTime > 0 ? 0.0f : leader ? 1.0f : 0.65f + 0.35f * Math.max(state.flare, state.clamp);
 
 		Vec3 velocity = toModel(new Vec3(skull.getX() - skull.xo, skull.getY() - skull.yo, skull.getZ() - skull.zo), state.bodyRot);
 		state.velocityX = (float) velocity.x;
@@ -78,7 +96,7 @@ public class SkullcraneRenderer extends MobRenderer<Skullcrane, SkullcraneRender
 		Vec3 to;
 		if (skull.isClamped() && target instanceof LivingEntity victim) {
 			float bodyYaw = Mth.rotLerp(partialTicks, victim.yBodyRotO, victim.yBodyRot);
-			Vec3 offset = SkullcraneGrip.holdOffset(bodyYaw, victim.getBbWidth(), victim.getBbHeight(), skull.slot(), skull.slots());
+			Vec3 offset = skull.holdOffset(bodyYaw, victim.getBbWidth(), victim.getBbHeight(), skull.slot(), skull.slots());
 			Vec3 at = targetPos.add(offset);
 			state.x = at.x;
 			state.y = at.y;
@@ -93,11 +111,11 @@ public class SkullcraneRenderer extends MobRenderer<Skullcrane, SkullcraneRender
 			// Down onto the shoulder under it.
 			Vec3 side = offset.horizontal().normalize();
 			Vec3 shoulder = targetPos.add(side.scale(victim.getBbWidth() * 0.45)).add(0.0, victim.getBbHeight() * 0.8, 0.0);
-			to = shoulder.subtract(at.add(0.0, ARM_ROOT, 0.0));
+			to = shoulder.subtract(at.add(0.0, ARM_ROOT * scale, 0.0));
 			state.reach = 1.0f;
 		} else {
-			to = targetPos.add(0.0, target.getBbHeight() * 0.6, 0.0).subtract(skull.getPosition(partialTicks).add(0.0, ARM_ROOT, 0.0));
-			state.reach = (float) Mth.clamp((REACH_START - to.length()) / (REACH_START - FULL_REACH), 0.0, 1.0);
+			to = targetPos.add(0.0, target.getBbHeight() * 0.6, 0.0).subtract(skull.getPosition(partialTicks).add(0.0, ARM_ROOT * scale, 0.0));
+			state.reach = (float) Mth.clamp((REACH_START * scale - to.length()) / ((REACH_START - FULL_REACH) * scale), 0.0, 1.0);
 		}
 		double distance = to.length();
 		if (distance > 1.0e-3) {

@@ -101,7 +101,7 @@ public class ServoDroneRenderer extends MobRenderer<ServoDrone, ServoDroneRender
 			}
 			poseStack.pushPose();
 			// Model space is upside down, in blocks, with the feet at 1.5: down where the claws close.
-			poseStack.translate(0.0f, 2.3f, -0.05f);
+			poseStack.translate(0.0f, 2.2f, -0.05f);
 			poseStack.rotateDegrees(Axis.ZP, 180.0f);
 			poseStack.scale(1.1f, 1.1f, 1.1f);
 			state.carried.submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
