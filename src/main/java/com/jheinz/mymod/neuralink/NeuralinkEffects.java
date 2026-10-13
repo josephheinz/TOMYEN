@@ -23,6 +23,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import com.jheinz.mymod.ModDamageTypes;
 import com.jheinz.mymod.ModEffects;
 import com.jheinz.mymod.launcher.PG7Rocket;
+import com.jheinz.mymod.napalm.Napalm;
 
 /**
  * The server side of the passive modules. (ESP and x-ray only draw on the wearer's screen.)
@@ -53,7 +54,7 @@ public final class NeuralinkEffects {
 		ServerTickEvents.END_SERVER_TICK.register(NeuralinkEffects::tick);
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (!blocked && source.getEntity() instanceof ServerPlayer shooter
-					&& (ModDamageTypes.isBullet(source) || source.getDirectEntity() instanceof PG7Rocket)
+					&& (ModDamageTypes.isBullet(source) || source.getDirectEntity() instanceof PG7Rocket || source.is(Napalm.NAPALM))
 					&& NeuralinkItem.isActive(shooter, NeuralinkModule.SMART_LINK)) {
 				ServerPlayNetworking.send(shooter, new NeuralNetworking.HitMarker(entity.isDeadOrDying()));
 			}

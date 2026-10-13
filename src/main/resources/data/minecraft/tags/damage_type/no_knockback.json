@@ -3,6 +3,8 @@
     "mymod:bleeding",
     "mymod:neural_overload",
     "mymod:optic_laser",
-    "mymod:radiation"
+    "mymod:radiation",
+    "mymod:napalm",
+    "mymod:napalm_burn"
   ]
 }

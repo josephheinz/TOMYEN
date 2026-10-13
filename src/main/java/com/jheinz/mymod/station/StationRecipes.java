@@ -11,7 +11,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.napalm.Napalm;
 import com.jheinz.mymod.powerarmor.PowerArmorRecipes;
 import com.jheinz.mymod.silver.Silver;
 import com.jheinz.mymod.station.StationRecipe.Cost;
@@ -137,6 +139,11 @@ public final class StationRecipes {
 			recipe(Launchers.RPG7_LAUNCH_TUBE, 1, cost(Items.IRON_BLOCK, 2), cost(Items.STICK, 4), cost(Items.OAK_PLANKS, 2)),
 			recipe(Launchers.RPG7_TRIGGER_GROUP, 1, cost(Items.IRON_INGOT, 4), cost(Items.SPYGLASS, 1), cost(Items.LEATHER, 1)),
 			recipe(Launchers.RPG7, 1, cost(Launchers.RPG7_LAUNCH_TUBE, 1), cost(Launchers.RPG7_TRIGGER_GROUP, 1)),
+			// M2 flamethrower: steel plate tanks and their hose from empty canisters and rubber; the wand's igniter is a flint
+			// and steel, its valve trigger a tripwire hook.
+			recipe(Napalm.FLAMETHROWER_TANKS, 1, cost(Industry.STEEL_PLATE, 4), cost(Industry.EMPTY_CANISTER, 2), cost(Industry.RUBBER, 2)),
+			recipe(Napalm.FLAMETHROWER_WAND, 1, cost(Industry.STEEL_INGOT, 3), cost(Items.FLINT_AND_STEEL, 1), cost(Items.TRIPWIRE_HOOK, 1)),
+			recipe(Napalm.FLAMETHROWER, 1, cost(Napalm.FLAMETHROWER_TANKS, 1), cost(Napalm.FLAMETHROWER_WAND, 1)),
 			// Attachments; the electronic ones (sights and lasers) need tech scrap. Wool packs the suppressor's baffles; ink sacs blacken it.
 			recipe(ModItems.SUPPRESSOR, 1, cost(Items.IRON_INGOT, 3), cost(Items.WOOL.white(), 1), cost(Items.INK_SAC, 1)),
 			recipe(ModItems.LASER_SIGHT, 1, cost(ModItems.TECH_SCRAP, 1), cost(Items.IRON_NUGGET, 3), cost(Items.GLASS_PANE, 1)),

@@ -13,6 +13,7 @@ import com.jheinz.mymod.MagazineItem;
 import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.client.launcher.LauncherClient;
 import com.jheinz.mymod.launcher.RocketLauncherItem;
+import com.jheinz.mymod.napalm.FlamethrowerItem;
 import com.jheinz.mymod.shotgun.ShotgunItem;
 
 /** Rounds left in the held gun or magazine, drawn to the right of the hotbar. */
@@ -35,6 +36,8 @@ public final class AmmoHud {
 
 		if (held.getItem() instanceof RocketLauncherItem) {
 			LauncherClient.extractAmmo(graphics, minecraft, held, x, y);
+		} else if (held.getItem() instanceof FlamethrowerItem) {
+			extractFuel(graphics, minecraft, held, x, y);
 		} else if (held.getItem() instanceof GunItem gun) {
 			MagazineContents loaded = held.get(ModComponents.LOADED_MAGAZINE);
 			if (loaded == null && !gun.stats().singleRounds()) {
@@ -61,6 +64,24 @@ public final class AmmoHud {
 			int rounds = contents == null ? 0 : contents.rounds();
 			graphics.text(minecraft.font, rounds + " / " + magazine.capacity(), x, y, rounds == 0 ? GRAY : WHITE, true);
 			graphics.text(minecraft.font, Component.translatable("hud.mymod.pack_hint"), x, y + 10, GRAY, true);
+		}
+	}
+
+	/** A flamethrower's tank: "Fuel 64%" over a bar that runs from napalm orange down to red as it empties. */
+	private static void extractFuel(GuiGraphicsExtractor graphics, Minecraft minecraft, ItemStack held, int x, int y) {
+		if (!held.has(ModComponents.LOADED_MAGAZINE)) {
+			graphics.text(minecraft.font, Component.translatable("hud.mymod.flamethrower.no_tank"), x, y, RED, true);
+			graphics.text(minecraft.font, Component.translatable("hud.mymod.punch_to_reload"), x, y + 10, GRAY, true);
+			return;
+		}
+		float fraction = FlamethrowerItem.fuel(held) / (float) FlamethrowerItem.TANK;
+		int percent = Math.round(fraction * 100.0f);
+		graphics.text(minecraft.font, Component.translatable("hud.mymod.flamethrower.fuel", percent), x, y, percent == 0 ? RED : WHITE, true);
+		int width = 40;
+		graphics.fill(x, y + 11, x + width, y + 14, 0xFF202020);
+		graphics.fill(x, y + 11, x + Math.round(width * fraction), y + 14, fraction > 0.25f ? 0xFFFF7A1A : RED);
+		if (percent == 0) {
+			graphics.text(minecraft.font, Component.translatable("hud.mymod.punch_to_reload"), x, y + 16, GRAY, true);
 		}
 	}
 

@@ -50,6 +50,7 @@ import com.jheinz.mymod.client.silver.SilverClient;
 import com.jheinz.mymod.client.industry.IndustryClient;
 import com.jheinz.mymod.client.launcher.LauncherClient;
 import com.jheinz.mymod.client.lmg.M249Animation;
+import com.jheinz.mymod.client.napalm.NapalmClient;
 import com.jheinz.mymod.client.shotgun.ShotgunAnimation;
 import com.jheinz.mymod.client.powerarmor.PowerArmorClient;
 import com.jheinz.mymod.client.tank.TankClient;
@@ -134,5 +135,6 @@ public class MyModClient implements ClientModInitializer {
 		SkullcraneClient.initialize();
 		SoulVacuumClient.initialize();
 		SilverClient.initialize();
+		NapalmClient.initialize();
 	}
 }

@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.Item;
 
 /**
  * What a held rocket launcher is doing, timed in game ticks so every client can animate it from the stack alone:
@@ -16,9 +17,9 @@ import net.minecraft.util.StringRepresentable;
  *
  * @param start  game time the action began
  * @param ticks  how long it takes
- * @param homing for a reload, whether it's a homing rocket going in
+ * @param rocket for a reload, which rocket is going in, as its index in {@link Launchers#ROCKETS}
  */
-public record LauncherAction(Kind kind, long start, int ticks, boolean homing) {
+public record LauncherAction(Kind kind, long start, int ticks, int rocket) {
 	public enum Kind implements StringRepresentable {
 		EQUIP("equip"), RELOAD("reload"), READY("ready");
 
@@ -41,24 +42,29 @@ public record LauncherAction(Kind kind, long start, int ticks, boolean homing) {
 			Kind.CODEC.fieldOf("kind").forGetter(LauncherAction::kind),
 			Codec.LONG.fieldOf("start").forGetter(LauncherAction::start),
 			Codec.INT.fieldOf("ticks").forGetter(LauncherAction::ticks),
-			Codec.BOOL.optionalFieldOf("homing", false).forGetter(LauncherAction::homing)).apply(instance, LauncherAction::new));
+			Codec.INT.optionalFieldOf("rocket", 0).forGetter(LauncherAction::rocket)).apply(instance, LauncherAction::new));
 	public static final StreamCodec<ByteBuf, LauncherAction> STREAM_CODEC = StreamCodec.composite(
 			Kind.STREAM_CODEC, LauncherAction::kind,
 			ByteBufCodecs.VAR_LONG, LauncherAction::start,
 			ByteBufCodecs.VAR_INT, LauncherAction::ticks,
-			ByteBufCodecs.BOOL, LauncherAction::homing,
+			ByteBufCodecs.VAR_INT, LauncherAction::rocket,
 			LauncherAction::new);
 
 	public static LauncherAction equip(long now, int ticks) {
-		return new LauncherAction(Kind.EQUIP, now, ticks, false);
+		return new LauncherAction(Kind.EQUIP, now, ticks, 0);
 	}
 
-	public static LauncherAction reload(long now, int ticks, boolean homing) {
-		return new LauncherAction(Kind.RELOAD, now, ticks, homing);
+	public static LauncherAction reload(long now, int ticks, Item rocket) {
+		return new LauncherAction(Kind.RELOAD, now, ticks, Math.max(0, Launchers.ROCKETS.indexOf(rocket)));
 	}
 
 	public static LauncherAction ready(long now) {
-		return new LauncherAction(Kind.READY, now, 0, false);
+		return new LauncherAction(Kind.READY, now, 0, 0);
+	}
+
+	/** For a reload, the rocket going in. */
+	public Item rocketItem() {
+		return Launchers.ROCKETS.get(Math.clamp(rocket, 0, Launchers.ROCKETS.size() - 1));
 	}
 
 	public long end() {

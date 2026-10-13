@@ -39,7 +39,7 @@ import com.jheinz.mymod.attachment.AttachmentItem;
 import com.jheinz.mymod.attachment.AttachmentSlot;
 
 /**
- * The RPG-7: the launcher, its two Weapon Station parts, PG-7 rockets (plain and homing), the homing guidance
+ * The RPG-7: the launcher, its two Weapon Station parts, PG-7 rockets (plain, homing and napalm), the homing guidance
  * module, the rocket projectile, and the state the launcher keeps on its stack.
  */
 public final class Launchers {
@@ -51,6 +51,9 @@ public final class Launchers {
 			component("launcher_action", LauncherAction.CODEC, LauncherAction.STREAM_CODEC, false);
 	/** Only on the copy of a rocket a flying projectile renders, so its model shows the fins out and the motor lit. */
 	public static final DataComponentType<Unit> ROCKET_IN_FLIGHT = component("rocket_in_flight", Unit.CODEC, Unit.STREAM_CODEC, false);
+	/** On a launcher: the kind of rocket last switched to (sneak and punch), which reloads take first from then on. */
+	public static final DataComponentType<Holder<Item>> ROCKET_CHOICE =
+			component("rocket_choice", Item.CODEC, Item.STREAM_CODEC, true);
 
 	public static final SoundEvent RPG_LAUNCH = sound("rpg_launch");
 	public static final SoundEvent LOCK_BEEP = sound("lock_beep");
@@ -73,6 +76,14 @@ public final class Launchers {
 	/** A PG-7 with a seeker head: steers itself onto a target the launcher's guidance module has locked. */
 	public static final Item PG7_HOMING_ROCKET = item("pg7_homing_rocket", Item::new,
 			new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+	/**
+	 * A PG-7 with an incendiary warhead: a smaller blast than the HEAT round, then a wide carpet of burning gel
+	 * ({@link PG7Rocket#NAPALM_RADIUS} blocks) that sets everything in it alight with the Napalm effect.
+	 */
+	public static final Item PG7_NAPALM_ROCKET = item("pg7_napalm_rocket", Item::new,
+			new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+	/** Every kind of rocket, in the order sneak-punching switches through them. */
+	public static final List<Item> ROCKETS = List.of(PG7_ROCKET, PG7_HOMING_ROCKET, PG7_NAPALM_ROCKET);
 	public static final Item RPG7_LAUNCH_TUBE = item("rpg7_launch_tube", Item::new, new Item.Properties().stacksTo(1));
 	public static final Item RPG7_TRIGGER_GROUP = item("rpg7_trigger_group", Item::new, new Item.Properties().stacksTo(1));
 
@@ -139,7 +150,7 @@ public final class Launchers {
 	}
 
 	public static boolean isRocket(Item item) {
-		return item == PG7_ROCKET || item == PG7_HOMING_ROCKET;
+		return ROCKETS.contains(item);
 	}
 
 	public static void initialize() {
@@ -147,7 +158,7 @@ public final class Launchers {
 			output.insertAfter(ModItems.REVOLVER_CYLINDER, RPG7, RPG7_LAUNCH_TUBE, RPG7_TRIGGER_GROUP);
 			output.insertAfter(ModItems.GLOCK_SWITCH, HOMING_GUIDANCE_MODULE);
 			// After the last of the gun ammo (which goes in right after the arrows).
-			output.insertBefore(Items.SPECTRAL_ARROW, PG7_ROCKET, PG7_HOMING_ROCKET);
+			output.insertBefore(Items.SPECTRAL_ARROW, PG7_ROCKET, PG7_HOMING_ROCKET, PG7_NAPALM_ROCKET);
 		});
 		PayloadTypeRegistry.clientboundPlay().register(LockState.TYPE, LockState.CODEC);
 		ServerTickEvents.END_SERVER_TICK.register(server -> server.getPlayerList().getPlayers().forEach(player -> {

@@ -49,6 +49,7 @@ public final class LauncherClient {
 	private static final int LOCKED = 0xFFFF3030;
 	private static final int ROCKET = 0xFF9DB06A;
 	private static final int HOMING_ROCKET = 0xFFE8C21E;
+	private static final int NAPALM_ROCKET = 0xFFFF7A1A;
 
 	private static Launchers.LockState lock = Launchers.LockState.NONE;
 	private static LockTone tone;
@@ -141,7 +142,7 @@ public final class LauncherClient {
 			status = Component.translatable("hud.mymod.rpg7.reloading");
 		} else if (loaded != null) {
 			status = Component.translatable(loaded.getDescriptionId());
-			color = loaded == Launchers.PG7_HOMING_ROCKET ? HOMING_ROCKET : ROCKET;
+			color = loaded == Launchers.PG7_HOMING_ROCKET ? HOMING_ROCKET : loaded == Launchers.PG7_NAPALM_ROCKET ? NAPALM_ROCKET : ROCKET;
 		} else {
 			status = Component.translatable("hud.mymod.punch_to_reload");
 		}

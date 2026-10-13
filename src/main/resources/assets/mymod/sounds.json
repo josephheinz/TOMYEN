@@ -1038,5 +1038,17 @@
     "sounds": [
       "mymod:centrifuge_hum"
     ]
+  },
+  "flamethrower_roar": {
+    "subtitle": "subtitles.mymod.flamethrower_roar",
+    "sounds": [
+      "mymod:flamethrower_roar"
+    ]
+  },
+  "flamethrower_ignite": {
+    "subtitle": "subtitles.mymod.flamethrower_ignite",
+    "sounds": [
+      "mymod:flamethrower_ignite"
+    ]
   }
 }

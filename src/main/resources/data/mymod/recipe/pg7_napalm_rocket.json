@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": "minecraft:gunpowder",
+    "I": "minecraft:iron_ingot",
+    "N": "mymod:napalm_canister",
+    "S": "mymod:tech_scrap"
+  },
+  "pattern": [
+    " S ",
+    " N ",
+    "IGI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:pg7_napalm_rocket"
+  }
+}

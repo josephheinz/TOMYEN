@@ -1,6 +1,7 @@
 package com.jheinz.mymod.launcher;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,11 +12,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import com.jheinz.mymod.napalm.NapalmFire;
+
 /**
  * A PG-7 in flight. The booster throws it out of the tube; a few ticks later the sustainer motor lights and
  * pushes it up to full speed, burning for {@link #MOTOR_TICKS} under a trail of smoke and flame. It drops only
  * slightly and explodes on whatever it hits (TNT-like, breaking blocks unless mobGriefing is off), or in the air
- * when its self-destruct runs out.
+ * when its self-destruct runs out. A napalm rocket's blast is half that, and it carpets {@link #NAPALM_RADIUS} blocks
+ * round in burning gel ({@link NapalmFire#splash}).
  *
  * <p>A homing rocket given a target turns toward it every tick, but only {@link #TURN_DEGREES} a tick and at a
  * lower top speed, so a target can outrun it or duck behind cover. It goes off within {@link #PROXIMITY} blocks
@@ -33,6 +37,12 @@ public class PG7Rocket extends ThrowableItemProjectile {
 	private static final double TURN_DEGREES = 5.0;
 	private static final double PROXIMITY = 1.5;
 	private static final float BLAST_POWER = 3.0f;
+	/** A napalm warhead's bursting charge: enough to throw the gel about, half the HEAT round's blast. */
+	private static final float NAPALM_BLAST_POWER = 1.5f;
+	/** How far a napalm warhead carpets the ground in burning gel. */
+	public static final double NAPALM_RADIUS = 5.0;
+	private static final float NAPALM_DAMAGE = 6.0f;
+	private static final int NAPALM_BURN_TICKS = 200;
 	/** Ticks the shooter is safe from their own rocket, while it clears them. */
 	private static final int CLEAR_TICKS = 6;
 
@@ -163,7 +173,14 @@ public class PG7Rocket extends ThrowableItemProjectile {
 	}
 
 	private void detonate(Vec3 at) {
-		level().explode(this, at.x, at.y, at.z, BLAST_POWER, false, Level.ExplosionInteraction.MOB);
+		if (getItem().is(Launchers.PG7_NAPALM_ROCKET) && level() instanceof ServerLevel level) {
+			// Back off the surface it struck so the splash lands on this side of it.
+			Vec3 burst = at.subtract(getDeltaMovement().normalize().scale(0.4));
+			level.explode(this, burst.x, burst.y, burst.z, NAPALM_BLAST_POWER, false, Level.ExplosionInteraction.MOB);
+			NapalmFire.splash(level, burst, NAPALM_RADIUS, NAPALM_DAMAGE, NAPALM_BURN_TICKS, getOwner());
+		} else {
+			level().explode(this, at.x, at.y, at.z, BLAST_POWER, false, Level.ExplosionInteraction.MOB);
+		}
 		discard();
 	}
 }

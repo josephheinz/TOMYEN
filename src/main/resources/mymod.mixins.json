@@ -31,7 +31,8 @@
 		"PiglinAiExoSocketsMixin",
 		"PlayerExoSocketsMixin",
 		"EnchantmentHelperEvilBaneMixin",
-		"LivingEntityHolySilverMixin"
+		"LivingEntityHolySilverMixin",
+		"EntityNapalmRainMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

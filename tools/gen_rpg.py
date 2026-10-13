@@ -1,4 +1,4 @@
-"""Builds the RPG-7 rocket launcher, its PG-7 rockets and the homing guidance module.
+"""Builds the RPG-7 rocket launcher, its PG-7 rockets (plain, homing and napalm) and the homing guidance module.
 
 Writes the launcher's item models (the bare launcher, plus overlays for a seated warhead and for a fitted seeker pod,
 which its item definition stacks), the two Weapon Station parts, the rocket models (as an item, and in flight with
@@ -135,6 +135,16 @@ def screen(x, y, w, h):
 
 swatch("screen", 6, 10, 8, 12, screen, picture=True)
 swatch("seeker_glass", 8, 10, 10, 12, lambda x, y, w, h: rgb(0x6A5A8A if (x, y) in ((2, 2), (3, 2)) else 0x18121F, jitter=2))
+
+
+# The napalm rocket's paint: flat colours in a corner of the atlas nothing else uses (no random numbers drawn, so
+# the rest of the atlas and every UV cut come out as before).
+swatch("napalm", 10, 10, 14, 12, lambda x, y, w, h: (0x7A, 0x24, 0x16, 255))
+swatch("napalm_band", 14, 10, 16, 12, lambda x, y, w, h: (0xE8, 0x70, 0x1E, 255))
+swatch("napalm_dark", 0, 12, 4, 14, lambda x, y, w, h: (0x4A, 0x14, 0x0C, 255))
+swatch("plain_motor", 4, 12, 8, 14, lambda x, y, w, h: (0x7C, 0x80, 0x79, 255))
+swatch("plain_booster", 8, 12, 12, 14, lambda x, y, w, h: (0xA8, 0x9A, 0x6C, 255))
+swatch("plain_steel", 12, 12, 16, 14, lambda x, y, w, h: (0x3B, 0x3F, 0x38, 255))
 png(os.path.join(TEX, "item/rpg7.png"), W, W, atlas)
 
 # ----------------------------------------------------------------------------------------------- elements
@@ -497,7 +507,7 @@ write(os.path.join(ITEMS, "homing_guidance_module.json"), {"model": ref("homing_
 
 
 # The launcher: its body, then whichever warhead is seated (or being seated, which the reload animation shows
-# through mymod:gun_animation: 1 a PG-7, 2 a homing one), then the seeker pod if the module is fitted.
+# through mymod:gun_animation: 1 a PG-7, 2 a homing one, 3 a napalm one), then the seeker pod if the module is fitted.
 def warhead(rocket_id, path):
     return {"when": rocket_id, "model": ref(path)}
 
@@ -506,17 +516,69 @@ write(os.path.join(ITEMS, "rpg7.json"), {"model": OrderedDict([("type", "minecra
     ref("rpg7"),
     OrderedDict([
         ("type", "minecraft:select"), ("property", "minecraft:component"), ("component", "mymod:loaded_rocket"),
-        ("cases", [warhead("mymod:pg7_rocket", "rpg7_warhead_pg7"), warhead("mymod:pg7_homing_rocket", "rpg7_warhead_pg7_homing")]),
+        ("cases", [warhead("mymod:pg7_rocket", "rpg7_warhead_pg7"), warhead("mymod:pg7_homing_rocket", "rpg7_warhead_pg7_homing"),
+                   warhead("mymod:pg7_napalm_rocket", "rpg7_warhead_pg7_napalm")]),
         ("fallback", OrderedDict([
             ("type", "minecraft:range_dispatch"), ("property", "mymod:gun_animation"),
             ("entries", [{"threshold": 0.5, "model": ref("rpg7_warhead_pg7")},
-                         {"threshold": 1.5, "model": ref("rpg7_warhead_pg7_homing")}]),
+                         {"threshold": 1.5, "model": ref("rpg7_warhead_pg7_homing")},
+                         {"threshold": 2.5, "model": ref("rpg7_warhead_pg7_napalm")}]),
             ("fallback", EMPTY)]))]),
     OrderedDict([
         ("type", "minecraft:condition"), ("property", "minecraft:has_component"), ("component", "mymod:guidance_attachment"),
         ("on_true", ref("rpg7_seeker")), ("on_false", EMPTY)]),
 ])])})
 
+
+
+
+def napalm_rocket(flight=False, front_only=False):
+    """The napalm PG-7, kept plain: square-section stages laid out along the bore where a PG-7's are (so it seats and
+    loads the same), a maroon incendiary warhead with an orange band, and crossed tail fins."""
+    out = []
+    B(out, BX - 0.9, BY - 0.9, -16.0, BX + 0.9, BY + 0.9, -14.4, "napalm_dark", name="nose")
+    B(out, BX - 1.5, BY - 1.5, -14.4, BX + 1.5, BY + 1.5, -12.6, "napalm")
+    B(out, BX - 2.1, BY - 2.1, -12.6, BX + 2.1, BY + 2.1, -8.0, "napalm", name="warhead")
+    B(out, BX - 2.15, BY - 2.15, -10.5, BX + 2.15, BY + 2.15, -9.7, "napalm_band", north=None, south=None, name="band")
+    B(out, BX - 1.2, BY - 1.2, -8.0, BX + 1.2, BY + 1.2, -6.3, "napalm_dark")
+    B(out, BX - 0.85, BY - 0.85, -6.3, BX + 0.85, BY + 0.85, MUZZLE_Z - 0.1 if front_only else -2.0, "plain_motor",
+      name="sustainer_motor")
+    if front_only:
+        return out
+    B(out, BX - 0.8, BY - 0.8, -2.0, BX + 0.8, BY + 0.8, 7.8, "plain_booster", name="booster")
+    B(out, BX - 0.6, BY - 0.6, 7.8, BX + 0.6, BY + 0.6, 10.6, "plain_steel", name="tail")
+    # Sprung out in flight; folded inside the bore before.
+    span = 2.4 if flight else 0.75
+    B(out, BX - span, BY - 0.1, 8.4, BX + span, BY + 0.1, 10.6, "plain_steel", rot=("z", 45, (BX, BY, 8.4)), name="fins")
+    B(out, BX - 0.1, BY - span, 8.42, BX + 0.1, BY + span, 10.58, "plain_steel", rot=("z", 45, (BX, BY, 8.4)))
+    if flight:
+        B(out, BX - 0.42, BY - 0.42, 10.6, BX + 0.42, BY + 0.42, 12.4, "flame", emit=True, name="exhaust")
+    return out
+
+
+# The napalm rocket, last of all the models: it draws UV cuts from the same random numbers as everything above, so
+# going last leaves every earlier model as it was.
+front = napalm_rocket(front_only=True)
+check("rpg7_pg7_napalm", front)
+write(os.path.join(MODELS, "rpg7_warhead_pg7_napalm.json"), model(front, parent="mymod:item/rpg7"))
+held = napalm_rocket()
+check("pg7_napalm_rocket", held)
+c = bounds_centre(held)
+hand = OrderedDict([("rotation", [0, 90, -30]), ("translation", centred([0, 90, -30], 0.5, c, 3.0)), ("scale", [0.5] * 3)])
+write(os.path.join(MODELS, "pg7_napalm_rocket.json"), model(held, OrderedDict([
+    ("gui", display(DIAGONAL, centred(DIAGONAL, 0.55, c), 0.55)),
+    ("ground", display([0, 0, 0], centred([0, 0, 0], 0.4, c, 2.0), 0.4)),
+    ("fixed", display(DIAGONAL, centred(DIAGONAL, 0.7, c), 0.7)),
+    ("thirdperson_righthand", display([0, 90, -30], centred([0, 90, -30], 0.45, c, 2.0), 0.45)),
+    ("thirdperson_lefthand", display([0, 90, -30], centred([0, 90, -30], 0.45, c, 2.0), 0.45)),
+    ("firstperson_righthand", hand), ("firstperson_lefthand", hand),
+])))
+flying = napalm_rocket(flight=True)
+check("pg7_napalm_rocket_flight", flying)
+write(os.path.join(MODELS, "pg7_napalm_rocket_flight.json"), model(flying, parent="mymod:item/pg7_napalm_rocket"))
+write(os.path.join(ITEMS, "pg7_napalm_rocket.json"), {"model": OrderedDict([
+    ("type", "minecraft:condition"), ("property", "minecraft:has_component"), ("component", "mymod:rocket_in_flight"),
+    ("on_true", ref("pg7_napalm_rocket_flight")), ("on_false", ref("pg7_napalm_rocket"))])})
 
 # ----------------------------------------------------------------------------------------------- PGO-7 reticle
 def reticle(size=512):
