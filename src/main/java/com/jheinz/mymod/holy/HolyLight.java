@@ -30,6 +30,7 @@ import com.jheinz.mymod.ModNetworking;
 import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.silver.HolySilver;
 import com.jheinz.mymod.vampire.Vampire;
+import com.jheinz.mymod.werewolf.WerewolfCurse;
 
 /**
  * Holy light from a crucifix: harmless to the living, it burns the evil ({@link #EVIL}: the undead and anything in the
@@ -97,6 +98,7 @@ public final class HolyLight {
 				}
 			} else if (hit.isPresent()) {
 				smite(level, entity, player, player, BEAM_DAMAGE * power);
+				WerewolfCurse.onHolyLight(level, entity);
 			}
 			if (entity instanceof Vampire vampire && distanceToSegment(vampire.position().add(0, 1, 0), start, end) < BEAM_REVEAL_RADIUS) {
 				vampire.reveal();

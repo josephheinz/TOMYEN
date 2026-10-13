@@ -1370,5 +1370,80 @@
         "pitch": 0.55
       }
     ]
+  },
+  "werewolf_growl": {
+    "subtitle": "subtitles.mymod.werewolf_growl",
+    "sounds": [
+      {
+        "name": "minecraft:mob/wolf/angry/growl1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/wolf/angry/growl2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/wolf/angry/growl3",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "werewolf_howl": {
+    "subtitle": "subtitles.mymod.werewolf_howl",
+    "sounds": [
+      {
+        "name": "minecraft:mob/wolf/big/whine",
+        "pitch": 0.5,
+        "attenuation_distance": 64
+      },
+      {
+        "name": "minecraft:mob/wolf/classic/whine",
+        "pitch": 0.5,
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "werewolf_hurt": {
+    "subtitle": "subtitles.mymod.werewolf_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/wolf/big/hurt1",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/wolf/big/hurt2",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/wolf/big/hurt3",
+        "pitch": 0.65
+      }
+    ]
+  },
+  "werewolf_death": {
+    "subtitle": "subtitles.mymod.werewolf_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/wolf/big/death",
+        "pitch": 0.55
+      }
+    ]
+  },
+  "werewolf_hiss": {
+    "subtitle": "subtitles.mymod.werewolf_hiss",
+    "sounds": [
+      {
+        "name": "minecraft:mob/cat/hiss1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/cat/hiss2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/cat/hiss3",
+        "pitch": 0.6
+      }
+    ]
   }
 }

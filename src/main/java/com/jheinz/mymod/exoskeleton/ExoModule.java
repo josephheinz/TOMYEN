@@ -25,7 +25,11 @@ public enum ExoModule {
 	SERVO_LEGS("servo_legs", 0xFFB300,
 			new Bonus(Attributes.STEP_HEIGHT, 0.5),
 			new Bonus(Attributes.JUMP_STRENGTH, 0.1),
-			new Bonus(Attributes.SAFE_FALL_DISTANCE, 3.0));
+			new Bonus(Attributes.SAFE_FALL_DISTANCE, 3.0)),
+	/** Werewolf hide padding the frame's joints: some of the beast's pace and strength. +10% speed, +1 attack damage. */
+	FERAL_LINING("feral_lining", 0xB07A4A,
+			new Bonus(Attributes.MOVEMENT_SPEED, 0.01),
+			new Bonus(Attributes.ATTACK_DAMAGE, 1.0));
 
 	/** A flat amount added to one of the wearer's attributes. */
 	public record Bonus(Holder<Attribute> attribute, double amount) {

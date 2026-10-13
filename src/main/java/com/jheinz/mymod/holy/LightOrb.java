@@ -18,6 +18,7 @@ import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.ModEntities;
 import com.jheinz.mymod.silver.HolySilver;
+import com.jheinz.mymod.werewolf.WerewolfCurse;
 
 /**
  * A slow, weightless orb of light punched out of a crucifix. It drifts straight on through anything living and
@@ -80,10 +81,10 @@ public class LightOrb extends ThrowableProjectile {
 		}
 	}
 
-	/** Passes straight through anything holy light can't hurt. */
+	/** Passes straight through anything holy light can't hurt, except a werewolf-cursed villager (server side). */
 	@Override
 	protected boolean canHitEntity(Entity target) {
-		return super.canHitEntity(target) && HolyLight.hurts(target);
+		return super.canHitEntity(target) && (HolyLight.hurts(target) || WerewolfCurse.isCursed(target));
 	}
 
 	@Override
@@ -91,6 +92,7 @@ public class LightOrb extends ThrowableProjectile {
 		super.onHitEntity(result);
 		if (level() instanceof ServerLevel level) {
 			HolyLight.smite(level, result.getEntity(), this, getOwner(), damage);
+			WerewolfCurse.onHolyLight(level, result.getEntity());
 		}
 	}
 

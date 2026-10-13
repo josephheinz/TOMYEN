@@ -47,6 +47,7 @@ import com.jheinz.mymod.client.fae.FaeClient;
 import com.jheinz.mymod.client.hogfire.HogfireClient;
 import com.jheinz.mymod.client.schnozzle.SchnozzleClient;
 import com.jheinz.mymod.client.skullcrane.SkullcraneClient;
+import com.jheinz.mymod.client.werewolf.WerewolfClient;
 import com.jheinz.mymod.client.soul.SoulVacuumClient;
 import com.jheinz.mymod.client.silver.SilverClient;
 import com.jheinz.mymod.client.industry.IndustryClient;
@@ -138,6 +139,7 @@ public class MyModClient implements ClientModInitializer {
 		HogfireClient.initialize();
 		SchnozzleClient.initialize();
 		SkullcraneClient.initialize();
+		WerewolfClient.initialize();
 		SoulVacuumClient.initialize();
 		SilverClient.initialize();
 		NapalmClient.initialize();
