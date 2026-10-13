@@ -43,7 +43,7 @@ public class HogfireGearLayer extends RenderLayer<PigRenderState, PigModel> {
 	private static final RenderType GLOW = RenderTypes.eyes(TEXTURE);
 	// The gun mount: its bore and muzzle in its item model (tools/gen_minigun.py), and where they go on the pig.
 	private static final float GUN_BORE_Y = 9.0f;
-	private static final float GUN_MUZZLE_Z = -14.0f;
+	private static final float GUN_MUZZLE_Z = -15.2f;
 	private static final float MOUNT_SCALE = 0.5f;
 	private static final float MOUNT_BORE_Y = 6.0f;
 	private static final float MOUNT_MUZZLE_Z = -16.0f;
