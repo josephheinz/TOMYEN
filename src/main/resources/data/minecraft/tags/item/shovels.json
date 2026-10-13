@@ -2,6 +2,8 @@
   "values": [
     "mymod:magmasteel_shovel",
     "mymod:soul_steel_shovel",
-    "mymod:holy_silver_shovel"
-  ]
+    "mymod:holy_silver_shovel",
+    "mymod:fae_silver_shovel"
+  ],
+  "replace": false
 }

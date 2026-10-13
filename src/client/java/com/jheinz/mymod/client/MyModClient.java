@@ -42,6 +42,7 @@ import com.jheinz.mymod.client.neuralink.NeuralinkVision;
 import com.jheinz.mymod.client.neuralink.OreScanner;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonRenderer;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonScreen;
+import com.jheinz.mymod.client.fae.FaeClient;
 import com.jheinz.mymod.client.hogfire.HogfireClient;
 import com.jheinz.mymod.client.schnozzle.SchnozzleClient;
 import com.jheinz.mymod.client.skullcrane.SkullcraneClient;
@@ -136,5 +137,6 @@ public class MyModClient implements ClientModInitializer {
 		SoulVacuumClient.initialize();
 		SilverClient.initialize();
 		NapalmClient.initialize();
+		FaeClient.initialize();
 	}
 }

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.8,
+  "group": "fae_silver_ingot",
+  "ingredient": "mymod:fae_silver_ore",
+  "result": {
+    "id": "mymod:fae_silver_ingot"
+  }
+}

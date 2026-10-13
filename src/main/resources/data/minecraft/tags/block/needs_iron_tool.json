@@ -12,6 +12,7 @@
     "mymod:deepslate_uranium_ore",
     "mymod:raw_uranium_block",
     "mymod:raw_tungsten_block",
-    "mymod:tungsten_block"
+    "mymod:tungsten_block",
+    "mymod:fae_silver_ore"
   ]
 }

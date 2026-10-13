@@ -1,0 +1,80 @@
+{
+  "attributes": {
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "ambient": [
+            {
+              "type": "mymod:fairy",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 2
+              },
+              "weight": 10
+            }
+          ],
+          "creature": [
+            {
+              "type": "minecraft:rabbit",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 2,
+                "max_inclusive": 3
+              },
+              "weight": 4
+            }
+          ]
+        }
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "mymod:fae_sparkle"
+          },
+          "probability": 0.006
+        },
+        {
+          "particle": {
+            "type": "minecraft:spore_blossom_air"
+          },
+          "probability": 0.008
+        }
+      ],
+      "modifier": "append"
+    }
+  },
+  "carvers": [],
+  "downfall": 0.8,
+  "effects": {
+    "foliage_color": "#5fd0b4",
+    "grass_color": "#6fcf9a",
+    "water_color": "#7a5cff"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "mymod:ore_fae_silver"
+    ],
+    [],
+    [],
+    [
+      "mymod:feywild_huge_mushrooms",
+      "mymod:glimmerwood_trees_wilds",
+      "mymod:fae_mushroom_patch",
+      "mymod:feywild_grass"
+    ],
+    []
+  ],
+  "has_precipitation": false,
+  "temperature": 0.7
+}

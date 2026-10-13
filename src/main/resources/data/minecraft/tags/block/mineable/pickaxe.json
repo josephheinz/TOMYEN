@@ -25,6 +25,8 @@
     "mymod:raw_tungsten_block",
     "mymod:raw_uranium_block",
     "mymod:tungsten_block",
-    "mymod:centrifuge"
+    "mymod:centrifuge",
+    "mymod:fae_silver_ore",
+    "mymod:fairy_in_a_bottle"
   ]
 }

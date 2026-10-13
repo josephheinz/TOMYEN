@@ -3,6 +3,8 @@
     "mymod:magmasteel_pickaxe",
     "mymod:soul_steel_pickaxe",
     "mymod:holy_silver_pickaxe",
-    "mymod:tungsten_carbide_drill"
-  ]
+    "mymod:tungsten_carbide_drill",
+    "mymod:fae_silver_pickaxe"
+  ],
+  "replace": false
 }

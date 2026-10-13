@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "mymod:block/glimmerwood_planks",
+    "side": "mymod:block/glimmerwood_planks",
+    "top": "mymod:block/glimmerwood_planks"
+  }
+}
