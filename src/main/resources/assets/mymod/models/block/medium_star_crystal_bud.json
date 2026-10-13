@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "mymod:block/medium_star_crystal_bud"
+  }
+}

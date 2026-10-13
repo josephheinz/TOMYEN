@@ -11,6 +11,7 @@ import net.minecraft.world.item.Items;
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.foundry.FoundryRecipe.Cost;
 import com.jheinz.mymod.industry.IndustryRecipes;
+import com.jheinz.mymod.meteorite.MeteoriteRecipes;
 import com.jheinz.mymod.powerarmor.PowerArmorRecipes;
 
 /** Everything the Foundry smelts. Built from code, so client and server always agree. */
@@ -24,7 +25,9 @@ public final class FoundryRecipes {
 			// Power armor upgrades and fusion core recharging.
 			Stream.concat(PowerArmorRecipes.foundry().stream(),
 					// Steel, aluminium, duralumin and shale oil for the oil industry.
-					IndustryRecipes.foundry().stream())).toList();
+					Stream.concat(IndustryRecipes.foundry().stream(),
+							// Meteoric iron and Star Steel.
+							MeteoriteRecipes.foundry().stream()))).toList();
 
 	private FoundryRecipes() {
 	}

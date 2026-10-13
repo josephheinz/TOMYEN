@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mymod:block/star_steel_block"
+    }
+  }
+}

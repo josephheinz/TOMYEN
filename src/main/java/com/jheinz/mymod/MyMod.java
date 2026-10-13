@@ -15,6 +15,7 @@ import com.jheinz.mymod.neuralink.NeuralinkEffects;
 import com.jheinz.mymod.exoskeleton.ExoSockets;
 import com.jheinz.mymod.exoskeleton.ExoskeletonEffects;
 import com.jheinz.mymod.launcher.Launchers;
+import com.jheinz.mymod.meteorite.Meteorites;
 import com.jheinz.mymod.lmg.MachineGuns;
 import com.jheinz.mymod.longsword.LongSwords;
 import com.jheinz.mymod.shotgun.Shotguns;
@@ -45,6 +46,7 @@ public class MyMod implements ModInitializer {
 		ModCreativeTabs.initialize();
 		ModBlocks.initialize();
 		Industry.initialize();
+		Meteorites.initialize();
 		Hogfires.initialize();
 		ModEntities.initialize();
 		ModMenus.initialize();

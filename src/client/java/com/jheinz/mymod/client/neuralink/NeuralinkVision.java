@@ -30,13 +30,14 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.meteorite.StarlightLensItem;
 import com.jheinz.mymod.neuralink.NeuralNetworking;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.neuralink.NeuralinkModule;
 
 /**
  * Draws what the wearer's modules see, through walls: ESP boxes around mobs and players, and x-ray
- * highlights on ores. With Hive Mind too, ESP also boxes what teammates' implants see beyond the wearer's own
+ * highlights on ores. A Starlight Lens looked through at night shows both. With Hive Mind too, ESP also boxes what teammates' implants see beyond the wearer's own
  * range, edged in the hive's amber.
  */
 public final class NeuralinkVision {
@@ -77,8 +78,10 @@ public final class NeuralinkVision {
 			return;
 		}
 		Set<NeuralinkModule> active = NeuralinkItem.activeModules(player);
-		boolean esp = active.contains(NeuralinkModule.ESP);
-		boolean xray = active.contains(NeuralinkModule.XRAY);
+		// A Starlight Lens looked through at night sees what both modules do.
+		boolean lens = StarlightLensItem.isRevealing(player);
+		boolean esp = lens || active.contains(NeuralinkModule.ESP);
+		boolean xray = lens || active.contains(NeuralinkModule.XRAY);
 		if (!esp && !xray) {
 			return;
 		}

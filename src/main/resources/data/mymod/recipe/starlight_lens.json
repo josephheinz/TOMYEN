@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "mymod:star_crystal_shard",
+    "I": "mymod:meteoric_iron_ingot"
+  },
+  "pattern": [
+    " S ",
+    " I ",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:starlight_lens"
+  }
+}
