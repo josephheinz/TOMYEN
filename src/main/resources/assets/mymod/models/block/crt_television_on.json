@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "mymod:block/crt_television_front_on",
+    "side": "mymod:block/crt_television_side",
+    "top": "mymod:block/crt_television_top"
+  }
+}

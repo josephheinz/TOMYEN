@@ -25,6 +25,7 @@ import com.jheinz.mymod.ModNetworking;
 import com.jheinz.mymod.ModParticles;
 import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.client.bank.BankClient;
+import com.jheinz.mymod.client.cathode.CathodeWalkerClient;
 import com.jheinz.mymod.client.cart.ShoppingCartModel;
 import com.jheinz.mymod.client.cart.ShoppingCartRenderer;
 import com.jheinz.mymod.client.holy.HolyBeams;
@@ -142,6 +143,7 @@ public class MyModClient implements ClientModInitializer {
 		HogfireClient.initialize();
 		SchnozzleClient.initialize();
 		SkullcraneClient.initialize();
+		CathodeWalkerClient.initialize();
 		SoulVacuumClient.initialize();
 		SilverClient.initialize();
 		NapalmClient.initialize();

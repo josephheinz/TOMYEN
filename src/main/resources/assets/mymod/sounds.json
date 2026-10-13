@@ -938,6 +938,241 @@
       }
     ]
   },
+  "cathode_walker_ambient": {
+    "subtitle": "subtitles.mymod.cathode_walker_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:fire/fire",
+        "pitch": 1.8,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 1.7,
+        "volume": 0.3
+      },
+      {
+        "name": "minecraft:block/beacon/ambient",
+        "pitch": 1.9,
+        "volume": 0.6
+      }
+    ]
+  },
+  "cathode_walker_step": {
+    "subtitle": "subtitles.mymod.cathode_walker_step",
+    "sounds": [
+      {
+        "name": "minecraft:block/mud/step1",
+        "pitch": 1.5,
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:block/mud/step2",
+        "pitch": 1.5,
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:block/mud/step3",
+        "pitch": 1.5,
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:block/mud/step4",
+        "pitch": 1.5,
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:block/mud/step5",
+        "pitch": 1.5,
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:block/mud/step6",
+        "pitch": 1.5,
+        "volume": 0.45
+      }
+    ]
+  },
+  "cathode_walker_kick": {
+    "subtitle": "subtitles.mymod.cathode_walker_kick",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/knockback1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:entity/player/attack/knockback2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:entity/player/attack/knockback3",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:entity/player/attack/knockback4",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "cathode_walker_charge": {
+    "subtitle": "subtitles.mymod.cathode_walker_charge",
+    "sounds": [
+      {
+        "name": "minecraft:block/respawn_anchor/charge1",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:block/respawn_anchor/charge2",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:block/respawn_anchor/charge3",
+        "pitch": 1.6
+      }
+    ]
+  },
+  "cathode_walker_static_burst": {
+    "subtitle": "subtitles.mymod.cathode_walker_static_burst",
+    "sounds": [
+      {
+        "name": "minecraft:fire/fire",
+        "pitch": 0.9,
+        "volume": 3.0
+      },
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 0.6,
+        "volume": 2.0
+      }
+    ]
+  },
+  "cathode_walker_short": {
+    "subtitle": "subtitles.mymod.cathode_walker_short",
+    "sounds": [
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 1.4,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/conduit/short1",
+        "pitch": 1.6,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/conduit/short2",
+        "pitch": 1.6,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/conduit/short3",
+        "pitch": 1.6,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/conduit/short4",
+        "pitch": 1.6,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/conduit/short5",
+        "pitch": 1.6,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/conduit/short6",
+        "pitch": 1.6,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/conduit/short7",
+        "pitch": 1.6,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/conduit/short8",
+        "pitch": 1.6,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/conduit/short9",
+        "pitch": 1.6,
+        "volume": 0.7
+      }
+    ]
+  },
+  "cathode_walker_hurt": {
+    "subtitle": "subtitles.mymod.cathode_walker_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:block/copper_bulb/break1",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/copper_bulb/break2",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/copper_bulb/break3",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block/copper_bulb/break4",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 2.0,
+        "volume": 0.5
+      }
+    ]
+  },
+  "cathode_walker_death": {
+    "subtitle": "subtitles.mymod.cathode_walker_death",
+    "sounds": [
+      {
+        "name": "minecraft:random/glass1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:random/glass2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:random/glass3",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "cathode_walker_pop": {
+    "subtitle": "subtitles.mymod.cathode_walker_pop",
+    "sounds": [
+      {
+        "name": "minecraft:random/pop",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "cathode_walker_click_off": {
+    "subtitle": "subtitles.mymod.cathode_walker_click_off",
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "pitch": 0.7,
+        "volume": 0.8
+      }
+    ]
+  },
+  "crt_television_toggle": {
+    "subtitle": "subtitles.mymod.crt_television_toggle",
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "pitch": 0.9,
+        "volume": 0.6
+      }
+    ]
+  },
   "soul_vacuum_loop": {
     "subtitle": "subtitles.mymod.soul_vacuum_loop",
     "sounds": [
