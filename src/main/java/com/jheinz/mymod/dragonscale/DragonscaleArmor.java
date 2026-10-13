@@ -4,9 +4,14 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -18,6 +23,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
+import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.exoskeleton.ExoSockets;
 import com.jheinz.mymod.exoskeleton.ExoskeletonItem;
 
@@ -30,9 +36,10 @@ import com.jheinz.mymod.exoskeleton.ExoskeletonItem;
  * <li>The full set: immune to fire and lava, as if the wearer were a fire-immune mob (EntityDragonscaleFireMixin):
  * they don't burn and fire, lava and magma blocks don't hurt them.</li>
  * <li>The full set while gliding: the jump key flaps the wings for an upward boost ({@link #flap}), at most once
- * every {@link #FLAP_COOLDOWN} ticks and {@link #FLAPS} times before landing again.</li>
+ * every {@link #FLAP_COOLDOWN} ticks and {@link #FLAPS} times before landing again. The client asks for each flap
+ * with a {@link Flap} packet, checked here.</li>
  * </ul>
- * Gliding itself is the chestplate's alone (it carries the glider component); the Dragon Roar is in DragonRoar.
+ * Gliding itself is the chestplate's alone (it carries the glider component).
  */
 public final class DragonscaleArmor {
 	public static final float FIRE_PROTECTION_PER_PIECE = 2.0f;
@@ -48,10 +55,24 @@ public final class DragonscaleArmor {
 	/** Flaps used since last on the ground, and when the last one was, per player (server only). */
 	private static final Map<ServerPlayer, long[]> FLAPPING = new WeakHashMap<>();
 
+	/** Sent when the player presses jump while gliding in the full set. */
+	public record Flap() implements CustomPacketPayload {
+		public static final Flap INSTANCE = new Flap();
+		public static final Type<Flap> TYPE = new Type<>(MyMod.id("dragonscale_flap"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, Flap> CODEC = StreamCodec.unit(INSTANCE);
+
+		@Override
+		public Type<Flap> type() {
+			return TYPE;
+		}
+	}
+
 	private DragonscaleArmor() {
 	}
 
 	static void initialize() {
+		PayloadTypeRegistry.serverboundPlay().register(Flap.TYPE, Flap.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(Flap.TYPE, (payload, context) -> flap(context.player()));
 		// Landing (or swimming) rests the wings.
 		ServerTickEvents.END_LEVEL_TICK.register(level -> {
 			for (ServerPlayer player : level.players()) {

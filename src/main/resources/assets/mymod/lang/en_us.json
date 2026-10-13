@@ -997,14 +997,8 @@
   "item.mymod.dragonscale_boots": "Dragonscale Boots",
   "item.mymod.dragonbone_long_sword": "Dragonbone Long Sword",
   "item.mymod.dragonbone_long_sword.burns": "Sets targets on fire",
-  "key.category.mymod.dragonscale": "My Mod: Dragonscale",
-  "key.mymod.dragon_roar": "Dragon Roar (full dragonscale set)",
   "message.mymod.dragonscale.flaps": "Wing flaps left: %s / %s",
-  "death.attack.mymod.dragon_roar": "%1$s was roasted by dragon fire",
-  "death.attack.mymod.dragon_roar.player": "%1$s was roasted by %2$s's dragon roar",
-  "death.attack.mymod.dragon_roar.item": "%1$s was roasted by %2$s's dragon roar",
   "subtitles.mymod.dragonscale_equip": "Dragonscale rustles",
   "subtitles.mymod.dragonscale_wing_flap": "Dragon wings flap",
-  "subtitles.mymod.dragon_roar": "Dragon roars",
   "tag.item.mymod.dragon_scales": "Dragon Scales"
 }

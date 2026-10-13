@@ -21,7 +21,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Unit;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -55,8 +54,8 @@ import com.jheinz.mymod.longsword.LongSwords;
  * {@link EnderDragonScales}). Either kind crafts and repairs the armor.
  * <p>
  * The armor is netherite's equal with more toughness, and fireproof as an item. Each piece takes some of the sting
- * out of fire; the whole set makes the wearer immune to fire and lava, lets them flap while gliding and breathe fire
- * (see {@link DragonscaleArmor}, {@link DragonRoar}). The chestplate is a glider in its own right: it glides like an
+ * out of fire; the whole set makes the wearer immune to fire and lava, and lets them flap while gliding
+ * (see {@link DragonscaleArmor}). The chestplate is a glider in its own right: it glides like an
  * elytra, with or without the rest of the set.
  */
 public final class Dragonscales {
@@ -68,7 +67,7 @@ public final class Dragonscales {
 	/** Fossil bone with the dragon's scales still pressed into it. Drops Ancient Dragon Scales. */
 	public static final Block DRAGON_SCALE_FOSSIL = block("dragon_scale_fossil",
 			properties -> new DropExperienceBlock(UniformInt.of(3, 7), properties),
-			BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).instrument(NoteBlockInstrument.XYLOPHONE)
+			BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).instrument(NoteBlockInstrument.XYLOPHONE)
 					.requiresCorrectToolForDrops().strength(4.0f, 9.0f).sound(SoundType.BONE_BLOCK));
 
 	// --- Scales ------------------------------------------------------------------------------------------------
@@ -83,7 +82,6 @@ public final class Dragonscales {
 	public static final Holder<SoundEvent> EQUIP_SOUND = Registry.registerForHolder(BuiltInRegistries.SOUND_EVENT,
 			MyMod.id("dragonscale_equip"), SoundEvent.createVariableRangeEvent(MyMod.id("dragonscale_equip")));
 	public static final SoundEvent WING_FLAP = sound("dragonscale_wing_flap");
-	public static final SoundEvent ROAR = sound("dragon_roar");
 
 	// --- Armor -------------------------------------------------------------------------------------------------
 	/**
@@ -109,15 +107,13 @@ public final class Dragonscales {
 	public static final Item DRAGONBONE_LONG_SWORD = item("dragonbone_long_sword", DragonboneLongSwordItem::new,
 			LongSwords.properties(DRAGONBONE).fireResistant().rarity(Rarity.EPIC));
 
-	// --- Worldgen and damage -----------------------------------------------------------------------------------
+	// --- Worldgen ----------------------------------------------------------------------------------------------
 	public static final MapCodec<DragonFossilFeature> DRAGON_FOSSIL = Registry.register(BuiltInRegistries.FEATURE_TYPE,
 			MyMod.id("dragon_fossil"), DragonFossilFeature.CODEC);
 	private static final ResourceKey<PlacedFeature> DRAGON_FOSSIL_BURIED = ResourceKey.create(Registries.PLACED_FEATURE,
 			MyMod.id("dragon_fossil_buried"));
 	private static final ResourceKey<PlacedFeature> DRAGON_FOSSIL_DEEP = ResourceKey.create(Registries.PLACED_FEATURE,
 			MyMod.id("dragon_fossil_deep"));
-	/** The Dragon Roar's breath (data/mymod/damage_type/dragon_roar.json); counts as fire. */
-	public static final ResourceKey<DamageType> ROAR_DAMAGE = ResourceKey.create(Registries.DAMAGE_TYPE, MyMod.id("dragon_roar"));
 
 	private Dragonscales() {
 	}
@@ -151,7 +147,6 @@ public final class Dragonscales {
 		BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_STRUCTURES,
 				DRAGON_FOSSIL_DEEP);
 		DragonscaleArmor.initialize();
-		DragonRoar.initialize();
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COMBAT).register(output -> {
 			output.insertAfter(Items.NETHERITE_BOOTS, HELMET, CHESTPLATE, LEGGINGS, BOOTS);
 			output.insertAfter(Items.NETHERITE_SWORD, DRAGONBONE_LONG_SWORD);

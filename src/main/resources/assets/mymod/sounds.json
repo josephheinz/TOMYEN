@@ -1315,30 +1315,5 @@
         "volume": 0.9
       }
     ]
-  },
-  "dragon_roar": {
-    "subtitle": "subtitles.mymod.dragon_roar",
-    "sounds": [
-      {
-        "name": "minecraft:mob/enderdragon/growl1",
-        "pitch": 1.35,
-        "volume": 1.0
-      },
-      {
-        "name": "minecraft:mob/enderdragon/growl2",
-        "pitch": 1.35,
-        "volume": 1.0
-      },
-      {
-        "name": "minecraft:mob/enderdragon/growl3",
-        "pitch": 1.35,
-        "volume": 1.0
-      },
-      {
-        "name": "minecraft:mob/enderdragon/growl4",
-        "pitch": 1.35,
-        "volume": 1.0
-      }
-    ]
   }
 }
