@@ -32,7 +32,10 @@
 		"PlayerExoSocketsMixin",
 		"EnchantmentHelperEvilBaneMixin",
 		"LivingEntityHolySilverMixin",
-		"EntityNapalmRainMixin"
+		"EntityNapalmRainMixin",
+		"EnchantmentHelperDragonscaleMixin",
+		"EnderDragonScalesMixin",
+		"EntityDragonscaleFireMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

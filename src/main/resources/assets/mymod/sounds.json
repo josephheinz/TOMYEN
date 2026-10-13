@@ -1245,5 +1245,100 @@
         "stream": true
       }
     ]
+  },
+  "dragonscale_equip": {
+    "subtitle": "subtitles.mymod.dragonscale_equip",
+    "sounds": [
+      {
+        "name": "minecraft:item/armor/equip_netherite1",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:item/armor/equip_netherite2",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:item/armor/equip_netherite3",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:item/armor/equip_netherite4",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings1",
+        "pitch": 1.6,
+        "volume": 0.35
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings2",
+        "pitch": 1.6,
+        "volume": 0.35
+      }
+    ]
+  },
+  "dragonscale_wing_flap": {
+    "subtitle": "subtitles.mymod.dragonscale_wing_flap",
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/wings1",
+        "pitch": 1.5,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings2",
+        "pitch": 1.5,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings3",
+        "pitch": 1.5,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings4",
+        "pitch": 1.5,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings5",
+        "pitch": 1.5,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings6",
+        "pitch": 1.5,
+        "volume": 0.9
+      }
+    ]
+  },
+  "dragon_roar": {
+    "subtitle": "subtitles.mymod.dragon_roar",
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/growl1",
+        "pitch": 1.35,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:mob/enderdragon/growl2",
+        "pitch": 1.35,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:mob/enderdragon/growl3",
+        "pitch": 1.35,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:mob/enderdragon/growl4",
+        "pitch": 1.35,
+        "volume": 1.0
+      }
+    ]
   }
 }
