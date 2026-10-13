@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "mymod:computer_chip",
+    "F": "mymod:uranium_fuel_rod",
+    "G": "minecraft:glowstone",
+    "B": "minecraft:blaze_rod"
+  },
+  "pattern": [
+    "CFC",
+    "GBG",
+    "CFC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:fusion_core"
+  }
+}

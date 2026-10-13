@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "mymod:steel_ingot",
+    "X": "mymod:computer_chip",
+    "G": "minecraft:glass",
+    "P": "minecraft:piston"
+  },
+  "pattern": [
+    "SXS",
+    "GPG",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:centrifuge"
+  }
+}

@@ -398,14 +398,15 @@ public final class TankHud {
 			y += line;
 		}
 		if (y + line <= y1) {
-			graphics.text(font, Component.translatable("hud.mymod.tank.next_round", Component.translatable(tank.nextRound().shortNameKey())),
+			graphics.text(font, Component.translatable("hud.mymod.tank.next_round", Component.translatable(tank.nextRound().shortNameKey()),
+					tank.rackCount(tank.nextRound())),
 					a + 4, y, TEXT);
 			y += line;
 		}
 		if (y + line <= y1) {
 			int apfsds = tank.rackCount(ShellType.APFSDS);
 			int he = tank.rackCount(ShellType.HE);
-			graphics.text(font, Component.translatable("hud.mymod.tank.rack", apfsds, he), a + 4, y, apfsds + he == 0 ? argb(0xFF, RED) : DIM);
+			graphics.text(font, Component.translatable("hud.mymod.tank.rack", apfsds, he), a + 4, y, tank.rackRounds() == 0 ? argb(0xFF, RED) : DIM);
 		}
 
 		// Driving: speed, gear and throttle.
@@ -512,7 +513,8 @@ public final class TankHud {
 		graphics.text(font, Component.translatable("hud.mymod.tank.rack", tank.rackCount(ShellType.APFSDS), tank.rackCount(ShellType.HE)),
 				x0 + 4, y, DIM);
 		y += 10;
-		graphics.text(font, Component.translatable("hud.mymod.tank.next_round", Component.translatable(tank.nextRound().shortNameKey())),
+		graphics.text(font, Component.translatable("hud.mymod.tank.next_round", Component.translatable(tank.nextRound().shortNameKey()),
+					tank.rackCount(tank.nextRound())),
 				x0 + 4, y, DIM);
 		Component smoke = Component.translatable("hud.mymod.tank.smoke", String.valueOf(tank.smokeSalvos()));
 		graphics.text(font, smoke, x1 - 4 - font.width(smoke), y, DIM);

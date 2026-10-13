@@ -1,5 +1,6 @@
 package com.jheinz.mymod;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -423,12 +424,22 @@ public class GunItem extends Item {
 		}
 
 		if (entityHit != null) {
-			Entity target = entityHit.getEntity();
-			DamageSource source = new DamageSource(
-					level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(round.damageType()), shooter);
-			target.hurtServer(level, source, round.damage());
+			hit(level, shooter, round, entityHit.getEntity());
 			Vec3 hit = entityHit.getLocation();
 			level.sendParticles(ParticleTypes.CRIT, hit.x, hit.y, hit.z, 6, 0.1, 0.1, 0.1, 0.2);
+			// A penetrator carries on through into whatever is next along the line of fire, up to the wall.
+			List<Entity> struck = new ArrayList<>(List.of(entityHit.getEntity()));
+			for (int i = 0; i < round.pierce(); i++) {
+				EntityHitResult next = ProjectileUtil.getEntityHitResult(shooter, eye, end, sweep,
+						entity -> !entity.isSpectator() && entity.isPickable() && !struck.contains(entity), eye.distanceToSqr(end));
+				if (next == null) {
+					break;
+				}
+				struck.add(next.getEntity());
+				hit(level, shooter, round, next.getEntity());
+				hit = next.getLocation();
+				level.sendParticles(ParticleTypes.CRIT, hit.x, hit.y, hit.z, 6, 0.1, 0.1, 0.1, 0.2);
+			}
 			drawTracer(level, muzzle, hit, suppressed);
 		} else if (blockHit.getType() == HitResult.Type.BLOCK) {
 			Vec3 hit = blockHit.getLocation();
@@ -438,6 +449,15 @@ public class GunItem extends Item {
 			drawTracer(level, muzzle, hit, suppressed);
 		} else {
 			drawTracer(level, muzzle, end, suppressed);
+		}
+	}
+
+	private static void hit(ServerLevel level, Player shooter, Ammo round, Entity target) {
+		DamageSource source = new DamageSource(
+				level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(round.damageType()), shooter);
+		target.hurtServer(level, source, round.damage());
+		if (round.burnSeconds() > 0.0f) {
+			target.igniteForSeconds(round.burnSeconds());
 		}
 	}
 

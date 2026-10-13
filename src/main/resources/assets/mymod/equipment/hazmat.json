@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mymod:hazmat"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mymod:hazmat"
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mymod:item/bullet_556_depleted_uranium"
+  }
+}

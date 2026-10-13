@@ -13,6 +13,10 @@ public final class ModDamageTypes {
 	public static final ResourceKey<DamageType> PENETRATOR_BULLET = key("penetrator_bullet");
 	public static final ResourceKey<DamageType> ARMOR_PIERCING_BULLET = key("armor_piercing_bullet");
 	public static final ResourceKey<DamageType> HOLLOW_POINT_BULLET = key("hollow_point_bullet");
+	public static final ResourceKey<DamageType> TUNGSTEN_CORE_BULLET = key("tungsten_core_bullet");
+	public static final ResourceKey<DamageType> DEPLETED_URANIUM_BULLET = key("depleted_uranium_bullet");
+	/** Radiation Sickness at its worst: it goes straight through armor. */
+	public static final ResourceKey<DamageType> RADIATION = key("radiation");
 	public static final ResourceKey<DamageType> BLEEDING = key("bleeding");
 	public static final ResourceKey<DamageType> HOLY_LIGHT = key("holy_light");
 	public static final ResourceKey<DamageType> OPTIC_LASER = key("optic_laser");
@@ -27,6 +31,9 @@ public final class ModDamageTypes {
 			BULLET, 1.0f,
 			PENETRATOR_BULLET, 0.5f,
 			ARMOR_PIERCING_BULLET, 0.15f,
+			// A tungsten carbide core: armor barely slows it.
+			TUNGSTEN_CORE_BULLET, 0.05f,
+			DEPLETED_URANIUM_BULLET, 0.15f,
 			HOLLOW_POINT_BULLET, 2.0f);
 
 	private ModDamageTypes() {

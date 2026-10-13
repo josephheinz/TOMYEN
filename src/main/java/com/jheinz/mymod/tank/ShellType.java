@@ -1,6 +1,7 @@
 package com.jheinz.mymod.tank;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.util.Mth;
@@ -12,14 +13,26 @@ import net.minecraft.world.item.Item;
  * of the burst. {@link #elevationFor} works out how far above the line of sight the gun has to point to hit at
  * a range, which the fire control applies after the gunner lases a target, and which the sight's range ladder
  * marks out.
+ * <p>
+ * New rounds go on the end: tanks save and sync rounds by ordinal.
  */
 public enum ShellType {
-	/** Sabot: a tungsten dart that flies fast and almost flat and hits very hard, with only a small burst. */
+	/** Sabot: a hard-tipped steel dart that flies fast and almost flat and hits very hard, with only a small burst. */
 	APFSDS("apfsds", 7.0, 0.012, 0.998f, 90.0f, 0.8f, false),
 	/** High explosive: slower and loopier, a modest hit but a big blast that breaks blocks (unless mobGriefing is off). */
 	HE("he", 3.2, 0.03, 0.99f, 25.0f, 3.5f, true),
 	/** What the bank's tanks fire: a light shell whose blast hurts and knocks back but leaves the blocks alone. */
-	COLLECTOR("collector", 1.6, 0.03, 0.99f, 0.0f, 1.2f, false);
+	COLLECTOR("collector", 1.6, 0.03, 0.99f, 0.0f, 1.2f, false),
+	/** Tungsten sabot: a denser dart, a little faster and flatter, a third harder-hitting than steel. */
+	TUNGSTEN_APFSDS("tungsten_apfsds", 7.6, 0.011, 0.998f, 120.0f, 0.9f, false),
+	/**
+	 * Depleted uranium sabot: the strongest round. The dart sharpens itself as it goes through and burns on
+	 * impact, a small incendiary flash that sets whatever is close to the strike alight (see {@link TankShell}).
+	 */
+	DU_APFSDS("du_apfsds", 7.8, 0.011, 0.998f, 150.0f, 1.2f, false);
+
+	/** The order the gunner's round selector steps through the loadable rounds in. */
+	public static final List<ShellType> SELECTABLE = List.of(APFSDS, TUNGSTEN_APFSDS, DU_APFSDS, HE);
 
 	/** The highest the fire control will raise the gun above the sight line, in degrees. */
 	public static final float MAX_ELEVATION = 25.0f;
@@ -72,6 +85,16 @@ public enum ShellType {
 		return breaksBlocks;
 	}
 
+	/** A sabot round: a dart rather than a shell, with a bright tracer and a puff of sparks where it strikes. */
+	public boolean sabot() {
+		return this == APFSDS || this == TUNGSTEN_APFSDS || this == DU_APFSDS;
+	}
+
+	/** Burns where it strikes: depleted uranium is pyrophoric. */
+	public boolean incendiary() {
+		return this == DU_APFSDS;
+	}
+
 	/** The round a player loads; the collectors' shell is only ever fired by the bank's tanks. */
 	public boolean loadable() {
 		return this != COLLECTOR;
@@ -87,6 +110,8 @@ public enum ShellType {
 			case APFSDS -> Tanks.APFSDS_SHELL;
 			case HE -> Tanks.HE_SHELL;
 			case COLLECTOR -> Tanks.TANK_SHELL;
+			case TUNGSTEN_APFSDS -> Tanks.TUNGSTEN_APFSDS_SHELL;
+			case DU_APFSDS -> Tanks.DU_APFSDS_SHELL;
 		};
 	}
 

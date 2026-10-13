@@ -1,5 +1,10 @@
 {
   "values": [
-    "mymod:steel_block"
+    "mymod:steel_block",
+    "mymod:uranium_ore",
+    "mymod:deepslate_uranium_ore",
+    "mymod:raw_uranium_block",
+    "mymod:raw_tungsten_block",
+    "mymod:tungsten_block"
   ]
 }

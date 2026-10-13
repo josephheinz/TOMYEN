@@ -747,5 +747,19 @@
       "mymod:nose_hair_whip_snag1",
       "mymod:nose_hair_whip_snag2"
     ]
+  },
+  "geiger_click": {
+    "subtitle": "subtitles.mymod.geiger_click",
+    "sounds": [
+      "mymod:geiger_click1",
+      "mymod:geiger_click2",
+      "mymod:geiger_click3"
+    ]
+  },
+  "centrifuge_hum": {
+    "subtitle": "subtitles.mymod.centrifuge_hum",
+    "sounds": [
+      "mymod:centrifuge_hum"
+    ]
   }
 }

@@ -11,6 +11,13 @@
     "mymod:aluminium_block",
     "mymod:pump_jack",
     "mymod:refinery",
-    "mymod:metal_press"
+    "mymod:metal_press",
+    "mymod:tungsten_ore",
+    "mymod:uranium_ore",
+    "mymod:deepslate_uranium_ore",
+    "mymod:raw_tungsten_block",
+    "mymod:raw_uranium_block",
+    "mymod:tungsten_block",
+    "mymod:centrifuge"
   ]
 }

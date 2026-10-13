@@ -1,6 +1,7 @@
 package com.jheinz.mymod.foundry;
 
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 import org.jspecify.annotations.Nullable;
 
@@ -12,14 +13,16 @@ import net.minecraft.world.item.ItemStack;
  * Something the Foundry smelts: up to two ingredients with amounts, in either input slot, and nothing else in
  * the inputs. An upgrade recipe turns its {@code upgrades} ingredient into the result, keeping that item's data
  * (a Neuralink's installed modules, say). A recipe with a {@code minTemperature} (in °C) only makes progress once
- * the Foundry has heated up that far (see {@link FoundryBlockEntity#MAX_TEMPERATURE}); most have none.
+ * the Foundry has heated up that far (see {@link FoundryBlockEntity#MAX_TEMPERATURE}); most have none. A
+ * {@code finish} step, if any, works on the result after that (a fusion core's recharge adds its charge, say).
  */
-public record FoundryRecipe(Item resultItem, int resultCount, int cookTicks, List<Cost> costs, @Nullable Item upgrades, int minTemperature) {
+public record FoundryRecipe(Item resultItem, int resultCount, int cookTicks, List<Cost> costs, @Nullable Item upgrades, int minTemperature,
+		@Nullable UnaryOperator<ItemStack> finish) {
 	public record Cost(Item item, int count) {
 	}
 
 	public FoundryRecipe(Item resultItem, int resultCount, int cookTicks, List<Cost> costs, @Nullable Item upgrades) {
-		this(resultItem, resultCount, cookTicks, costs, upgrades, 0);
+		this(resultItem, resultCount, cookTicks, costs, upgrades, 0, null);
 	}
 
 	public FoundryRecipe(Item resultItem, int resultCount, int cookTicks, List<Cost> costs) {
@@ -28,19 +31,28 @@ public record FoundryRecipe(Item resultItem, int resultCount, int cookTicks, Lis
 
 	/** This recipe, needing the Foundry at least this hot. */
 	public FoundryRecipe withMinTemperature(int temperature) {
-		return new FoundryRecipe(resultItem, resultCount, cookTicks, costs, upgrades, temperature);
+		return new FoundryRecipe(resultItem, resultCount, cookTicks, costs, upgrades, temperature, finish);
+	}
+
+	/** This recipe, with a step that works on each result (a copy of the upgraded item, for an upgrade recipe). */
+	public FoundryRecipe withFinish(UnaryOperator<ItemStack> step) {
+		return new FoundryRecipe(resultItem, resultCount, cookTicks, costs, upgrades, minTemperature, step);
 	}
 
 	/** What smelting these inputs gives. */
 	public ItemStack result(Container container) {
+		ItemStack result = null;
 		if (upgrades != null) {
-			for (int slot = 0; slot < FoundryBlockEntity.INPUT_COUNT; slot++) {
+			for (int slot = 0; slot < FoundryBlockEntity.INPUT_COUNT && result == null; slot++) {
 				if (container.getItem(slot).is(upgrades)) {
-					return container.getItem(slot).transmuteCopy(resultItem, resultCount);
+					result = container.getItem(slot).transmuteCopy(resultItem, resultCount);
 				}
 			}
 		}
-		return new ItemStack(resultItem, resultCount);
+		if (result == null) {
+			result = new ItemStack(resultItem, resultCount);
+		}
+		return finish == null ? result : finish.apply(result);
 	}
 
 	private int count(Container container, Item item) {

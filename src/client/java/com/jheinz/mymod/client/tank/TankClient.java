@@ -55,7 +55,7 @@ import com.jheinz.mymod.tank.Tanks;
  * <li>Attack: fire the main gun (once it's loaded). Use (hold): fire the coax.
  * <li>Reload (R): load the selected round from the rack. R is also the Power Armor key, but nobody can be in a
  * tank and a suit at once (a suit won't fit through the hatch), so only one of the two ever acts on it.
- * <li>Select Round (C): APFSDS or HE for the next reload.
+ * <li>Select Round (C): the round type for the next reload (APFSDS, tungsten or DU APFSDS, HE).
  * <li>Laser Rangefinder (X): range whatever's under the reticle; the fire control lays the gun for it.
  * <li>Sight Zoom (Y): wide, 3x and 8x. Thermal Sight (N): living things glow white against a dark scene.
  * <li>Smoke Launchers (K). Ammo Rack (I).

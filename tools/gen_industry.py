@@ -1128,13 +1128,20 @@ shaped("pig_wings", "mymod:pig_wings", ["S S", "KSK", "K K"], {"S": "mymod:wing_
 shaped("pig_flight_harness", "mymod:pig_flight_harness", ["L L", "PSP", "L L"],
        {"L": "minecraft:leather", "P": PLATE, "S": "minecraft:saddle"}, PLATE, category="equipment")
 
-# --- Tags (files of our own; the shared pickaxe tag is edited by hand) ----------------------------------------------
+# --- Tags (merged into what's there: gen_ores_tu.py shares them; the pickaxe tag is edited by hand) ---------------
 TAGS = os.path.normpath(os.path.join(DATA, "..", "minecraft", "tags"))
-write_json(os.path.join(TAGS, "block", "mineable", "shovel.json"), {"values": ["mymod:oil_seep"]})
-write_json(os.path.join(TAGS, "block", "needs_stone_tool.json"), {"values": ["mymod:bauxite_ore", "mymod:aluminium_block"]})
-write_json(os.path.join(TAGS, "block", "needs_iron_tool.json"), {"values": ["mymod:steel_block"]})
-write_json(os.path.join(TAGS, "block", "ores.json"), {"values": ["mymod:bauxite_ore", "mymod:oil_shale", "mymod:deepslate_oil_shale"]})
-write_json(os.path.join(TAGS, "item", "ores.json"), {"values": ["mymod:bauxite_ore", "mymod:oil_shale", "mymod:deepslate_oil_shale"]})
+
+
+def merge_tag(path, values):
+    old = json.load(open(path))["values"] if os.path.exists(path) else []
+    write_json(path, {"values": old + [v for v in values if v not in old]})
+
+
+merge_tag(os.path.join(TAGS, "block", "mineable", "shovel.json"), ["mymod:oil_seep"])
+merge_tag(os.path.join(TAGS, "block", "needs_stone_tool.json"), ["mymod:bauxite_ore", "mymod:aluminium_block"])
+merge_tag(os.path.join(TAGS, "block", "needs_iron_tool.json"), ["mymod:steel_block"])
+merge_tag(os.path.join(TAGS, "block", "ores.json"), ["mymod:bauxite_ore", "mymod:oil_shale", "mymod:deepslate_oil_shale"])
+merge_tag(os.path.join(TAGS, "item", "ores.json"), ["mymod:bauxite_ore", "mymod:oil_shale", "mymod:deepslate_oil_shale"])
 
 # --- The Hogfire's engine loop ------------------------------------------------------------------------------------
 
