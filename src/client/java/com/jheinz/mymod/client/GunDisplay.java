@@ -62,7 +62,7 @@ public record GunDisplay(Vector3f translation, float yaw, float scale) {
 			// tools/gen_energy_weapons.py prints these.
 			return display(-0.245f, 3.004f, 1.733f, -8, 0.55f);
 		} else if (gun == EnergyWeapons.RAILGUN) {
-			return display(-1.429f, 4.55f, 1.764f, 6, 0.46f);
+			return display(-1.56f, 4.068f, 4.341f, 12, 0.46f);
 		} else if (gun == EnergyWeapons.RAY_GUN) {
 			return display(-0.503f, 2.746f, -1.151f, -6, 0.65f);
 		}

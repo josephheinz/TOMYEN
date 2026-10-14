@@ -91,8 +91,8 @@ public final class GunAim {
 			// Its built-in sight (tools/gen_energy_weapons.py).
 			return new Mount(4.0f, 11.4f, NO_LIMIT);
 		} else if (gun == EnergyWeapons.RAILGUN) {
-			// Its holo sight's base (tools/gen_energy_weapons.py). Sneaking normally looks through the railgun's scope instead.
-			return new Mount(4.6f, 14.4f, NO_LIMIT);
+			// Its block scope's mount (tools/gen_energy_weapons.py). Sneaking normally looks through the railgun's scope instead.
+			return new Mount(2.95f, 12.0f, NO_LIMIT);
 		}
 		return null;
 	}
@@ -114,8 +114,8 @@ public final class GunAim {
 			// The middle of its sight's window.
 			return new Optic(1.4f, 0.2f);
 		} else if (gun == EnergyWeapons.RAILGUN) {
-			// The middle of its holo sight's glass.
-			return new Optic(1.2f, 0.8f);
+			// The middle of its scope's eyepiece.
+			return new Optic(1.4f, 4.61f);
 		}
 		return null;
 	}

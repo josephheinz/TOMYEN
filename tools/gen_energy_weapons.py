@@ -14,7 +14,7 @@ import json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave
 from collections import OrderedDict
 
 sys.path.insert(0, os.path.dirname(__file__))
-from gunkit import (Kit, check, move, rotate, rx, rz, mul, apply, look, write, model, ref, range_dispatch, composite, display,
+from gunkit import (Kit, check, move, rotate, rx, ry, rz, mul, apply, look, write, model, ref, range_dispatch, composite, display,
                     display_matrix, placed, centred, bounds_centre, DIAGONAL, png, mix, sprite)
 from coplanar import check_elements
 
@@ -182,20 +182,24 @@ write(os.path.join(ITEMS, "laser_rifle_housing.json"), {"model": ref("laser_rifl
 report("laser_rifle", laser_displays, L_GRIP, L_SUPPORT, f"; sight window {L_SIGHT}, mount front 4.0 top 11.4")
 
 # ======================================================================================================= railgun
-# Two heavy rails run forward from a stepped receiver with an open gap between them. The inner faces of both rails
-# carry long raked combs of polished armature fins (copper above, silver below) over copper windings; at the back of
-# the gap, seen through a window cut in the yoke that joins the rails, sits the Alien Reactor's ring core, glowing
-# red-orange (brighter as the rails charge). Chunky end caps with ports at the muzzle, a holo sight on top, a pistol
-# grip and a forward grip, a laser module under the lower rail, and a thick rounded shoulder stock with a gold strut.
-# Gunmetal and graphite with crisp bright bevels, gold trim, copper discs.
-R = Kit("railgun", "item/railgun", seed=1908, size=128)
+# A sleek white sci-fi rifle, after the user's side-view sketch. From the back: a long flat charcoal stock with a squared
+# rubber butt and a white tube along its lowered front deck; a thumbhole loop running from the stock down and forward to
+# a raked pistol grip, the trigger inside the open hollow, which is lined in white; a clean white receiver with a fire
+# selector and two indicator dots, a pointed cheek piece over the stock, and a black block scope with a side turret and
+# a top knob, overhanging forward with a slanted front. Two long white rails, segmented into panels by dark grooves,
+# run forward with an even gap between them, each ending in a chamfered tip (the upper one sloping down, the lower one
+# up). Black contact pads face each other across the gap, three per rail and a small one at each tip, and a dark vent
+# panel hangs under the lower rail's front half. White and light grey, soft grey shading, charcoal and black accents.
+# Charging (energy_glow): the pads light from dim teal to white-hot cyan, a reactor window at the back of the gap and the
+# slots in the receiver's flanks glow with them, the selector's "on" dot lights, and near full charge arcs jump the gap.
+R = Kit("railgun", "item/railgun", seed=1908, size=256)
 
 
-def bands(k, rows):
-    """A picture of horizontal bands, top to bottom: rows is a list of (fraction of the height, colour or (top, bottom)
-    ramp)."""
+def bands(k, rows, across=False):
+    """A picture of bands, top to bottom (left to right if across): rows is a list of (fraction, colour or (start,
+    end) ramp)."""
     def f(x, y, w, h):
-        t, start = (y + 0.5) / h, 0.0
+        t, start = ((x + 0.5) / w if across else (y + 0.5) / h), 0.0
         for i, (frac, c) in enumerate(rows):
             if t <= start + frac or i == len(rows) - 1:
                 if isinstance(c, tuple):
@@ -221,347 +225,643 @@ def disc(k, rings, bg=None):
     return f
 
 
-GM_HI, GM_TOP, GM_BOT, GM_LO = 0xA9B0B8, 0x5E656D, 0x40454C, 0x24272B   # gunmetal
-GR_TOP, GR_BOT = 0x3A3E44, 0x272A2F                                    # graphite
-GOLD_HI, GOLD_TOP, GOLD_BOT, GOLD_LO = 0xFFF0B0, 0xE8BE4E, 0xB48A28, 0x6E5216
-CU_TOP, CU_BOT = 0xEFA06A, 0xA65A2A
-AG_HI, AG_TOP, AG_BOT = 0xFFFFFF, 0xE6EAEE, 0x9EA6B0                   # polished silver
-
-# Row 0: the metals.
-R.swatch("gunmetal", 0, 0, 2, 2, ramp(R, GM_TOP, GM_BOT))
-R.swatch("gunmetal_panel", 2, 0, 4, 2, bands(R, [(0.07, GM_HI), (0.83, (GM_TOP, GM_BOT)), (0.10, GM_LO)]), picture=True)
-R.swatch("graphite", 4, 0, 6, 2, ramp(R, GR_TOP, GR_BOT))
-R.swatch("graphite_panel", 6, 0, 8, 2, bands(R, [(0.08, 0x7C838C), (0.82, (GR_TOP, GR_BOT)), (0.10, 0x18191C)]), picture=True)
-R.swatch("edge", 8, 0, 10, 2, ramp(R, 0xC8CFD6, 0x969EA8))
-R.swatch("gold", 10, 0, 12, 2, ramp(R, GOLD_TOP, GOLD_BOT))
-R.swatch("gold_panel", 12, 0, 14, 2, bands(R, [(0.12, GOLD_HI), (0.76, (GOLD_TOP, GOLD_BOT)), (0.12, GOLD_LO)]), picture=True)
-R.swatch("copper", 14, 0, 16, 2, ramp(R, CU_TOP, CU_BOT))
-# Row 1: fins, rubber, discs, ports, the sight's glass, the laser's lens, vents.
-R.swatch("silver", 0, 2, 2, 4, ramp(R, AG_TOP, AG_BOT))
-R.swatch("fin_face", 2, 2, 4, 4, bands(R, [(0.10, AG_HI), (0.80, (AG_TOP, AG_BOT)), (0.10, 0x6A727C)]), picture=True)
-# Polished copper for the upper fins: brighter than the windings, so they still shine facing down.
-CU_HI_TOP, CU_HI_BOT = 0xFFC898, 0xD27A40
-R.swatch("copper_fin", 14, 8, 16, 10, bands(R, [(0.10, 0xFFF0E0), (0.80, (CU_HI_TOP, CU_HI_BOT)), (0.10, 0x7A3C18)]), picture=True)
-R.swatch("copper_hi", 8, 10, 10, 12, ramp(R, CU_HI_TOP, CU_HI_BOT))
-R.swatch("rubber", 4, 2, 6, 4, ramp(R, 0x3A3D42, 0x26282C))
-R.swatch("copper_disc", 6, 2, 8, 4, disc(R, [(0.28, (0xFFD2A8, 0xE39256)), (0.42, 0x5A2E14), (0.82, (0xEFA06A, 0xA65A2A)),
-                                               (1.0, 0x2A2C30)], bg=GR_BOT), picture=True)
-R.swatch("port", 8, 2, 10, 4, disc(R, [(0.22, (0x8A949E, 0x50575F)), (0.36, 0x16171A), (0.62, (0x2E3238, 0x1E2024)),
-                                        (0.74, 0x9AA2AC), (1.0, (GR_TOP, GR_BOT))], bg=GR_BOT), picture=True)
-
-
-def reticle(x, y, w, h):
-    """The holo sight's glass: a thin dark frame, clear, an amber ring and dot in the middle."""
-    if x == 0 or y == 0 or x == w - 1 or y == h - 1:
-        return R.rgb(0x1C1D20)
-    r = math.hypot(x - (w - 1) / 2, y - (h - 1) / 2)
-    if r <= 0.8 or 3.2 <= r <= 4.0:
-        return R.rgb(0xFFB040)
-    return (0, 0, 0, 0)
-
-
-R.swatch("reticle", 10, 2, 12, 4, reticle, picture=True)
-R.swatch("laser_lens", 12, 2, 14, 4, disc(R, [(0.35, (0xFFF0E0, 0xFF6040)), (0.75, (0xFF4020, 0xA01808)), (1.0, 0x16171A)], bg=0x16171A),
-         picture=True)
-R.swatch("vent", 14, 2, 16, 4, lambda x, y, w, h: R.rgb(0xB9C0C8 if (x + y) % 4 < 2 else 0x1C1D20), picture=True)
-# Row 2: the core's glow, idle and charging, its dark eye, the gold chevrons, a knurled ring, the receiver's slits.
-CORE = [(0xF04818, 0x9C1E08), (0xFF7A2A, 0xE0400E), (0xFFB050, 0xFF6A1E), (0xFFF4D8, 0xFFB050)]
-for i, (top, bottom) in enumerate(CORE):
-    R.swatch("core_%d" % i, 2 * i, 4, 2 * i + 2, 6, ramp(R, top, bottom))
-R.swatch("core_eye", 8, 4, 10, 6, disc(R, [(0.42, (0x0E0F11, 0x1E0A06)), (0.56, (0x5A1606, 0x8A2408))]), picture=True)
+# ----------------------------------------------------------------------------------------------- the layout
+X0, X1 = 6.8, 9.2              # the rails, side to side
+UP = (9.8, 2.2, 1)             # upper rail: inner face y, height, which way is out
+LO = (8.2, 2.1, -1)            # lower rail
+MUZZLE = -15.8
+UP_BACK, LO_BACK = 2.63, 1.4   # where each rail's back end sits (in the receiver, in the loop's front)
+SEAMS = (-2.0, -4.38, -6.63, -8.8, -10.99)
+GROOVE = 0.12
+BEVEL = 0.3
+NOSE = 0.48                    # the tips' blunt noses; the slope's band is NOSE * sqrt 2 thick
+PADS = ((-1.79, 0.74), (-7.37, -4.42), (-12.84, -10.1))
+TIP_PAD = (-15.6, -14.84)
+PAD_T, PAD_R = 0.28, 0.14
+RCV_X = (6.5, 9.5)             # the receiver
+RCV_FRONT, RCV_TOP, RCV_BOT = 1.0, 11.67, 8.2
+CHEEK = (6.0, 9.89, 9.9, 11.6)
+STOCK = (8.1, 15.37, 7.04, 10.2)     # z front, z back, bottom, the deck
+COMB = (12.27, 10.73)                # where the stock's comb starts, and its top
+BUTT = 15.96
+LOOP_X = (6.85, 9.15)
+HOLE = (3.47, 7.68, 6.4, 7.6)         # the thumbhole: z front, z back, bottom, top
+LOOP_BOT, POST_BACK = 5.7, 8.74
+FRONT_X = (6.7, 9.3)                 # the loop's front, round the lower rail's back
+GRIP = (2.75, 4.45, 3.45, 5.95)      # the pistol grip, before its rake: z front, z back, bottom, top
+GRIP_RAKE = 12
+R_GRIP = (8.0, 4.6, 3.9)
+R_SUPPORT = (8.0, 5.45, -8.0)        # under the vent panel
+SCOPE_MOUNT = (2.95, 12.0)           # the scope mount's front (z) and the plate it stands on (y)
+R_SIGHT = (8.0, 13.4, 7.56)          # the middle of the scope's eyepiece
+UNDER = (-11.1, -0.6, 5.45, 6.25)    # the vent panel: z front, z back, bottom, top
+SEL = (2.7, 9.25, 5.25, 10.25)       # the selector decal: z front, y bottom, z back, y top
+DOTS_Y = (SEL[3] - 0.27 * (SEL[3] - SEL[1]), SEL[3] - 0.73 * (SEL[3] - SEL[1]))   # on, off
+DOT_Z = SEL[2] - 1.5
+R_FP_SCALE, R_FP_YAW, R_FP_SHIFT = 0.46, 12, (-1.6, 0.6, 0.0)
+R_ICON_SCALE = 0.62
+ARC_Z = (-15.4, RCV_FRONT - 0.02)
+ARC_Y = (LO[0] + 0.02, UP[0] - 0.02)
 
 
-def chevron(x, y, w, h):
-    """Two gold chevrons pointing forward (toward u = 0)."""
-    t = abs((y + 0.5) / h - 0.5) * 2              # 0 at the middle row, 1 at the top and bottom
-    for start in (0.12, 0.52):
-        u = (x + 0.5) / w - start - 0.18 * t
-        if 0 <= u <= 0.2:
-            return R.rgb(mix(GOLD_HI, GOLD_BOT, u / 0.2 * 0.7 + 0.3 * t))
-    return (0, 0, 0, 0)
+_cursor = [0, 0, 0]     # u, v, row height (UV units; a unit is 16 texels)
 
 
-R.swatch("chevron", 10, 4, 12, 6, chevron, picture=True)
-R.swatch("knurl", 12, 4, 14, 6, lambda x, y, w, h: R.rgb(0x7E868F if (x // 2 + y // 2) % 2 else 0x2A2C30), picture=True)
-R.swatch("dark", 14, 4, 16, 6, ramp(R, 0x1C1D20, 0x121315))
+def sw(name, f, w=1, h=1, picture=True):
+    """Adds a swatch w x h units big at the next free spot in the atlas."""
+    u, v, rh = _cursor
+    if u + w > 16:
+        u, v, rh = 0, v + rh, 0
+    R.swatch(name, u, v, u + w, v + h, f, picture=picture)
+    _cursor[:] = [u + w, v, max(rh, h)]
 
 
-def arc(level):
-    """A crackling arc between the rails, seen side on: a jagged white-hot line in an orange halo; clear elsewhere."""
-    jag = random.Random(5)
-    pts, u = [(0.0, 0.5)], 0.0
-    while u < 0.95:
-        u = min(1.0, u + jag.uniform(0.025, 0.07))
-        pts.append((u, min(0.8, max(0.2, pts[-1][1] + jag.uniform(-0.22, 0.22)))))
-    pts.append((1.0, 0.5))
+# The palette.
+W_HI, W_TOP, W_MID, W_LOW, W_SH = 0xFFFFFF, 0xF3F5F7, 0xE2E6EA, 0xCDD2D8, 0x9EA5AE      # white enamel
+W_END, W_IN = 0xBDC3CA, 0xB0B6BE                                                    # groove walls, gap faces
+TIP_SIDE, TIP_TOP = 0xDCE1E6, 0xEEF1F4                                              # the tip caps, a shade cooler
+C_HI, C_TOP, C_BOT, C_LO = 0x6E737A, 0x4A4E54, 0x3A3D42, 0x26282C                   # charcoal
+K_HI, K_TOP, K_BOT, K_LO = 0x4E535A, 0x26282C, 0x1B1C1F, 0x0E0F11                   # black
+SEAM = 0x1A1B1E
+GLOW = [(0x0E3F48, 0x082A30), (0x1C8A9C, 0x0C4A56), (0x6FEEFF, 0x18B4D0), (0xFFFFFF, 0x8FF4FF)]   # off .. white-hot
 
+# Enamel and metal.
+sw("w_side", bands(R, [(0.06, W_HI), (0.82, (W_TOP, W_LOW)), (0.06, W_SH), (0.06, 0x868E98)]))        # square lower edge
+sw("w_side_lo", bands(R, [(0.07, W_HI), (0.06, 0xF7F8FA), (0.81, (W_TOP, W_LOW)), (0.06, W_SH)]))     # square upper edge
+sw("w_body", bands(R, [(0.05, W_HI), (0.89, (W_TOP, W_LOW)), (0.06, W_SH)]))                            # tall panels
+sw("w_top", bands(R, [(0.1, W_HI), (0.8, (0xF8F9FA, W_TOP)), (0.1, W_HI)], across=True))
+sw("w_end", ramp(R, W_END, 0xA6ADB5))
+sw("w_in", bands(R, [(0.08, W_LOW), (0.84, (W_IN, 0xA3AAB2)), (0.08, W_LOW)], across=True))
+sw("w_edge", ramp(R, W_HI, 0xEEF1F4), picture=False)
+sw("w_flat", ramp(R, W_TOP, W_MID), picture=False)
+sw("tip_side", flat(R, TIP_SIDE), picture=False)
+sw("tip_top", bands(R, [(0.1, W_HI), (0.8, (TIP_TOP, 0xE0E4E8)), (0.1, W_HI)], across=True))
+sw("seam", flat(R, SEAM), picture=False)
+sw("c_side", bands(R, [(0.05, C_HI), (0.89, (C_TOP, C_BOT)), (0.06, C_LO)]))
+sw("c_top", bands(R, [(0.1, C_HI), (0.8, (0x52565C, C_TOP)), (0.1, C_HI)], across=True))
+sw("c_flat", ramp(R, C_TOP, C_BOT), picture=False)
+sw("c_edge", ramp(R, 0x80858C, 0x62676E), picture=False)
+sw("c_end", ramp(R, C_BOT, C_LO))
+sw("k_side", bands(R, [(0.07, K_HI), (0.86, (K_TOP, K_BOT)), (0.07, K_LO)]))
+sw("k_top", bands(R, [(0.1, K_HI), (0.8, (0x2C2E32, K_TOP)), (0.1, K_HI)], across=True))
+sw("k_flat", ramp(R, K_TOP, K_BOT), picture=False)
+sw("k_edge", ramp(R, 0x5C6168, 0x45494F), picture=False)
+sw("rubber", bands(R, [(0.05, 0x55595F), (0.9, (0x2C2E32, 0x1E2023)), (0.05, 0x111214)]))
+sw("rubber_flat", ramp(R, 0x2C2E32, 0x1E2023), picture=False)
+sw("lining", ramp(R, 0xF4F6F8, 0xDDE1E6), picture=False)
+
+
+def frame_square(x, y, w, h):
+    """White round the edges, charcoal inside: a hole's corner fillet (only one edge of it ever shows)."""
+    d = min(x, y, w - 1 - x, h - 1 - y)
+    return R.rgb(0xEEF1F4 if d < 6 else C_TOP)
+
+
+sw("fillet", frame_square)
+# Pads: black, the face toward the gap with a recessed emitter slot (dark teal) down its middle.
+
+
+def pad_face(x, y, w, h):
+    t = abs((x + 0.5) / w - 0.5) * 2               # across the pad
+    if t > 0.86:
+        return R.rgb(K_HI)
+    if t > 0.5:
+        return R.rgb(K_BOT)
+    if t > 0.38:
+        return R.rgb(0x08090A)
+    return R.rgb(mix(0x10343A, 0x0A2227, abs((y + 0.5) / h - 0.5) * 2))
+
+
+sw("pad_face", pad_face)
+sw("pad_side", bands(R, [(0.15, K_HI), (0.85, (K_TOP, K_LO))]))
+sw("pad_side_up", bands(R, [(0.85, (K_LO, K_TOP)), (0.15, K_HI)]))
+# Glass: the scope's lenses, dark with a cool sheen.
+
+
+def glass(x, y, w, h):
+    u, v = (x + 0.5) / w, (y + 0.5) / h
+    if min(u, v, 1 - u, 1 - v) < 0.08:
+        return R.rgb(0x08090A)
+    s = u + (1 - v)
+    if 0.55 < s < 0.75:
+        return R.rgb(0x5C8CA0)
+    return R.rgb(mix(0x1A3440, 0x0A1218, v))
+
+
+sw("glass", glass)
+def _turret(x, y, w, h):
+    """The turret's cap: a black rim, a dark face with a coin slot (two parallel diagonal lines), like the sketch."""
+    cx, cy = (w - 1) / 2, (h - 1) / 2
+    r = math.hypot(x - cx, y - cy) / (w / 2)
+    if r > 1.0:
+        return (0, 0, 0, 0)
+    if r > 0.86:
+        return R.rgb(0x0C0D0F)
+    if r > 0.76:
+        return R.rgb(0x5A5F66)
+    d = ((x - cx) + (y - cy)) / (w / 2) / math.sqrt(2)      # across the slot
+    along = ((x - cx) - (y - cy)) / (w / 2) / math.sqrt(2)
+    if abs(along) < 0.5 and (0.08 < abs(d) < 0.2):
+        return R.rgb(0x0C0D0F)
+    return R.rgb(mix(0x34373C, 0x1E2023, (y + 0.5) / h))
+
+
+sw("turret_cap", _turret)
+sw("knob_cap", disc(R, [(0.35, (0x5A5F66, 0x3A3D42)), (0.55, 0x0C0D0F), (0.86, (0x34373C, 0x232528)), (1.0, 0x0C0D0F)]))
+sw("dot_off", flat(R, 0x2A2D31), picture=False)
+sw("dot_on", flat(R, 0x7FF6FF), picture=False)
+sw("knurl", lambda x, y, w, h: R.rgb(0x3E4248 if (x // 2) % 2 else 0x1E2023))
+# The reactor window at the back of the gap and the slots in the receiver's flanks, unlit: a dark recess with a lit lip.
+
+
+def recess(x, y, w, h):
+    if y == 0 or x == 0 or x == w - 1:
+        return R.rgb(0x0C0D0F)
+    if y == h - 1:
+        return R.rgb(0x8A929C)
+    return R.rgb(mix(0x10282E, 0x0A1418, y / (h - 1)))
+
+
+sw("recess", recess)
+for i, (hi, lo) in enumerate(GLOW[1:], 1):
+    # A pad lit: brightest along the face toward the gap (the side's lower edge on the upper rail, its upper on the lower).
+    sw("glow_face_%d" % i, lambda x, y, w, h, hi=hi, lo=lo: R.rgb(mix(hi, lo, min(1.0, abs((x + 0.5) / w - 0.5) * 2.2))))
+    sw("glow_dn_%d" % i, ramp(R, lo, hi))
+    sw("glow_up_%d" % i, ramp(R, hi, lo))
+    sw("glow_win_%d" % i, lambda x, y, w, h, hi=hi, lo=lo: R.rgb(mix(hi, lo, min(1.0, abs((y + 0.5) / h - 0.5) * 2.0))))
+
+
+def framed(face_w, face_h, outline, frame, field, slats=0):
+    """A panel's side, drawn to the face's size in pixels: a dark outline, a lighter frame, a recessed dark field (its
+    upper lip in shadow, the lower lit), with optional long vent slats."""
     def f(x, y, w, h):
-        u = (x + 0.5) / w
-        for (u0, v0), (u1, v1) in zip(pts, pts[1:]):
-            if u0 <= u <= u1:
-                v = v0 + (v1 - v0) * (u - u0) / (u1 - u0)
-                break
-        d = abs((y + 0.5) - v * h)
-        core, halo = (0.9, 2.2) if level else (0.6, 1.6)
-        if d <= core:
-            return R.rgb(0xFFFFFF if level else 0xFFE0B0)
-        if d <= halo:
-            return R.rgb(mix(0xFFC070, 0xFF5A1A, (d - core) / (halo - core)) if level else mix(0xFF9040, 0xE0400E, (d - core) / (halo - core)))
+        px, py = (x + 0.5) / w * face_w, (y + 0.5) / h * face_h
+        e = min(px, face_w - px, py, face_h - py)
+        if e < outline:
+            return R.rgb(0x111214)
+        if e < outline + frame:
+            return R.rgb(mix(0x5C6168, 0x464A50, py / face_h))
+        if min(py - outline - frame, face_h - outline - frame - py) < 0.05:
+            return R.rgb(0x121315 if py < face_h / 2 else 0x6A6F76)
+        if slats and int((py - outline - frame) / (face_h - 2 * (outline + frame)) * (2 * slats + 1)) % 2:
+            return R.rgb(0x16171A)
+        return R.rgb(mix(0x34373C, 0x2A2D31, py / face_h))
+    return f
+
+
+sw("under_side", framed(UNDER[1] - UNDER[0] - 0.65, UNDER[3] - UNDER[2], 0.05, 0.11, 0, slats=1), w=8)
+
+
+def grille(x, y, w, h):
+    """The vent panel's underside: dark slats across it."""
+    u = (x + 0.5) / w
+    if u < 0.12 or u > 0.88:
+        return R.rgb(0x464A50)
+    return R.rgb(0x111214 if (y // 3) % 2 else 0x34373C)
+
+
+sw("grille", grille)
+
+
+def selector_plate(face_w, face_h):
+    """The selector on the receiver's flank: a rounded plate with the lever's slot and its two marks, and a short tick
+    after each indicator dot standing in for the on/off labels. Drawn to the face's size; clear elsewhere."""
+    def f(x, y, w, h):
+        px, py = (x + 0.5) / w * face_w, (y + 0.5) / h * face_h
+        # The plate: a rounded slot 1.0 x 0.42, at the left.
+        cx, cy, hw, hh = 0.62, face_h / 2, 0.5, 0.21
+        dx, dy = max(0.0, abs(px - cx) - (hw - hh)), abs(py - cy)
+        r = math.hypot(dx, dy)
+        if r <= hh:
+            if r > hh - 0.06:
+                return R.rgb(0x2A2D31)
+            if abs(px - 0.36) < 0.08 and dy < 0.08:
+                return R.rgb(0x2A2D31)                # the "o": a pivot
+            return R.rgb(mix(0xDDE1E6, 0xC6CBD1, py / face_h))
+        # Ticks after the dots (the dots themselves are little cubes).
+        for ty in (face_h * 0.27, face_h * 0.73):
+            if 1.7 < px < 2.1 and abs(py - ty) < 0.045:
+                return R.rgb(0x6A7078)
         return (0, 0, 0, 0)
     return f
 
 
-R.swatch("arc_dim", 0, 6, 8, 8, arc(0), picture=True)
-R.swatch("arc_hot", 8, 6, 16, 8, arc(1), picture=True)
+sw("selector", selector_plate(SEL[2] - SEL[0], SEL[3] - SEL[1]), w=2)
 
-def ring_band(level, along_u):
-    """A core ring's rim: brightest round its middle, darker toward its front and back edges (across u on the faces
-    whose u runs along the bore, across v on the others)."""
-    top, bottom = CORE[level]
-    edge = mix(bottom, 0x3A0C04, 0.45)
+
+def arcs(level):
+    """The arcs across the gap, side on, drawn over the gap's whole length (u = 0 at the back, the receiver; v = 0 at
+    the top): jagged bolts jumping between each pair of pads, and at full charge a long arc snaking down the gap."""
+    jag = random.Random(11 + level)
+    za, zb, ya, yb = ARC_Z[0], ARC_Z[1], ARC_Y[0], ARC_Y[1]
+    lines = []
+    for p0, p1 in PADS + (TIP_PAD,):
+        n = 1 if level == 2 else 2
+        for k in range(n):
+            z = p0 + (p1 - p0) * (k + 1) / (n + 1) + jag.uniform(-0.3, 0.3)
+            pts, y = [], ya
+            while y < yb:
+                pts.append((z + jag.uniform(-0.18, 0.18), y))
+                y += jag.uniform(0.12, 0.22)
+            pts.append((z, yb))
+            lines.append(pts)
+    if level == 3:
+        pts, z = [], zb
+        while z > za:
+            pts.append((z, (ya + yb) / 2 + jag.uniform(-0.32, 0.32)))
+            z -= jag.uniform(0.35, 0.8)
+        pts.append((za, (ya + yb) / 2))
+        lines.append(pts)
+    core, halo = (0.05, 0.13) if level == 2 else (0.08, 0.2)
+
+    def seg_dist(p, a, b):
+        ax, ay = b[0] - a[0], b[1] - a[1]
+        t = max(0.0, min(1.0, ((p[0] - a[0]) * ax + (p[1] - a[1]) * ay) / max(1e-9, ax * ax + ay * ay)))
+        return math.hypot(p[0] - a[0] - t * ax, p[1] - a[1] - t * ay)
 
     def f(x, y, w, h):
-        t = (x + 0.5) / w if along_u else (y + 0.5) / h
-        d = abs(t - 0.5) * 2
-        return R.rgb(mix(top, bottom, d / 0.7) if d < 0.7 else mix(bottom, edge, (d - 0.7) / 0.3))
+        p = (zb - (x + 0.5) / w * (zb - za), yb - (y + 0.5) / h * (yb - ya))
+        d = min(seg_dist(p, a, b) for pts in lines for a, b in zip(pts, pts[1:]) if abs(a[0] - p[0]) < 1.2 or abs(b[0] - p[0]) < 1.2) \
+            if any(abs(a[0] - p[0]) < 1.2 for pts in lines for a in pts) else 9.0
+        if d <= core:
+            return R.rgb(0xFFFFFF)
+        if d <= halo:
+            return R.rgb(mix(0xB8FAFF, 0x30D0EC, (d - core) / (halo - core)))
+        return (0, 0, 0, 0)
     return f
 
 
-for i in range(4):
-    R.swatch("ring_u_%d" % i, 2 * i, 12, 2 * i + 2, 14, ring_band(i, True), picture=True)
-    R.swatch("ring_v_%d" % i, 8 + 2 * i, 12, 10 + 2 * i, 14, ring_band(i, False), picture=True)
 
 
-def cap_face(w_px, h_px, r_px, port_at, holes_at, port_r, gold=False):
-    """A muzzle cap's front, as one picture over the whole face: graphite with the bevelled corners cut away (clear), a
-    round port (a bright rim, a dark gap, a lens) and two small dark holes. Positions are fractions of the face."""
-    def f(x, y, w, h):
-        fx, fy = (x + 0.5) / w, (y + 0.5) / h
-        ex, ey = min(fx, 1 - fx) * w_px, min(fy, 1 - fy) * h_px
-        if ex + ey < r_px - 0.05:
-            return (0, 0, 0, 0)
-        px, py = fx * w_px, fy * h_px
-        d = math.hypot(px - port_at[0] * w_px, py - port_at[1] * h_px) / port_r
-        if d <= 1.0:
-            for outer, c in ((0.3, (0xC8D0D8, 0x7A848E)), (0.45, 0x2A2E34), (0.62, 0x101113), (0.8, (0x3A3E44, 0x24272B)), (1.0, 0xB8C0C8)):
-                if d <= outer:
-                    return R.rgb(c if not isinstance(c, tuple) else mix(c[0], c[1], d / outer))
-        for hx, hy in holes_at:
-            dh = math.hypot(px - hx * w_px, py - hy * h_px)
-            if dh <= 0.32:
-                return R.rgb(0x101113)
-            if dh <= 0.42:
-                return R.rgb(0x8A929C)
-        if gold and (fy > 0.86 or (fy > 0.55 and min(fx, 1 - fx) * w_px < 0.32)):
-            return R.rgb(mix(GOLD_HI, GOLD_BOT, min(1.0, abs(fy - 0.9) * 4 + abs(fx - 0.5))))   # the gold U-band
-        if ex + ey < r_px + 0.18:
-            return R.rgb(0x8E969F)                    # a bright line along the bevels' edge
-        return R.rgb(mix(0x464B52, 0x2A2D32, fy))
-    return f
+def ry_(rail, v):
+    """A height v above a rail's inner face (into the rail) as model y; negative v reaches into the gap."""
+    return rail[0] + rail[2] * v
 
 
-R.swatch("upper_face", 0, 8, 4, 12, cap_face(3.4, 3.5, 0.7, (0.5, 0.42), ((0.25, 0.83), (0.75, 0.83)), 1.15), picture=True)
-R.swatch("lower_face", 4, 8, 8, 12, cap_face(3.8, 4.2, 0.8, (0.5, 0.62), ((0.27, 0.2), (0.73, 0.2)), 1.2, gold=True), picture=True)
-R.swatch("rubber_panel", 10, 8, 12, 10, bands(R, [(0.06, 0x6A6E75), (0.88, (0x3A3D42, 0x26282C)), (0.06, 0x141517)]), picture=True)
+SAME = object()
 
 
-def inset(x, y, w, h):
-    """A recessed panel: a lit lower-right lip, a shadowed upper-left one, a flat darker field."""
-    if x == 0 or y == 0:
-        return R.rgb(0x16171A)
-    if x == w - 1 or y == h - 1:
-        return R.rgb(0x8A929C)
-    return R.rgb(mix(0x34383E, 0x2A2D32, y / (h - 1)))
+def rbox(out, rail, x0, v0, z0, x1, v1, z1, mat, rot=None, inner=SAME, outer=SAME, **faces):
+    """A box on a rail, its heights in v (see ry_); 'inner' and 'outer' name the faces toward and away from the gap
+    (None drops one, as for the other faces)."""
+    ya, yb = ry_(rail, v0), ry_(rail, v1)
+    i_face, o_face = ("down", "up") if rail[2] > 0 else ("up", "down")
+    faces[i_face] = mat if inner is SAME else inner
+    faces[o_face] = mat if outer is SAME else outer
+    return R.box(out, x0, min(ya, yb), z0, x1, max(ya, yb), z1, mat, rot=rot, **faces)
 
 
-R.swatch("inset", 12, 8, 14, 10, inset, picture=True)
-R.swatch("armour", 8, 8, 10, 10, bands(R, [(0.05, 0x9AA2AC), (0.9, (0x464B52, 0x2C2F34)), (0.05, 0x16171A)]), picture=True)
+def prism(out, cx, cy, z0, z1, h, mat, caps=(True, True), axis="z", x=None, ends=None):
+    """A square prism turned 45 degrees, centred on (cx, cy) along z (or on (z=cx, y=cy) along x when axis is 'x'),
+    half-diagonal h: fills a bevel's or a chamfer's triangle. Its ends are set in a hair from z0 and z1."""
+    s = h / math.sqrt(2)
+    if axis == "z":
+        return R.box(out, cx - s, cy - s, z0 + 0.02, cx + s, cy + s, z1 - 0.02, mat, rot=("z", 45, (cx, cy, z0)),
+                     north=mat if caps[0] else None, south=mat if caps[1] else None)
+    x0, x1 = x
+    end = ends or mat
+    return R.box(out, x0, cy - s, cx - s, x1, cy + s, cx + s, mat, rot=("x", 45, (x0, cy, cx)),
+                 east=end if caps[1] else None, west=end if caps[0] else None)
+
+
+def bevel_box(out, x0, y0, z0, x1, y1, z1, r, side, top, bottom, edge, cap, corners="tltrblbr", name=None, caps=(True, True)):
+    """A box along z with the chosen long edges (tl, tr, bl, br) bevelled at 45 degrees by r, the bevels in a bright
+    edge material so each catches a crisp highlight. Faces hidden inside are left off."""
+    tl, tr, bl, br = ("tl" in corners), ("tr" in corners), ("bl" in corners), ("br" in corners)
+    ends = dict(north=cap if caps[0] else None, south=cap if caps[1] else None)
+    lx = x0 + r if (tl or bl) else x0
+    rx_ = x1 - r if (tr or br) else x1
+    e = R.box(out, lx, y0, z0, rx_, y1, z1, side, name=name, up=top, down=bottom,
+              west=None if lx > x0 else side, east=None if rx_ < x1 else side, **ends)
+    if lx > x0:
+        R.box(out, x0, y0 + (r if bl else 0), z0, lx, y1 - (r if tl else 0), z1, side, east=None,
+              up=None if tl else top, down=None if bl else bottom, **ends)
+    if rx_ < x1:
+        R.box(out, rx_, y0 + (r if br else 0), z0, x1, y1 - (r if tr else 0), z1, side, west=None,
+              up=None if tr else top, down=None if br else bottom, **ends)
+    for flag, cx, cy in ((tl, x0 + r, y1 - r), (tr, x1 - r, y1 - r), (bl, x0 + r, y0 + r), (br, x1 - r, y0 + r)):
+        if flag:
+            prism(out, cx, cy, z0, z1, r, edge, caps)
+    return e
+
+
+def west_uv_flip(e):
+    """Mirrors the west face's picture so it reads the same way round as the east's (u = 0 at the back)."""
+    f = e["faces"].get("west")
+    if f:
+        u0, v0, u1, v1 = f["uv"]
+        f["uv"] = [u1, v0, u0, v1]
+
+
+sw("arc_2", arcs(2), w=8)
+sw("arc_3", arcs(3), w=8)
 R.save(TEX)
 
-RX0, RX1 = 6.7, 9.3            # the upper rail, side to side
-LX0, LX1 = 6.5, 9.5            # the lower rail
-UY0, UY1 = 11.4, 14.0          # the upper rail, bottom and top
-LY0, LY1 = 4.0, 7.0            # the lower rail
-MUZZLE = -15.8
-CAP_BACK = -13.2               # the muzzle caps' back
-RAIL_BACK = 0.4                # where the rails run into the yoke
-YOKE_BACK = 4.4                # the yoke's back, the receiver's front
-FIN_Z = (-12.8, -0.2)          # the fin combs
-FIN_PITCH, FIN_T, FIN_D = 0.62, 0.26, 1.25
-FIN_RAKE = 20                  # the fins lean back, their tips toward the receiver
-CORE_Y, CORE_R = 9.2, 1.72
-CORE_RINGS = ((1.1, 1.6), (2.05, 2.55), (3.0, 3.5))
-ARMOUR = ((4.4, 4.95), (5.5, 6.05), (6.6, 7.15))
-SLITS = ((4.95, 5.5), (6.05, 6.6))
-STOCK = 10.4                   # the receiver's back, the stock's front
-BUTT = 15.8
-R_GRIP = (8.0, 2.9, 9.6)
-R_SUPPORT = (8.0, 2.6, -5.8)
-R_SIGHT = (8.0, 15.6, 5.4)     # the middle of the holo sight's glass
-R_SIGHT_MOUNT = (4.6, 14.4)    # the sight base's front (z) and the top it stands on (y)
+
+# ------------------------------------------------------------------------------------------------- the rails
 
 
-def bevel(out, x0, y0, z0, x1, y1, z1, r, side, top=None, bottom=None, cap=None, edge="edge", name=None, caps=(True, True),
-          lower=True):
-    """A box along z with its long edges bevelled at 45 degrees by r (the lower two only if lower), the bevels in a
-    bright edge material so every long edge catches a crisp highlight. Faces hidden inside are left off."""
-    cap = cap or side
-    ends = dict(north=cap if caps[0] else None, south=cap if caps[1] else None)
-    R.box(out, x0 + r, y0, z0, x1 - r, y1, z1, side, name=name, up=top or side, down=bottom or side, east=None, west=None, **ends)
-    sy0 = y0 + r if lower else y0
-    R.box(out, x0, sy0, z0, x0 + r, y1 - r, z1, side, up=None, down=None if lower else bottom or side, east=None, **ends)
-    R.box(out, x1 - r, sy0, z0, x1, y1 - r, z1, side, up=None, down=None if lower else bottom or side, west=None, **ends)
-    h = r / math.sqrt(2)
-    for cx, cy in ((x0 + r, y0 + r), (x1 - r, y0 + r), (x0 + r, y1 - r), (x1 - r, y1 - r)):
-        if cy < (y0 + y1) / 2 and not lower:
-            continue
-        R.box(out, cx - h, cy - h, z0 + 0.02, cx + h, cy + h, z1 - 0.02, edge, rot=("z", 45, (cx, cy, z0)), north=None, south=None)
+def rail(out, r, back):
+    """One rail: a dark spine inside, white panels round it split by grooves (their outer long edges bevelled), and the
+    chamfered tip cap. r is UP or LO."""
+    yin, H, s = r
+    side = "w_side" if s > 0 else "w_side_lo"
+    outer_c = "tltr" if s > 0 else "blbr"
+    # The spine, seen down the grooves.
+    rbox(out, r, 6.95, 0.15, SEAMS[-1] - 0.4, 9.05, H - 0.15, back - 0.05, "seam", name="spine" if s > 0 else "spine_lo")
+    # The panels, back to front, then the tip.
+    joins = [back] + list(SEAMS)
+    for i, (zb, zf) in enumerate(zip(joins, joins[1:])):
+        z0, z1 = zf + GROOVE / 2, zb - (GROOVE / 2 if i else 0)
+        panel(out, r, z0, z1, side, outer_c, caps=(True, i > 0 or s > 0), name=("upper" if s > 0 else "lower") + "_rail" if i == 0 else None)
+    tip(out, r, SEAMS[-1] - GROOVE / 2, side, outer_c)
+    for p in PADS + (TIP_PAD,):
+        pad(out, r, *p)
 
 
-def both_sides(out, x0, x1, y0, z0, y1, z1, mat, emit=False, gap=0.03):
-    """The same decal on the west face at x0 and the east face at x1, standing gap proud."""
-    R.sticker(out, x0 - gap - 0.01, y0, z0, x0 - gap, y1, z1, mat, "west", emit=emit)
-    R.sticker(out, x1 + gap, y0, z0, x1 + gap + 0.01, y1, z1, mat, "east", emit=emit)
+def panel(out, r, z0, z1, side, outer_c, caps=(True, True), name=None):
+    yin, H, s = r
+    y_in, y_out = ry_(r, 0), ry_(r, H)
+    if s > 0:
+        bevel_box(out, X0, y_in, z0, X1, y_out, z1, BEVEL, side, "w_top", "w_in", "w_edge", "w_end", outer_c, name=name, caps=caps)
+    else:
+        bevel_box(out, X0, y_out, z0, X1, y_in, z1, BEVEL, side, "w_top", "w_in", "w_edge", "w_end", outer_c, name=name, caps=caps)
+
+
+def tip(out, r, zt, side, outer_c):
+    """The tip cap: full height back to where the slope starts, then a slope down (or up) to a blunt nose. The slope is a
+    band turned 45 degrees resting on two stepped blocks; the band's lower end lands on the nose block's top edge."""
+    yin, H, s = r
+    nb, t = NOSE, NOSE * math.sqrt(2)
+    p1 = MUZZLE + H - nb                       # where the slope meets the outer face
+    # The full-height part, bevelled like the panels.
+    if s > 0:
+        bevel_box(out, X0, ry_(r, 0), p1, X1, ry_(r, H), zt, BEVEL, "tip_side", "tip_top", "w_in", "w_edge", "w_end", outer_c,
+                  name="upper_tip", caps=(False, True))
+    else:
+        bevel_box(out, X0, ry_(r, H), p1, X1, ry_(r, 0), zt, BEVEL, "tip_side", "tip_top", "w_in", "w_edge", "w_end", outer_c,
+                  name="lower_tip", caps=(False, True))
+    # The steps under the band: the nose block, then one more.
+    z1 = MUZZLE + 2 * nb - 0.04
+    h1 = z1 - MUZZLE + 0.95 * nb
+    rbox(out, r, X0, 0, MUZZLE, X1, nb, z1, "tip_side", inner="w_in", outer=None, north="tip_side", south=None)
+    rbox(out, r, X0, 0, z1, X1, h1, p1, "tip_side", inner="w_in", outer=None, north=None, south=None)
+    # The band: its outer face is the slope, from the nose's top edge to p1.
+    length = (H - nb) * math.sqrt(2)
+    yq = ry_(r, nb)
+    if s > 0:
+        R.box(out, X0 + 0.01, yq - t, MUZZLE, X1 - 0.01, yq, MUZZLE + length, "tip_side", rot=("x", -45, (8.0, yq, MUZZLE)),
+              up="tip_top", down=None, north=None, south=None)
+    else:
+        R.box(out, X0 + 0.01, yq, MUZZLE, X1 - 0.01, yq + t, MUZZLE + length, "tip_side", rot=("x", 45, (8.0, yq, MUZZLE)),
+              down="tip_top", up=None, north=None, south=None)
+    # The angled seam parallel to the slope, on both flanks.
+    off = 0.9                                     # how far back of the slope, along z
+    for x0, x1, face in ((X0 - 0.02, X0 - 0.01, "west"), (X1 + 0.01, X1 + 0.02, "east")):
+        zs = MUZZLE - nb + off                    # where the seam line crosses the inner face (v = 0)
+        a = 0.08 * math.sqrt(2)                   # set in from each end so the corners stay on the flank
+        y0 = ry_(r, 0)
+        if s > 0:
+            R.box(out, x0, y0 - 0.1, zs + a, x1, y0, zs + (H - BEVEL) * math.sqrt(2) - a, "seam", rot=("x", -45, (8.0, y0, zs)),
+                  **{f: None for f in FACES_ALL if f != face})
+        else:
+            R.box(out, x0, y0, zs + a, x1, y0 + 0.1, zs + (H - BEVEL) * math.sqrt(2) - a, "seam", rot=("x", 45, (8.0, y0, zs)),
+                  **{f: None for f in FACES_ALL if f != face})
+
+
+FACES_ALL = ("north", "east", "south", "west", "up", "down")
+
+
+def pad(out, r, za, zb):
+    """A contact pad on the rail's inner face: a black block with its gap-side ends chamfered, the face toward the gap
+    carrying an emitter slot."""
+    yin, H, s = r
+    side = "pad_side" if s > 0 else "pad_side_up"
+    t, c = PAD_T, PAD_R
+    rbox(out, r, 7.1, -t, za + c, 8.9, 0, zb - c, "k_flat", inner="pad_face", outer=None, east=side, west=side, north=None, south=None,
+         name="pad")
+    rbox(out, r, 7.11, -(t - c), za, 8.89, 0, zb, "k_flat", inner=None, outer=None, east=side, west=side, north=side, south=side)
+    for zc in (za + c, zb - c):
+        prism(out, zc, ry_(r, -(t - c)), 0, 0, c, "k_edge", axis="x", x=(7.12, 8.88))
+
+
+def pad_glow(out, r, za, zb, level):
+    """A lit pad: a shell just over the pad's block, its faces glowing (brightest toward the gap)."""
+    yin, H, s = r
+    t, c = PAD_T, PAD_R
+    rbox(out, r, 7.08, -t - 0.02, za + c, 8.92, 0, zb - c, "glow_face_%d" % level, inner="glow_face_%d" % level, outer=None,
+         east=("glow_dn_%d" if s > 0 else "glow_up_%d") % level, west=("glow_dn_%d" if s > 0 else "glow_up_%d") % level,
+         north=None, south=None, emit=True)
+
+
+def under_panel(out):
+    """The dark vent panel hung under the lower rail's front half, its back end chamfered."""
+    zf, zb, yb, yt = UNDER
+    c = 0.65
+    e = R.box(out, 7.0, yb, zf, 9.0, yt, zb - c, "c_flat", east="under_side", west="under_side", down="grille", north="c_side", up=None,
+              south=None, name="vent_panel")
+    west_uv_flip(e)
+    prism(out, zb - c, yb + c, 0, 0, c, "c_edge", axis="x", x=(7.01, 8.99))
 
 
 def rail_assembly():
-    """Both rails with their fin combs and muzzle caps: the Railgun Rails part, and the front of the gun."""
+    """Both rails with their pads and the vent panel: the Railgun Rails part, and the front of the gun."""
     out = []
-    # The rails: heavy bevelled bars, the panel picture giving each side a lit top edge and a dark foot.
-    bevel(out, RX0, UY0, CAP_BACK, RX1, UY1, RAIL_BACK, 0.5, "gunmetal_panel", top="gunmetal", bottom="graphite",
-          name="upper_rail", caps=(False, True))
-    bevel(out, LX0, LY0, CAP_BACK, LX1, LY1, RAIL_BACK, 0.5, "gunmetal_panel", top="graphite", bottom="graphite",
-          name="lower_rail", caps=(False, True), lower=False)
-    # The copper windings the fins stand on.
-    R.box(out, 7.3, UY0 - 0.4, FIN_Z[0] - 0.3, 8.7, UY0, FIN_Z[1] + 0.3, "copper", name="upper_winding", up=None)
-    R.box(out, 7.2, LY1, FIN_Z[0] - 0.3, 8.8, LY1 + 0.4, FIN_Z[1] + 0.3, "copper", name="lower_winding", down=None)
-    # The fin combs: polished plates closely spaced like a radiator, reaching halfway into the gap and raked back;
-    # copper above, silver below.
-    n = int((FIN_Z[1] - FIN_Z[0] - FIN_T) / FIN_PITCH) + 1
-    for i in range(n):
-        z = FIN_Z[0] + i * FIN_PITCH
-        mid = z + FIN_T / 2
-        R.box(out, 7.0, UY0 - FIN_D, z, 9.0, UY0 + 0.1, z + FIN_T, "copper_hi", north="copper_fin", south="copper_fin", up=None,
-              rot=("x", -FIN_RAKE, (8.0, UY0, mid)), name="upper_fin" if i == 0 else None)
-        R.box(out, 6.9, LY1 - 0.1, z, 9.1, LY1 + FIN_D, z + FIN_T, "silver", north="fin_face", south="fin_face", down=None,
-              rot=("x", FIN_RAKE, (8.0, LY1, mid)), name="lower_fin" if i == 0 else None)
-    # The muzzle caps: chunky and bevelled, their fronts one picture each (ports, holes); gold trim under the lower one.
-    bevel(out, 6.3, 11.0, MUZZLE, 9.7, 14.5, CAP_BACK, 0.7, "graphite_panel", top="gunmetal", bottom="graphite",
-          cap="graphite", name="upper_cap", caps=(False, True))
-    R.sticker(out, 6.3, 11.0, MUZZLE, 9.7, 14.5, MUZZLE + 0.01, "upper_face", "north", name="upper_face")
-    bevel(out, 6.1, 3.3, MUZZLE, 9.9, 7.5, CAP_BACK, 0.8, "graphite_panel", top="graphite", bottom="graphite",
-          cap="graphite", name="lower_cap", caps=(False, True))
-    R.sticker(out, 6.1, 3.3, MUZZLE, 9.9, 7.5, MUZZLE + 0.01, "lower_face", "north", name="lower_face")
-    R.box(out, 6.5, 2.9, MUZZLE + 0.25, 9.5, 3.3, CAP_BACK - 0.3, "gold", north="gold_panel", east="gold_panel", west="gold_panel",
-          up=None, name="cap_trim")
-    both_sides(out, 6.3, 9.7, 12.4, MUZZLE + 0.4, 12.75, CAP_BACK - 0.4, "gold")
+    rail(out, UP, UP_BACK)
+    rail(out, LO, LO_BACK)
+    under_panel(out)
     return out
 
 
-def core(level=0, grow=0.0):
-    """The reactor's ring core at the back of the gap: three glowing rings."""
-    out = []
-    for z0, z1 in CORE_RINGS:
-        R.rod(out, z0 - grow, z1 + grow, CORE_R + grow, "ring_v_%d" % level, along="ring_u_%d" % level, cap="core_%d" % level,
-              cy=CORE_Y, emit=True, name="core_ring")
-    return out
+# ------------------------------------------------------------------------------------------------ the body
+
+
+def receiver(out):
+    x0, x1 = RCV_X
+    # The main block: bevelled along its top, its front-bottom corner chamfered at the back of the gap.
+    c = 0.5
+    bevel_box(out, x0, RCV_BOT + c, RCV_FRONT, x1, RCV_TOP, CHEEK[0], BEVEL, "w_body", "w_top", None, "w_edge", "w_end", "tltr",
+              name="receiver")
+    R.box(out, x0, RCV_BOT, RCV_FRONT + c, x1, RCV_BOT + c, CHEEK[0], "w_body", up=None, down="w_in", north=None, south=None)
+    prism(out, RCV_FRONT + c, RCV_BOT + c, 0, 0, c, "w_edge", axis="x", x=(x0 + 0.01, x1 - 0.01))
+    # Behind it, under the cheek piece, down to the loop.
+    R.box(out, x0, RCV_BOT, CHEEK[0], x1, CHEEK[2], STOCK[0], "w_body", north=None, up=None, down="w_in", south="w_end",
+          name="receiver_rear")
+    # The cheek piece: narrower, pointed at the back over the stock's deck.
+    zf, zb, yb, yt = CHEEK
+    ch = 0.75
+    bevel_box(out, 6.6, yb, zf, 9.4, yt, zb - ch, BEVEL, "w_body", "w_top", "w_in", "w_edge", "w_end", "tltr", name="cheek",
+              caps=(False, False))
+    R.box(out, 6.6, yb, zb - ch, 9.4, yt - ch, zb, "w_body", north=None, up=None, south="w_end")
+    prism(out, zb - ch, yt - ch, 0, 0, ch, "w_edge", axis="x", x=(6.61, 9.39))
+    # The scope's base plate on top.
+    R.box(out, 6.9, RCV_TOP, UP_BACK, 9.1, UP[0] + UP[1], 5.85, "w_flat", up="w_top", east="w_side_lo", west="w_side_lo",
+          down=None, north=None, name="scope_plate")
+    # The reactor window at the back of the gap, and a slot low in each flank (glowing as it charges).
+    R.sticker(out, 7.2, 8.78, RCV_FRONT - 0.02, 8.8, 9.62, RCV_FRONT - 0.01, "recess", "north", name="reactor_window")
+    for xa, xb, face in ((x0 - 0.02, x0 - 0.01, "west"), (x1 + 0.01, x1 + 0.02, "east")):
+        R.sticker(out, xa, 8.62, 1.75, xb, 8.98, 3.35, "recess", face)
+    # The fire selector, its lever, and the on/off dots, both flanks.
+    for sx, xa, xb, face in ((-1, x0 - 0.02, x0 - 0.01, "west"), (1, x1 + 0.01, x1 + 0.02, "east")):
+        e = R.sticker(out, xa, SEL[1], SEL[0], xb, SEL[3], SEL[2], "selector", face, name="selector" if sx > 0 else None)
+        if face == "west":
+            west_uv_flip(e)
+        px = (x1, x1 + 0.1) if sx > 0 else (x0 - 0.1, x0)
+        cz, cy = SEL[2] - 0.62, (SEL[1] + SEL[3]) / 2
+        R.box(out, px[0], cy - 0.06, cz - 0.42, px[1], cy + 0.06, cz + 0.02, "k_flat", rot=("x", 28, (8.0, cy, cz)),
+              **{"east" if sx > 0 else "west": "k_flat", "west" if sx > 0 else "east": None})
+        dx = (x1, x1 + 0.06) if sx > 0 else (x0 - 0.06, x0)
+        for k, dy in enumerate(DOTS_Y):
+            R.box(out, dx[0], dy - 0.11, DOT_Z - 0.11, dx[1], dy + 0.11, DOT_Z + 0.11, "dot_off",
+                  **{"east" if sx > 0 else "west": "dot_off", "west" if sx > 0 else "east": None},
+                  name=("dot_on" if k == 0 else "dot_off") if sx > 0 else None)
+
+
+def stock(out):
+    zf, zb, yb, deck = STOCK
+    bevel_box(out, X0, yb, zf, X1, deck, zb, BEVEL, "c_side", "c_top", "c_flat", "c_edge", "c_end", name="stock", caps=(True, False))
+    bevel_box(out, X0, deck, COMB[0], X1, COMB[1], zb, 0.25, "c_side", "c_top", None, "c_edge", "c_end", "tltr", name="comb",
+              caps=(True, False))
+    bevel_box(out, 6.7, yb - 0.14, zb, 9.3, COMB[1] + 0.12, BUTT, BEVEL, "rubber", "rubber", "rubber", "rubber_flat", "rubber_flat",
+              name="butt_pad")
+    # The white tube along the deck, into the cheek piece.
+    R.rod(out, CHEEK[1] - 0.05, COMB[0], 0.38, "w_flat", cy=deck + 0.38, cap="w_end", caps=(False, False), name="tube")
+
+
+def loop(out):
+    """The thumbhole loop: a band under the receiver, a post down from the stock, a band along the bottom, a wider
+    front round the lower rail's back end; the hollow lined in white, its corners filleted."""
+    lx0, lx1 = LOOP_X
+    hf, hb, hy0, hy1 = HOLE
+    R.box(out, lx0, hy1, hf, lx1, RCV_BOT, hb, "c_side", down="lining", up=None, north=None, south=None, name="loop_top")
+    R.box(out, lx0, LOOP_BOT, hf, lx1, hy0, hb, "c_side", up="lining", down="c_flat", north=None, south=None, name="loop_bottom")
+    # The rear post, its lower back corner chamfered, with a fillet up into the stock's underside.
+    ch = 0.6
+    R.box(out, lx0, LOOP_BOT, hb, lx1, RCV_BOT, POST_BACK - ch, "c_side", north="lining", up=None, down="c_flat", south=None,
+          name="loop_post")
+    R.box(out, lx0, LOOP_BOT + ch, POST_BACK - ch, lx1, STOCK[2], POST_BACK, "c_side", north=None, up=None, down=None, south="c_end")
+    prism(out, POST_BACK - ch, LOOP_BOT + ch, 0, 0, ch, "c_edge", axis="x", x=(lx0 + 0.01, lx1 - 0.01))
+    prism(out, POST_BACK, STOCK[2], 0, 0, 0.45, "c_edge", axis="x", x=(lx0 + 0.02, lx1 - 0.02))
+    # The front, wider, round the lower rail; its lower front corner chamfered.
+    fx0, fx1 = FRONT_X
+    R.box(out, fx0, LOOP_BOT, RCV_FRONT + ch, fx1, RCV_BOT, hf, "c_side", south="lining", up=None, down="c_flat", north=None,
+          name="loop_front")
+    R.box(out, fx0, LOOP_BOT + ch, RCV_FRONT, fx1, RCV_BOT, RCV_FRONT + ch, "c_side", south=None, up=None, down=None,
+          north="c_end")
+    prism(out, RCV_FRONT + ch, LOOP_BOT + ch, 0, 0, ch, "c_edge", axis="x", x=(fx0 + 0.01, fx1 - 0.01))
+    # The hollow's corner fillets and the white rim round it on both flanks.
+    for zc, yc in ((hf, hy0), (hf, hy1), (hb, hy0), (hb, hy1)):
+        prism(out, zc, yc, 0, 0, 0.32, "lining", axis="x", x=(lx0 + 0.03, lx1 - 0.03), ends="fillet")
+    rim = 0.18
+    for xa, xb, face, fxa, fxb in ((lx0 - 0.02, lx0 - 0.01, "west", fx0 - 0.02, fx0 - 0.01), (lx1 + 0.01, lx1 + 0.02, "east", fx1 + 0.01, fx1 + 0.02)):
+        R.sticker(out, xa, hy1, hf, xb, hy1 + rim, hb, "lining", face)
+        R.sticker(out, xa, hy0 - rim, hf, xb, hy0, hb, "lining", face)
+        R.sticker(out, xa, hy0 - rim, hb, xb, hy1 + rim, hb + rim, "lining", face)
+        R.sticker(out, fxa, hy0 - rim, hf - rim, fxb, hy1 + rim, hf, "lining", face)
+    # The trigger, hanging into the hollow.
+    R.box(out, 7.85, hy0 + 0.55, 6.1, 8.15, hy1, 6.45, "k_flat", rot=("x", -12, (8.0, hy1, 6.3)), up=None, name="trigger")
+    R.box(out, 7.87, hy0 + 0.35, 5.95, 8.13, hy0 + 0.6, 6.3, "k_flat", rot=("x", -12, (8.0, hy1, 6.3)))
+
+
+def grip(out):
+    """The pistol grip under the loop, raked back, its four vertical edges bevelled; white down its front, a flared
+    charcoal base. Built lying along z, then stood up and raked."""
+    g = []
+    zf, zb, yb, yt = GRIP
+    L = yt - yb
+    # Lying down: its length along z (0..L), its depth along -y (so standing it up puts the front at zf).
+    bevel_box(g, 7.15, -zb, 0.0, 8.85, -zf, L, 0.3, "c_side", "w_body", "c_side", "c_edge", "c_end", caps=(True, False),
+              name="grip")
+    R.box(g, 7.05, -zb - 0.15, -0.25, 8.95, -zf + 0.15, 0.0, "c_flat", north="c_end", south=None, east="c_side", west="c_side",
+          up="c_edge", down="c_side")
+    rotate(g, rx(-90), (8.0, 0.0, 0.0))
+    move(g, dy=yb)
+    # A palm swell filling the corner behind the grip's top, under the loop.
+    prism(g, zb, LOOP_BOT, 0, 0, 0.75, "c_edge", axis="x", x=(7.3, 8.7), ends="c_side")
+    rotate(g, rx(-GRIP_RAKE), (8.0, yt, (zf + zb) / 2))
+    out += g
+
+
+def scope(out):
+    mz, top = SCOPE_MOUNT
+    R.box(out, 7.3, top, mz, 8.7, 12.8, 5.6, "k_side", up=None, down=None, name="scope_mount")
+    bevel_box(out, 7.05, 12.8, 1.3, 8.95, 14.0, 6.95, 0.25, "k_side", "k_top", "k_flat", "k_edge", "k_flat", name="scope")
+    R.box(out, 7.2, 12.95, 6.95, 8.8, 13.85, 7.55, "k_side", up="k_top", north=None, south="k_flat", name="eyepiece")
+    R.sticker(out, 7.35, 13.05, 7.56, 8.65, 13.75, 7.57, "glass", "south", name="eyepiece_glass")
+    # The hood overhanging forward, its front slanted (the lower edge set back).
+    c = 0.35
+    R.box(out, 7.15, 12.95, -0.1 + c, 8.85, 13.7, 1.3, "k_side", up="k_top", down="k_flat", north=None, south=None, name="hood")
+    R.box(out, 7.15, 12.95 + c, -0.1, 8.85, 13.7, -0.1 + c, "k_side", up="k_top", down=None, north="k_flat", south=None)
+    prism(out, -0.1 + c, 12.95 + c, 0, 0, c, "k_edge", axis="x", x=(7.16, 8.84))
+    R.sticker(out, 7.35, 13.36, -0.12, 8.65, 13.64, -0.11, "glass", "north", name="objective")
+    # The turrets on the flanks (the sketch's round dial), and the knob on top.
+    for sx in (-1, 1):
+        t = []
+        a, b = (8.95, 9.5) if sx > 0 else (6.5, 7.05)
+        R.rod(t, a, b, 0.64, "k_side", cx=0.0, cy=12.86, cap="k_flat", name="turret" if sx > 0 else None)
+        rotate(t, ry(90), (0.0, 12.86, 0.0))
+        move(t, dz=4.25)
+        out += t
+        if sx > 0:
+            R.sticker(out, 9.51, 12.22, 3.61, 9.52, 13.5, 4.89, "turret_cap", "east")
+        else:
+            R.sticker(out, 6.48, 12.22, 3.61, 6.49, 13.5, 4.89, "turret_cap", "west")
+    k = []
+    R.rod(k, 14.0, 14.42, 0.3, "knurl", cx=8.0, cy=0.0, cap="k_flat", caps=(False, True), name="knob")
+    rotate(k, rx(-90), (8.0, 0.0, 0.0))
+    move(k, dz=5.6)
+    out += k
+    R.sticker(out, 7.7, 14.43, 5.3, 8.3, 14.44, 5.9, "knob_cap", "up")
 
 
 def railgun_body():
     out = []
-    # The yoke: where the rails meet, a frame round the core with a window cut through each side.
-    R.box(out, 5.9, UY0, RAIL_BACK, 10.1, 14.2, YOKE_BACK, "graphite_panel", up="gunmetal", down="graphite", north="graphite",
-          south=None, name="yoke_top")
-    R.box(out, 5.9, 3.8, RAIL_BACK, 10.1, LY1, YOKE_BACK, "graphite_panel", up="graphite", down="graphite", north="graphite",
-          south=None, name="yoke_bottom")
-    for x0, x1 in ((5.9, 6.25), (9.75, 10.1)):
-        R.box(out, x0, LY1, RAIL_BACK, x1, UY0, RAIL_BACK + 0.5, "gunmetal", up=None, down=None, south=None, name="yoke_post")
-    R.box(out, 5.9, LY1, YOKE_BACK - 0.7, 10.1, UY0, YOKE_BACK, "dark", up=None, down=None, south=None, east="graphite",
-          west="graphite", name="yoke_back")
-    R.box(out, 7.3, CORE_Y - 0.7, CORE_RINGS[0][0] + 0.1, 8.7, CORE_Y + 0.7, YOKE_BACK - 0.7, "dark", name="core_spindle")
-    R.sticker(out, 8 - CORE_R, CORE_Y - CORE_R, CORE_RINGS[0][0] - 0.11, 8 + CORE_R, CORE_Y + CORE_R, CORE_RINGS[0][0] - 0.1,
-              "core_eye", "north", emit=True, name="core_eye")
-    out += core()
-    # Gold chevrons on the lower rail's flanks by the yoke, pointing down the rails.
-    both_sides(out, LX0, LX1, 4.5, RAIL_BACK - 2.6, 6.5, RAIL_BACK - 0.4, "chevron")
-    # The receiver: segmented armour rings in front with glowing slits between them, then the stepped rear block.
-    bevel(out, 6.1, 4.0, YOKE_BACK, 9.9, 13.8, ARMOUR[-1][1] + 0.3, 0.6, "gunmetal_panel", top="gunmetal", bottom="graphite",
-          name="receiver_front", caps=(False, False))
-    for i, (z0, z1) in enumerate(ARMOUR):
-        R.box(out, 5.8, 3.6, z0, 10.2, 14.2, z1, "armour", up="graphite", down="graphite", north="graphite", south="graphite",
-              name="armour_ring" if i == 0 else None)
-    for z0, z1 in SLITS:
-        both_sides(out, 6.1, 9.9, 5.2, z0 + 0.12, 12.6, z1 - 0.12, "core_0", emit=True)
-    bevel(out, 6.3, 4.4, ARMOUR[-1][1], 9.7, 13.4, STOCK, 0.7, "gunmetal_panel", top="gunmetal", bottom="graphite",
-          cap="graphite", name="receiver_rear", caps=(False, False), lower=False)
-    both_sides(out, 6.3, 9.7, 4.7, 7.6, 5.5, STOCK - 0.4, "gold")
-    both_sides(out, 6.3, 9.7, 6.2, 7.8, 11.4, STOCK - 0.6, "inset")
-    # The stock: a thick rounded shoulder hump, a gold-sided strut running down to the grip's heel, a rubber pad.
-    bevel(out, 6.4, 10.0, STOCK, 9.6, 14.6, BUTT, 1.4, "graphite_panel", top="graphite", bottom="graphite", cap="graphite",
-          name="stock", caps=(False, False))
-    R.box(out, 7.0, 14.59, STOCK + 1.0, 9.0, 15.0, BUTT - 0.8, "graphite", down=None, name="stock_hump")
-    both_sides(out, 6.4, 9.6, 12.1, STOCK + 0.6, 12.4, BUTT - 0.6, "gold")
-    # Swept up from the receiver's top into the hump.
-    R.box(out, 7.0, 12.9, STOCK - 1.8, 9.0, 13.7, STOCK + 1.0, "graphite", east="graphite_panel", west="graphite_panel",
-          rot=("x", -24, (8.0, 13.3, STOCK - 1.8)), name="stock_sweep")
-    R.box(out, 7.1, 0.4, STOCK + 0.2, 8.9, 1.6, STOCK + 8.8, "gunmetal", east="gold_panel", west="gold_panel",
-          rot=("x", -45, (8.0, 1.0, STOCK + 0.2)), name="stock_strut")
-    R.box(out, 6.6, 6.0, BUTT, 9.4, 14.4, BUTT + 1.0, "rubber", name="butt_pad")
-    # Pistol grip, trigger and guard.
-    R.box(out, 7.15, -0.6, 8.2, 8.85, 4.4, 10.4, "rubber", east="rubber_panel", west="rubber_panel",
-          rot=("x", -14, (8.0, 4.4, 9.3)), name="grip")
-    R.box(out, 7.75, 3.0, 7.4, 8.25, 4.4, 7.8, "edge", name="trigger")
-    R.box(out, 7.6, 2.0, 6.0, 8.4, 2.4, 8.9, "gunmetal", name="trigger_guard")
-    R.box(out, 7.6, 2.4, 6.0, 8.4, 4.4, 6.4, "gunmetal", name="trigger_guard_front")
-    # Forward grip under the lower rail, raked forward a touch.
-    R.box(out, 7.2, 0.8, -6.6, 8.8, LY0, -5.0, "rubber", east="rubber_panel", west="rubber_panel",
-          rot=("x", 8, (8.0, LY0, -5.8)), name="forward_grip")
-    R.box(out, 7.0, 0.3, -6.8, 9.0, 0.8, -4.8, "gunmetal", rot=("x", 8, (8.0, LY0, -5.8)), name="forward_grip_foot")
-    # The laser module under the lower rail's front: a block, a knurled collar and a red lens.
-    R.box(out, 7.1, 1.6, -12.8, 8.9, LY0, -9.8, "graphite_panel", up=None, north="graphite", name="laser_module")
-    R.box(out, 7.35, 2.0, -13.6, 8.65, 3.3, -12.8, "knurl", north="graphite", name="laser_collar")
-    R.sticker(out, 7.6, 2.25, -13.64, 8.4, 3.05, -13.63, "laser_lens", "north", emit=True, name="laser_lens")
-    # The lower rail's flanks: copper discs and a vent grille; a gold stripe along the upper rail.
-    for z in (-11.4, -9.2):
-        both_sides(out, LX0, LX1, 4.7, z, 6.3, z + 1.6, "copper_disc")
-    both_sides(out, LX0, LX1, 4.2, -7.6, 4.5, -3.4, "vent")
-    both_sides(out, RX0, RX1, 12.3, -12.6, 12.55, -0.4, "gold")
-    # The holo sight on the receiver: a base, a chunky hood round the glass, the emitter behind.
-    sz, top = R_SIGHT_MOUNT
-    gz = R_SIGHT[2]
-    R.box(out, 7.0, 13.8, sz, 9.0, top, sz + 3.6, "graphite", name="sight_base", down=None)
-    R.box(out, 6.6, top, gz - 0.4, 7.2, 16.6, gz + 0.4, "gunmetal", name="sight_hood", down=None)
-    R.box(out, 8.8, top, gz - 0.4, 9.4, 16.6, gz + 0.4, "gunmetal", down=None)
-    R.box(out, 6.6, 16.6, gz - 0.4, 9.4, 17.1, gz + 0.4, "edge")
-    R.box(out, 7.2, top, gz + 1.2, 8.8, 15.2, sz + 3.6, "graphite_panel", up="graphite", name="sight_emitter")
-    R.box(out, 7.2, top + 0.2, gz - 0.05, 8.8, 16.6, gz + 0.05, "reticle", name="sight_glass", up=None, down=None, east=None, west=None)
+    receiver(out)
+    stock(out)
+    loop(out)
+    grip(out)
+    scope(out)
     return out
 
 
 def railgun_glow(level):
-    """Charging: the core's rings burn brighter (shells just over them), the slits with them, and an arc jumps the gap."""
-    out = core(level, grow=0.05)
-    for z0, z1 in SLITS:
-        both_sides(out, 6.1, 9.9, 5.2, z0 + 0.12, 12.6, z1 - 0.12, "core_%d" % level, emit=True, gap=0.06)
+    """Charging: the pads light (shells just over them), the reactor window and the flank slots glow with them, the "on"
+    dot lights, and from half charge arcs jump the gap."""
+    out = []
+    for r in (UP, LO):
+        for p in PADS + (TIP_PAD,):
+            pad_glow(out, r, p[0], p[1], level)
+    win = "glow_win_%d" % level
+    R.sticker(out, 7.2, 8.78, RCV_FRONT - 0.04, 8.8, 9.62, RCV_FRONT - 0.03, win, "north", emit=True)
+    x0, x1 = RCV_X
+    for xa, xb, face in ((x0 - 0.04, x0 - 0.03, "west"), (x1 + 0.03, x1 + 0.04, "east")):
+        R.sticker(out, xa, 8.62, 1.75, xb, 8.98, 3.35, win, face, emit=True)
+    on = DOTS_Y[0]
+    R.sticker(out, x1 + 0.07, on - 0.12, DOT_Z - 0.12, x1 + 0.08, on + 0.12, DOT_Z + 0.12, "dot_on", "east", emit=True)
+    R.sticker(out, x0 - 0.08, on - 0.12, DOT_Z - 0.12, x0 - 0.07, on + 0.12, DOT_Z + 0.12, "dot_on", "west", emit=True)
     if level >= 2:
-        R.box(out, 8.0, 8.3, FIN_Z[0], 8.0, 10.1, CORE_RINGS[0][0] - 0.1, "arc_dim" if level == 2 else "arc_hot", emit=True,
-              north=None, south=None, up=None, down=None)
+        e = R.box(out, 8.0, ARC_Y[0], ARC_Z[0], 8.0, ARC_Y[1], ARC_Z[1], "arc_%d" % level, emit=True,
+                  north=None, south=None, up=None, down=None)
+        west_uv_flip(e)
     return out
 
 
 R_CREDIT = "mymod railgun - generated by tools/gen_energy_weapons.py"
 railgun = rail_assembly() + railgun_body()
 check("railgun", railgun)
+check_elements("railgun", railgun)
 R_GLOWS = [railgun_glow(1), railgun_glow(2), railgun_glow(3)]
 for i, layer in enumerate(R_GLOWS):
     check_elements(f"railgun+glow_{i}", railgun, layer)
 # Turned a touch toward the middle of the screen and set a little further in, so the rails and the gap between them
 # show in first person.
-railgun_displays = gun_displays(R_GRIP, 0.46, (FP_GRIP_TARGET[0] - 1.0, FP_GRIP_TARGET[1] + 0.3, FP_GRIP_TARGET[2]), yaw=6)
-# The icon, frame and dropped item at three-quarters, like a product shot: the left side and the muzzle toward the
-# viewer, seen from a little above, the muzzle raised toward the slot's upper left to fill it.
-R_ICON = mul(rz(-35), display_matrix([10, 115, 0]))
-railgun_displays.update(still_displays(railgun, 0.6, rot=look(apply(R_ICON, [0, 0, -1]), apply(R_ICON, [0, 1, 0]))))
+railgun_displays = gun_displays(R_GRIP, R_FP_SCALE, (FP_GRIP_TARGET[0] + R_FP_SHIFT[0], FP_GRIP_TARGET[1] + R_FP_SHIFT[1],
+                                                      FP_GRIP_TARGET[2] + R_FP_SHIFT[2]), yaw=R_FP_YAW)
+# The icon, frame and dropped item at a shallow three-quarters, like a product shot: mostly the left side (the gap
+# between the rails shows; the flanks match), the muzzle a little toward the viewer, seen from a little above, the
+# muzzle raised toward the slot's upper left to fill it.
+R_ICON = mul(rz(-38), display_matrix([14, 108, 0]))
+railgun_displays.update(still_displays(railgun, R_ICON_SCALE, rot=look(apply(R_ICON, [0, 0, -1]), apply(R_ICON, [0, 1, 0]))))
 write(os.path.join(MODELS, "railgun.json"), model(R, railgun, railgun_displays, credit=R_CREDIT))
 write(os.path.join(ITEMS, "railgun.json"), {"model": glow_levels(R, "railgun", R_GLOWS, railgun_displays, [0.15, 0.5, 0.9], R_CREDIT)})
 rail_part = rail_assembly()
@@ -569,7 +869,8 @@ check("railgun_rails", rail_part)
 check_elements("railgun_rails", rail_part)
 write(os.path.join(MODELS, "railgun_rails.json"), model(R, rail_part, part_displays(rail_part, 0.5), credit=R_CREDIT))
 write(os.path.join(ITEMS, "railgun_rails.json"), {"model": ref("railgun_rails")})
-report("railgun", railgun_displays, R_GRIP, R_SUPPORT, f"; sight glass {R_SIGHT}, mount front {R_SIGHT_MOUNT[0]} top {R_SIGHT_MOUNT[1]}")
+report("railgun", railgun_displays, R_GRIP, R_SUPPORT,
+       f"; scope eyepiece {R_SIGHT}, mount front {SCOPE_MOUNT[0]} top {SCOPE_MOUNT[1]}")
 print("railgun cubes:", len(railgun), "+ glow", [len(g) for g in R_GLOWS])
 
 
