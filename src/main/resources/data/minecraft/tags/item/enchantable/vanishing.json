@@ -1,5 +1,11 @@
 {
   "values": [
-    "mymod:plate_carrier"
+    "mymod:plate_carrier",
+    "mymod:bamboo_rod",
+    "mymod:iron_rod",
+    "mymod:steel_rod",
+    "mymod:duralumin_rod",
+    "mymod:magmasteel_rod",
+    "mymod:star_steel_rod"
   ]
 }

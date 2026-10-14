@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "M": "minecraft:bamboo",
+    "S": "minecraft:string",
+    "H": "minecraft:bamboo"
+  },
+  "pattern": [
+    "  M",
+    " MS",
+    "H S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:bamboo_rod"
+  }
+}

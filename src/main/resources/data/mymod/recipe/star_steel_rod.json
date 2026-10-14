@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "M": "mymod:star_steel_ingot",
+    "S": "minecraft:string",
+    "H": "mymod:star_crystal_shard"
+  },
+  "pattern": [
+    "  M",
+    " MS",
+    "H S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:star_steel_rod"
+  }
+}

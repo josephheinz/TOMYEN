@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "com.jheinz.mymod.client.fishing.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"MinecraftFishingMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

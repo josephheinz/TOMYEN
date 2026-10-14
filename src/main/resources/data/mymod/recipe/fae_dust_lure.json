@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mymod:fae_dust",
+    "mymod:fae_dust",
+    "minecraft:feather",
+    "minecraft:gold_nugget"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:fae_dust_lure"
+  }
+}

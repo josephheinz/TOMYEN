@@ -1,0 +1,14 @@
+{
+  "item": "minecraft:tropical_fish",
+  "weight": 8,
+  "difficulty": 3,
+  "behavior": "darting",
+  "biomes": [
+    "minecraft:warm_ocean",
+    "minecraft:lukewarm_ocean",
+    "minecraft:deep_lukewarm_ocean",
+    "#minecraft:is_jungle",
+    "minecraft:mangrove_swamp",
+    "minecraft:lush_caves"
+  ]
+}
