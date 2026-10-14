@@ -1,0 +1,12 @@
+{
+  "item": "mymod:bog_eel",
+  "weight": 16,
+  "difficulty": 3,
+  "behavior": "thrasher",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp"
+  ]
+}

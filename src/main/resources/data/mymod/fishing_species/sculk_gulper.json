@@ -1,0 +1,10 @@
+{
+  "item": "mymod:sculk_gulper",
+  "weight": 8,
+  "difficulty": 4,
+  "behavior": "sinker",
+  "min_rod_tier": 2,
+  "dimension": "minecraft:overworld",
+  "biomes": "minecraft:deep_dark",
+  "max_y": -20
+}

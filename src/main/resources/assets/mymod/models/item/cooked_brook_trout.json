@@ -1,0 +1,7 @@
+{
+  "parent": "mymod:item/brook_trout",
+  "textures": {
+    "0": "mymod:item/fish/cooked_brook_trout",
+    "particle": "mymod:item/fish/cooked_brook_trout"
+  }
+}

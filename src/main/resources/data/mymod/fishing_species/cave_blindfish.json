@@ -1,0 +1,13 @@
+{
+  "item": "mymod:cave_blindfish",
+  "weight": 18,
+  "difficulty": 2,
+  "behavior": "steady",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "minecraft:lush_caves",
+    "minecraft:dripstone_caves"
+  ],
+  "max_y": 40
+}

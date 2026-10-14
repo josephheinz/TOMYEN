@@ -1,0 +1,10 @@
+{
+  "item": "mymod:ghoulfish",
+  "weight": 20,
+  "difficulty": 4,
+  "behavior": "thrasher",
+  "min_rod_tier": 1,
+  "dimension": "minecraft:overworld",
+  "time": "night",
+  "weather": "thunder"
+}

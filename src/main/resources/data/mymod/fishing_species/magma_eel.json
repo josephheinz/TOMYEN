@@ -1,0 +1,10 @@
+{
+  "item": "mymod:magma_eel",
+  "weight": 14,
+  "difficulty": 4,
+  "behavior": "thrasher",
+  "min_rod_tier": 3,
+  "fluid": "lava",
+  "dimension": "minecraft:the_nether",
+  "biomes": "#minecraft:is_nether"
+}

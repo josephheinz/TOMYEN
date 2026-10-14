@@ -1,0 +1,10 @@
+{
+  "item": "mymod:anglerfish",
+  "weight": 8,
+  "difficulty": 3,
+  "behavior": "sinker",
+  "min_rod_tier": 1,
+  "dimension": "minecraft:overworld",
+  "biomes": "#minecraft:is_deep_ocean",
+  "time": "night"
+}

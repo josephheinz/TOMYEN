@@ -15,6 +15,7 @@ import com.jheinz.mymod.bank.Banking;
 import com.jheinz.mymod.cathode.CathodeWalkers;
 import com.jheinz.mymod.fae.Fae;
 import com.jheinz.mymod.dragonscale.Dragonscales;
+import com.jheinz.mymod.fishing.fish.Fishes;
 import com.jheinz.mymod.drill.Drills;
 import com.jheinz.mymod.hogfire.Hogfires;
 import com.jheinz.mymod.industry.Industry;
@@ -105,6 +106,7 @@ public class MyMod implements ModInitializer {
 		Werewolves.initialize();
 		EnergyWeapons.initialize();
 		Aliens.initialize();
+		Fishes.initialize();
 		linkBlockItems();
 	}
 

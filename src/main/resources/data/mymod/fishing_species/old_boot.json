@@ -1,0 +1,8 @@
+{
+  "item": "mymod:old_boot",
+  "weight": 4,
+  "difficulty": 1,
+  "behavior": "sinker",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld"
+}

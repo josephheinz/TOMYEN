@@ -1,0 +1,15 @@
+{
+  "item": "mymod:brook_trout",
+  "weight": 30,
+  "difficulty": 1,
+  "behavior": "steady",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "#minecraft:is_river",
+    "#minecraft:is_forest",
+    "#minecraft:is_taiga",
+    "minecraft:meadow",
+    "minecraft:cherry_grove"
+  ]
+}

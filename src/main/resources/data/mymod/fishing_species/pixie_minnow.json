@@ -1,0 +1,16 @@
+{
+  "item": "mymod:pixie_minnow",
+  "weight": 24,
+  "difficulty": 3,
+  "behavior": "darting",
+  "min_rod_tier": 0,
+  "dimension": "mymod:feywild",
+  "biomes": [
+    "mymod:feywild_glade",
+    "mymod:feywild_mushroom_wilds"
+  ],
+  "count": [
+    1,
+    3
+  ]
+}

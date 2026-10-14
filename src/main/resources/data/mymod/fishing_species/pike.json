@@ -1,0 +1,13 @@
+{
+  "item": "mymod:pike",
+  "weight": 12,
+  "difficulty": 3,
+  "behavior": "darting",
+  "min_rod_tier": 1,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "#minecraft:is_river",
+    "#minecraft:is_forest",
+    "#minecraft:is_taiga"
+  ]
+}

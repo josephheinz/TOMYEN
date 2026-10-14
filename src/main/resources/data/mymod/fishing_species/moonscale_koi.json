@@ -1,0 +1,13 @@
+{
+  "item": "mymod:moonscale_koi",
+  "weight": 5,
+  "difficulty": 4,
+  "behavior": "floater",
+  "min_rod_tier": 3,
+  "dimension": "mymod:feywild",
+  "biomes": [
+    "mymod:feywild_glade",
+    "mymod:feywild_mushroom_wilds"
+  ],
+  "time": "night"
+}

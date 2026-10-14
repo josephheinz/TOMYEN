@@ -1,0 +1,14 @@
+{
+  "item": "mymod:ember_puffer",
+  "weight": 10,
+  "difficulty": 3,
+  "behavior": "floater",
+  "min_rod_tier": 3,
+  "fluid": "lava",
+  "dimension": "minecraft:the_nether",
+  "biomes": [
+    "minecraft:nether_wastes",
+    "minecraft:basalt_deltas",
+    "minecraft:crimson_forest"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:empty_canister",
+    "mymod:fish_oil",
+    "mymod:fish_oil",
+    "mymod:fish_oil",
+    "mymod:fish_oil"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:crude_oil_canister"
+  }
+}

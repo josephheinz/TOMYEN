@@ -1,0 +1,7 @@
+{
+  "parent": "mymod:item/pike",
+  "textures": {
+    "0": "mymod:item/fish/cooked_pike",
+    "particle": "mymod:item/fish/cooked_pike"
+  }
+}

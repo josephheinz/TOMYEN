@@ -1,8 +1,9 @@
 {
-  "amount": 2,
+  "amount": 3,
   "random_sequence": "mymod:trade_set/banker/level_4",
   "trades": [
     "mymod:banker/4/diamond_emerald",
-    "mymod:banker/4/emerald_gold_block"
+    "mymod:banker/4/emerald_gold_block",
+    "mymod:banker/4/starlit_gar_emerald"
   ]
 }

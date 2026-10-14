@@ -1,0 +1,14 @@
+{
+  "item": "mymod:parrotfish",
+  "weight": 18,
+  "difficulty": 2,
+  "behavior": "steady",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "minecraft:warm_ocean",
+    "minecraft:lukewarm_ocean",
+    "minecraft:deep_lukewarm_ocean"
+  ],
+  "time": "day"
+}

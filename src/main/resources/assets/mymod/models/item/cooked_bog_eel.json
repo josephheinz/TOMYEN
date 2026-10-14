@@ -1,0 +1,7 @@
+{
+  "parent": "mymod:item/bog_eel",
+  "textures": {
+    "0": "mymod:item/fish/cooked_bog_eel",
+    "particle": "mymod:item/fish/cooked_bog_eel"
+  }
+}

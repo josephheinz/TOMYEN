@@ -1,0 +1,10 @@
+{
+  "item": "mymod:abyssal_squidling",
+  "weight": 2,
+  "difficulty": 5,
+  "behavior": "thrasher",
+  "min_rod_tier": 4,
+  "dimension": "minecraft:overworld",
+  "biomes": "#minecraft:is_deep_ocean",
+  "time": "night"
+}

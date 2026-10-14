@@ -1,0 +1,9 @@
+{
+  "item": "mymod:glowing_mutant_carp",
+  "weight": 10,
+  "difficulty": 3,
+  "behavior": "thrasher",
+  "min_rod_tier": 1,
+  "dimension": "minecraft:overworld",
+  "max_y": 0
+}

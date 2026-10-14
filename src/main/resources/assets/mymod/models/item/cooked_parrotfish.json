@@ -1,0 +1,7 @@
+{
+  "parent": "mymod:item/parrotfish",
+  "textures": {
+    "0": "mymod:item/fish/cooked_parrotfish",
+    "particle": "mymod:item/fish/cooked_parrotfish"
+  }
+}

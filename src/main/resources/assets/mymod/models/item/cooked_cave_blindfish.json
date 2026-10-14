@@ -1,0 +1,7 @@
+{
+  "parent": "mymod:item/cave_blindfish",
+  "textures": {
+    "0": "mymod:item/fish/cooked_cave_blindfish",
+    "particle": "mymod:item/fish/cooked_cave_blindfish"
+  }
+}

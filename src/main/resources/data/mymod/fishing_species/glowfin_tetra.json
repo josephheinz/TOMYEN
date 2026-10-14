@@ -1,0 +1,21 @@
+{
+  "item": "mymod:glowfin_tetra",
+  "weight": 14,
+  "difficulty": 3,
+  "behavior": "darting",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "minecraft:warm_ocean",
+    "minecraft:lukewarm_ocean",
+    "minecraft:deep_lukewarm_ocean",
+    "minecraft:jungle",
+    "minecraft:bamboo_jungle",
+    "minecraft:sparse_jungle",
+    "minecraft:lush_caves"
+  ],
+  "count": [
+    1,
+    2
+  ]
+}

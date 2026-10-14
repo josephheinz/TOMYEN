@@ -1,0 +1,13 @@
+{
+  "item": "mymod:mackerel",
+  "weight": 30,
+  "difficulty": 1,
+  "behavior": "steady",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": "#minecraft:is_ocean",
+  "count": [
+    1,
+    2
+  ]
+}

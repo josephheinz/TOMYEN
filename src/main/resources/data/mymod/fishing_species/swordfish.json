@@ -1,0 +1,15 @@
+{
+  "item": "mymod:swordfish",
+  "weight": 3,
+  "difficulty": 5,
+  "behavior": "darting",
+  "min_rod_tier": 3,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "minecraft:warm_ocean",
+    "minecraft:lukewarm_ocean",
+    "minecraft:deep_lukewarm_ocean",
+    "minecraft:deep_ocean"
+  ],
+  "time": "day"
+}
