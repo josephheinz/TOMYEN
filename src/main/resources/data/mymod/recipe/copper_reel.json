@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "I": "minecraft:iron_nugget",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    " C ",
+    "CIC",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:copper_reel"
+  }
+}

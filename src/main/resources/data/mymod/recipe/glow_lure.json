@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:glow_ink_sac",
+    "minecraft:iron_nugget",
+    "minecraft:feather"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:glow_lure"
+  }
+}

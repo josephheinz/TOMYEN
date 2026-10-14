@@ -10,6 +10,12 @@
     "mymod:mp5",
     "mymod:mac10",
     "mymod:m1911",
-    "mymod:nose_hair_whip"
+    "mymod:nose_hair_whip",
+    "mymod:bamboo_rod",
+    "mymod:iron_rod",
+    "mymod:steel_rod",
+    "mymod:duralumin_rod",
+    "mymod:magmasteel_rod",
+    "mymod:star_steel_rod"
   ]
 }

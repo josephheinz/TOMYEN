@@ -14,6 +14,7 @@ import com.jheinz.mymod.alien.Aliens;
 import com.jheinz.mymod.bank.Banking;
 import com.jheinz.mymod.cathode.CathodeWalkers;
 import com.jheinz.mymod.fae.Fae;
+import com.jheinz.mymod.fishing.Fishing;
 import com.jheinz.mymod.dragonscale.Dragonscales;
 import com.jheinz.mymod.fishing.fish.Fishes;
 import com.jheinz.mymod.drill.Drills;
@@ -107,6 +108,7 @@ public class MyMod implements ModInitializer {
 		EnergyWeapons.initialize();
 		Aliens.initialize();
 		Fishes.initialize();
+		Fishing.initialize();
 		linkBlockItems();
 	}
 

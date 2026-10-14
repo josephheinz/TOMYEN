@@ -2537,5 +2537,121 @@
     "sounds": [
       "mymod:revolver_hammer"
     ]
+  },
+  "fishing_reel_click": {
+    "subtitle": "subtitles.mymod.fishing_reel_click",
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "volume": 0.5,
+        "pitch": 1.5
+      }
+    ]
+  },
+  "fishing_line_creak": {
+    "subtitle": "subtitles.mymod.fishing_line_creak",
+    "sounds": [
+      {
+        "name": "minecraft:item/crossbow/loading_middle1",
+        "volume": 0.6,
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle2",
+        "volume": 0.6,
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle3",
+        "volume": 0.6,
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle4",
+        "volume": 0.6,
+        "pitch": 1.4
+      }
+    ]
+  },
+  "fishing_hooked": {
+    "subtitle": "subtitles.mymod.fishing_hooked",
+    "sounds": [
+      {
+        "name": "minecraft:entity/fish/flop1"
+      },
+      {
+        "name": "minecraft:entity/fish/flop2"
+      },
+      {
+        "name": "minecraft:entity/fish/flop3"
+      },
+      {
+        "name": "minecraft:entity/fish/flop4"
+      }
+    ]
+  },
+  "fishing_catch": {
+    "subtitle": "subtitles.mymod.fishing_catch",
+    "sounds": [
+      {
+        "name": "minecraft:random/splash",
+        "volume": 0.8,
+        "pitch": 1.15
+      }
+    ]
+  },
+  "fishing_line_snap": {
+    "subtitle": "subtitles.mymod.fishing_line_snap",
+    "sounds": [
+      {
+        "name": "minecraft:random/break",
+        "volume": 0.9,
+        "pitch": 1.6
+      }
+    ]
+  },
+  "fishing_escape": {
+    "subtitle": "subtitles.mymod.fishing_escape",
+    "sounds": [
+      {
+        "name": "minecraft:entity/fish/swim1"
+      },
+      {
+        "name": "minecraft:entity/fish/swim2"
+      },
+      {
+        "name": "minecraft:entity/fish/swim3"
+      },
+      {
+        "name": "minecraft:entity/fish/swim4"
+      }
+    ]
+  },
+  "fishing_strike_hit": {
+    "subtitle": "subtitles.mymod.fishing_strike_hit",
+    "sounds": [
+      {
+        "name": "minecraft:note/pling",
+        "volume": 0.6
+      }
+    ]
+  },
+  "fishing_strike_miss": {
+    "subtitle": "subtitles.mymod.fishing_strike_miss",
+    "sounds": [
+      {
+        "name": "minecraft:note/bass",
+        "volume": 0.7
+      }
+    ]
+  },
+  "fishing_sonar": {
+    "subtitle": "subtitles.mymod.fishing_sonar",
+    "sounds": [
+      {
+        "name": "minecraft:note/bell",
+        "volume": 0.5
+      }
+    ]
   }
 }

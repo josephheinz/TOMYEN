@@ -23,6 +23,11 @@
 		{
 			"config": "mymod.client.mixins.json",
 			"environment": "client"
+		},
+		"mymod.fishing.mixins.json",
+		{
+			"config": "mymod.fishing.client.mixins.json",
+			"environment": "client"
 		}
 	],
 	"depends": {
