@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    "mymod:brook_trout",
+    "mymod:mud_catfish",
+    "mymod:pike",
+    "mymod:mackerel",
+    "mymod:swordfish",
+    "mymod:anglerfish",
+    "mymod:glowfin_tetra",
+    "mymod:parrotfish",
+    "mymod:ice_char",
+    "mymod:bog_eel",
+    "mymod:cave_blindfish",
+    "mymod:sculk_gulper",
+    "mymod:pixie_minnow",
+    "mymod:moonscale_koi",
+    "mymod:magma_eel",
+    "mymod:ember_puffer",
+    "mymod:glowing_mutant_carp",
+    "mymod:starlit_gar",
+    "mymod:abyssal_squidling",
+    "mymod:ghoulfish"
+  ]
+}

@@ -49,6 +49,7 @@ import com.jheinz.mymod.client.exoskeleton.ExoskeletonRenderer;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonScreen;
 import com.jheinz.mymod.client.fae.FaeClient;
 import com.jheinz.mymod.client.fishing.FishingClient;
+import com.jheinz.mymod.client.fishing.fish.FishEntitiesClient;
 import com.jheinz.mymod.client.hogfire.HogfireClient;
 import com.jheinz.mymod.client.schnozzle.SchnozzleClient;
 import com.jheinz.mymod.client.skullcrane.SkullcraneClient;
@@ -160,5 +161,6 @@ public class MyModClient implements ClientModInitializer {
 		AlienClient.initialize();
 		EnergyClient.initialize();
 		FishingClient.initialize();
+		FishEntitiesClient.initialize();
 	}
 }
