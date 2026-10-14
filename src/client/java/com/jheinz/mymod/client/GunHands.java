@@ -96,8 +96,8 @@ public final class GunHands {
 			// The shooting hand on the pistol grip, the off hand under the emitter shroud (tools/gen_energy_weapons.py).
 			return rifle(-0.022f, 0.119f, 0.156f, 0.050f, 0.188f, -0.355f);
 		} else if (gun == EnergyWeapons.RAILGUN) {
-			// The off hand under the rails, between the coils.
-			return rifle(-0.022f, 0.119f, 0.156f, 0.045f, 0.153f, -0.321f);
+			// The shooting hand on the pistol grip, the off hand on the forward grip under the lower rail.
+			return rifle(-0.0845f, 0.1377f, 0.156f, -0.1308f, 0.1291f, -0.2843f);
 		} else if (gun == ModItems.GLOCK || gun == ModItems.M1911 || gun == ModItems.REVOLVER_357 || gun == EnergyWeapons.RAY_GUN) {
 			return pistol(-0.020f, 0.131f, -0.181f);
 		}

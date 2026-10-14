@@ -90,6 +90,9 @@ public final class GunAim {
 		} else if (gun == EnergyWeapons.LASER_RIFLE) {
 			// Its built-in sight (tools/gen_energy_weapons.py).
 			return new Mount(4.0f, 11.4f, NO_LIMIT);
+		} else if (gun == EnergyWeapons.RAILGUN) {
+			// Its holo sight's base (tools/gen_energy_weapons.py). Sneaking normally looks through the railgun's scope instead.
+			return new Mount(4.6f, 14.4f, NO_LIMIT);
 		}
 		return null;
 	}
@@ -110,6 +113,9 @@ public final class GunAim {
 		} else if (gun == EnergyWeapons.LASER_RIFLE) {
 			// The middle of its sight's window.
 			return new Optic(1.4f, 0.2f);
+		} else if (gun == EnergyWeapons.RAILGUN) {
+			// The middle of its holo sight's glass.
+			return new Optic(1.2f, 0.8f);
 		}
 		return null;
 	}
