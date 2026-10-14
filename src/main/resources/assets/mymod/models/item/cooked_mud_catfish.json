@@ -1,7 +1,6 @@
 {
-  "parent": "mymod:item/mud_catfish",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "0": "mymod:item/fish/cooked_mud_catfish",
-    "particle": "mymod:item/fish/cooked_mud_catfish"
+    "layer0": "mymod:item/fish/cooked_mud_catfish"
   }
 }

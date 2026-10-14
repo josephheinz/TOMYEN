@@ -1,7 +1,6 @@
 {
-  "parent": "mymod:item/cave_blindfish",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "0": "mymod:item/fish/cooked_cave_blindfish",
-    "particle": "mymod:item/fish/cooked_cave_blindfish"
+    "layer0": "mymod:item/fish/cooked_cave_blindfish"
   }
 }
