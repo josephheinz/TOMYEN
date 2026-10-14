@@ -24,6 +24,7 @@ import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.energy.EnergyBeam;
 import com.jheinz.mymod.energy.EnergyWeaponItem;
 import com.jheinz.mymod.energy.LaserRifleItem;
+import com.jheinz.mymod.energy.RailgunAim;
 import com.jheinz.mymod.energy.RailgunItem;
 
 /**
@@ -42,6 +43,7 @@ public final class EnergyClient {
 
 	public static void initialize() {
 		ClientPlayNetworking.registerGlobalReceiver(EnergyBeam.TYPE, (payload, context) -> EnergyBeams.receive(payload));
+		RailgunAim.sender = ClientPlayNetworking::send;
 		LevelRenderEvents.COLLECT_SUBMITS.register(EnergyBeams::submit);
 		RangeSelectItemModelProperties.ID_MAPPER.put(MyMod.id("energy_glow"), Glow.MAP_CODEC);
 	}

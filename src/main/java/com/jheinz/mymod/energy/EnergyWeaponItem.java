@@ -104,7 +104,11 @@ public abstract class EnergyWeaponItem extends GunItem {
 
 	/** Where a shot leaves the gun, roughly, for everyone else's view of the beam: low and off to the holding hand. */
 	public static Vec3 muzzle(LivingEntity shooter) {
-		Vec3 look = shooter.getViewVector(1.0f);
+		return muzzle(shooter, shooter.getViewVector(1.0f));
+	}
+
+	/** Where a shot along {@code look} leaves the gun. */
+	public static Vec3 muzzle(LivingEntity shooter, Vec3 look) {
 		Vec3 right = new Vec3(-look.z, 0.0, look.x);
 		right = right.lengthSqr() < 1.0e-6 ? new Vec3(1.0, 0.0, 0.0) : right.normalize();
 		double side = shooter.getMainArm() == HumanoidArm.LEFT ? -1.0 : 1.0;
@@ -116,9 +120,17 @@ public abstract class EnergyWeaponItem extends GunItem {
 		if (spread <= 0.0f) {
 			return shooter.getViewVector(1.0f);
 		}
+		return aim(shooter, spread, shooter.getXRot(), shooter.getYRot());
+	}
+
+	/** An aim along the given rotation (degrees), strayed within a cone {@code spread} degrees across. */
+	public static Vec3 aim(LivingEntity shooter, float spread, float xRot, float yRot) {
+		if (spread <= 0.0f) {
+			return Vec3.directionFromRotation(xRot, yRot);
+		}
 		float radius = spread * (float) Math.sqrt(shooter.getRandom().nextFloat());
 		float angle = shooter.getRandom().nextFloat() * Mth.TWO_PI;
-		return Vec3.directionFromRotation(shooter.getXRot() + radius * Mth.sin(angle), shooter.getYRot() + radius * Mth.cos(angle));
+		return Vec3.directionFromRotation(xRot + radius * Mth.sin(angle), yRot + radius * Mth.cos(angle));
 	}
 
 	/** The spread for a shot this player fires now, with its bloom (see {@link GunSpread}). */

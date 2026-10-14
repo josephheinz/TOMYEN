@@ -122,6 +122,7 @@ public final class EnergyWeapons {
 
 	public static void initialize() {
 		PayloadTypeRegistry.clientboundPlay().register(EnergyBeam.TYPE, EnergyBeam.CODEC);
+		RailgunAim.register();
 		CreativeModeTabEvents.modifyOutputEvent(COMBAT_TAB).register(output -> {
 			output.insertAfter(Napalm.FLAMETHROWER_WAND, LASER_RIFLE, LASER_EMITTER, LASER_RIFLE_HOUSING, RAILGUN, RAILGUN_RAILS, RAY_GUN);
 			output.insertBefore(Items.SPECTRAL_ARROW, URANIUM_POWER_CELL, TUNGSTEN_RAIL_SLUG, STEEL_RAIL_SLUG);

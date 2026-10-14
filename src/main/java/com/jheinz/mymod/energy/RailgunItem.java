@@ -136,6 +136,9 @@ public class RailgunItem extends EnergyWeaponItem {
 			return InteractionResult.FAIL;
 		}
 		player.startUsingItem(hand);
+		if (player instanceof ServerPlayer serverPlayer) {
+			RailgunAim.clear(serverPlayer);
+		}
 		if (!level.isClientSide()) {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), EnergyWeapons.RAILGUN_CHARGE, SoundSource.PLAYERS, 0.9f,
 					CHARGE_TICKS / (float) chargeTicks(player));
@@ -158,6 +161,8 @@ public class RailgunItem extends EnergyWeaponItem {
 		}
 		player.stopUsingItem();
 		if (level.isClientSide()) {
+			// Report the aim before the kick turns the view: the kicked rotation reaches the server first otherwise.
+			RailgunAim.sender.accept(new RailgunAim(player.getXRot(), player.getYRot()));
 			GunRecoil.queue(player, 1, stats(gun, player));
 		} else {
 			fire((ServerLevel) level, player, gun);
@@ -178,7 +183,10 @@ public class RailgunItem extends EnergyWeaponItem {
 			return;
 		}
 		boolean tungsten = slug.item() == EnergyWeapons.TUNGSTEN_RAIL_SLUG;
-		Vec3 look = aim(player, spread(player, stats(gun, player)));
+		// Along the aim from the instant the charge completed, before the recoil kicked the view (see RailgunAim).
+		RailgunAim shot = player instanceof ServerPlayer serverPlayer ? RailgunAim.take(serverPlayer)
+				: new RailgunAim(player.getXRot(), player.getYRot());
+		Vec3 look = aim(player, spread(player, stats(gun, player)), shot.xRot(), shot.yRot());
 		Vec3 end = trace(level, player, player.getEyePosition(), look, stats().range(), slug.pierce(), tungsten ? 3 : 1, true,
 				(target, at) -> {
 					target.hurtServer(level, damage(level, slug.damageType(), player), slug.damage());
@@ -186,7 +194,7 @@ public class RailgunItem extends EnergyWeaponItem {
 						living.push(look.x * 0.8, 0.15, look.z * 0.8);
 					}
 				});
-		Vec3 muzzle = muzzle(player);
+		Vec3 muzzle = muzzle(player, Vec3.directionFromRotation(shot.xRot(), shot.yRot()));
 		EnergyBeam.send(level, player, muzzle, end, BEAM_COLOR, 0.45f, 700);
 		level.sendParticles(ColorParticleOption.create(ParticleTypes.FLASH, 0xFFC8DCFF), muzzle.x, muzzle.y, muzzle.z, 1, 0.0, 0.0, 0.0, 0.0);
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), EnergyWeapons.RAILGUN_SHOT, SoundSource.PLAYERS, 1.6f,
