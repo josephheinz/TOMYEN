@@ -6,15 +6,17 @@ and shot, the alien zap; with ffmpeg on the path) and the re-pitched vanilla one
 
 Model space is in pixels: each gun's bore runs along z at x = 8 with the muzzle toward -z, +x its right. GunDisplay,
 GunHands and GunAim mirror the first-person transforms, grip points and sight printed at the end, so move them
-together. Clean flat paint, one smooth ramp per material, no speckle.
+together. Clean flat paint, one smooth ramp per material, no speckle. The Railgun and its glow layers are also checked
+for z-fighting in world space (tools/coplanar.py), whatever their cubes' rotations.
 
 Usage: python3 tools/gen_energy_weapons.py src/main/resources/assets/mymod"""
 import json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave
 from collections import OrderedDict
 
 sys.path.insert(0, os.path.dirname(__file__))
-from gunkit import (Kit, check, move, rotate, rx, write, model, ref, range_dispatch, composite, display, display_matrix, placed,
-                    centred, bounds_centre, DIAGONAL, png, mix, sprite)
+from gunkit import (Kit, check, move, rotate, rx, rz, mul, apply, look, write, model, ref, range_dispatch, composite, display,
+                    display_matrix, placed, centred, bounds_centre, DIAGONAL, png, mix, sprite)
+from coplanar import check_elements
 
 ASSETS = sys.argv[1]
 TEX = os.path.join(ASSETS, "textures")
@@ -180,74 +182,396 @@ write(os.path.join(ITEMS, "laser_rifle_housing.json"), {"model": ref("laser_rifl
 report("laser_rifle", laser_displays, L_GRIP, L_SUPPORT, f"; sight window {L_SIGHT}, mount front 4.0 top 11.4")
 
 # ======================================================================================================= railgun
-R = Kit("railgun", "item/railgun", seed=1908)
-R.swatch("alloy", 0, 0, 4, 4, ramp(R, 0x857AA6, 0x4C4468))
-R.swatch("alloy_dark", 4, 0, 8, 4, flat(R, 0x2E2840))
-R.swatch("duralumin", 8, 0, 12, 4, ramp(R, 0xD3D9DF, 0xA5ADB6))
-R.swatch("tungsten", 12, 0, 16, 4, ramp(R, 0x50555C, 0x33373C))
-R.swatch("copper", 0, 4, 4, 8, ramp(R, 0xE39256, 0xA65A2A))
-R.swatch("rubber", 4, 4, 8, 8, flat(R, 0x1E1F21))
-R.swatch("reactor", 8, 4, 12, 8, glow_disc(R, 0xF0FFE6, 0x58D838), picture=True)
-R.swatch("glass", 12, 4, 16, 8, glow_disc(R, 0x9AD8FF, 0x1A2A40), picture=True)
-R.swatch("charge_1", 0, 8, 4, 12, ramp(R, 0x8CB8FF, 0x4C78E0))
-R.swatch("charge_2", 4, 8, 8, 12, ramp(R, 0xD8ECFF, 0x8CB8FF))
-R.swatch("charge_3", 8, 8, 12, 12, ramp(R, 0xFFFFFF, 0xD8ECFF))
+# Two heavy rails run forward from a stepped receiver with an open gap between them. The inner faces of both rails
+# carry long raked combs of polished armature fins (copper above, silver below) over copper windings; at the back of
+# the gap, seen through a window cut in the yoke that joins the rails, sits the Alien Reactor's ring core, glowing
+# red-orange (brighter as the rails charge). Chunky end caps with ports at the muzzle, a holo sight on top, a pistol
+# grip and a forward grip, a laser module under the lower rail, and a thick rounded shoulder stock with a gold strut.
+# Gunmetal and graphite with crisp bright bevels, gold trim, copper discs.
+R = Kit("railgun", "item/railgun", seed=1908, size=128)
+
+
+def bands(k, rows):
+    """A picture of horizontal bands, top to bottom: rows is a list of (fraction of the height, colour or (top, bottom)
+    ramp)."""
+    def f(x, y, w, h):
+        t, start = (y + 0.5) / h, 0.0
+        for i, (frac, c) in enumerate(rows):
+            if t <= start + frac or i == len(rows) - 1:
+                if isinstance(c, tuple):
+                    return k.rgb(mix(c[0], c[1], min(1.0, max(0.0, (t - start) / frac))))
+                return k.rgb(c)
+            start += frac
+    return f
+
+
+def disc(k, rings, bg=None):
+    """A round picture: rings is a list of (outer radius as a fraction of the half-width, colour or (inner, outer)
+    ramp); outside the last ring it's bg (transparent if None)."""
+    def f(x, y, w, h):
+        r = math.hypot(x - (w - 1) / 2, y - (h - 1) / 2) / (w / 2)
+        inner = 0.0
+        for outer, c in rings:
+            if r <= outer:
+                if isinstance(c, tuple):
+                    return k.rgb(mix(c[0], c[1], (r - inner) / max(1e-6, outer - inner)))
+                return k.rgb(c)
+            inner = outer
+        return (0, 0, 0, 0) if bg is None else k.rgb(bg)
+    return f
+
+
+GM_HI, GM_TOP, GM_BOT, GM_LO = 0xA9B0B8, 0x5E656D, 0x40454C, 0x24272B   # gunmetal
+GR_TOP, GR_BOT = 0x3A3E44, 0x272A2F                                    # graphite
+GOLD_HI, GOLD_TOP, GOLD_BOT, GOLD_LO = 0xFFF0B0, 0xE8BE4E, 0xB48A28, 0x6E5216
+CU_TOP, CU_BOT = 0xEFA06A, 0xA65A2A
+AG_HI, AG_TOP, AG_BOT = 0xFFFFFF, 0xE6EAEE, 0x9EA6B0                   # polished silver
+
+# Row 0: the metals.
+R.swatch("gunmetal", 0, 0, 2, 2, ramp(R, GM_TOP, GM_BOT))
+R.swatch("gunmetal_panel", 2, 0, 4, 2, bands(R, [(0.07, GM_HI), (0.83, (GM_TOP, GM_BOT)), (0.10, GM_LO)]), picture=True)
+R.swatch("graphite", 4, 0, 6, 2, ramp(R, GR_TOP, GR_BOT))
+R.swatch("graphite_panel", 6, 0, 8, 2, bands(R, [(0.08, 0x7C838C), (0.82, (GR_TOP, GR_BOT)), (0.10, 0x18191C)]), picture=True)
+R.swatch("edge", 8, 0, 10, 2, ramp(R, 0xC8CFD6, 0x969EA8))
+R.swatch("gold", 10, 0, 12, 2, ramp(R, GOLD_TOP, GOLD_BOT))
+R.swatch("gold_panel", 12, 0, 14, 2, bands(R, [(0.12, GOLD_HI), (0.76, (GOLD_TOP, GOLD_BOT)), (0.12, GOLD_LO)]), picture=True)
+R.swatch("copper", 14, 0, 16, 2, ramp(R, CU_TOP, CU_BOT))
+# Row 1: fins, rubber, discs, ports, the sight's glass, the laser's lens, vents.
+R.swatch("silver", 0, 2, 2, 4, ramp(R, AG_TOP, AG_BOT))
+R.swatch("fin_face", 2, 2, 4, 4, bands(R, [(0.10, AG_HI), (0.80, (AG_TOP, AG_BOT)), (0.10, 0x6A727C)]), picture=True)
+# Polished copper for the upper fins: brighter than the windings, so they still shine facing down.
+CU_HI_TOP, CU_HI_BOT = 0xFFC898, 0xD27A40
+R.swatch("copper_fin", 14, 8, 16, 10, bands(R, [(0.10, 0xFFF0E0), (0.80, (CU_HI_TOP, CU_HI_BOT)), (0.10, 0x7A3C18)]), picture=True)
+R.swatch("copper_hi", 8, 10, 10, 12, ramp(R, CU_HI_TOP, CU_HI_BOT))
+R.swatch("rubber", 4, 2, 6, 4, ramp(R, 0x3A3D42, 0x26282C))
+R.swatch("copper_disc", 6, 2, 8, 4, disc(R, [(0.28, (0xFFD2A8, 0xE39256)), (0.42, 0x5A2E14), (0.82, (0xEFA06A, 0xA65A2A)),
+                                               (1.0, 0x2A2C30)], bg=GR_BOT), picture=True)
+R.swatch("port", 8, 2, 10, 4, disc(R, [(0.22, (0x8A949E, 0x50575F)), (0.36, 0x16171A), (0.62, (0x2E3238, 0x1E2024)),
+                                        (0.74, 0x9AA2AC), (1.0, (GR_TOP, GR_BOT))], bg=GR_BOT), picture=True)
+
+
+def reticle(x, y, w, h):
+    """The holo sight's glass: a thin dark frame, clear, an amber ring and dot in the middle."""
+    if x == 0 or y == 0 or x == w - 1 or y == h - 1:
+        return R.rgb(0x1C1D20)
+    r = math.hypot(x - (w - 1) / 2, y - (h - 1) / 2)
+    if r <= 0.8 or 3.2 <= r <= 4.0:
+        return R.rgb(0xFFB040)
+    return (0, 0, 0, 0)
+
+
+R.swatch("reticle", 10, 2, 12, 4, reticle, picture=True)
+R.swatch("laser_lens", 12, 2, 14, 4, disc(R, [(0.35, (0xFFF0E0, 0xFF6040)), (0.75, (0xFF4020, 0xA01808)), (1.0, 0x16171A)], bg=0x16171A),
+         picture=True)
+R.swatch("vent", 14, 2, 16, 4, lambda x, y, w, h: R.rgb(0xB9C0C8 if (x + y) % 4 < 2 else 0x1C1D20), picture=True)
+# Row 2: the core's glow, idle and charging, its dark eye, the gold chevrons, a knurled ring, the receiver's slits.
+CORE = [(0xF04818, 0x9C1E08), (0xFF7A2A, 0xE0400E), (0xFFB050, 0xFF6A1E), (0xFFF4D8, 0xFFB050)]
+for i, (top, bottom) in enumerate(CORE):
+    R.swatch("core_%d" % i, 2 * i, 4, 2 * i + 2, 6, ramp(R, top, bottom))
+R.swatch("core_eye", 8, 4, 10, 6, disc(R, [(0.42, (0x0E0F11, 0x1E0A06)), (0.56, (0x5A1606, 0x8A2408))]), picture=True)
+
+
+def chevron(x, y, w, h):
+    """Two gold chevrons pointing forward (toward u = 0)."""
+    t = abs((y + 0.5) / h - 0.5) * 2              # 0 at the middle row, 1 at the top and bottom
+    for start in (0.12, 0.52):
+        u = (x + 0.5) / w - start - 0.18 * t
+        if 0 <= u <= 0.2:
+            return R.rgb(mix(GOLD_HI, GOLD_BOT, u / 0.2 * 0.7 + 0.3 * t))
+    return (0, 0, 0, 0)
+
+
+R.swatch("chevron", 10, 4, 12, 6, chevron, picture=True)
+R.swatch("knurl", 12, 4, 14, 6, lambda x, y, w, h: R.rgb(0x7E868F if (x // 2 + y // 2) % 2 else 0x2A2C30), picture=True)
+R.swatch("dark", 14, 4, 16, 6, ramp(R, 0x1C1D20, 0x121315))
+
+
+def arc(level):
+    """A crackling arc between the rails, seen side on: a jagged white-hot line in an orange halo; clear elsewhere."""
+    jag = random.Random(5)
+    pts, u = [(0.0, 0.5)], 0.0
+    while u < 0.95:
+        u = min(1.0, u + jag.uniform(0.025, 0.07))
+        pts.append((u, min(0.8, max(0.2, pts[-1][1] + jag.uniform(-0.22, 0.22)))))
+    pts.append((1.0, 0.5))
+
+    def f(x, y, w, h):
+        u = (x + 0.5) / w
+        for (u0, v0), (u1, v1) in zip(pts, pts[1:]):
+            if u0 <= u <= u1:
+                v = v0 + (v1 - v0) * (u - u0) / (u1 - u0)
+                break
+        d = abs((y + 0.5) - v * h)
+        core, halo = (0.9, 2.2) if level else (0.6, 1.6)
+        if d <= core:
+            return R.rgb(0xFFFFFF if level else 0xFFE0B0)
+        if d <= halo:
+            return R.rgb(mix(0xFFC070, 0xFF5A1A, (d - core) / (halo - core)) if level else mix(0xFF9040, 0xE0400E, (d - core) / (halo - core)))
+        return (0, 0, 0, 0)
+    return f
+
+
+R.swatch("arc_dim", 0, 6, 8, 8, arc(0), picture=True)
+R.swatch("arc_hot", 8, 6, 16, 8, arc(1), picture=True)
+
+def ring_band(level, along_u):
+    """A core ring's rim: brightest round its middle, darker toward its front and back edges (across u on the faces
+    whose u runs along the bore, across v on the others)."""
+    top, bottom = CORE[level]
+    edge = mix(bottom, 0x3A0C04, 0.45)
+
+    def f(x, y, w, h):
+        t = (x + 0.5) / w if along_u else (y + 0.5) / h
+        d = abs(t - 0.5) * 2
+        return R.rgb(mix(top, bottom, d / 0.7) if d < 0.7 else mix(bottom, edge, (d - 0.7) / 0.3))
+    return f
+
+
+for i in range(4):
+    R.swatch("ring_u_%d" % i, 2 * i, 12, 2 * i + 2, 14, ring_band(i, True), picture=True)
+    R.swatch("ring_v_%d" % i, 8 + 2 * i, 12, 10 + 2 * i, 14, ring_band(i, False), picture=True)
+
+
+def cap_face(w_px, h_px, r_px, port_at, holes_at, port_r, gold=False):
+    """A muzzle cap's front, as one picture over the whole face: graphite with the bevelled corners cut away (clear), a
+    round port (a bright rim, a dark gap, a lens) and two small dark holes. Positions are fractions of the face."""
+    def f(x, y, w, h):
+        fx, fy = (x + 0.5) / w, (y + 0.5) / h
+        ex, ey = min(fx, 1 - fx) * w_px, min(fy, 1 - fy) * h_px
+        if ex + ey < r_px - 0.05:
+            return (0, 0, 0, 0)
+        px, py = fx * w_px, fy * h_px
+        d = math.hypot(px - port_at[0] * w_px, py - port_at[1] * h_px) / port_r
+        if d <= 1.0:
+            for outer, c in ((0.3, (0xC8D0D8, 0x7A848E)), (0.45, 0x2A2E34), (0.62, 0x101113), (0.8, (0x3A3E44, 0x24272B)), (1.0, 0xB8C0C8)):
+                if d <= outer:
+                    return R.rgb(c if not isinstance(c, tuple) else mix(c[0], c[1], d / outer))
+        for hx, hy in holes_at:
+            dh = math.hypot(px - hx * w_px, py - hy * h_px)
+            if dh <= 0.32:
+                return R.rgb(0x101113)
+            if dh <= 0.42:
+                return R.rgb(0x8A929C)
+        if gold and (fy > 0.86 or (fy > 0.55 and min(fx, 1 - fx) * w_px < 0.32)):
+            return R.rgb(mix(GOLD_HI, GOLD_BOT, min(1.0, abs(fy - 0.9) * 4 + abs(fx - 0.5))))   # the gold U-band
+        if ex + ey < r_px + 0.18:
+            return R.rgb(0x8E969F)                    # a bright line along the bevels' edge
+        return R.rgb(mix(0x464B52, 0x2A2D32, fy))
+    return f
+
+
+R.swatch("upper_face", 0, 8, 4, 12, cap_face(3.4, 3.5, 0.7, (0.5, 0.42), ((0.25, 0.83), (0.75, 0.83)), 1.15), picture=True)
+R.swatch("lower_face", 4, 8, 8, 12, cap_face(3.8, 4.2, 0.8, (0.5, 0.62), ((0.27, 0.2), (0.73, 0.2)), 1.2, gold=True), picture=True)
+R.swatch("rubber_panel", 10, 8, 12, 10, bands(R, [(0.06, 0x6A6E75), (0.88, (0x3A3D42, 0x26282C)), (0.06, 0x141517)]), picture=True)
+
+
+def inset(x, y, w, h):
+    """A recessed panel: a lit lower-right lip, a shadowed upper-left one, a flat darker field."""
+    if x == 0 or y == 0:
+        return R.rgb(0x16171A)
+    if x == w - 1 or y == h - 1:
+        return R.rgb(0x8A929C)
+    return R.rgb(mix(0x34383E, 0x2A2D32, y / (h - 1)))
+
+
+R.swatch("inset", 12, 8, 14, 10, inset, picture=True)
+R.swatch("armour", 8, 8, 10, 10, bands(R, [(0.05, 0x9AA2AC), (0.9, (0x464B52, 0x2C2F34)), (0.05, 0x16171A)]), picture=True)
 R.save(TEX)
 
-R_GRIP = (8.0, 5.6, 9.4)
-R_SUPPORT = (8.0, 6.7, -6.0)
-R_COILS = (-13.0, -8.8, -4.6)
+RX0, RX1 = 6.7, 9.3            # the upper rail, side to side
+LX0, LX1 = 6.5, 9.5            # the lower rail
+UY0, UY1 = 11.4, 14.0          # the upper rail, bottom and top
+LY0, LY1 = 4.0, 7.0            # the lower rail
+MUZZLE = -15.8
+CAP_BACK = -13.2               # the muzzle caps' back
+RAIL_BACK = 0.4                # where the rails run into the yoke
+YOKE_BACK = 4.4                # the yoke's back, the receiver's front
+FIN_Z = (-12.8, -0.2)          # the fin combs
+FIN_PITCH, FIN_T, FIN_D = 0.62, 0.26, 1.25
+FIN_RAKE = 20                  # the fins lean back, their tips toward the receiver
+CORE_Y, CORE_R = 9.2, 1.72
+CORE_RINGS = ((1.1, 1.6), (2.05, 2.55), (3.0, 3.5))
+ARMOUR = ((4.4, 4.95), (5.5, 6.05), (6.6, 7.15))
+SLITS = ((4.95, 5.5), (6.05, 6.6))
+STOCK = 10.4                   # the receiver's back, the stock's front
+BUTT = 15.8
+R_GRIP = (8.0, 2.9, 9.6)
+R_SUPPORT = (8.0, 2.6, -5.8)
+R_SIGHT = (8.0, 15.6, 5.4)     # the middle of the holo sight's glass
+R_SIGHT_MOUNT = (4.6, 14.4)    # the sight base's front (z) and the top it stands on (y)
 
 
-def rails():
+def bevel(out, x0, y0, z0, x1, y1, z1, r, side, top=None, bottom=None, cap=None, edge="edge", name=None, caps=(True, True),
+          lower=True):
+    """A box along z with its long edges bevelled at 45 degrees by r (the lower two only if lower), the bevels in a
+    bright edge material so every long edge catches a crisp highlight. Faces hidden inside are left off."""
+    cap = cap or side
+    ends = dict(north=cap if caps[0] else None, south=cap if caps[1] else None)
+    R.box(out, x0 + r, y0, z0, x1 - r, y1, z1, side, name=name, up=top or side, down=bottom or side, east=None, west=None, **ends)
+    sy0 = y0 + r if lower else y0
+    R.box(out, x0, sy0, z0, x0 + r, y1 - r, z1, side, up=None, down=None if lower else bottom or side, east=None, **ends)
+    R.box(out, x1 - r, sy0, z0, x1, y1 - r, z1, side, up=None, down=None if lower else bottom or side, west=None, **ends)
+    h = r / math.sqrt(2)
+    for cx, cy in ((x0 + r, y0 + r), (x1 - r, y0 + r), (x0 + r, y1 - r), (x1 - r, y1 - r)):
+        if cy < (y0 + y1) / 2 and not lower:
+            continue
+        R.box(out, cx - h, cy - h, z0 + 0.02, cx + h, cy + h, z1 - 0.02, edge, rot=("z", 45, (cx, cy, z0)), north=None, south=None)
+
+
+def both_sides(out, x0, x1, y0, z0, y1, z1, mat, emit=False, gap=0.03):
+    """The same decal on the west face at x0 and the east face at x1, standing gap proud."""
+    R.sticker(out, x0 - gap - 0.01, y0, z0, x0 - gap, y1, z1, mat, "west", emit=emit)
+    R.sticker(out, x1 + gap, y0, z0, x1 + gap + 0.01, y1, z1, mat, "east", emit=emit)
+
+
+def rail_assembly():
+    """Both rails with their fin combs and muzzle caps: the Railgun Rails part, and the front of the gun."""
     out = []
-    R.box(out, 7.1, 10.2, -15.5, 8.9, 11.0, -0.6, "tungsten", name="top_rail")
-    R.box(out, 7.1, 7.0, -15.5, 8.9, 7.8, -0.6, "tungsten", name="bottom_rail")
-    for z in R_COILS:
-        R.box(out, 6.4, 6.6, z, 9.6, 11.4, z + 1.4, "copper", name="coil")
-    R.box(out, 6.7, 6.8, -3.4, 9.3, 11.2, -1.0, "duralumin", name="rail_frame")
+    # The rails: heavy bevelled bars, the panel picture giving each side a lit top edge and a dark foot.
+    bevel(out, RX0, UY0, CAP_BACK, RX1, UY1, RAIL_BACK, 0.5, "gunmetal_panel", top="gunmetal", bottom="graphite",
+          name="upper_rail", caps=(False, True))
+    bevel(out, LX0, LY0, CAP_BACK, LX1, LY1, RAIL_BACK, 0.5, "gunmetal_panel", top="graphite", bottom="graphite",
+          name="lower_rail", caps=(False, True), lower=False)
+    # The copper windings the fins stand on.
+    R.box(out, 7.3, UY0 - 0.4, FIN_Z[0] - 0.3, 8.7, UY0, FIN_Z[1] + 0.3, "copper", name="upper_winding", up=None)
+    R.box(out, 7.2, LY1, FIN_Z[0] - 0.3, 8.8, LY1 + 0.4, FIN_Z[1] + 0.3, "copper", name="lower_winding", down=None)
+    # The fin combs: polished plates closely spaced like a radiator, reaching halfway into the gap and raked back;
+    # copper above, silver below.
+    n = int((FIN_Z[1] - FIN_Z[0] - FIN_T) / FIN_PITCH) + 1
+    for i in range(n):
+        z = FIN_Z[0] + i * FIN_PITCH
+        mid = z + FIN_T / 2
+        R.box(out, 7.0, UY0 - FIN_D, z, 9.0, UY0 + 0.1, z + FIN_T, "copper_hi", north="copper_fin", south="copper_fin", up=None,
+              rot=("x", -FIN_RAKE, (8.0, UY0, mid)), name="upper_fin" if i == 0 else None)
+        R.box(out, 6.9, LY1 - 0.1, z, 9.1, LY1 + FIN_D, z + FIN_T, "silver", north="fin_face", south="fin_face", down=None,
+              rot=("x", FIN_RAKE, (8.0, LY1, mid)), name="lower_fin" if i == 0 else None)
+    # The muzzle caps: chunky and bevelled, their fronts one picture each (ports, holes); gold trim under the lower one.
+    bevel(out, 6.3, 11.0, MUZZLE, 9.7, 14.5, CAP_BACK, 0.7, "graphite_panel", top="gunmetal", bottom="graphite",
+          cap="graphite", name="upper_cap", caps=(False, True))
+    R.sticker(out, 6.3, 11.0, MUZZLE, 9.7, 14.5, MUZZLE + 0.01, "upper_face", "north", name="upper_face")
+    bevel(out, 6.1, 3.3, MUZZLE, 9.9, 7.5, CAP_BACK, 0.8, "graphite_panel", top="graphite", bottom="graphite",
+          cap="graphite", name="lower_cap", caps=(False, True))
+    R.sticker(out, 6.1, 3.3, MUZZLE, 9.9, 7.5, MUZZLE + 0.01, "lower_face", "north", name="lower_face")
+    R.box(out, 6.5, 2.9, MUZZLE + 0.25, 9.5, 3.3, CAP_BACK - 0.3, "gold", north="gold_panel", east="gold_panel", west="gold_panel",
+          up=None, name="cap_trim")
+    both_sides(out, 6.3, 9.7, 12.4, MUZZLE + 0.4, 12.75, CAP_BACK - 0.4, "gold")
+    return out
+
+
+def core(level=0, grow=0.0):
+    """The reactor's ring core at the back of the gap: three glowing rings."""
+    out = []
+    for z0, z1 in CORE_RINGS:
+        R.rod(out, z0 - grow, z1 + grow, CORE_R + grow, "ring_v_%d" % level, along="ring_u_%d" % level, cap="core_%d" % level,
+              cy=CORE_Y, emit=True, name="core_ring")
     return out
 
 
 def railgun_body():
     out = []
-    R.chamfered(out, 6.0, 6.2, -1.0, 10.0, 11.4, 12.0, 1.0, "alloy", cap="alloy_dark", name="body")
-    for x0, x1, face in ((5.98, 5.99, "west"), (10.01, 10.02, "east")):
-        R.sticker(out, x0, 7.6, 3.0, x1, 10.2, 8.0, "reactor", face, emit=True, name="reactor_window")
-    R.box(out, 7.2, 3.2, 8.0, 8.8, 6.6, 10.6, "rubber", rot=("x", -15, (8.0, 6.6, 9.3)), name="grip")
-    R.box(out, 7.75, 5.6, 6.4, 8.25, 6.2, 7.0, "tungsten", name="trigger")
-    R.box(out, 7.0, 6.4, 12.0, 9.0, 10.8, 19.0, "duralumin", name="stock")
-    R.box(out, 7.0, 6.4, 19.0, 9.0, 10.8, 19.7, "rubber", name="butt_pad")
-    for z in (2.6, 7.2):
-        R.box(out, 7.5, 11.4, z, 8.5, 12.2, z + 1.0, "tungsten", name="scope_mount")
-    R.rod(out, 1.0, 10.0, 1.0, "tungsten", cy=13.1, name="scope")
-    R.sticker(out, 7.2, 12.3, 0.98, 8.8, 13.9, 0.99, "glass", "north", name="scope_lens")
+    # The yoke: where the rails meet, a frame round the core with a window cut through each side.
+    R.box(out, 5.9, UY0, RAIL_BACK, 10.1, 14.2, YOKE_BACK, "graphite_panel", up="gunmetal", down="graphite", north="graphite",
+          south=None, name="yoke_top")
+    R.box(out, 5.9, 3.8, RAIL_BACK, 10.1, LY1, YOKE_BACK, "graphite_panel", up="graphite", down="graphite", north="graphite",
+          south=None, name="yoke_bottom")
+    for x0, x1 in ((5.9, 6.25), (9.75, 10.1)):
+        R.box(out, x0, LY1, RAIL_BACK, x1, UY0, RAIL_BACK + 0.5, "gunmetal", up=None, down=None, south=None, name="yoke_post")
+    R.box(out, 5.9, LY1, YOKE_BACK - 0.7, 10.1, UY0, YOKE_BACK, "dark", up=None, down=None, south=None, east="graphite",
+          west="graphite", name="yoke_back")
+    R.box(out, 7.3, CORE_Y - 0.7, CORE_RINGS[0][0] + 0.1, 8.7, CORE_Y + 0.7, YOKE_BACK - 0.7, "dark", name="core_spindle")
+    R.sticker(out, 8 - CORE_R, CORE_Y - CORE_R, CORE_RINGS[0][0] - 0.11, 8 + CORE_R, CORE_Y + CORE_R, CORE_RINGS[0][0] - 0.1,
+              "core_eye", "north", emit=True, name="core_eye")
+    out += core()
+    # Gold chevrons on the lower rail's flanks by the yoke, pointing down the rails.
+    both_sides(out, LX0, LX1, 4.5, RAIL_BACK - 2.6, 6.5, RAIL_BACK - 0.4, "chevron")
+    # The receiver: segmented armour rings in front with glowing slits between them, then the stepped rear block.
+    bevel(out, 6.1, 4.0, YOKE_BACK, 9.9, 13.8, ARMOUR[-1][1] + 0.3, 0.6, "gunmetal_panel", top="gunmetal", bottom="graphite",
+          name="receiver_front", caps=(False, False))
+    for i, (z0, z1) in enumerate(ARMOUR):
+        R.box(out, 5.8, 3.6, z0, 10.2, 14.2, z1, "armour", up="graphite", down="graphite", north="graphite", south="graphite",
+              name="armour_ring" if i == 0 else None)
+    for z0, z1 in SLITS:
+        both_sides(out, 6.1, 9.9, 5.2, z0 + 0.12, 12.6, z1 - 0.12, "core_0", emit=True)
+    bevel(out, 6.3, 4.4, ARMOUR[-1][1], 9.7, 13.4, STOCK, 0.7, "gunmetal_panel", top="gunmetal", bottom="graphite",
+          cap="graphite", name="receiver_rear", caps=(False, False), lower=False)
+    both_sides(out, 6.3, 9.7, 4.7, 7.6, 5.5, STOCK - 0.4, "gold")
+    both_sides(out, 6.3, 9.7, 6.2, 7.8, 11.4, STOCK - 0.6, "inset")
+    # The stock: a thick rounded shoulder hump, a gold-sided strut running down to the grip's heel, a rubber pad.
+    bevel(out, 6.4, 10.0, STOCK, 9.6, 14.6, BUTT, 1.4, "graphite_panel", top="graphite", bottom="graphite", cap="graphite",
+          name="stock", caps=(False, False))
+    R.box(out, 7.0, 14.59, STOCK + 1.0, 9.0, 15.0, BUTT - 0.8, "graphite", down=None, name="stock_hump")
+    both_sides(out, 6.4, 9.6, 12.1, STOCK + 0.6, 12.4, BUTT - 0.6, "gold")
+    # Swept up from the receiver's top into the hump.
+    R.box(out, 7.0, 12.9, STOCK - 1.8, 9.0, 13.7, STOCK + 1.0, "graphite", east="graphite_panel", west="graphite_panel",
+          rot=("x", -24, (8.0, 13.3, STOCK - 1.8)), name="stock_sweep")
+    R.box(out, 7.1, 0.4, STOCK + 0.2, 8.9, 1.6, STOCK + 8.8, "gunmetal", east="gold_panel", west="gold_panel",
+          rot=("x", -45, (8.0, 1.0, STOCK + 0.2)), name="stock_strut")
+    R.box(out, 6.6, 6.0, BUTT, 9.4, 14.4, BUTT + 1.0, "rubber", name="butt_pad")
+    # Pistol grip, trigger and guard.
+    R.box(out, 7.15, -0.6, 8.2, 8.85, 4.4, 10.4, "rubber", east="rubber_panel", west="rubber_panel",
+          rot=("x", -14, (8.0, 4.4, 9.3)), name="grip")
+    R.box(out, 7.75, 3.0, 7.4, 8.25, 4.4, 7.8, "edge", name="trigger")
+    R.box(out, 7.6, 2.0, 6.0, 8.4, 2.4, 8.9, "gunmetal", name="trigger_guard")
+    R.box(out, 7.6, 2.4, 6.0, 8.4, 4.4, 6.4, "gunmetal", name="trigger_guard_front")
+    # Forward grip under the lower rail, raked forward a touch.
+    R.box(out, 7.2, 0.8, -6.6, 8.8, LY0, -5.0, "rubber", east="rubber_panel", west="rubber_panel",
+          rot=("x", 8, (8.0, LY0, -5.8)), name="forward_grip")
+    R.box(out, 7.0, 0.3, -6.8, 9.0, 0.8, -4.8, "gunmetal", rot=("x", 8, (8.0, LY0, -5.8)), name="forward_grip_foot")
+    # The laser module under the lower rail's front: a block, a knurled collar and a red lens.
+    R.box(out, 7.1, 1.6, -12.8, 8.9, LY0, -9.8, "graphite_panel", up=None, north="graphite", name="laser_module")
+    R.box(out, 7.35, 2.0, -13.6, 8.65, 3.3, -12.8, "knurl", north="graphite", name="laser_collar")
+    R.sticker(out, 7.6, 2.25, -13.64, 8.4, 3.05, -13.63, "laser_lens", "north", emit=True, name="laser_lens")
+    # The lower rail's flanks: copper discs and a vent grille; a gold stripe along the upper rail.
+    for z in (-11.4, -9.2):
+        both_sides(out, LX0, LX1, 4.7, z, 6.3, z + 1.6, "copper_disc")
+    both_sides(out, LX0, LX1, 4.2, -7.6, 4.5, -3.4, "vent")
+    both_sides(out, RX0, RX1, 12.3, -12.6, 12.55, -0.4, "gold")
+    # The holo sight on the receiver: a base, a chunky hood round the glass, the emitter behind.
+    sz, top = R_SIGHT_MOUNT
+    gz = R_SIGHT[2]
+    R.box(out, 7.0, 13.8, sz, 9.0, top, sz + 3.6, "graphite", name="sight_base", down=None)
+    R.box(out, 6.6, top, gz - 0.4, 7.2, 16.6, gz + 0.4, "gunmetal", name="sight_hood", down=None)
+    R.box(out, 8.8, top, gz - 0.4, 9.4, 16.6, gz + 0.4, "gunmetal", down=None)
+    R.box(out, 6.6, 16.6, gz - 0.4, 9.4, 17.1, gz + 0.4, "edge")
+    R.box(out, 7.2, top, gz + 1.2, 8.8, 15.2, sz + 3.6, "graphite_panel", up="graphite", name="sight_emitter")
+    R.box(out, 7.2, top + 0.2, gz - 0.05, 8.8, 16.6, gz + 0.05, "reticle", name="sight_glass", up=None, down=None, east=None, west=None)
     return out
 
 
 def railgun_glow(level):
-    out = []
-    mat = "charge_%d" % level
-    for z in R_COILS:
-        R.box(out, 6.35, 6.55, z - 0.05, 9.65, 11.45, z + 1.45, mat, emit=True)
-    # The arc between the rails.
-    R.box(out, 7.85, 7.85, -15.1, 8.15, 10.15, -1.2, mat, emit=True, north=None, south=None)
+    """Charging: the core's rings burn brighter (shells just over them), the slits with them, and an arc jumps the gap."""
+    out = core(level, grow=0.05)
+    for z0, z1 in SLITS:
+        both_sides(out, 6.1, 9.9, 5.2, z0 + 0.12, 12.6, z1 - 0.12, "core_%d" % level, emit=True, gap=0.06)
+    if level >= 2:
+        R.box(out, 8.0, 8.3, FIN_Z[0], 8.0, 10.1, CORE_RINGS[0][0] - 0.1, "arc_dim" if level == 2 else "arc_hot", emit=True,
+              north=None, south=None, up=None, down=None)
     return out
 
 
 R_CREDIT = "mymod railgun - generated by tools/gen_energy_weapons.py"
-railgun = rails() + railgun_body()
+railgun = rail_assembly() + railgun_body()
 check("railgun", railgun)
-railgun_displays = gun_displays(R_GRIP, 0.5)
-railgun_displays.update(still_displays(railgun, 0.38))
+R_GLOWS = [railgun_glow(1), railgun_glow(2), railgun_glow(3)]
+for i, layer in enumerate(R_GLOWS):
+    check_elements(f"railgun+glow_{i}", railgun, layer)
+# Turned a touch toward the middle of the screen and set a little further in, so the rails and the gap between them
+# show in first person.
+railgun_displays = gun_displays(R_GRIP, 0.46, (FP_GRIP_TARGET[0] - 1.0, FP_GRIP_TARGET[1] + 0.3, FP_GRIP_TARGET[2]), yaw=6)
+# The icon, frame and dropped item at three-quarters, like a product shot: the left side and the muzzle toward the
+# viewer, seen from a little above, the muzzle raised toward the slot's upper left to fill it.
+R_ICON = mul(rz(-35), display_matrix([10, 115, 0]))
+railgun_displays.update(still_displays(railgun, 0.6, rot=look(apply(R_ICON, [0, 0, -1]), apply(R_ICON, [0, 1, 0]))))
 write(os.path.join(MODELS, "railgun.json"), model(R, railgun, railgun_displays, credit=R_CREDIT))
-write(os.path.join(ITEMS, "railgun.json"), {"model": glow_levels(R, "railgun", [railgun_glow(1), railgun_glow(2), railgun_glow(3)],
-                                                                 railgun_displays, [0.15, 0.5, 0.9], R_CREDIT)})
-rail_part = rails()
+write(os.path.join(ITEMS, "railgun.json"), {"model": glow_levels(R, "railgun", R_GLOWS, railgun_displays, [0.15, 0.5, 0.9], R_CREDIT)})
+rail_part = rail_assembly()
 check("railgun_rails", rail_part)
-write(os.path.join(MODELS, "railgun_rails.json"), model(R, rail_part, part_displays(rail_part, 0.55), credit=R_CREDIT))
+check_elements("railgun_rails", rail_part)
+write(os.path.join(MODELS, "railgun_rails.json"), model(R, rail_part, part_displays(rail_part, 0.5), credit=R_CREDIT))
 write(os.path.join(ITEMS, "railgun_rails.json"), {"model": ref("railgun_rails")})
-report("railgun", railgun_displays, R_GRIP, R_SUPPORT)
+report("railgun", railgun_displays, R_GRIP, R_SUPPORT, f"; sight glass {R_SIGHT}, mount front {R_SIGHT_MOUNT[0]} top {R_SIGHT_MOUNT[1]}")
+print("railgun cubes:", len(railgun), "+ glow", [len(g) for g in R_GLOWS])
+
 
 # ======================================================================================================= ray gun
 G = Kit("ray_gun", "item/ray_gun", seed=1953)
