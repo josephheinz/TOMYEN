@@ -1,7 +1,6 @@
 {
-  "parent": "mymod:item/swordfish",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "0": "mymod:item/fish/swordfish_steak",
-    "particle": "mymod:item/fish/swordfish_steak"
+    "layer0": "mymod:item/fish/swordfish_steak"
   }
 }

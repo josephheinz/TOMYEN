@@ -1,7 +1,6 @@
 {
-  "parent": "mymod:item/bog_eel",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "0": "mymod:item/fish/cooked_bog_eel",
-    "particle": "mymod:item/fish/cooked_bog_eel"
+    "layer0": "mymod:item/fish/cooked_bog_eel"
   }
 }

@@ -1,7 +1,6 @@
 {
-  "parent": "mymod:item/ice_char",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "0": "mymod:item/fish/cooked_ice_char",
-    "particle": "mymod:item/fish/cooked_ice_char"
+    "layer0": "mymod:item/fish/cooked_ice_char"
   }
 }

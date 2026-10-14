@@ -1,7 +1,6 @@
 {
-  "parent": "mymod:item/parrotfish",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "0": "mymod:item/fish/cooked_parrotfish",
-    "particle": "mymod:item/fish/cooked_parrotfish"
+    "layer0": "mymod:item/fish/cooked_parrotfish"
   }
 }
