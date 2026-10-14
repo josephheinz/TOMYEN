@@ -98,6 +98,9 @@ public final class Fae {
 	// --- Worldgen keys -----------------------------------------------------------------------------------------
 	public static final MapCodec<FaeRingFeature> FAE_RING_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, MyMod.id("fae_ring"),
 			FaeRingFeature.CODEC);
+	/** The Feywild's ponds (placed by its biomes, see {@code worldgen/placed_feature/fae_pond.json}). */
+	public static final MapCodec<FaePondFeature> FAE_POND_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, MyMod.id("fae_pond"),
+			FaePondFeature.CODEC);
 	private static final ResourceKey<PlacedFeature> FAE_RING_PLACED = ResourceKey.create(Registries.PLACED_FEATURE, MyMod.id("fae_ring"));
 	public static final ResourceKey<Feature> GLIMMERWOOD_TREE = ResourceKey.create(Registries.FEATURE, MyMod.id("glimmerwood_tree"));
 	public static final ResourceKey<Feature> FANCY_GLIMMERWOOD_TREE = ResourceKey.create(Registries.FEATURE, MyMod.id("fancy_glimmerwood_tree"));

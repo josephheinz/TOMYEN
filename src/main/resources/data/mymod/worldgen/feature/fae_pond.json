@@ -1,0 +1,13 @@
+{
+  "type": "mymod:fae_pond",
+  "radius": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 3,
+    "max_inclusive": 5
+  },
+  "max_depth": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 2,
+    "max_inclusive": 5
+  }
+}
