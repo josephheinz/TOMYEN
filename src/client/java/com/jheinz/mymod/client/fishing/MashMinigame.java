@@ -48,7 +48,7 @@ final class MashMinigame extends FishingMinigame {
 		slipGrace = 14.0f + params.escape() * 20.0f;
 		snapGrace = 10.0f + params.line() * 20.0f;
 		floater = params.behavior() == FishBehavior.FLOATER;
-		duration = FightParams.mashTicks(d);
+		duration = FightParams.mashTicks(d, params.length());
 		remaining = duration;
 		line = base;
 		lineBefore = base;
@@ -63,7 +63,7 @@ final class MashMinigame extends FishingMinigame {
 			line = Mth.clamp(base + 0.14f * (noise(t, 3) * 2.0f - 1.0f), 0.15f, 0.75f);
 			velocity += (noise(t * 1.7f, 4) * 2.0f - 1.0f) * 0.0018f * params.speed();
 		}
-		velocity -= gravity;
+		velocity -= gravity * (1.0f + 0.3f * params.power()) * effort();
 		if (presses > 0) {
 			velocity += kick * Math.min(presses, 2);
 			tapFlash = 4;
@@ -102,6 +102,11 @@ final class MashMinigame extends FishingMinigame {
 		} else if (remaining <= 0) {
 			end(Outcome.CAUGHT);
 		}
+	}
+
+	@Override
+	float progress() {
+		return 1.0f - remaining / (float) duration;
 	}
 
 	@Override

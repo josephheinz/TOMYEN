@@ -2,5 +2,10 @@
   "item": "minecraft:cod",
   "weight": 60,
   "difficulty": 1,
-  "behavior": "steady"
+  "behavior": "steady",
+  "size": {
+    "min_lb": 2.0,
+    "avg_lb": 10.0,
+    "max_lb": 98.0
+  }
 }

@@ -643,6 +643,7 @@ def slot_sprites(parts, rods):
 # The menu layout (TackleBenchMenu's slot positions and TackleBenchScreen's readout).
 ROD_SLOT = (20, 36)
 PART_SLOTS = [(52, 26), (52, 46), (74, 26), (74, 46)]
+BAIT_SLOT = (63, 64)  # under the part square; its empty-slot icon (rod_bait) comes from tools/gen_fish_mount.py
 READOUT = (96, 16, 168, 80)
 
 
@@ -657,14 +658,15 @@ def frame(img, x, y, w, h, inner="#8b8b8b"):
 
 def menu_background():
     """Vanilla's crafting table menu with its grid cleared, re-laid for the bench: a big rod slot, the four part
-    slots in a square beside it (with a thin rail joining them), and a dark readout panel on the right."""
+    slots in a square beside it (with a thin rail joining them), the bait slot under them, and a dark readout panel on
+    the right."""
     img = read_png(JAR.read("assets/minecraft/textures/gui/container/crafting_table.png"))
     img.fill(7, 14, 169, 81, hexc("#c6c6c6"))
     rx, ry = ROD_SLOT
     frame(img, rx - 5, ry - 5, 26, 26)
     img.fill(rx + 21, ry + 8, 51, ry + 9, hexc("#8b8b8b"))
     img.fill(48, PART_SLOTS[0][1] + 8, 49, PART_SLOTS[1][1] + 9, hexc("#8b8b8b"))
-    for x, y in PART_SLOTS:
+    for x, y in PART_SLOTS + [BAIT_SLOT]:
         frame(img, x - 1, y - 1, 18, 18)
     x0, y0, x1, y1 = READOUT
     frame(img, x0, y0, x1 - x0, y1 - y0, inner="#1d2731")
@@ -894,6 +896,11 @@ def recipes():
            ["minecraft:fishing_rod"], category="misc")
 
 
+def size(lo, avg, hi):
+    """A species' "size" entry: weights in lb (see FishingSpeciesLoader and tools/gen_fish.py's SIZES)."""
+    return ("size", OrderedDict([("min_lb", lo), ("avg_lb", avg), ("max_lb", hi)]))
+
+
 def data():
     write(os.path.join(DATA, "mymod", "loot_table", "blocks", "tackle_bench.json"), OrderedDict([
         ("type", "minecraft:block"),
@@ -911,15 +918,18 @@ def data():
     species = [
         # Vanilla's own fish, so the system works with nothing else installed. Vanilla's odds are cod 60, salmon 25,
         # pufferfish 13, tropical fish 2; tropical fish are kept to warm water and jungles here, and commoner there.
-        ("vanilla_cod", OrderedDict([("item", "minecraft:cod"), ("weight", 60), ("difficulty", 1), ("behavior", "steady")])),
-        ("vanilla_salmon", OrderedDict([("item", "minecraft:salmon"), ("weight", 25), ("difficulty", 2), ("behavior", "thrasher")])),
+        ("vanilla_cod", OrderedDict([("item", "minecraft:cod"), ("weight", 60), ("difficulty", 1), ("behavior", "steady"),
+                                     size(2.0, 10.0, 98.0)])),  # Atlantic cod: record about 98 lb
+        ("vanilla_salmon", OrderedDict([("item", "minecraft:salmon"), ("weight", 25), ("difficulty", 2), ("behavior", "thrasher"),
+                                        size(2.0, 10.0, 79.0)])),  # Atlantic salmon: record 79 lb 2 oz
         ("vanilla_pufferfish", OrderedDict([("item", "minecraft:pufferfish"), ("weight", 13), ("difficulty", 2),
-                                            ("behavior", "floater")])),
+                                            ("behavior", "floater"), size(0.1, 0.6, 3.0)])),  # pufferfish
         ("vanilla_tropical_fish", OrderedDict([("item", "minecraft:tropical_fish"), ("weight", 8), ("difficulty", 3),
                                                ("behavior", "darting"),
                                                ("biomes", ["minecraft:warm_ocean", "minecraft:lukewarm_ocean",
                                                            "minecraft:deep_lukewarm_ocean", "#minecraft:is_jungle",
-                                                           "minecraft:mangrove_swamp", "minecraft:lush_caves"])])),
+                                                           "minecraft:mangrove_swamp", "minecraft:lush_caves"]),
+                                               size(0.05, 0.3, 2.0)])),  # small reef fish
     ]
     for name, body in species:
         write(os.path.join(DATA, "mymod", "fishing_species", name + ".json"), body)

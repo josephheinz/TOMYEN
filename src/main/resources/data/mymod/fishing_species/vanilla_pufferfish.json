@@ -2,5 +2,10 @@
   "item": "minecraft:pufferfish",
   "weight": 13,
   "difficulty": 2,
-  "behavior": "floater"
+  "behavior": "floater",
+  "size": {
+    "min_lb": 0.1,
+    "avg_lb": 0.6,
+    "max_lb": 3.0
+  }
 }

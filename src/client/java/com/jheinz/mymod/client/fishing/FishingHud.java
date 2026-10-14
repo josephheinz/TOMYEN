@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
+import com.jheinz.mymod.fishing.FishSize;
 import com.jheinz.mymod.fishing.FishingNetworking.Outcome;
 
 /**
@@ -23,6 +24,7 @@ final class FishingHud {
 	private static final int BADGE = 0xFF22313F;
 	private static final int TEXT = 0xFFE9EFF5;
 	private static final int TEXT_DIM = 0xFF8C9BAA;
+	private static final int BIG_ONE = 0xFFFFC34A;
 	private static final int[] PIP_COLORS = {0xFF5BD46A, 0xFFA6D45B, 0xFFE8C547, 0xFFEE8E43, 0xFFE5534B};
 
 	private FishingHud() {
@@ -69,13 +71,27 @@ final class FishingHud {
 		Component name = shown.isEmpty() ? Component.translatable("hud.mymod.fishing.unknown") : shown.getHoverName();
 		graphics.text(font, name, x0 + 22, y0 + 7, FishingMinigame.alpha(shown.isEmpty() ? TEXT_DIM : TEXT, alpha), false);
 		pips(graphics, x0 + WIDTH - 6, y0 + 9, game.params.difficulty(), alpha);
+		if (game.params.trophy() && game.running()) {
+			// A trophy-class fish on the line: a pulsing call-out beside the pips.
+			float pulse = 0.75f + 0.25f * Mth.sin((game.age + partial) * 0.35f);
+			Component big = Component.translatable("hud.mymod.fishing.big_one");
+			int right = x0 + WIDTH - 6 - 5 * 7 - 3;
+			graphics.pose().pushMatrix();
+			graphics.pose().translate(right - font.width(big) * 0.75f, y0 + 8.5f);
+			graphics.pose().scale(0.75f, 0.75f);
+			graphics.text(font, big, 0, 0, FishingMinigame.alpha(BIG_ONE, alpha * pulse), false);
+			graphics.pose().popMatrix();
+		}
 
 		// The game, then what to do.
 		int bodyY = y0 + 22;
 		game.extract(graphics, font, x0 + 8, bodyY, WIDTH - 16, partial, alpha);
 		if (game.running()) {
-			Component hint = game.hint(FishingClient.keys());
-			small(graphics, font, hint, x0 + WIDTH / 2, bodyY + body + 4, FishingMinigame.alpha(TEXT_DIM, alpha));
+			// A big fish's stamina phase replaces the controls hint while it lasts.
+			Component phase = game.phaseHint();
+			Component hint = phase != null ? phase : game.hint(FishingClient.keys());
+			int color = phase == null ? TEXT_DIM : game.surging() ? 0xFFFF8A70 : 0xFF8FE3A8;
+			small(graphics, font, hint, x0 + WIDTH / 2, bodyY + body + 4, FishingMinigame.alpha(color, alpha));
 		}
 
 		if (!game.running()) {
@@ -112,6 +128,9 @@ final class FishingHud {
 			Component detail = Component.translatable("hud.mymod.fishing.xp", FishingClient.verdict.xp());
 			if (FishingClient.verdict.perfect()) {
 				detail = Component.translatable("hud.mymod.fishing.perfect").append("  ").append(detail);
+			}
+			if (FishingClient.verdict.weight() > 0.0f) {
+				detail = Component.literal(FishSize.format(FishingClient.verdict.weight())).append("  ").append(detail);
 			}
 			small(graphics, font, detail, cx, cy + 9, FishingMinigame.alpha(FishingClient.verdict.perfect() ? 0xFFFFE27A : TEXT_DIM, alpha));
 		}

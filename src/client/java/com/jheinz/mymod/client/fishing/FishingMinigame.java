@@ -7,12 +7,15 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 import com.jheinz.mymod.fishing.FightParams;
+import com.jheinz.mymod.fishing.Fishing;
 import com.jheinz.mymod.fishing.FishingNetworking.Outcome;
 
 /**
  * One quick-time fight, played on the client. Each game tick it gets the reel presses and whether the reel is held;
  * it moves its fish (from the server's seed, so the fish is the same fish every time it's replayed), checks for a
  * win or a loss, and draws its widget into the HUD panel ({@link FishingHud}). The server only checks the result.
+ * How long and hard the fish fights comes from {@link FightParams#length} and {@link FightParams#power} (its weight and
+ * rarity), and a big one tires and surges ({@link #effort}).
  */
 abstract class FishingMinigame {
 	/** Shared bar colours, from the HUD's palette. */
@@ -32,6 +35,16 @@ abstract class FishingMinigame {
 	/** Ticks since the fight started; the fish only fights once the intro is over. */
 	int age;
 	private Outcome outcome;
+	private static final float TIRE_AT = 0.42f;
+	private static final float SURGE_AT = 0.78f;
+	private static final int TIRED_TICKS = 50;
+	private static final int SURGE_TICKS = 45;
+	private static final float TIRED_EFFORT = 0.55f;
+	private static final float SURGE_EFFORT = 1.35f;
+	private int tired;
+	private int surge;
+	private boolean hasTired;
+	private boolean hasSurged;
 	boolean perfect = true;
 
 	FishingMinigame(FightParams params) {
@@ -54,6 +67,7 @@ abstract class FishingMinigame {
 			return;
 		}
 		play(presses, held);
+		stamina();
 		if (outcome == null && age > params.maxTicks()) {
 			end(Outcome.ESCAPED);
 		}
@@ -61,6 +75,52 @@ abstract class FishingMinigame {
 
 	/** One tick of the fight proper. */
 	abstract void play(int presses, boolean held);
+
+	/** How far through the fight the player is, 0 to 1: the stamina phases key off it. */
+	abstract float progress();
+
+	/**
+	 * A big fish's stamina ({@link FightParams#stamina}): a little under halfway it tires and its pull slackens for a
+	 * couple of seconds; most of the way in it makes one last run, pulling harder than ever.
+	 */
+	private void stamina() {
+		if (!params.stamina() || outcome != null) {
+			return;
+		}
+		if (tired > 0) {
+			tired--;
+		}
+		if (surge > 0) {
+			surge--;
+		}
+		float p = progress();
+		if (!hasTired && p >= TIRE_AT) {
+			hasTired = true;
+			tired = TIRED_TICKS;
+			FishingClient.sound(Fishing.REEL_CLICK, 0.6f, 0.6f);
+		} else if (!hasSurged && p >= SURGE_AT) {
+			hasSurged = true;
+			surge = SURGE_TICKS;
+			FishingClient.sound(Fishing.LINE_CREAK, 0.9f, 0.7f);
+		}
+	}
+
+	/** The fish's effort right now: 1 normally, less while it's tired, more in its last run. */
+	final float effort() {
+		return tired > 0 ? TIRED_EFFORT : surge > 0 ? SURGE_EFFORT : 1.0f;
+	}
+
+	/** The HUD's line for a stamina phase, or null when there's none on. */
+	final Component phaseHint() {
+		if (tired > 0) {
+			return Component.translatable("hud.mymod.fishing.tiring");
+		}
+		return surge > 0 ? Component.translatable("hud.mymod.fishing.surge") : null;
+	}
+
+	final boolean surging() {
+		return surge > 0;
+	}
 
 	/** How hard the fish is pulling right now, 0 to 1: the bobber tugs this hard. */
 	abstract float tug();

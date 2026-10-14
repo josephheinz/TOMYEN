@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:magma_cream",
+    "mymod:earthworms"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mymod:magma_grub"
+  }
+}

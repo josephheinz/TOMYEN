@@ -11,5 +11,10 @@
     "#minecraft:is_taiga",
     "minecraft:meadow",
     "minecraft:cherry_grove"
-  ]
+  ],
+  "size": {
+    "min_lb": 0.2,
+    "avg_lb": 1.0,
+    "max_lb": 14.5
+  }
 }

@@ -8,5 +8,10 @@
   "biomes": [
     "minecraft:swamp",
     "minecraft:mangrove_swamp"
-  ]
+  ],
+  "size": {
+    "min_lb": 0.5,
+    "avg_lb": 2.5,
+    "max_lb": 16.0
+  }
 }

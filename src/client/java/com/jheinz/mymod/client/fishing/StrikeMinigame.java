@@ -41,8 +41,8 @@ final class StrikeMinigame extends FishingMinigame {
 		int d = params.difficulty();
 		speed = (0.022f + 0.006f * d) * params.speed();
 		width = Mth.clamp((0.10f - 0.012f * (d - 1)) * params.zone(), 0.03f, 0.2f);
-		hitsNeeded = FightParams.strikeHits(d);
-		missesAllowed = FightParams.strikeMisses(d, params.escape());
+		hitsNeeded = FightParams.strikeHits(d, params.length());
+		missesAllowed = FightParams.strikeMisses(d, params.escape(), params.length());
 		tolerance = 0.012f * params.line();
 		marker = random.nextFloat() * 0.2f;
 		markerBefore = marker;
@@ -60,7 +60,7 @@ final class StrikeMinigame extends FishingMinigame {
 		markerBefore = marker;
 		zoneBefore = zone;
 		int d = params.difficulty();
-		float step = speed * (Math.abs(marker - zone) <= width ? 1.0f - 0.5f * params.assist() : 1.0f);
+		float step = speed * effort() * (Math.abs(marker - zone) <= width ? 1.0f - 0.5f * params.assist() : 1.0f);
 		marker += direction * step;
 		if (marker > 1.0f) {
 			marker = 2.0f - marker;
@@ -70,7 +70,7 @@ final class StrikeMinigame extends FishingMinigame {
 			direction = 1;
 		}
 		if (d >= 2) {
-			float drift = (noise((age - FightParams.INTRO_TICKS) * 0.035f * params.speed(), 2) * 2.0f - 1.0f) * 0.035f * (d - 1);
+			float drift = (noise((age - FightParams.INTRO_TICKS) * 0.035f * params.speed(), 2) * 2.0f - 1.0f) * 0.035f * (d - 1) * (1.0f + params.power());
 			zone = Mth.clamp(zoneBase + drift, width + 0.02f, 1.0f - width - 0.02f);
 		}
 		hitFlash = Math.max(0, hitFlash - 1);
@@ -102,7 +102,8 @@ final class StrikeMinigame extends FishingMinigame {
 			zone = next;
 			zoneBefore = next;
 			if (d >= 3) {
-				width = Math.max(0.03f, width * 0.92f);
+				// It shrinks by the same total over a long fight as a short one, spread across more hits.
+				width = Math.max(0.03f, width * (float) Math.pow(0.92, 6.0 / Math.max(6, hitsNeeded)));
 			}
 		} else {
 			misses++;
@@ -118,7 +119,12 @@ final class StrikeMinigame extends FishingMinigame {
 
 	@Override
 	float tug() {
-		return inZone() ? 0.85f : 0.35f + 0.2f * Math.abs(Mth.sin(age * 0.3f));
+		return Math.min(1.0f, (inZone() ? 0.85f : 0.35f + 0.2f * Math.abs(Mth.sin(age * 0.3f))) * effort());
+	}
+
+	@Override
+	float progress() {
+		return hits / (float) hitsNeeded;
 	}
 
 	@Override
@@ -161,10 +167,12 @@ final class StrikeMinigame extends FishingMinigame {
 		fillSmooth(graphics, mx - 2.0f, barBottom + 2, mx + 2.0f, barBottom + 4, markerColor);
 
 		// Hits to land on the left, misses left on the right.
+		// A long fight's many hits squeeze their pips narrower to fit beside the misses.
 		int py = y + 18;
+		float pitch = Math.min(9.0f, (barWidth - missesAllowed * 9 - 6) / (float) hitsNeeded);
 		for (int i = 0; i < hitsNeeded; i++) {
-			int px = x + i * 9;
-			graphics.fill(px, py, px + 7, py + 4, alpha(i < hits ? PROGRESS : TRACK_EDGE, alpha));
+			float px = x + i * pitch;
+			fillSmooth(graphics, px, py, px + pitch - Math.min(2.0f, pitch * 0.25f), py + 4, alpha(i < hits ? PROGRESS : TRACK_EDGE, alpha));
 		}
 		for (int i = 0; i < missesAllowed; i++) {
 			int px = x1 - 7 - i * 9;

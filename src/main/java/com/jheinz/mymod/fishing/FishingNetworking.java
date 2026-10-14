@@ -55,8 +55,11 @@ public final class FishingNetworking {
 		}
 	}
 
-	/** Server to client: the fight's verdict, with what was caught (empty unless caught) and the xp it was worth. */
-	public record FightEnd(int id, int outcome, ItemStack caught, boolean perfect, int xp) implements CustomPacketPayload {
+	/**
+	 * Server to client: the fight's verdict, with what was caught (empty unless caught), the xp it was worth, and the
+	 * catch's weight in lb (0 if it wasn't weighed).
+	 */
+	public record FightEnd(int id, int outcome, ItemStack caught, boolean perfect, int xp, float weight) implements CustomPacketPayload {
 		public static final Type<FightEnd> TYPE = new Type<>(MyMod.id("fishing_fight_end"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, FightEnd> CODEC = StreamCodec.composite(
 				ByteBufCodecs.VAR_INT, FightEnd::id,
@@ -64,6 +67,7 @@ public final class FishingNetworking {
 				ItemStack.OPTIONAL_STREAM_CODEC, FightEnd::caught,
 				ByteBufCodecs.BOOL, FightEnd::perfect,
 				ByteBufCodecs.VAR_INT, FightEnd::xp,
+				ByteBufCodecs.FLOAT, FightEnd::weight,
 				FightEnd::new);
 
 		@Override

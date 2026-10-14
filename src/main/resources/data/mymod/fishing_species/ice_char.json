@@ -17,5 +17,10 @@
     "minecraft:grove",
     "minecraft:snowy_beach",
     "minecraft:snowy_slopes"
-  ]
+  ],
+  "size": {
+    "min_lb": 1.0,
+    "avg_lb": 4.0,
+    "max_lb": 32.0
+  }
 }

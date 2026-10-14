@@ -99,7 +99,12 @@ public class RodItem extends FishingRodItem {
 				partItem.modifiers().describe().forEach(line -> tooltip.accept(Component.literal("  ").append(line)));
 			}
 		}
-		if (parts.isEmpty()) {
+		ItemStack bait = RodBait.stack(stack);
+		Component baitName = bait.isEmpty() ? Component.translatable("tooltip.mymod.rod_slot.bait.stock").withStyle(ChatFormatting.DARK_GRAY)
+				: Component.translatable("tooltip.mymod.rod.bait_count", bait.getHoverName(), bait.getCount()).withStyle(ChatFormatting.WHITE);
+		tooltip.accept(Component.translatable("tooltip.mymod.rod.slot", Component.translatable("tooltip.mymod.rod_slot.bait"), baitName)
+				.withStyle(ChatFormatting.GRAY));
+		if (parts.isEmpty() && bait.isEmpty()) {
 			tooltip.accept(Component.translatable("tooltip.mymod.rod.customize").withStyle(ChatFormatting.DARK_GRAY));
 		}
 	}

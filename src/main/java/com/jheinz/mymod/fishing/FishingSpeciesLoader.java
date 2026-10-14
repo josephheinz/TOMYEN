@@ -17,7 +17,12 @@ package com.jheinz.mymod.fishing;
  *   "time": "any",                        any | day | night (default any)
  *   "weather": "any",                     any | clear | rain | thunder (default any)
  *   "min_y": -64, "max_y": 320,           optional: the hook's block y range
- *   "count": [1, 1]                       optional: how many are caught, [min, max] or a single number (default 1)
+ *   "count": [1, 1],                      optional: how many are caught, [min, max] or a single number (default 1)
+ *   "size": {                             optional: what it weighs, in lb (see FishSize); without it, never weighed
+ *     "min_lb": 1, "avg_lb": 8,           the smallest catchable, and the typical catch (the roll's median)
+ *     "max_lb": 55,                       the record: the end of the long, thin upper tail
+ *     "trophy_lb": 19                     optional: trophies from here up (default: the roll's 85th percentile)
+ *   }
  * }
  *
  * Unknown keys are ignored. A file whose item doesn't resolve, or that fails to parse, is logged and skipped. Lower
@@ -147,8 +152,21 @@ public final class FishingSpeciesLoader extends SimpleReloadListener<List<Fishin
 			minCount = Math.max(1, minCount);
 			maxCount = Math.max(minCount, maxCount);
 		}
+		FishSize size = null;
+		if (json.has("size")) {
+			JsonObject sizeJson = json.getAsJsonObject("size");
+			float min = sizeJson.has("min_lb") ? sizeJson.get("min_lb").getAsFloat() : -1.0f;
+			float avg = sizeJson.has("avg_lb") ? sizeJson.get("avg_lb").getAsFloat() : -1.0f;
+			float max = sizeJson.has("max_lb") ? sizeJson.get("max_lb").getAsFloat() : -1.0f;
+			float trophy = sizeJson.has("trophy_lb") ? sizeJson.get("trophy_lb").getAsFloat() : 0.0f;
+			if (min > 0.0f && min <= avg && avg < max) {
+				size = FishSize.of(min, avg, max, trophy);
+			} else {
+				MyMod.LOGGER.warn("Fishing species {}: size needs 0 < min_lb <= avg_lb < max_lb, ignored", id);
+			}
+		}
 		return new FishingSpecies(id, item.get(), weight, difficulty, behavior, minRodTier, lava, dimension, List.copyOf(biomes), time,
-				weather, minY, maxY, minCount, maxCount);
+				weather, minY, maxY, minCount, maxCount, size);
 	}
 
 	private static String lower(JsonObject json, String key) {

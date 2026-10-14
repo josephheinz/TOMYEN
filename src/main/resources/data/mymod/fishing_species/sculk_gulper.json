@@ -6,5 +6,10 @@
   "min_rod_tier": 2,
   "dimension": "minecraft:overworld",
   "biomes": "minecraft:deep_dark",
-  "max_y": -20
+  "max_y": -20,
+  "size": {
+    "min_lb": 0.5,
+    "avg_lb": 3.0,
+    "max_lb": 12.0
+  }
 }

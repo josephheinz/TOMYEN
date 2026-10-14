@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -78,6 +79,7 @@ public final class FishingClient {
 		MenuScreens.register(Fishing.TACKLE_BENCH_MENU, TackleBenchScreen::new);
 		EntityRendererRegistry.register(Fishing.ROD_HOOK, FishingHookRenderer::new);
 		ConditionalItemModelProperties.ID_MAPPER.put(MyMod.id("rod_fighting"), RodFighting.MAP_CODEC);
+		BlockEntityRendererRegistry.register(Fishing.FISH_MOUNT_ENTITY, FishMountRenderer::new);
 	}
 
 	/** Whether the reel keys belong to a fight right now. */
@@ -136,6 +138,7 @@ public final class FishingClient {
 		if (!sonar.isEmpty() && !minecraft.isPaused() && ++sonarAge > 120) {
 			sonar = ItemStack.EMPTY;
 		}
+		FishMountRenderer.lookAt(minecraft);
 		if (game == null) {
 			// Don't let presses pile up for the next fight.
 			while (REEL.consumeClick()) {

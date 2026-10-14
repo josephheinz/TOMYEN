@@ -1,14 +1,18 @@
 package com.jheinz.mymod.fishing;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.item.v1.ItemComponentTooltipProviderRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,20 +21,27 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 
 import com.jheinz.mymod.MyMod;
@@ -45,14 +56,35 @@ import com.jheinz.mymod.meteorite.Meteorites;
  *
  * <p>Rods, by tier: Bamboo (0, Scavenger), Iron (1), Steel (2, Foundry), Duralumin (3, light and quick to bite),
  * Magmasteel (3, fishes lava) and Star Steel (4, Exotic).
+ *
+ * <p>Every fish landed on a mod rod is weighed ({@link FishSize}): ordinary catches are announced and stack as usual,
+ * trophies ({@link TrophyFish}) keep their weight and catcher and go up on a {@link FishMountBlock}, sized by weight.
+ * Each player's heaviest of every species is kept ({@link FishingRecords}). Bait ({@link BaitItem}), loaded at the
+ * Tackle Bench, leans the weight roll heavier, draws certain species in or quickens the bite.
  */
 public final class Fishing {
 	/** On a mod rod: the parts fitted at the Tackle Bench. */
 	public static final DataComponentType<RodParts> ROD_PARTS = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
 			MyMod.id("rod_parts"), DataComponentType.<RodParts>builder().persistent(RodParts.CODEC).networkSynchronized(RodParts.STREAM_CODEC).build());
 
+	/** On a mod rod: the bait loaded at the Tackle Bench and how much is left. */
+	public static final DataComponentType<RodBait> ROD_BAIT = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
+			MyMod.id("rod_bait"), DataComponentType.<RodBait>builder().persistent(RodBait.CODEC).networkSynchronized(RodBait.STREAM_CODEC).build());
+	/** On a trophy fish: its weight, catcher and day (ordinary catches carry nothing, so they stack). */
+	public static final DataComponentType<TrophyFish> TROPHY = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
+			MyMod.id("trophy"), DataComponentType.<TrophyFish>builder().persistent(TrophyFish.CODEC).networkSynchronized(TrophyFish.STREAM_CODEC)
+					.build());
+
 	/** Catches a silver hook makes easier: cursed and evil things. Empty unless a species' item is tagged. */
 	public static final TagKey<Item> CURSED_CATCHES = TagKey.create(Registries.ITEM, MyMod.id("cursed_catches"));
+	/** Fish that hunt fish: live minnows and cut bait draw them in. */
+	public static final TagKey<Item> PREDATOR_FISH = TagKey.create(Registries.ITEM, MyMod.id("predator_fish"));
+	/** Fish of the dark: glowworms draw them in. */
+	public static final TagKey<Item> NIGHT_FISH = TagKey.create(Registries.ITEM, MyMod.id("night_fish"));
+	/** What irradiated bait draws in. */
+	public static final TagKey<Item> MUTANT_FISH = TagKey.create(Registries.ITEM, MyMod.id("mutant_fish"));
+	/** Raw fish that cut into bait. */
+	public static final TagKey<Item> RAW_FISH = TagKey.create(Registries.ITEM, MyMod.id("raw_fish"));
 
 	/** A mod rod's bobber. Like vanilla's, but fireproof (a Magmasteel Rod's floats on lava). */
 	public static final EntityType<RodHook> ROD_HOOK = entity("rod_bobber", EntityType.Builder.<RodHook>of(RodHook::new, MobCategory.MISC)
@@ -97,6 +129,35 @@ public final class Fishing {
 	public static final Item FAE_DUST_LURE = part("fae_dust_lure", PartSlot.LURE, RodModifiers.builder().rarity(0.35f).build());
 	public static final Item FISH_FINDER = part("fish_finder", PartSlot.LURE, RodModifiers.builder().sonar().build());
 
+	// --- Bait (the rod's bait slot; one eaten per fish landed) -------------------------------------------------------
+	/** Dug from grass and dirt now and then, or bred in a heap of dirt and rotten flesh. The basic bait. */
+	public static final Item EARTHWORMS = bait("earthworms", new BaitItem.Effect(RodModifiers.builder().biteTicks(40).build(),
+			0.10f, null, 1.0f, 0.0f, false, 0));
+	/** Any raw fish, cut up: heavier fish, and the predators smell it. */
+	public static final Item CUT_BAIT = bait("cut_bait", new BaitItem.Effect(RodModifiers.builder().biteTicks(20).build(),
+			0.22f, PREDATOR_FISH, 1.5f, 0.0f, false, 0));
+	/** A bucket of minced cut bait and bone meal ladled out a scoop at a time: everything bites, fast. */
+	public static final Item CHUM_BUCKET = bait("chum_bucket", new BaitItem.Effect(RodModifiers.builder().biteTicks(160).build(),
+			0.05f, null, 1.0f, 0.0f, false, 0));
+	/** An earthworm fed on glow berries: glows on the hook, and the fish of the dark come to it. */
+	public static final Item GLOWWORM = bait("glowworm", new BaitItem.Effect(RodModifiers.builder().nightBiteTicks(100).nightRarity(0.1f)
+			.build(), 0.12f, NIGHT_FISH, 2.5f, 0.0f, false, 0));
+	/** A little fish on the hook: predators go for it, and the big ones do. */
+	public static final Item LIVE_MINNOW = bait("live_minnow", new BaitItem.Effect(RodModifiers.builder().biteTicks(20).build(),
+			0.12f, PREDATOR_FISH, 2.5f, 0.45f, false, 0));
+	/** A grub that lives in magma cream: only good in lava, where it's very good. */
+	public static final Item MAGMA_GRUB = bait("magma_grub", new BaitItem.Effect(RodModifiers.builder().biteTicks(100).build(),
+			0.35f, null, 1.0f, 0.0f, true, 0));
+	/** Bait laced with uranium: the biggest fish (and mutants) can't resist it, and it doses whoever handles it. */
+	public static final Item IRRADIATED_BAIT = bait("irradiated_bait", new BaitItem.Effect(RodModifiers.NONE,
+			0.6f, MUTANT_FISH, 5.0f, 0.0f, false, 200));
+	/** Cut bait dusted with ground star crystal: the best there is for trophies. */
+	public static final Item STAR_BAIT = bait("star_bait", new BaitItem.Effect(RodModifiers.builder().rarity(0.1f).build(),
+			0.85f, null, 1.0f, 0.0f, false, 0), Rarity.UNCOMMON);
+
+	public static final List<Item> BAITS = List.of(EARTHWORMS, CUT_BAIT, CHUM_BUCKET, GLOWWORM, LIVE_MINNOW, MAGMA_GRUB, IRRADIATED_BAIT,
+			STAR_BAIT);
+
 	public static final List<Item> RODS = List.of(BAMBOO_ROD, IRON_ROD, STEEL_ROD, DURALUMIN_ROD, MAGMASTEEL_ROD, STAR_STEEL_ROD);
 	public static final List<Item> PARTS = List.of(RUBBER_LINE, NOSE_HAIR_LINE, FAE_SILK_LINE, IRON_HOOK, SILVER_HOOK, TUNGSTEN_HOOK,
 			COPPER_REEL, GEARED_REEL, SERVO_REEL, GLOW_LURE, FAE_DUST_LURE, FISH_FINDER);
@@ -104,6 +165,14 @@ public final class Fishing {
 	// --- Tackle Bench -------------------------------------------------------------------------------------------
 	public static final Block TACKLE_BENCH = block("tackle_bench", TackleBenchBlock::new, BlockBehaviour.Properties.of()
 			.mapColor(MapColor.WOOD).strength(2.5f).sound(SoundType.WOOD).noOcclusion().ignitedByLava());
+	// --- Fish Mount (a trophy plaque for the wall) -----------------------------------------------------------------
+	public static final Block OAK_FISH_MOUNT = fishMount("oak_fish_mount", MapColor.WOOD);
+	public static final Block SPRUCE_FISH_MOUNT = fishMount("spruce_fish_mount", MapColor.PODZOL);
+	public static final Block DARK_OAK_FISH_MOUNT = fishMount("dark_oak_fish_mount", MapColor.COLOR_BROWN);
+	public static final List<Block> FISH_MOUNTS = List.of(OAK_FISH_MOUNT, SPRUCE_FISH_MOUNT, DARK_OAK_FISH_MOUNT);
+	public static final BlockEntityType<FishMountBlockEntity> FISH_MOUNT_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
+			MyMod.id("fish_mount"), new BlockEntityType<>(FishMountBlockEntity::new, Set.copyOf(FISH_MOUNTS)));
+
 	public static final MenuType<TackleBenchMenu> TACKLE_BENCH_MENU = Registry.register(BuiltInRegistries.MENU, MyMod.id("tackle_bench"),
 			new MenuType<>(TackleBenchMenu::new, FeatureFlags.VANILLA_SET));
 
@@ -121,6 +190,8 @@ public final class Fishing {
 	private static final ResourceKey<CreativeModeTab> FUNCTIONAL_BLOCKS_TAB =
 			ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace("functional_blocks"));
 
+	private static final float WORM_CHANCE = 0.06f;
+
 	private Fishing() {
 	}
 
@@ -132,6 +203,19 @@ public final class Fishing {
 
 	private static Item part(String name, PartSlot slot, RodModifiers modifiers) {
 		return item(name, properties -> new RodPartItem(properties, slot, modifiers), new Item.Properties());
+	}
+
+	private static Item bait(String name, BaitItem.Effect effect) {
+		return bait(name, effect, Rarity.COMMON);
+	}
+
+	private static Item bait(String name, BaitItem.Effect effect, Rarity rarity) {
+		return item(name, properties -> new BaitItem(properties, effect), new Item.Properties().rarity(rarity));
+	}
+
+	private static Block fishMount(String name, MapColor color) {
+		return block(name, FishMountBlock::new, BlockBehaviour.Properties.of().mapColor(color).strength(1.0f).sound(SoundType.WOOD)
+				.noOcclusion().noCollision().ignitedByLava());
 	}
 
 	private static Item item(String name, Function<Item.Properties, Item> factory, Item.Properties properties) {
@@ -162,11 +246,24 @@ public final class Fishing {
 		ServerTickEvents.END_SERVER_TICK.register(FishingFights::tick);
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> FishingFights.disconnect(handler.player));
 		FishingCommands.initialize();
+		FishingRecords.initialize();
+		ItemComponentTooltipProviderRegistry.addLast(TROPHY);
+		PlayerBlockBreakEvents.AFTER.register(Fishing::digWorms);
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(output -> {
 			output.insertAfter(Items.FISHING_ROD, RODS.toArray(Item[]::new));
 			output.insertAfter(STAR_STEEL_ROD, PARTS.toArray(Item[]::new));
+			output.insertAfter(FISH_FINDER, BAITS.toArray(Item[]::new));
 		});
-		CreativeModeTabEvents.modifyOutputEvent(FUNCTIONAL_BLOCKS_TAB)
-				.register(output -> output.insertAfter(Items.FLETCHING_TABLE, TACKLE_BENCH));
+		CreativeModeTabEvents.modifyOutputEvent(FUNCTIONAL_BLOCKS_TAB).register(output -> {
+			output.insertAfter(Items.FLETCHING_TABLE, TACKLE_BENCH);
+			output.insertAfter(Items.GLOW_ITEM_FRAME, FISH_MOUNTS.stream().map(Block::asItem).toArray(Item[]::new));
+		});
+	}
+
+	/** Digging grass or dirt by hand or shovel turns up earthworms now and then. */
+	private static void digWorms(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+		if (!level.isClientSide() && !player.isCreative() && state.is(BlockTags.DIRT) && level.getRandom().nextFloat() < WORM_CHANCE) {
+			Block.popResource(level, pos, new ItemStack(EARTHWORMS, 1 + level.getRandom().nextInt(2)));
+		}
 	}
 }

@@ -10,5 +10,10 @@
     "#minecraft:is_ocean"
   ],
   "time": "night",
-  "weather": "clear"
+  "weather": "clear",
+  "size": {
+    "min_lb": 5.0,
+    "avg_lb": 30.0,
+    "max_lb": 327.0
+  }
 }

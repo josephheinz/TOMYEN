@@ -627,7 +627,8 @@ SPECIES_DATA = OrderedDict([
                                                                            "minecraft:dripstone_caves"], max_y=40))),
     ("sculk_gulper", (8, 4, "sinker", 2, dict(dimension=OVERWORLD, biomes="minecraft:deep_dark", max_y=-20))),
     ("pixie_minnow", (24, 3, "darting", 0, dict(dimension="mymod:feywild", biomes=FEYWILD, count=[1, 3]))),
-    ("moonscale_koi", (5, 4, "floater", 3, dict(dimension="mymod:feywild", biomes=FEYWILD, time="night"))),
+    # The Feywild's clock is fixed and never counts as night, so the koi bites at any time there.
+    ("moonscale_koi", (5, 4, "floater", 3, dict(dimension="mymod:feywild", biomes=FEYWILD))),
     ("magma_eel", (14, 4, "thrasher", 3, dict(fluid="lava", dimension=NETHER, biomes="#minecraft:is_nether"))),
     ("ember_puffer", (10, 3, "floater", 3, dict(fluid="lava", dimension=NETHER, biomes=[
         "minecraft:nether_wastes", "minecraft:basalt_deltas", "minecraft:crimson_forest"]))),
@@ -641,14 +642,44 @@ SPECIES_DATA = OrderedDict([
     ("old_boot", (4, 1, "sinker", 0, dict(dimension=OVERWORLD))),
 ])
 
+# Weights in lb: (smallest catchable, typical, record). Real fish use real-world numbers: the min a small adult or
+# the smallest keeper, the typical a usual rod catch (the median of the roll), the max about the world record or a
+# true trophy. Fantasy fish borrow the numbers of the real fish they resemble. Every catch on a mod rod rolls its
+# weight from these (FishSize); the old boot has no size and is never weighed.
+SIZES = OrderedDict([
+    ("brook_trout", (0.2, 1.0, 14.5)),          # brook trout: record 14 lb 8 oz (Nipigon River, 1915)
+    ("mud_catfish", (1.0, 10.0, 123.0)),        # flathead catfish: record 123 lb
+    ("pike", (1.0, 8.0, 55.0)),                 # northern pike: ~55 lb European record
+    ("mackerel", (0.5, 1.2, 4.0)),              # Atlantic mackerel: rarely past 4 lb
+    ("swordfish", (50.0, 250.0, 1182.0)),       # swordfish: record 1,182 lb (Chile, 1953)
+    ("anglerfish", (1.0, 12.0, 70.0)),          # American angler (goosefish/monkfish): to about 70 lb
+    ("glowfin_tetra", (0.002, 0.006, 0.02)),    # neon/cardinal tetra: 1 to 9 grams
+    ("parrotfish", (1.0, 6.0, 45.0)),           # parrotfish, up to the bumphead/humphead range
+    ("ice_char", (1.0, 4.0, 32.0)),             # Arctic char: record about 32 lb
+    ("bog_eel", (0.5, 2.5, 16.0)),              # American/European eel: to about 16 lb
+    ("cave_blindfish", (0.005, 0.02, 0.08)),    # Mexican blind cavefish: a few grams, 30-odd at most
+    ("sculk_gulper", (0.5, 3.0, 12.0)),         # gulper (pelican) eel, grown fat in the deep dark
+    ("pixie_minnow", (0.004, 0.01, 0.04)),      # fathead minnow: a few grams
+    ("moonscale_koi", (2.0, 12.0, 91.0)),       # koi: record about 91 lb ("Big Girl")
+    ("magma_eel", (2.0, 12.0, 66.0)),           # giant moray eel: to about 66 lb
+    ("ember_puffer", (0.2, 1.0, 4.0)),          # pufferfish (a large one)
+    ("glowing_mutant_carp", (2.0, 14.0, 120.0)),  # common carp (record ~100 lb), mutation adds a little
+    ("starlit_gar", (5.0, 30.0, 327.0)),        # alligator gar: record 327 lb (Mississippi, 2011)
+    ("abyssal_squidling", (0.5, 5.0, 40.0)),    # a young Humboldt (jumbo) squid
+    ("ghoulfish", (1.0, 5.0, 19.0)),            # northern snakehead: record about 19 lb
+])
+
 KEY_ORDER = ["item", "weight", "difficulty", "behavior", "min_rod_tier", "fluid", "dimension", "biomes", "time",
-             "weather", "min_y", "max_y", "count"]
+             "weather", "min_y", "max_y", "count", "size"]
 
 
 def species_json(name):
     weight, difficulty, behavior, tier, extra = SPECIES_DATA[name]
     obj = dict(item="mymod:" + name, weight=weight, difficulty=difficulty, behavior=behavior, min_rod_tier=tier)
     obj.update(extra)
+    if name in SIZES:
+        lo, avg, hi = SIZES[name]
+        obj["size"] = OrderedDict([("min_lb", lo), ("avg_lb", avg), ("max_lb", hi)])
     return OrderedDict((k, obj[k]) for k in KEY_ORDER if k in obj)
 
 

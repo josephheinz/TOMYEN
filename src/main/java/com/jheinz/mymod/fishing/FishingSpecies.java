@@ -2,9 +2,11 @@ package com.jheinz.mymod.fishing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.ToDoubleFunction;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -14,13 +16,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * One catchable thing from a {@code fishing_species} data file (see {@link FishingSpeciesLoader} for the format):
- * the item, how common and how hard it is, how it fights, and where and when it bites.
+ * the item, how common and how hard it is, how it fights, where and when it bites, and (for real fish) how much it
+ * weighs ({@link FishSize}; null for things that aren't weighed, like the old boot).
  */
 public record FishingSpecies(Identifier id, Item item, int weight, int difficulty, FishBehavior behavior, int minRodTier,
 		boolean lava, Identifier dimension, List<BiomeMatch> biomes, Time time, Weather weather, int minY, int maxY,
-		int minCount, int maxCount) {
+		int minCount, int maxCount, @Nullable FishSize size) {
 	private static volatile List<FishingSpecies> all = List.of();
 
 	public enum Time {
@@ -91,6 +96,32 @@ public record FishingSpecies(Identifier id, Item item, int weight, int difficult
 		return false;
 	}
 
+	/** The first species that catches {@code item}, or null. */
+	public static @Nullable FishingSpecies forItem(Item item) {
+		for (FishingSpecies species : all) {
+			if (species.item == item) {
+				return species;
+			}
+		}
+		return null;
+	}
+
+	/** The species with this id, or (for a bare name like "pike") the first whose id path matches; null if none. */
+	public static @Nullable FishingSpecies byName(String name) {
+		Identifier id = Identifier.tryParse(name);
+		for (FishingSpecies species : all) {
+			if (species.id.equals(id)) {
+				return species;
+			}
+		}
+		for (FishingSpecies species : all) {
+			if (species.id.getPath().equals(name) || BuiltInRegistries.ITEM.getKey(species.item).getPath().equals(name)) {
+				return species;
+			}
+		}
+		return null;
+	}
+
 	public static List<FishingSpecies> eligible(Where where, List<FishingSpecies> from) {
 		List<FishingSpecies> out = new ArrayList<>();
 		for (FishingSpecies species : from) {
@@ -111,16 +142,25 @@ public record FishingSpecies(Identifier id, Item item, int weight, int difficult
 
 	/** One species picked from {@code eligible} by biased weight, or null if there are none. */
 	public static FishingSpecies roll(List<FishingSpecies> eligible, float bias, RandomSource random) {
+		return roll(eligible, bias, species -> 1.0, random);
+	}
+
+	/**
+	 * One species picked from {@code eligible} by biased weight times {@code attraction} (a bait drawing some species
+	 * in), or null if there are none.
+	 */
+	public static FishingSpecies roll(List<FishingSpecies> eligible, float bias, ToDoubleFunction<FishingSpecies> attraction,
+			RandomSource random) {
 		double total = 0;
 		for (FishingSpecies species : eligible) {
-			total += species.biasedWeight(bias);
+			total += species.biasedWeight(bias) * attraction.applyAsDouble(species);
 		}
 		if (total <= 0) {
 			return null;
 		}
 		double pick = random.nextDouble() * total;
 		for (FishingSpecies species : eligible) {
-			pick -= species.biasedWeight(bias);
+			pick -= species.biasedWeight(bias) * attraction.applyAsDouble(species);
 			if (pick < 0) {
 				return species;
 			}

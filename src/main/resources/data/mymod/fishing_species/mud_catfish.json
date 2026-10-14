@@ -12,5 +12,10 @@
     "minecraft:plains",
     "minecraft:sunflower_plains",
     "minecraft:savanna"
-  ]
+  ],
+  "size": {
+    "min_lb": 1.0,
+    "avg_lb": 10.0,
+    "max_lb": 123.0
+  }
 }

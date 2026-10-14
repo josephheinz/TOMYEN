@@ -5,5 +5,10 @@
   "behavior": "thrasher",
   "min_rod_tier": 1,
   "dimension": "minecraft:overworld",
-  "max_y": 0
+  "max_y": 0,
+  "size": {
+    "min_lb": 2.0,
+    "avg_lb": 14.0,
+    "max_lb": 120.0
+  }
 }

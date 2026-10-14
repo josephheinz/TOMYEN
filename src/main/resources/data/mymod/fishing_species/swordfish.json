@@ -11,5 +11,10 @@
     "minecraft:deep_lukewarm_ocean",
     "minecraft:deep_ocean"
   ],
-  "time": "day"
+  "time": "day",
+  "size": {
+    "min_lb": 50.0,
+    "avg_lb": 250.0,
+    "max_lb": 1182.0
+  }
 }

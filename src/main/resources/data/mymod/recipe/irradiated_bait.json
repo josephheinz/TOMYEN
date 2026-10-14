@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:raw_uranium",
+    "mymod:cut_bait",
+    "mymod:cut_bait",
+    "mymod:cut_bait",
+    "mymod:cut_bait"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mymod:irradiated_bait"
+  }
+}

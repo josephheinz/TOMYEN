@@ -3,10 +3,19 @@ package com.jheinz.mymod.fishing;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
-/** A rod's totals: its tier, whether it fishes lava, and its own modifiers plus every fitted part's. */
-public record RodStats(int tier, boolean lava, RodModifiers mods) {
+import org.jspecify.annotations.Nullable;
+
+/**
+ * A rod's totals: its tier, whether it fishes lava, its own modifiers plus every fitted part's (and its bait's, while
+ * there's bait that works on this rod), and the bait itself (null if none).
+ */
+public record RodStats(int tier, boolean lava, RodModifiers mods, @Nullable BaitItem bait) {
 	/** What the test command uses when the player holds no mod rod. */
-	public static final RodStats BASELINE = new RodStats(0, false, RodModifiers.NONE);
+	public static final RodStats BASELINE = new RodStats(0, false, RodModifiers.NONE, null);
+	/** The weight roll's push per rod tier: a star steel rod (tier 4) lands heavier fish than bamboo. */
+	private static final float SIZE_PER_TIER = 0.06f;
+	private static final float SIZE_PER_LUCK_OF_THE_SEA = 0.06f;
+	private static final float SIZE_PER_LUCK = 0.04f;
 
 	public static RodStats of(ItemStack rod) {
 		if (!(rod.getItem() instanceof RodItem item)) {
@@ -19,7 +28,38 @@ public record RodStats(int tier, boolean lava, RodModifiers mods) {
 				total = total.plus(part.modifiers());
 			}
 		}
-		return new RodStats(item.tier(), item.fishesLava(), total);
+		RodBait loaded = RodBait.of(rod);
+		BaitItem bait = loaded == null ? null : loaded.bait();
+		if (bait != null && bait.works(item.fishesLava())) {
+			total = total.plus(bait.effect().modifiers());
+		}
+		return new RodStats(item.tier(), item.fishesLava(), total, bait);
+	}
+
+	/**
+	 * The weight roll's bonus for {@code species} (see {@link FishSize#roll}): the rod's tier, the bait, Luck of the
+	 * Sea and the angler's luck.
+	 */
+	public float sizeBonus(FishingSpecies species, boolean inLava, int luckOfTheSea, int luck) {
+		float bonus = SIZE_PER_TIER * tier + SIZE_PER_LUCK_OF_THE_SEA * luckOfTheSea + SIZE_PER_LUCK * Math.max(0, luck);
+		if (bait != null) {
+			bonus += bait.sizeBonus(species, inLava);
+		}
+		return Mth.clamp(bonus, 0.0f, FishSize.MAX_BONUS);
+	}
+
+	/** The weight roll's bonus from the rod's tier and bait alone, for an ordinary species: the Tackle Bench shows it. */
+	public float baseSizeBonus() {
+		float bonus = SIZE_PER_TIER * tier;
+		if (bait != null && bait.works(lava)) {
+			bonus += bait.effect().size();
+		}
+		return Mth.clamp(bonus, 0.0f, FishSize.MAX_BONUS);
+	}
+
+	/** How much likelier the bait makes {@code species} to bite. */
+	public double attraction(FishingSpecies species, boolean inLava) {
+		return bait == null ? 1.0 : bait.attraction(species, inLava);
 	}
 
 	public int biteTicks(boolean night) {

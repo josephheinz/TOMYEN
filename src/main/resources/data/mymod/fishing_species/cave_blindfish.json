@@ -9,5 +9,10 @@
     "minecraft:lush_caves",
     "minecraft:dripstone_caves"
   ],
-  "max_y": 40
+  "max_y": 40,
+  "size": {
+    "min_lb": 0.005,
+    "avg_lb": 0.02,
+    "max_lb": 0.08
+  }
 }

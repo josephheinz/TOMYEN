@@ -10,5 +10,10 @@
     "#minecraft:is_jungle",
     "minecraft:mangrove_swamp",
     "minecraft:lush_caves"
-  ]
+  ],
+  "size": {
+    "min_lb": 0.05,
+    "avg_lb": 0.3,
+    "max_lb": 2.0
+  }
 }

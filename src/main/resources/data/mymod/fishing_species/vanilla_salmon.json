@@ -2,5 +2,10 @@
   "item": "minecraft:salmon",
   "weight": 25,
   "difficulty": 2,
-  "behavior": "thrasher"
+  "behavior": "thrasher",
+  "size": {
+    "min_lb": 2.0,
+    "avg_lb": 10.0,
+    "max_lb": 79.0
+  }
 }

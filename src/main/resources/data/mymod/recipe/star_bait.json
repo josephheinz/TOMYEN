@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:star_crystal_shard",
+    "mymod:cut_bait",
+    "mymod:cut_bait"
+  ],
+  "result": {
+    "count": 2,
+    "id": "mymod:star_bait"
+  }
+}

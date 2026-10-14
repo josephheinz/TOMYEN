@@ -9,5 +9,9 @@
     "mymod:feywild_glade",
     "mymod:feywild_mushroom_wilds"
   ],
-  "time": "night"
+  "size": {
+    "min_lb": 2.0,
+    "avg_lb": 12.0,
+    "max_lb": 91.0
+  }
 }

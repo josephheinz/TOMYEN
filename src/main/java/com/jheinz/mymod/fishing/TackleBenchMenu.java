@@ -15,21 +15,25 @@ import net.minecraft.world.item.ItemStack;
 import com.jheinz.mymod.MyMod;
 
 /**
- * The Tackle Bench: a rod slot and four part slots (line, hook, reel, lure). The part slots show what's fitted to the
- * rod in the rod slot, and editing them edits the rod: put a part in and it's fitted, take one out and it's removed,
- * so the rod comes out with whatever the slots held. The parts live on the rod ({@link RodParts}), never in the
- * bench, so closing the menu only hands back the rod. The server does the syncing; the client is sent the result.
+ * The Tackle Bench: a rod slot, four part slots (line, hook, reel, lure) and a bait slot. The part and bait slots show
+ * what's fitted to the rod in the rod slot, and editing them edits the rod: put a part in and it's fitted, take one out
+ * and it's removed, so the rod comes out with whatever the slots held. The parts and the bait stack live on the rod
+ * ({@link RodParts}, {@link RodBait}), never in the bench, so closing the menu only hands back the rod. The server
+ * does the syncing; the client is sent the result.
  */
 public class TackleBenchMenu extends AbstractContainerMenu {
 	public static final int ROD_SLOT = 0;
 	public static final int PART_SLOTS = PartSlot.values().length;
-	private static final int BENCH_SIZE = 1 + PART_SLOTS;
+	public static final int BAIT_SLOT = 1 + PART_SLOTS;
+	private static final int BENCH_SIZE = BAIT_SLOT + 1;
 
 	// Slot positions, shared with the screen's background texture.
 	public static final int ROD_X = 20;
 	public static final int ROD_Y = 36;
 	public static final int[] PART_X = {52, 52, 74, 74};
 	public static final int[] PART_Y = {26, 46, 26, 46};
+	public static final int BAIT_X = 63;
+	public static final int BAIT_Y = 64;
 
 	private static final int INVENTORY_START = BENCH_SIZE;
 	private static final int HOTBAR_START = INVENTORY_START + 27;
@@ -58,6 +62,7 @@ public class TackleBenchMenu extends AbstractContainerMenu {
 		for (PartSlot part : PartSlot.values()) {
 			addSlot(new PartSlotView(bench, part, PART_X[part.ordinal()], PART_Y[part.ordinal()]));
 		}
+		addSlot(new BaitSlotView(bench, BAIT_SLOT, BAIT_X, BAIT_Y));
 		addStandardInventorySlots(inventory, 8, 84);
 	}
 
@@ -92,6 +97,7 @@ public class TackleBenchMenu extends AbstractContainerMenu {
 				for (PartSlot slot : PartSlot.values()) {
 					bench.setItem(1 + slot.ordinal(), parts.stack(slot));
 				}
+				bench.setItem(BAIT_SLOT, RodBait.stack(rod));
 			} else {
 				RodParts parts = RodParts.EMPTY;
 				for (PartSlot slot : PartSlot.values()) {
@@ -104,6 +110,10 @@ public class TackleBenchMenu extends AbstractContainerMenu {
 						rod.set(Fishing.ROD_PARTS, parts);
 					}
 					access.execute((level, pos) -> level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 0.6f, 1.4f));
+				}
+				ItemStack bait = bench.getItem(BAIT_SLOT);
+				if (!ItemStack.matches(bait, RodBait.stack(rod))) {
+					RodBait.set(rod, bait);
 				}
 			}
 		} finally {
@@ -139,6 +149,10 @@ public class TackleBenchMenu extends AbstractContainerMenu {
 			}
 		} else if (stack.getItem() instanceof RodItem) {
 			if (!moveItemStackTo(stack, ROD_SLOT, ROD_SLOT + 1, false)) {
+				return ItemStack.EMPTY;
+			}
+		} else if (stack.getItem() instanceof BaitItem && !rod().isEmpty()) {
+			if (!moveItemStackTo(stack, BAIT_SLOT, BAIT_SLOT + 1, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else if (stack.getItem() instanceof RodPartItem part && !rod().isEmpty()) {
@@ -187,6 +201,23 @@ public class TackleBenchMenu extends AbstractContainerMenu {
 		@Override
 		public Identifier getNoItemIcon() {
 			return MyMod.id("container/slot/fishing_rod");
+		}
+	}
+
+	/** The bait slot: a stack of one bait, only while there's a rod to load it on. */
+	private class BaitSlotView extends Slot {
+		BaitSlotView(Container container, int index, int x, int y) {
+			super(container, index, x, y);
+		}
+
+		@Override
+		public boolean mayPlace(ItemStack stack) {
+			return !rod().isEmpty() && stack.getItem() instanceof BaitItem;
+		}
+
+		@Override
+		public Identifier getNoItemIcon() {
+			return rod().isEmpty() ? null : MyMod.id("container/slot/rod_bait");
 		}
 	}
 

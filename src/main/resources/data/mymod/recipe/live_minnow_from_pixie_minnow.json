@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:pixie_minnow",
+    "minecraft:kelp"
+  ],
+  "result": {
+    "count": 2,
+    "id": "mymod:live_minnow"
+  }
+}

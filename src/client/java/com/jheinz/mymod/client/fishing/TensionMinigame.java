@@ -46,7 +46,7 @@ final class TensionMinigame extends FishingMinigame {
 		super(params);
 		int d = params.difficulty();
 		half = Mth.clamp((0.16f - 0.018f * (d - 1)) * params.zone(), 0.05f, 0.3f);
-		fill = params.reel() / FightParams.tensionFillTicks(d);
+		fill = params.reel() / FightParams.tensionFillTicks(d, params.length());
 		slackGrace = 12.0f + params.escape() * 20.0f;
 		snapGrace = 12.0f + params.line() * 20.0f;
 		thrasher = params.behavior() == FishBehavior.THRASHER;
@@ -54,7 +54,7 @@ final class TensionMinigame extends FishingMinigame {
 	}
 
 	private int nextJerk() {
-		return 30 + random.nextInt(40) - 4 * params.difficulty();
+		return Math.max(12, 30 + random.nextInt(40) - 4 * params.difficulty() - Math.round(16 * params.power()));
 	}
 
 	@Override
@@ -67,7 +67,7 @@ final class TensionMinigame extends FishingMinigame {
 		if (thrasher) {
 			surge = Mth.clamp(surge * 0.7f + (noise(t * 2.7f, 1) * 2.0f - 1.0f) * 0.5f, -1.0f, 1.0f);
 		}
-		pull = Mth.clamp(0.45f + 0.05f * d + (0.2f + 0.05f * d) * surge, 0.15f, 0.95f);
+		pull = Mth.clamp((0.45f + 0.05f * d + 0.12f * params.power() + (0.2f + 0.05f * d) * surge) * effort(), 0.12f, 0.97f);
 
 		float accel = (held ? PUSH : 0.0f) - PUSH * pull;
 		if (presses > 0 && !held) {
@@ -77,7 +77,8 @@ final class TensionMinigame extends FishingMinigame {
 		accel += params.assist() * ((0.5f - needle) * 0.04f - velocity * 0.15f);
 		if (thrasher) {
 			if (shake > 0 && --shake == 0) {
-				velocity += (random.nextBoolean() ? 1 : -1) * (0.035f + 0.01f * d) * params.speed();
+				velocity += (random.nextBoolean() ? 1 : -1) * (0.035f + 0.01f * d) * (1.0f + 0.4f * params.power()) * effort()
+						* params.speed();
 				jerkIn = nextJerk();
 				FishingClient.sound(Fishing.LINE_CREAK, 0.7f, 0.8f);
 			} else if (shake == 0 && --jerkIn <= 0) {
@@ -123,6 +124,11 @@ final class TensionMinigame extends FishingMinigame {
 	@Override
 	float tug() {
 		return pull;
+	}
+
+	@Override
+	float progress() {
+		return progress;
 	}
 
 	@Override

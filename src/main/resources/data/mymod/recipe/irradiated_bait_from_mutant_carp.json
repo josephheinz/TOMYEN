@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:glowing_mutant_carp"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mymod:irradiated_bait"
+  }
+}

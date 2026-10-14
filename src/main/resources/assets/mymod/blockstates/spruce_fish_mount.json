@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mymod:block/spruce_fish_mount"
+    },
+    "facing=east": {
+      "model": "mymod:block/spruce_fish_mount",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mymod:block/spruce_fish_mount",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mymod:block/spruce_fish_mount",
+      "y": 270
+    }
+  }
+}

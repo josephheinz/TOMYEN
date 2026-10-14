@@ -16,8 +16,8 @@ import com.jheinz.mymod.fishing.RodStats;
 import com.jheinz.mymod.fishing.TackleBenchMenu;
 
 /**
- * The Tackle Bench: the rod slot, its four part slots (line, hook, reel, lure) and, on the right, a readout of what
- * the rod adds up to with its parts, updating as parts go in and out.
+ * The Tackle Bench: the rod slot, its four part slots (line, hook, reel, lure), the bait slot under them and, on the
+ * right, a readout of what the rod adds up to with its parts and bait, updating as they go in and out.
  */
 public class TackleBenchScreen extends AbstractContainerScreen<TackleBenchMenu> {
 	private static final Identifier BACKGROUND = MyMod.id("textures/gui/container/tackle_bench.png");
@@ -56,7 +56,10 @@ public class TackleBenchScreen extends AbstractContainerScreen<TackleBenchMenu> 
 		row(graphics, x, y, line++, "reel", percent(stats.reel() - 1.0f), tone(stats.reel() - 1.0f));
 		int bite = stats.biteTicks(false);
 		row(graphics, x, y, line++, "bite", Component.literal((bite > 0 ? "-" : bite < 0 ? "+" : "") + seconds(Math.abs(bite)) + "s"), tone(bite));
-		row(graphics, x, y, line, "rare", percent(stats.rarityBias(false, 0)), tone(stats.rarityBias(false, 0)));
+		row(graphics, x, y, line++, "rare", percent(stats.rarityBias(false, 0)), tone(stats.rarityBias(false, 0)));
+		// The weight roll's lean from the rod's tier and bait (against an average species: no bait attraction).
+		float size = stats.baseSizeBonus();
+		row(graphics, x, y, line, "size", Component.literal("+" + Math.round(size * 100.0f) + "%"), tone(size));
 
 		// What the numbers don't show, as tags under the readout.
 		StringBuilder tags = new StringBuilder();
@@ -73,21 +76,27 @@ public class TackleBenchScreen extends AbstractContainerScreen<TackleBenchMenu> 
 			tags.append(Component.translatable("container.mymod.tackle_bench.tag.night").getString()).append("  ");
 		}
 		if (stats.mods().cursedBonus()) {
-			tags.append(Component.translatable("container.mymod.tackle_bench.tag.cursed").getString());
+			tags.append(Component.translatable("container.mymod.tackle_bench.tag.cursed").getString()).append("  ");
 		}
-		if (!tags.isEmpty()) {
-			small(graphics, Component.literal(tags.toString().trim()), leftPos + 8 + 32, topPos + 65, 0xFFFFC66B, true);
+		if (stats.bait() != null && stats.bait().effect().radiation() > 0) {
+			tags.append(Component.translatable("container.mymod.tackle_bench.tag.radiation").getString());
+		}
+		// Two tags to a line, under the rod (the bait slot sits under the parts).
+		String[] words = tags.toString().trim().split("\\s+");
+		for (int i = 0; i < words.length && !words[0].isEmpty(); i += 2) {
+			String text = i + 1 < words.length ? words[i] + "  " + words[i + 1] : words[i];
+			small(graphics, Component.literal(text), leftPos + 28, topPos + 61 + (i / 2) * 6, 0xFFFFC66B, true);
 		}
 	}
 
 	private void row(GuiGraphicsExtractor graphics, int x, int y, int line, String key, Component value, int color) {
-		int rowY = y + 3 + line * 7;
+		float rowY = y + 2.5f + line * 6.5f;
 		small(graphics, Component.translatable("container.mymod.tackle_bench.stat." + key), x + 4, rowY, LABEL, false);
 		int width = Math.round(font.width(value) * 0.75f);
 		small(graphics, value, x + PANEL_W - 4 - width, rowY, color, false);
 	}
 
-	private void small(GuiGraphicsExtractor graphics, Component text, int x, int y, int color, boolean centred) {
+	private void small(GuiGraphicsExtractor graphics, Component text, float x, float y, int color, boolean centred) {
 		graphics.pose().pushMatrix();
 		graphics.pose().translate(x, y);
 		graphics.pose().scale(0.75f, 0.75f);
