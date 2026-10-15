@@ -66,6 +66,15 @@ Mutated by uranium:
 - **Moon cheese meteorite.** A meteorite variant that's literally cheese. Mine it and eat it for low gravity.
 - **Upside-down Feywild region.** A biome where you walk on the ceiling.
 
+## World events
+- **Raining fish.** A rare weather event where fish fall from the sky; you can catch them mid-air with a rod.
+- **Meteor of bees.** A meteorite variant that cracks open into an angry alien hive. It drops cosmic honey that gives Jump Boost.
+
+## Wacky machines
+- **Microwave block.** Put anything in. Food gets cooked, metal sparks and explodes, eggs pop, and a fish comes out as "Cursed Fish". The results are deliberately chaotic.
+- **Blender.** Blends two foods into a smoothie with both their effects. Blending a mob egg is... a choice.
+- **Fax machine.** Sends items to another fax machine anywhere, but sometimes it only prints half the stack.
+
 ## Isle of the Damned (death dimension)
 When you die, a copy of you, as you were at death (gear, held weapon, armor), is summoned in a new dimension called **the Isle of the Damned**, holding your dropped items. You have to get there and beat your dead self to get your stuff back. A "Dark Souls corpse run" for the mod.
 
