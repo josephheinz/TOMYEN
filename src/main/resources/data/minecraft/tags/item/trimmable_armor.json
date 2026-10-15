@@ -3,6 +3,10 @@
     "mymod:holy_silver_helmet",
     "mymod:holy_silver_chestplate",
     "mymod:holy_silver_leggings",
-    "mymod:holy_silver_boots"
+    "mymod:holy_silver_boots",
+    "mymod:scrap_helmet",
+    "mymod:scrap_chestplate",
+    "mymod:scrap_leggings",
+    "mymod:scrap_boots"
   ]
 }

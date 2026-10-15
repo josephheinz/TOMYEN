@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    "mymod:bear_trap",
+    "mymod:silver_ingot"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:silver_bear_trap"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_chestplate",
+    "mymod:tech_scrap",
+    "mymod:tech_scrap",
+    "mymod:tech_scrap",
+    "minecraft:copper_nugget"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:scrap_chestplate"
+  }
+}

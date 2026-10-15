@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mymod:scrap"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mymod:scrap"
+      }
+    ]
+  }
+}

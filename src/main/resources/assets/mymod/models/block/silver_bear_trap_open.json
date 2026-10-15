@@ -1,0 +1,7 @@
+{
+  "parent": "mymod:block/bear_trap_open",
+  "textures": {
+    "tex": "mymod:block/silver_bear_trap",
+    "particle": "mymod:block/silver_bear_trap"
+  }
+}

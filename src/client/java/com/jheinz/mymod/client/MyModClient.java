@@ -24,6 +24,7 @@ import com.jheinz.mymod.ModEntities;
 import com.jheinz.mymod.ModNetworking;
 import com.jheinz.mymod.ModParticles;
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.client.survival.SurvivalClient;
 import com.jheinz.mymod.client.alien.AlienClient;
 import com.jheinz.mymod.client.bank.BankClient;
 import com.jheinz.mymod.client.bigredboots.BigRedBootsRenderer;
@@ -168,5 +169,6 @@ public class MyModClient implements ClientModInitializer {
 		FishingClient.initialize();
 		FishEntitiesClient.initialize();
 		DetectorClient.initialize();
+		SurvivalClient.initialize();
 	}
 }
