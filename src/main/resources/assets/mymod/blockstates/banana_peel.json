@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mymod:block/banana_peel"
+    },
+    "facing=east": {
+      "model": "mymod:block/banana_peel",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mymod:block/banana_peel",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mymod:block/banana_peel",
+      "y": 270
+    }
+  }
+}

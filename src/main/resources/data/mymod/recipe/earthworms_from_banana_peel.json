@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:banana_peel",
+    "minecraft:dirt"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mymod:earthworms"
+  }
+}

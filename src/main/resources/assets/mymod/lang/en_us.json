@@ -1682,5 +1682,21 @@
   "item.mymod.live_minnow": "Live Minnow",
   "item.mymod.magma_grub": "Magma Grub",
   "item.mymod.irradiated_bait": "Irradiated Bait",
-  "item.mymod.star_bait": "Star Bait"
+  "item.mymod.star_bait": "Star Bait",
+  "entity.mymod.big_banana": "Big Banana",
+  "entity.mymod.thrown_banana_peel": "Banana Peel",
+  "item.mymod.big_banana_spawn_egg": "Big Banana Spawn Egg",
+  "item.mymod.banana": "Banana",
+  "item.mymod.banana_peel": "Banana Peel",
+  "item.mymod.banana_peel.use": "Place it on the ground, or throw it: whatever steps on it slips",
+  "block.mymod.banana_peel": "Banana Peel",
+  "subtitles.mymod.big_banana_ambient": "Big Banana squishes",
+  "subtitles.mymod.big_banana_hurt": "Big Banana hurts",
+  "subtitles.mymod.big_banana_death": "Big Banana dies",
+  "subtitles.mymod.big_banana_step": "Footsteps",
+  "subtitles.mymod.big_banana_slap": "Big Banana slaps",
+  "subtitles.mymod.big_banana_boop": "Big Banana boops happily",
+  "subtitles.mymod.banana_peel_slip": "Something slips on a banana peel",
+  "subtitles.mymod.banana_peel_place": "Banana peel placed",
+  "tag.item.mymod.makes_big_banana_happy": "Makes Big Bananas Happy"
 }
