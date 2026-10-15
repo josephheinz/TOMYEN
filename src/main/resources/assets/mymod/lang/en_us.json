@@ -1698,5 +1698,9 @@
   "subtitles.mymod.big_banana_boop": "Big Banana boops happily",
   "subtitles.mymod.banana_peel_slip": "Something slips on a banana peel",
   "subtitles.mymod.banana_peel_place": "Banana peel placed",
-  "tag.item.mymod.makes_big_banana_happy": "Makes Big Bananas Happy"
+  "tag.item.mymod.makes_big_banana_happy": "Makes Big Bananas Happy",
+  "item.mymod.big_red_boots": "Big Red Boots",
+  "item.mymod.big_red_boots.falls": "Big rubber feet soak up half of every fall",
+  "item.mymod.big_red_boots.stomp": "Land from 4+ blocks up to stomp nearby mobs away",
+  "item.mymod.big_red_boots.waddle": "Waddles a little; never tramples farmland"
 }
