@@ -30,12 +30,39 @@ public class RodItem extends FishingRodItem {
 	private final int tier;
 	private final boolean lava;
 	private final RodModifiers modifiers;
+	private final boolean reel;
+	private final RodCondition condition;
+	private final RodModifiers bonus;
 
 	public RodItem(Properties properties, int tier, boolean lava, RodModifiers modifiers) {
+		this(properties, tier, lava, modifiers, true, RodCondition.NONE, RodModifiers.NONE);
+	}
+
+	/**
+	 * {@code reel}: whether it has a reel to fit a reel part to (a plain pole doesn't); {@code bonus}: modifiers added
+	 * on top of its own when it's cast where {@code condition} holds.
+	 */
+	public RodItem(Properties properties, int tier, boolean lava, RodModifiers modifiers, boolean reel, RodCondition condition,
+			RodModifiers bonus) {
 		super(properties);
 		this.tier = tier;
 		this.lava = lava;
 		this.modifiers = modifiers;
+		this.reel = reel;
+		this.condition = condition;
+		this.bonus = bonus;
+	}
+
+	public boolean hasReel() {
+		return reel;
+	}
+
+	public RodCondition condition() {
+		return condition;
+	}
+
+	public RodModifiers bonus() {
+		return bonus;
 	}
 
 	public int tier() {
@@ -69,9 +96,10 @@ public class RodItem extends FishingRodItem {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FISHING_BOBBER_THROW, SoundSource.NEUTRAL,
 					0.5f, 0.4f / (level.getRandom().nextFloat() * 0.4f + 0.8f));
 			if (level instanceof ServerLevel serverLevel) {
-				RodStats stats = RodStats.of(stack);
+				RodStats stats = RodStats.of(stack, serverLevel, player.blockPosition());
+				boolean wet = serverLevel.isRaining() || RodCondition.murky(serverLevel, player.blockPosition());
 				int lureSpeed = (int) (EnchantmentHelper.getFishingTimeReduction(serverLevel, stack, player) * 20.0f)
-						+ stats.biteTicks(serverLevel.isDarkOutside());
+						+ stats.biteTicks(serverLevel.isDarkOutside(), wet);
 				int luck = EnchantmentHelper.getFishingLuckBonus(serverLevel, stack, player);
 				Projectile.spawnProjectile(new RodHook(player, level, luck, lureSpeed, stats), serverLevel, stack);
 			}
@@ -89,8 +117,17 @@ public class RodItem extends FishingRodItem {
 			tooltip.accept(Component.translatable("tooltip.mymod.rod.lava").withStyle(ChatFormatting.GOLD));
 		}
 		modifiers.describe().forEach(tooltip);
+		if (condition != RodCondition.NONE) {
+			tooltip.accept(condition.label().copy().withStyle(ChatFormatting.GRAY));
+			bonus.describe().forEach(line -> tooltip.accept(Component.literal(" ").append(line)));
+		}
 		RodParts parts = RodParts.of(stack);
 		for (PartSlot slot : PartSlot.values()) {
+			if (slot == PartSlot.REEL && !reel) {
+				tooltip.accept(Component.translatable("tooltip.mymod.rod.slot", slot.label(),
+						Component.translatable("tooltip.mymod.rod.no_reel").withStyle(ChatFormatting.RED)).withStyle(ChatFormatting.GRAY));
+				continue;
+			}
 			ItemStack part = parts.stack(slot);
 			Component name = part.isEmpty() ? slot.stock().copy().withStyle(ChatFormatting.DARK_GRAY)
 					: part.getHoverName().copy().withStyle(ChatFormatting.WHITE);

@@ -37,6 +37,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -45,17 +46,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.fae.Fae;
+import com.jheinz.mymod.froststeel.Froststeel;
 import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.magmasteel.Magmasteel;
 import com.jheinz.mymod.meteorite.Meteorites;
 
 /**
- * Fishing: six mod rods with a quick-time minigame when a fish bites (see {@link RodItem}, {@link RodHook},
+ * Fishing: eleven mod rods with a quick-time minigame when a fish bites (see {@link RodItem}, {@link RodHook},
  * {@link FishingFights} and client/fishing), the parts that customize them at the Tackle Bench, and the species data
  * files every catch is rolled from ({@link FishingSpeciesLoader}). Vanilla's fishing rod is left exactly as it is.
  *
  * <p>Rods, by tier: Bamboo (0, Scavenger), Iron (1), Steel (2, Foundry), Duralumin (3, light and quick to bite),
- * Magmasteel (3, fishes lava) and Star Steel (4, Exotic).
+ * Magmasteel (3, fishes lava) and Star Steel (4, Exotic). Beside them, rods with other trade-offs at the same tiers: the
+ * Stick &amp; String Pole (0: forgiving but slow, and no reel to fit), Copper (1: quick bites in rain or swamp water),
+ * Bone (1: a night rod), Fae (2: fast, lucky bites in the Feywild) and Froststeel (3: sluggish fish in the cold). A
+ * rod's own bonus for a place ({@link RodCondition}) shows on its tooltip and as a tag at the Tackle Bench.
  *
  * <p>Every fish landed on a mod rod is weighed ({@link FishSize}): ordinary catches are announced and stack as usual,
  * trophies ({@link TrophyFish}) keep their weight and catcher and go up on a {@link FishMountBlock}, sized by weight.
@@ -85,6 +91,10 @@ public final class Fishing {
 	public static final TagKey<Item> MUTANT_FISH = TagKey.create(Registries.ITEM, MyMod.id("mutant_fish"));
 	/** Raw fish that cut into bait. */
 	public static final TagKey<Item> RAW_FISH = TagKey.create(Registries.ITEM, MyMod.id("raw_fish"));
+	/** Small fish of ponds and creeks: crickets draw them in. */
+	public static final TagKey<Item> PANFISH = TagKey.create(Registries.ITEM, MyMod.id("panfish"));
+	/** Fish that feed on the bottom: dough balls draw them in. */
+	public static final TagKey<Item> BOTTOM_FISH = TagKey.create(Registries.ITEM, MyMod.id("bottom_fish"));
 
 	/** A mod rod's bobber. Like vanilla's, but fireproof (a Magmasteel Rod's floats on lava). */
 	public static final EntityType<RodHook> ROD_HOOK = entity("rod_bobber", EntityType.Builder.<RodHook>of(RodHook::new, MobCategory.MISC)
@@ -110,6 +120,25 @@ public final class Fishing {
 	public static final Item STAR_STEEL_ROD = rod("star_steel_rod", 4, false, 768, Meteorites.STAR_STEEL_INGOT,
 			RodModifiers.builder().biteTicks(40).zone(0.2f).speed(-0.2f).reel(0.2f).rarity(0.15f).build(),
 			properties -> properties.fireResistant().rarity(Rarity.UNCOMMON));
+	// Sideways rods: the same tiers, different trade-offs.
+	/** Two sticks and some string, the first rod anyone makes: forgiving, but slow to bite, slow to reel, and no reel to fit. */
+	public static final Item STICK_POLE = rod("stick_pole", 0, false, 48, Items.STICK,
+			RodModifiers.builder().biteTicks(-40).zone(0.15f).reel(-0.25f).build(), false, RodCondition.NONE, RodModifiers.NONE,
+			properties -> properties);
+	/** Copper: fish bite far sooner on it in the rain (or in murky swamp water). */
+	public static final Item COPPER_ROD = rod("copper_rod", 1, false, 160, Items.COPPER_INGOT,
+			RodModifiers.builder().rainBiteTicks(120).line(0.05f).build(), properties -> properties);
+	/** Bone: a night rod. Bites sooner and rarer after dark, but brittle (a narrower zone). */
+	public static final Item BONE_ROD = rod("bone_rod", 1, false, 112, Items.BONE,
+			RodModifiers.builder().nightBiteTicks(100).nightRarity(0.12f).zone(-0.05f).build(), properties -> properties);
+	/** Fae silver: light and lucky; in the Feywild the fae fish come to it fast and rare. */
+	public static final Item FAE_ROD = rod("fae_rod", 2, false, 240, Fae.FAE_SILVER_INGOT, RodModifiers.builder().zone(0.1f).build(),
+			true, RodCondition.FEYWILD, RodModifiers.builder().biteTicks(80).rarity(0.25f).build(),
+			properties -> properties.rarity(Rarity.UNCOMMON));
+	/** Froststeel: in the cold, every fish on its line moves sluggishly. */
+	public static final Item FROSTSTEEL_ROD = rod("froststeel_rod", 3, false, 384, Froststeel.SET.ingot,
+			RodModifiers.builder().speed(-0.05f).line(0.1f).build(), true, RodCondition.COLD,
+			RodModifiers.builder().speed(-0.25f).zone(0.05f).build(), properties -> properties);
 
 	// --- Parts --------------------------------------------------------------------------------------------------
 	public static final Item RUBBER_LINE = part("rubber_line", PartSlot.LINE, RodModifiers.builder().line(0.35f).build());
@@ -128,6 +157,21 @@ public final class Fishing {
 			RodModifiers.builder().nightBiteTicks(100).nightRarity(0.1f).build());
 	public static final Item FAE_DUST_LURE = part("fae_dust_lure", PartSlot.LURE, RodModifiers.builder().rarity(0.35f).build());
 	public static final Item FISH_FINDER = part("fish_finder", PartSlot.LURE, RodModifiers.builder().sonar().build());
+	// Early parts, from string, nuggets and feathers.
+	/** Three strings braided together: stronger, and you feel the bite. */
+	public static final Item BRAIDED_LINE = part("braided_line", PartSlot.LINE, RodModifiers.builder().line(0.2f).zone(0.05f).build());
+	/** Three points: it holds, but the fish fights it harder. */
+	public static final Item TREBLE_HOOK = part("treble_hook", PartSlot.HOOK, RodModifiers.builder().escape(0.3f).speed(0.05f).build());
+	/** A leather drag lets a running fish take line instead of breaking it, at the cost of reeling speed. */
+	public static final Item DRAG_REEL = part("drag_reel", PartSlot.REEL, RodModifiers.builder().line(0.25f).reel(-0.1f).build());
+	/** A bark bobber: easy to see go under. */
+	public static final Item CORK_BOBBER = part("cork_bobber", PartSlot.LURE, RodModifiers.builder().zone(0.08f).biteTicks(20).build());
+	/** A tied feather: bites a little sooner, and now and then something unusual. */
+	public static final Item FEATHER_LURE = part("feather_lure", PartSlot.LURE, RodModifiers.builder().biteTicks(40).rarity(0.05f).build());
+	/** A flashing blade the predators can't leave alone. */
+	public static final Item SPINNER_LURE = part("spinner_lure", PartSlot.LURE, RodModifiers.builder().predator(1.0f).biteTicks(20).build());
+	/** Seeds rattling in a copper shell: fish find it by sound when they can't see it, in rain or murky water. */
+	public static final Item RATTLE_LURE = part("rattle_lure", PartSlot.LURE, RodModifiers.builder().rainBiteTicks(160).predator(0.25f).build());
 
 	// --- Bait (the rod's bait slot; one eaten per fish landed) -------------------------------------------------------
 	/** Dug from grass and dirt now and then, or bred in a heap of dirt and rotten flesh. The basic bait. */
@@ -155,12 +199,27 @@ public final class Fishing {
 	public static final Item STAR_BAIT = bait("star_bait", new BaitItem.Effect(RodModifiers.builder().rarity(0.1f).build(),
 			0.85f, null, 1.0f, 0.0f, false, 0), Rarity.UNCOMMON);
 
-	public static final List<Item> BAITS = List.of(EARTHWORMS, CUT_BAIT, CHUM_BUCKET, GLOWWORM, LIVE_MINNOW, MAGMA_GRUB, IRRADIATED_BAIT,
-			STAR_BAIT);
+	/** Caught in the grass now and then: panfish (bluegill, crappie, perch, trout) can't resist them. */
+	public static final Item CRICKETS = bait("crickets", new BaitItem.Effect(RodModifiers.builder().biteTicks(30).build(),
+			0.08f, PANFISH, 2.5f, 0.0f, false, 0));
+	/** A loaf rolled into balls: the bottom feeders (catfish, carp, sturgeon, flounder) come for it. */
+	public static final Item DOUGH_BALLS = bait("dough_balls", new BaitItem.Effect(RodModifiers.builder().biteTicks(20).build(),
+			0.10f, BOTTOM_FISH, 2.5f, 0.15f, false, 0));
+	/** Wheat seeds and bone meal: everything nibbles, fast, but it's the small fish that get there first. */
+	public static final Item SEED_MASH = bait("seed_mash", new BaitItem.Effect(RodModifiers.builder().biteTicks(80).build(),
+			-0.10f, null, 1.0f, 0.0f, false, 0));
+	/** Dug from swamp mud: predators love them, and more so at night. */
+	public static final Item LEECHES = bait("leeches", new BaitItem.Effect(RodModifiers.builder().nightBiteTicks(60).build(),
+			0.15f, PREDATOR_FISH, 2.0f, 0.1f, false, 0));
 
-	public static final List<Item> RODS = List.of(BAMBOO_ROD, IRON_ROD, STEEL_ROD, DURALUMIN_ROD, MAGMASTEEL_ROD, STAR_STEEL_ROD);
-	public static final List<Item> PARTS = List.of(RUBBER_LINE, NOSE_HAIR_LINE, FAE_SILK_LINE, IRON_HOOK, SILVER_HOOK, TUNGSTEN_HOOK,
-			COPPER_REEL, GEARED_REEL, SERVO_REEL, GLOW_LURE, FAE_DUST_LURE, FISH_FINDER);
+	public static final List<Item> BAITS = List.of(EARTHWORMS, CRICKETS, SEED_MASH, DOUGH_BALLS, LEECHES, CUT_BAIT, CHUM_BUCKET, GLOWWORM,
+			LIVE_MINNOW, MAGMA_GRUB, IRRADIATED_BAIT, STAR_BAIT);
+
+	public static final List<Item> RODS = List.of(STICK_POLE, BAMBOO_ROD, COPPER_ROD, BONE_ROD, IRON_ROD, FAE_ROD, STEEL_ROD, DURALUMIN_ROD,
+			FROSTSTEEL_ROD, MAGMASTEEL_ROD, STAR_STEEL_ROD);
+	public static final List<Item> PARTS = List.of(BRAIDED_LINE, RUBBER_LINE, NOSE_HAIR_LINE, FAE_SILK_LINE, IRON_HOOK, TREBLE_HOOK,
+			SILVER_HOOK, TUNGSTEN_HOOK, COPPER_REEL, DRAG_REEL, GEARED_REEL, SERVO_REEL, CORK_BOBBER, FEATHER_LURE, SPINNER_LURE, RATTLE_LURE,
+			GLOW_LURE, FAE_DUST_LURE, FISH_FINDER);
 
 	// --- Tackle Bench -------------------------------------------------------------------------------------------
 	public static final Block TACKLE_BENCH = block("tackle_bench", TackleBenchBlock::new, BlockBehaviour.Properties.of()
@@ -191,13 +250,19 @@ public final class Fishing {
 			ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace("functional_blocks"));
 
 	private static final float WORM_CHANCE = 0.06f;
+	private static final float CRICKET_CHANCE = 0.05f;
 
 	private Fishing() {
 	}
 
 	private static Item rod(String name, int tier, boolean lava, int durability, Item repair, RodModifiers modifiers,
 			UnaryOperator<Item.Properties> extra) {
-		return item(name, properties -> new RodItem(properties, tier, lava, modifiers),
+		return rod(name, tier, lava, durability, repair, modifiers, true, RodCondition.NONE, RodModifiers.NONE, extra);
+	}
+
+	private static Item rod(String name, int tier, boolean lava, int durability, Item repair, RodModifiers modifiers, boolean reel,
+			RodCondition condition, RodModifiers bonus, UnaryOperator<Item.Properties> extra) {
+		return item(name, properties -> new RodItem(properties, tier, lava, modifiers, reel, condition, bonus),
 				extra.apply(new Item.Properties().durability(durability).repairable(repair).enchantable(1)));
 	}
 
@@ -251,8 +316,8 @@ public final class Fishing {
 		PlayerBlockBreakEvents.AFTER.register(Fishing::digWorms);
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(output -> {
 			output.insertAfter(Items.FISHING_ROD, RODS.toArray(Item[]::new));
-			output.insertAfter(STAR_STEEL_ROD, PARTS.toArray(Item[]::new));
-			output.insertAfter(FISH_FINDER, BAITS.toArray(Item[]::new));
+			output.insertAfter(RODS.getLast(), PARTS.toArray(Item[]::new));
+			output.insertAfter(PARTS.getLast(), BAITS.toArray(Item[]::new));
 		});
 		CreativeModeTabEvents.modifyOutputEvent(FUNCTIONAL_BLOCKS_TAB).register(output -> {
 			output.insertAfter(Items.FLETCHING_TABLE, TACKLE_BENCH);
@@ -260,10 +325,20 @@ public final class Fishing {
 		});
 	}
 
-	/** Digging grass or dirt by hand or shovel turns up earthworms now and then. */
+	/**
+	 * Digging turns up live bait now and then: earthworms from grass blocks and dirt (leeches instead, from a swamp's
+	 * dirt and mud), and crickets from long grass and ferns.
+	 */
 	private static void digWorms(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-		if (!level.isClientSide() && !player.isCreative() && state.is(BlockTags.DIRT) && level.getRandom().nextFloat() < WORM_CHANCE) {
-			Block.popResource(level, pos, new ItemStack(EARTHWORMS, 1 + level.getRandom().nextInt(2)));
+		if (level.isClientSide() || player.isCreative()) {
+			return;
+		}
+		if (state.is(BlockTags.DIRT) && level.getRandom().nextFloat() < WORM_CHANCE) {
+			boolean swamp = RodCondition.murky(level, pos);
+			Block.popResource(level, pos, new ItemStack(swamp ? LEECHES : EARTHWORMS, 1 + level.getRandom().nextInt(2)));
+		} else if ((state.is(Blocks.SHORT_GRASS) || state.is(Blocks.TALL_GRASS) || state.is(Blocks.FERN) || state.is(Blocks.LARGE_FERN))
+				&& level.getRandom().nextFloat() < CRICKET_CHANCE) {
+			Block.popResource(level, pos, new ItemStack(CRICKETS, 1 + level.getRandom().nextInt(2)));
 		}
 	}
 }

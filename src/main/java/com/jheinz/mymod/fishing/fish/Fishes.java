@@ -22,7 +22,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.Consumables;
+import net.minecraft.world.item.component.SuspiciousStewEffects;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.level.block.SuspiciousEffectHolder;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import com.jheinz.mymod.MyMod;
@@ -43,6 +46,12 @@ import com.jheinz.mymod.uranium.Radiation;
  * <li>An anglerfish lights ink (glow ink sacs), a pixie minnow crumbles to Fae Dust, an ice char freezes packed ice
  * into blue ice for the Froststeel quench, three ghoulfish and a soul block give up a Soul Charge for soul steel, and an
  * ember puffer dries to blaze powder for rocket fuel.
+ * <li>The second catch is mostly common, early fish (bass, bluegill, perch, walleye, crappie, snapper, flounder,
+ * mahi-mahi, barracuda) and two giants: a tuna renders into two bottles of Fish Oil, a sturgeon's swim bladder into
+ * isinglass (slime balls), and a banker buys either. A Mooshroom Minnow gives a suspicious stew's random effect (two and
+ * a bowl make stew); a Cometfish, from water near a fallen meteorite, cuts into Star Bait.
+ * <li>Junk and treasure come up too: Rusty Scrap (tech scrap, or an iron nugget in a furnace), a Tackle Box (parts and
+ * bait) and a Sunken Coin Pouch (emeralds and gold, or more emeralds from a banker).
  * </ul>
  */
 public final class Fishes {
@@ -103,17 +112,69 @@ public final class Fishes {
 	public static final Item GHOULFISH = food("ghoulfish", 2, 0.1f, Rarity.UNCOMMON,
 			effects(new MobEffectInstance(MobEffects.HUNGER, 600), new MobEffectInstance(MobEffects.WITHER, 100)));
 
+	// --- The second catch: common panfish and gamefish of rivers and lakes ------------------------------------------
+	public static final Item LARGEMOUTH_BASS = food("largemouth_bass", 2, 0.1f);
+	public static final Item COOKED_LARGEMOUTH_BASS = food("cooked_largemouth_bass", 6, 0.8f);
+	public static final Item BLUEGILL = food("bluegill", 1, 0.1f);
+	public static final Item COOKED_BLUEGILL = food("cooked_bluegill", 4, 0.6f);
+	public static final Item YELLOW_PERCH = food("yellow_perch", 1, 0.1f);
+	public static final Item COOKED_YELLOW_PERCH = food("cooked_yellow_perch", 5, 0.6f);
+	public static final Item WALLEYE = food("walleye", 2, 0.1f);
+	public static final Item COOKED_WALLEYE = food("cooked_walleye", 6, 0.8f);
+	public static final Item CRAPPIE = food("crappie", 1, 0.1f);
+	public static final Item COOKED_CRAPPIE = food("cooked_crappie", 5, 0.6f);
+	/** The river giant: a banker buys it, and its swim bladder boils down to isinglass glue (slime balls). */
+	public static final Item STURGEON = food("sturgeon", 3, 0.2f, Rarity.UNCOMMON);
+	public static final Item STURGEON_STEAK = food("sturgeon_steak", 8, 0.9f, Rarity.UNCOMMON);
+
+	// --- The second catch: the sea --------------------------------------------------------------------------------
+	public static final Item RED_SNAPPER = food("red_snapper", 2, 0.1f);
+	public static final Item COOKED_RED_SNAPPER = food("cooked_red_snapper", 6, 0.8f);
+	public static final Item FLOUNDER = food("flounder", 2, 0.1f);
+	public static final Item COOKED_FLOUNDER = food("cooked_flounder", 5, 0.7f);
+	/** Oily enough for two bottles of Fish Oil, and a banker buys it. */
+	public static final Item TUNA = food("tuna", 3, 0.3f, Rarity.UNCOMMON);
+	public static final Item TUNA_STEAK = food("tuna_steak", 8, 0.8f, Rarity.UNCOMMON);
+	public static final Item MAHI_MAHI = food("mahi_mahi", 2, 0.2f);
+	public static final Item COOKED_MAHI_MAHI = food("cooked_mahi_mahi", 6, 0.8f);
+	/** A reef predator: eaten raw it may carry ciguatera (poison, and the shivers). */
+	public static final Item BARRACUDA = special("barracuda", 2, 0.1f, Rarity.COMMON,
+			effects(0.3f, new MobEffectInstance(MobEffects.POISON, 200)), player -> {
+			}, "tooltip.mymod.barracuda");
+	public static final Item COOKED_BARRACUDA = food("cooked_barracuda", 6, 0.7f);
+
+	// --- The second catch: oddities -------------------------------------------------------------------------------
+	/** From the mushroom fields' shallows: eating one has a suspicious stew's random effect; two and a bowl make stew. */
+	public static final Item MOOSHROOM_MINNOW = special("mooshroom_minnow", 1, 0.3f, Rarity.COMMON, Consumables.DEFAULT_FOOD,
+			Fishes::suspiciousEffect, "tooltip.mymod.mooshroom_minnow");
+	/** Lives in the water by fallen meteorites: still warm (fire resistance, and a burst of speed); cuts into Star Bait. */
+	public static final Item COMETFISH = special("cometfish", 3, 0.4f, Rarity.UNCOMMON,
+			effects(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600), new MobEffectInstance(MobEffects.SPEED, 300)), player -> {
+			}, "tooltip.mymod.cometfish");
+
 	// --- Not fish -------------------------------------------------------------------------------------------------
 	public static final Item OLD_BOOT = register("old_boot", Item::new, new Item.Properties().stacksTo(16));
 	/** Burns like coal and leaves its bottle behind; four make a canister of crude for the Refinery. */
 	public static final Item FISH_OIL = register("fish_oil", Item::new, new Item.Properties().stacksTo(16)
 			.craftRemainder(Items.GLASS_BOTTLE).cookingFuel(ContextIntProviders.COOKING_TIME_COAL));
+	/** Somebody's lost tackle: opens into rod parts, bait and odds and ends (loot_table/gameplay/tackle_box). */
+	public static final Item TACKLE_BOX = register("tackle_box", properties -> new LootBagItem(properties, lootTable("tackle_box"), null),
+			new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+	/** Old coins: opens into emeralds and gold, though a banker pays more for it whole. */
+	public static final Item SUNKEN_COIN_POUCH = register("sunken_coin_pouch",
+			properties -> new LootBagItem(properties, lootTable("sunken_coin_pouch"), "tooltip.mymod.sunken_coin_pouch"),
+			new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+	/** Two make tech scrap; it smelts down to an iron nugget. */
+	public static final Item RUSTY_SCRAP = register("rusty_scrap", Item::new, new Item.Properties());
 
 	/** Food & Drinks, after vanilla's fish: each raw fish followed by its cooked form. */
 	private static final List<Item> FOOD_TAB = List.of(BROOK_TROUT, COOKED_BROOK_TROUT, MUD_CATFISH, COOKED_MUD_CATFISH, PIKE, COOKED_PIKE,
 			MACKEREL, COOKED_MACKEREL, SWORDFISH, SWORDFISH_STEAK, ANGLERFISH, GLOWFIN_TETRA, PARROTFISH, COOKED_PARROTFISH, ICE_CHAR,
 			COOKED_ICE_CHAR, BOG_EEL, COOKED_BOG_EEL, CAVE_BLINDFISH, COOKED_CAVE_BLINDFISH, SCULK_GULPER, PIXIE_MINNOW, MOONSCALE_KOI,
-			MAGMA_EEL, EMBER_PUFFER, GLOWING_MUTANT_CARP, STARLIT_GAR, ABYSSAL_SQUIDLING, GHOULFISH);
+			MAGMA_EEL, EMBER_PUFFER, GLOWING_MUTANT_CARP, STARLIT_GAR, ABYSSAL_SQUIDLING, GHOULFISH,
+			LARGEMOUTH_BASS, COOKED_LARGEMOUTH_BASS, BLUEGILL, COOKED_BLUEGILL, YELLOW_PERCH, COOKED_YELLOW_PERCH, WALLEYE, COOKED_WALLEYE,
+			CRAPPIE, COOKED_CRAPPIE, STURGEON, STURGEON_STEAK, RED_SNAPPER, COOKED_RED_SNAPPER, FLOUNDER, COOKED_FLOUNDER, TUNA, TUNA_STEAK,
+			MAHI_MAHI, COOKED_MAHI_MAHI, BARRACUDA, COOKED_BARRACUDA, MOOSHROOM_MINNOW, COMETFISH);
 
 	/** Experience in a Sculk Gulper's belly. */
 	private static final int GULPER_EXPERIENCE = 20;
@@ -158,7 +219,28 @@ public final class Fishes {
 
 	private static Item special(String name, int nutrition, float saturation, Rarity rarity, Consumable consumable,
 			Consumer<ServerPlayer> onEaten) {
-		return register(name, properties -> new FishItem(properties, onEaten), properties(nutrition, saturation, rarity, consumable));
+		return special(name, nutrition, saturation, rarity, consumable, onEaten, null);
+	}
+
+	private static Item special(String name, int nutrition, float saturation, Rarity rarity, Consumable consumable,
+			Consumer<ServerPlayer> onEaten, String hint) {
+		return register(name, properties -> new FishItem(properties, onEaten, hint), properties(nutrition, saturation, rarity, consumable));
+	}
+
+	private static ResourceKey<LootTable> lootTable(String name) {
+		return ResourceKey.create(Registries.LOOT_TABLE, MyMod.id("gameplay/" + name));
+	}
+
+	/** One of a suspicious stew's effects, picked at random from the flowers that give them. */
+	private static void suspiciousEffect(ServerPlayer player) {
+		List<SuspiciousEffectHolder> holders = SuspiciousEffectHolder.getAllEffectHolders();
+		if (holders.isEmpty()) {
+			return;
+		}
+		SuspiciousEffectHolder holder = holders.get(player.getRandom().nextInt(holders.size()));
+		for (SuspiciousStewEffects.Entry entry : holder.getSuspiciousEffects().effects()) {
+			player.addEffect(entry.createEffectInstance());
+		}
 	}
 
 	private static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties properties) {
@@ -171,7 +253,9 @@ public final class Fishes {
 				.register(output -> output.insertAfter(Items.PUFFERFISH, FOOD_TAB.toArray(Item[]::new)));
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS).register(output -> {
 			output.insertAfter(Items.GLOW_INK_SAC, FISH_OIL);
-			output.insertAfter(Items.LEATHER, OLD_BOOT);
+			output.insertAfter(Items.LEATHER, OLD_BOOT, RUSTY_SCRAP);
 		});
+		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+				.register(output -> output.insertAfter(Items.BUNDLE, TACKLE_BOX, SUNKEN_COIN_POUCH));
 	}
 }

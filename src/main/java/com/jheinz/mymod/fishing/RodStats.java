@@ -1,13 +1,16 @@
 package com.jheinz.mymod.fishing;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import org.jspecify.annotations.Nullable;
 
 /**
  * A rod's totals: its tier, whether it fishes lava, its own modifiers plus every fitted part's (and its bait's, while
- * there's bait that works on this rod), and the bait itself (null if none).
+ * there's bait that works on this rod; its own conditional bonus where that holds; never a reel part on a rod with no
+ * reel), and the bait itself (null if none).
  */
 public record RodStats(int tier, boolean lava, RodModifiers mods, @Nullable BaitItem bait) {
 	/** What the test command uses when the player holds no mod rod. */
@@ -17,13 +20,29 @@ public record RodStats(int tier, boolean lava, RodModifiers mods, @Nullable Bait
 	private static final float SIZE_PER_LUCK_OF_THE_SEA = 0.06f;
 	private static final float SIZE_PER_LUCK = 0.04f;
 
+	/** The rod's totals anywhere: without its conditional bonus (the Tackle Bench shows that as a tag). */
 	public static RodStats of(ItemStack rod) {
+		return of(rod, false);
+	}
+
+	/** The rod's totals for a cast from {@code pos}: its own bonus added if its condition holds there. */
+	public static RodStats of(ItemStack rod, Level level, BlockPos pos) {
+		return of(rod, rod.getItem() instanceof RodItem item && item.condition().holds(level, pos));
+	}
+
+	private static RodStats of(ItemStack rod, boolean bonus) {
 		if (!(rod.getItem() instanceof RodItem item)) {
 			return BASELINE;
 		}
 		RodModifiers total = item.modifiers();
+		if (bonus) {
+			total = total.plus(item.bonus());
+		}
 		RodParts parts = RodParts.of(rod);
 		for (PartSlot slot : PartSlot.values()) {
+			if (slot == PartSlot.REEL && !item.hasReel()) {
+				continue;
+			}
 			if (parts.get(slot).map(holder -> holder.value()).orElse(null) instanceof RodPartItem part) {
 				total = total.plus(part.modifiers());
 			}
@@ -57,13 +76,18 @@ public record RodStats(int tier, boolean lava, RodModifiers mods, @Nullable Bait
 		return Mth.clamp(bonus, 0.0f, FishSize.MAX_BONUS);
 	}
 
-	/** How much likelier the bait makes {@code species} to bite. */
+	/** How much likelier the bait (and a predator lure) makes {@code species} to bite. */
 	public double attraction(FishingSpecies species, boolean inLava) {
-		return bait == null ? 1.0 : bait.attraction(species, inLava);
+		double attraction = bait == null ? 1.0 : bait.attraction(species, inLava);
+		if (mods.predator() != 0.0f && species.stack().is(Fishing.PREDATOR_FISH)) {
+			attraction *= Math.max(0.0, 1.0 + mods.predator());
+		}
+		return attraction;
 	}
 
-	public int biteTicks(boolean night) {
-		return mods.biteTicks() + (night ? mods.nightBiteTicks() : 0);
+	/** Ticks off the bite wait: always, plus at night, plus in rain or murky water ({@code wet}). */
+	public int biteTicks(boolean night, boolean wet) {
+		return mods.biteTicks() + (night ? mods.nightBiteTicks() : 0) + (wet ? mods.rainBiteTicks() : 0);
 	}
 
 	/** How much the species roll leans toward rare species (0 none, 0.75 at most): parts, night lures and luck. */

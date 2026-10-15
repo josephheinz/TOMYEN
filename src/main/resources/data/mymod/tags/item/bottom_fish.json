@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cod",
+    "mymod:mud_catfish",
+    "mymod:glowing_mutant_carp",
+    "mymod:sturgeon",
+    "mymod:flounder"
+  ]
+}

@@ -232,7 +232,12 @@ public class TackleBenchMenu extends AbstractContainerMenu {
 
 		@Override
 		public boolean mayPlace(ItemStack stack) {
-			return !rod().isEmpty() && stack.getItem() instanceof RodPartItem item && item.slot() == part;
+			return fits() && stack.getItem() instanceof RodPartItem item && item.slot() == part;
+		}
+
+		/** Whether the rod in the bench takes this kind of part (a pole with no reel takes no reel part). */
+		private boolean fits() {
+			return !rod().isEmpty() && (part != PartSlot.REEL || !(rod().getItem() instanceof RodItem item) || item.hasReel());
 		}
 
 		@Override
@@ -242,7 +247,7 @@ public class TackleBenchMenu extends AbstractContainerMenu {
 
 		@Override
 		public Identifier getNoItemIcon() {
-			return rod().isEmpty() ? null : MyMod.id("container/slot/rod_" + part.id());
+			return fits() ? MyMod.id("container/slot/rod_" + part.id()) : null;
 		}
 	}
 }

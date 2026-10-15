@@ -168,8 +168,8 @@ public final class FishingCommands {
 		ServerPlayer player = source.getPlayerOrException();
 		ServerLevel level = source.getLevel();
 		ItemStack rod = player.getMainHandItem().getItem() instanceof RodItem ? player.getMainHandItem() : player.getOffhandItem();
-		RodStats stats = RodStats.of(rod);
 		BlockPos pos = player.blockPosition();
+		RodStats stats = RodStats.of(rod, level, pos);
 		boolean lava = level.getFluidState(pos).is(FluidTags.LAVA) || level.getFluidState(pos.below()).is(FluidTags.LAVA);
 		List<FishingSpecies> eligible = FishingSpecies.eligible(new FishingSpecies.Where(level, pos, lava, stats.tier()), FishingSpecies.all());
 		source.sendSuccess(() -> Component.translatable("commands.mymod.fishing.species.header", eligible.size(),
@@ -179,9 +179,9 @@ public final class FishingCommands {
 			return 0;
 		}
 		float bias = stats.rarityBias(level.isDarkOutside(), Mth.floor(player.getLuck()));
-		double total = eligible.stream().mapToDouble(species -> species.biasedWeight(bias)).sum();
+		double total = eligible.stream().mapToDouble(species -> species.biasedWeight(bias) * stats.attraction(species, lava)).sum();
 		for (FishingSpecies species : eligible) {
-			double chance = 100.0 * species.biasedWeight(bias) / total;
+			double chance = 100.0 * species.biasedWeight(bias) * stats.attraction(species, lava) / total;
 			source.sendSuccess(() -> Component.translatable("commands.mymod.fishing.species.line", species.stack().getHoverName(),
 					String.format(Locale.ROOT, "%.1f", chance), species.weight(), FishingFights.effectiveDifficulty(species, stats),
 					species.behavior().id(), species.id().toString()).withStyle(ChatFormatting.GRAY), false);

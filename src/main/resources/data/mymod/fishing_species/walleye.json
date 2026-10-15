@@ -1,0 +1,21 @@
+{
+  "item": "mymod:walleye",
+  "weight": 14,
+  "difficulty": 2,
+  "behavior": "steady",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "#minecraft:is_river",
+    "#minecraft:is_taiga",
+    "#minecraft:is_forest",
+    "minecraft:plains",
+    "minecraft:snowy_plains",
+    "minecraft:meadow"
+  ],
+  "size": {
+    "min_lb": 0.5,
+    "avg_lb": 2.5,
+    "max_lb": 25.0
+  }
+}

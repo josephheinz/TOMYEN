@@ -16,9 +16,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
@@ -80,6 +84,8 @@ public final class FishKind {
 	}
 
 	private static final Map<EntityType<?>, FishKind> BY_TYPE = new HashMap<>();
+	/** What a fallen meteorite leaves behind (data/mymod/tags/block/meteorite_blocks.json): the Cometfish lives near it. */
+	public static final TagKey<Block> METEORITE_BLOCKS = TagKey.create(Registries.BLOCK, MyMod.id("meteorite_blocks"));
 
 	// --- Rivers and lakes ---------------------------------------------------------------------------------------
 	public static final FishKind BROOK_TROUT = kind("brook_trout", Fishes.BROOK_TROUT, 0.47f, 0.41f, Voice.SALMON)
@@ -143,9 +149,47 @@ public final class FishKind {
 	public static final FishKind GHOULFISH = kind("ghoulfish", Fishes.GHOULFISH, 0.47f, 0.32f, Voice.COD).health(4)
 			.spawns(BiomeSelectors.foundInOverworld(), 2, 1, 2, Depth.SURFACE).time(Time.NIGHT).weather(Weather.THUNDER);
 
+	// --- The second catch: rivers and lakes ----------------------------------------------------------------------
+	public static final FishKind LARGEMOUTH_BASS = kind("largemouth_bass", Fishes.LARGEMOUTH_BASS, 0.53f, 0.42f, Voice.SALMON).health(4)
+			.spawns(warmFresh(), 4, 1, 2, Depth.SURFACE);
+	public static final FishKind BLUEGILL = kind("bluegill", Fishes.BLUEGILL, 0.32f, 0.36f, Voice.TROPICAL).school(6)
+			.spawns(panfishWaters(), 5, 2, 5, Depth.SURFACE);
+	public static final FishKind YELLOW_PERCH = kind("yellow_perch", Fishes.YELLOW_PERCH, 0.38f, 0.3f, Voice.COD).school(6)
+			.spawns(coolFresh(), 5, 2, 4, Depth.SURFACE);
+	public static final FishKind WALLEYE = kind("walleye", Fishes.WALLEYE, 0.56f, 0.36f, Voice.SALMON).health(4)
+			.spawns(coolFresh(), 3, 1, 2, Depth.SURFACE);
+	public static final FishKind CRAPPIE = kind("crappie", Fishes.CRAPPIE, 0.35f, 0.38f, Voice.TROPICAL).school(5)
+			.spawns(panfishWaters().or(BiomeSelectors.includeByKey(Biomes.MANGROVE_SWAMP)), 4, 2, 4, Depth.SURFACE);
+	/** Longer than a large salmon and slow, cruising the river bed. */
+	public static final FishKind STURGEON = kind("sturgeon", Fishes.STURGEON, 1.25f, 0.5f, Voice.SALMON).health(12).bottom()
+			.spawns(rivers().or(BiomeSelectors.includeByKey(Biomes.COLD_OCEAN, Biomes.DEEP_COLD_OCEAN)), 1, 1, 1, Depth.SURFACE);
+
+	// --- The second catch: the sea ------------------------------------------------------------------------------
+	public static final FishKind RED_SNAPPER = kind("red_snapper", Fishes.RED_SNAPPER, 0.56f, 0.45f, Voice.COD).school(4)
+			.spawns(warmOcean().or(BiomeSelectors.includeByKey(Biomes.OCEAN, Biomes.DEEP_OCEAN)), 4, 2, 4, Depth.SURFACE);
+	/** Lies flat on the sea floor (its model is drawn on its side), both eyes looking up. */
+	public static final FishKind FLOUNDER = kind("flounder", Fishes.FLOUNDER, 0.5f, 0.2f, Voice.COD).bottom()
+			.spawns(BiomeSelectors.tag(BiomeTags.IS_OCEAN).or(BiomeSelectors.tag(BiomeTags.IS_BEACH)), 3, 1, 2, Depth.SURFACE);
+	/** As long as a large salmon, in small schools. */
+	public static final FishKind TUNA = kind("tuna", Fishes.TUNA, 1.15f, 0.6f, Voice.SALMON).health(12).school(3)
+			.spawns(BiomeSelectors.tag(BiomeTags.IS_OCEAN), 1, 1, 3, Depth.SURFACE);
+	public static final FishKind MAHI_MAHI = kind("mahi_mahi", Fishes.MAHI_MAHI, 0.94f, 0.5f, Voice.TROPICAL).health(6)
+			.spawns(warmOcean(), 2, 1, 2, Depth.SURFACE).time(Time.DAY);
+	public static final FishKind BARRACUDA = kind("barracuda", Fishes.BARRACUDA, 0.88f, 0.3f, Voice.SALMON).health(6)
+			.spawns(warmOcean().or(BiomeSelectors.includeByKey(Biomes.MANGROVE_SWAMP)), 2, 1, 1, Depth.SURFACE);
+
+	// --- The second catch: oddities -----------------------------------------------------------------------------
+	/** In the mushroom fields' shallows and pools, in red-and-white schools. */
+	public static final FishKind MOOSHROOM_MINNOW = kind("mooshroom_minnow", Fishes.MOOSHROOM_MINNOW, 0.3f, 0.3f, Voice.TROPICAL).school(8)
+			.spawns(BiomeSelectors.includeByKey(Biomes.MUSHROOM_FIELDS), 8, 3, 6, Depth.ANY);
+	/** Only in water within a few blocks of a fallen meteorite (its species file's near_block). */
+	public static final FishKind COMETFISH = kind("cometfish", Fishes.COMETFISH, 0.5f, 0.3f, Voice.SALMON).health(5)
+			.spawns(BiomeSelectors.foundInOverworld(), 2, 1, 1, Depth.ANY).near(METEORITE_BLOCKS, 12);
+
 	public static final List<FishKind> ALL = List.of(BROOK_TROUT, MUD_CATFISH, PIKE, MACKEREL, SWORDFISH, ANGLERFISH, GLOWFIN_TETRA,
 			PARROTFISH, ICE_CHAR, BOG_EEL, CAVE_BLINDFISH, SCULK_GULPER, PIXIE_MINNOW, MOONSCALE_KOI, MAGMA_EEL, EMBER_PUFFER,
-			GLOWING_MUTANT_CARP, STARLIT_GAR, ABYSSAL_SQUIDLING, GHOULFISH);
+			GLOWING_MUTANT_CARP, STARLIT_GAR, ABYSSAL_SQUIDLING, GHOULFISH, LARGEMOUTH_BASS, BLUEGILL, YELLOW_PERCH, WALLEYE, CRAPPIE,
+			STURGEON, RED_SNAPPER, FLOUNDER, TUNA, MAHI_MAHI, BARRACUDA, MOOSHROOM_MINNOW, COMETFISH);
 
 	private final String id;
 	private final Item catchItem;
@@ -163,6 +207,9 @@ public final class FishKind {
 	private int maxY = Integer.MAX_VALUE;
 	private Time time = Time.ANY;
 	private Weather weather = Weather.ANY;
+	private boolean bottom;
+	private TagKey<Block> nearBlocks;
+	private int nearRadius;
 
 	private EntityType<? extends ModFish> type;
 	private Item bucket;
@@ -186,6 +233,21 @@ public final class FishKind {
 
 	private static Predicate<BiomeSelectionContext> warmOcean() {
 		return BiomeSelectors.includeByKey(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN);
+	}
+
+	private static Predicate<BiomeSelectionContext> warmFresh() {
+		return rivers().or(BiomeSelectors.tag(BiomeTags.IS_FOREST)).or(BiomeSelectors.tag(BiomeTags.IS_JUNGLE))
+				.or(BiomeSelectors.includeByKey(Biomes.SWAMP, Biomes.MANGROVE_SWAMP, Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS, Biomes.SAVANNA));
+	}
+
+	private static Predicate<BiomeSelectionContext> panfishWaters() {
+		return rivers().or(BiomeSelectors.tag(BiomeTags.IS_FOREST))
+				.or(BiomeSelectors.includeByKey(Biomes.SWAMP, Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS, Biomes.SAVANNA, Biomes.MEADOW));
+	}
+
+	private static Predicate<BiomeSelectionContext> coolFresh() {
+		return rivers().or(BiomeSelectors.tag(BiomeTags.IS_TAIGA)).or(BiomeSelectors.tag(BiomeTags.IS_FOREST))
+				.or(BiomeSelectors.includeByKey(Biomes.PLAINS, Biomes.SNOWY_PLAINS, Biomes.MEADOW));
 	}
 
 	private static Predicate<BiomeSelectionContext> feywild() {
@@ -236,6 +298,44 @@ public final class FishKind {
 		return this;
 	}
 
+	/** A bottom dweller: it sinks back to the bed whenever it isn't swimming somewhere. */
+	private FishKind bottom() {
+		this.bottom = true;
+		return this;
+	}
+
+	/** Only spawns within {@code radius} blocks of one of these blocks. */
+	private FishKind near(TagKey<Block> blocks, int radius) {
+		this.nearBlocks = blocks;
+		this.nearRadius = radius;
+		return this;
+	}
+
+	/**
+	 * Whether any block in {@code blocks} lies within {@code radius} blocks of {@code pos} (two-thirds as far up and
+	 * down). Checks every other block: what this looks for (a meteorite's shell) comes in clumps.
+	 */
+	public static boolean nearBlock(LevelReader level, BlockPos pos, TagKey<Block> blocks, int radius) {
+		return nearBlock(level, pos, state -> state.is(blocks), radius);
+	}
+
+	/** {@link #nearBlock(LevelReader, BlockPos, TagKey, int)} for any test of the block. */
+	public static boolean nearBlock(LevelReader level, BlockPos pos, Predicate<BlockState> blocks, int radius) {
+		int dy = Math.max(2, radius * 2 / 3);
+		BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
+		for (int y = -dy; y <= dy; y += 2) {
+			for (int x = -radius; x <= radius; x += 2) {
+				for (int z = -radius; z <= radius; z += 2) {
+					at.set(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+					if (level.hasChunkAt(at) && blocks.test(level.getBlockState(at))) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	void bind(EntityType<? extends ModFish> type, Item bucket, Item spawnEgg) {
 		this.type = type;
 		this.bucket = bucket;
@@ -276,7 +376,11 @@ public final class FishKind {
 			case CLEAR -> !world.isRaining();
 			case THUNDER -> world.isThundering();
 		};
-		return timeOk && weatherOk;
+		return timeOk && weatherOk && (nearBlocks == null || nearBlock(level, pos, nearBlocks, nearRadius));
+	}
+
+	public boolean isBottomDweller() {
+		return bottom;
 	}
 
 	public String id() {

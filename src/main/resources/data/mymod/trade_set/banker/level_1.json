@@ -5,6 +5,7 @@
     "mymod:banker/1/emerald_credit_card",
     "mymod:banker/1/emerald_debit_card",
     "mymod:banker/1/paper_emerald",
-    "mymod:banker/1/gold_ingot_emerald"
+    "mymod:banker/1/gold_ingot_emerald",
+    "mymod:banker/1/sunken_coin_pouch_emerald"
   ]
 }

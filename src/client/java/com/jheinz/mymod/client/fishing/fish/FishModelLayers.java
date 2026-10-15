@@ -21,9 +21,10 @@ import net.minecraft.core.Direction;
 public final class FishModelLayers {
 	/**
 	 * A fish's model: its layer, whether it has a glow texture, its height and half its width in blocks (to lay it on
-	 * its side when it flops on land) and its shadow's radius.
+	 * its side when it flops on land), its shadow's radius, and whether it's a flatfish that always lies on its side.
 	 */
-	public record Shape(String id, Supplier<LayerDefinition> layer, boolean glows, float height, float halfWidth, float shadow) {
+	public record Shape(String id, Supplier<LayerDefinition> layer, boolean glows, float height, float halfWidth, float shadow,
+			boolean flat) {
 	}
 
 	/** Fins are single faces, drawn from both sides by the entity cutout render type. */
@@ -31,26 +32,39 @@ public final class FishModelLayers {
 	private static final Set<Direction> NORTH = EnumSet.of(Direction.NORTH);
 
 	public static final List<Shape> SHAPES = List.of(
-			new Shape("brook_trout", FishModelLayers::brookTrout, false, 0.5444F, 0.1058F, 0.2812F),
-			new Shape("mud_catfish", FishModelLayers::mudCatfish, false, 0.4939F, 0.1509F, 0.3375F),
-			new Shape("pike", FishModelLayers::pike, false, 0.5F, 0.0938F, 0.375F),
-			new Shape("mackerel", FishModelLayers::mackerel, false, 0.3482F, 0.0696F, 0.2437F),
-			new Shape("swordfish", FishModelLayers::swordfish, false, 1.0505F, 0.1599F, 0.7125F),
-			new Shape("anglerfish", FishModelLayers::anglerfish, true, 0.5396F, 0.127F, 0.2437F),
-			new Shape("glowfin_tetra", FishModelLayers::glowfinTetra, true, 0.2784F, 0.0497F, 0.15F),
-			new Shape("parrotfish", FishModelLayers::parrotfish, false, 0.5357F, 0.1172F, 0.2812F),
-			new Shape("ice_char", FishModelLayers::iceChar, false, 0.5746F, 0.0907F, 0.2812F),
-			new Shape("bog_eel", FishModelLayers::bogEel, false, 0.3708F, 0.0772F, 0.4125F),
-			new Shape("cave_blindfish", FishModelLayers::caveBlindfish, false, 0.2812F, 0.0502F, 0.1687F),
-			new Shape("sculk_gulper", FishModelLayers::sculkGulper, true, 0.3886F, 0.111F, 0.2812F),
-			new Shape("pixie_minnow", FishModelLayers::pixieMinnow, true, 0.3182F, 0.0455F, 0.15F),
-			new Shape("moonscale_koi", FishModelLayers::moonscaleKoi, false, 0.5134F, 0.0998F, 0.3187F),
-			new Shape("magma_eel", FishModelLayers::magmaEel, true, 0.3438F, 0.0938F, 0.4125F),
-			new Shape("ember_puffer", FishModelLayers::emberPuffer, true, 0.5156F, 0.2578F, 0.1687F),
-			new Shape("glowing_mutant_carp", FishModelLayers::glowingMutantCarp, true, 0.5517F, 0.1552F, 0.3F),
-			new Shape("starlit_gar", FishModelLayers::starlitGar, true, 0.4F, 0.0833F, 0.45F),
-			new Shape("abyssal_squidling", FishModelLayers::abyssalSquidling, true, 0.3636F, 0.0909F, 0.3F),
-			new Shape("ghoulfish", FishModelLayers::ghoulfish, true, 0.42F, 0.105F, 0.2812F));
+			new Shape("brook_trout", FishModelLayers::brookTrout, false, 0.5444F, 0.1058F, 0.2812F, false),
+			new Shape("mud_catfish", FishModelLayers::mudCatfish, false, 0.4939F, 0.1509F, 0.3375F, false),
+			new Shape("pike", FishModelLayers::pike, false, 0.5F, 0.0938F, 0.375F, false),
+			new Shape("mackerel", FishModelLayers::mackerel, false, 0.3482F, 0.0696F, 0.2437F, false),
+			new Shape("swordfish", FishModelLayers::swordfish, false, 1.0505F, 0.1599F, 0.7125F, false),
+			new Shape("anglerfish", FishModelLayers::anglerfish, true, 0.5396F, 0.127F, 0.2437F, false),
+			new Shape("glowfin_tetra", FishModelLayers::glowfinTetra, true, 0.2784F, 0.0497F, 0.15F, false),
+			new Shape("parrotfish", FishModelLayers::parrotfish, false, 0.5357F, 0.1172F, 0.2812F, false),
+			new Shape("ice_char", FishModelLayers::iceChar, false, 0.5746F, 0.0907F, 0.2812F, false),
+			new Shape("bog_eel", FishModelLayers::bogEel, false, 0.3708F, 0.0772F, 0.4125F, false),
+			new Shape("cave_blindfish", FishModelLayers::caveBlindfish, false, 0.2812F, 0.0502F, 0.1687F, false),
+			new Shape("sculk_gulper", FishModelLayers::sculkGulper, true, 0.3886F, 0.111F, 0.2812F, false),
+			new Shape("pixie_minnow", FishModelLayers::pixieMinnow, true, 0.3182F, 0.0455F, 0.15F, false),
+			new Shape("moonscale_koi", FishModelLayers::moonscaleKoi, false, 0.5134F, 0.0998F, 0.3187F, false),
+			new Shape("magma_eel", FishModelLayers::magmaEel, true, 0.3438F, 0.0938F, 0.4125F, false),
+			new Shape("ember_puffer", FishModelLayers::emberPuffer, true, 0.5156F, 0.2578F, 0.1687F, false),
+			new Shape("glowing_mutant_carp", FishModelLayers::glowingMutantCarp, true, 0.5517F, 0.1552F, 0.3F, false),
+			new Shape("starlit_gar", FishModelLayers::starlitGar, true, 0.4F, 0.0833F, 0.45F, false),
+			new Shape("abyssal_squidling", FishModelLayers::abyssalSquidling, true, 0.3636F, 0.0909F, 0.3F, false),
+			new Shape("ghoulfish", FishModelLayers::ghoulfish, true, 0.42F, 0.105F, 0.2812F, false),
+			new Shape("largemouth_bass", FishModelLayers::largemouthBass, false, 0.5938F, 0.1094F, 0.3187F, false),
+			new Shape("bluegill", FishModelLayers::bluegill, false, 0.525F, 0.0625F, 0.1875F, false),
+			new Shape("yellow_perch", FishModelLayers::yellowPerch, false, 0.3879F, 0.0647F, 0.225F, false),
+			new Shape("walleye", FishModelLayers::walleye, false, 0.4963F, 0.0827F, 0.3375F, false),
+			new Shape("crappie", FishModelLayers::crappie, false, 0.5156F, 0.0491F, 0.2062F, false),
+			new Shape("sturgeon", FishModelLayers::sturgeon, false, 0.7065F, 0.2174F, 0.75F, false),
+			new Shape("red_snapper", FishModelLayers::redSnapper, false, 0.668F, 0.1055F, 0.3375F, false),
+			new Shape("flounder", FishModelLayers::flounder, false, 0.6774F, 0.0645F, 0.3F, true),
+			new Shape("tuna", FishModelLayers::tuna, false, 1.1875F, 0.2812F, 0.675F, false),
+			new Shape("mahi_mahi", FishModelLayers::mahiMahi, false, 1.0227F, 0.1136F, 0.5625F, false),
+			new Shape("barracuda", FishModelLayers::barracuda, false, 0.549F, 0.0915F, 0.525F, false),
+			new Shape("mooshroom_minnow", FishModelLayers::mooshroomMinnow, false, 0.2386F, 0.0455F, 0.15F, false),
+			new Shape("cometfish", FishModelLayers::cometfish, true, 0.3421F, 0.0789F, 0.3F, false));
 
 	private FishModelLayers() {
 	}
@@ -484,5 +498,265 @@ public final class FishModelLayers {
 				.texOffs(24, 10).addBox(0.0F, -6.0F, 0.0F, 0.0F, 11.0F, 6.0F, WEST),
 				PartPose.offset(0.0F, 0.0F, 10.0F));
 		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.48F));
+	}
+
+	private static LayerDefinition largemouthBass() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-3.5F, -5.5F, -8.0F, 7.0F, 11.0F, 16.0F)
+				.texOffs(0, 27).addBox(-3.0F, -3.75F, -16.0F, 6.0F, 8.0F, 8.0F)
+				.texOffs(0, 43).addBox(-2.5F, 3.0F, -17.0F, 5.0F, 2.0F, 5.0F)
+				.texOffs(20, 32).addBox(0.0F, -10.0F, -5.0F, 0.0F, 5.0F, 11.0F, WEST)
+				.texOffs(49, 37).addBox(0.0F, 5.0F, 0.0F, 0.0F, 4.0F, 6.0F, WEST)
+				.texOffs(55, 39).addBox(0.0F, 5.0F, -8.0F, 0.0F, 3.0F, 4.0F, WEST)
+				.texOffs(31, 43).addBox(-3.5F, -2.5F, -13.0F, 7.0F, 2.0F, 2.0F),
+				PartPose.offset(0.0F, 15.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(35, 27).addBox(-2.0F, -2.5F, 0.0F, 4.0F, 5.0F, 3.0F)
+				.texOffs(28, 20).addBox(0.0F, -7.0F, 2.0F, 0.0F, 14.0F, 7.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 8.0F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.5F));
+	}
+
+	private static LayerDefinition bluegill() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-2.5F, -6.5F, -7.5F, 5.0F, 13.0F, 13.0F)
+				.texOffs(36, 0).addBox(-2.0F, -4.75F, -12.5F, 4.0F, 9.0F, 5.0F)
+				.texOffs(10, 14).addBox(0.0F, -11.0F, -7.5F, 0.0F, 5.0F, 12.0F, WEST)
+				.texOffs(36, 19).addBox(0.0F, 6.0F, -2.5F, 0.0F, 4.0F, 7.0F, WEST)
+				.texOffs(22, 26).addBox(-2.5F, -3.0F, -11.5F, 5.0F, 2.0F, 2.0F),
+				PartPose.offset(0.0F, 14.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(0, 26).addBox(-1.5F, -2.0F, 0.25F, 3.0F, 4.0F, 2.0F)
+				.texOffs(54, -5).addBox(0.0F, -6.0F, 2.0F, 0.0F, 12.0F, 5.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 5.5F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.4F));
+	}
+
+	private static LayerDefinition yellowPerch() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-2.5F, -4.0F, -8.5F, 5.0F, 8.0F, 15.0F)
+				.texOffs(40, 0).addBox(-2.0F, -3.0F, -14.5F, 4.0F, 6.0F, 6.0F)
+				.texOffs(32, 16).addBox(0.0F, -8.0F, -7.5F, 0.0F, 4.0F, 7.0F, WEST)
+				.texOffs(39, 18).addBox(0.0F, -7.0F, 0.5F, 0.0F, 3.0F, 5.0F, WEST)
+				.texOffs(44, 18).addBox(0.0F, 4.0F, 0.5F, 0.0F, 3.0F, 5.0F, WEST)
+				.texOffs(49, 20).addBox(0.0F, 4.0F, -8.5F, 0.0F, 3.0F, 3.0F, WEST)
+				.texOffs(18, 23).addBox(-2.5F, -2.0F, -12.5F, 5.0F, 2.0F, 2.0F),
+				PartPose.offset(0.0F, 17.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(6, 23).addBox(-1.5F, -2.0F, 0.0F, 3.0F, 4.0F, 3.0F)
+				.texOffs(0, 17).addBox(0.0F, -6.0F, 2.0F, 0.0F, 12.0F, 6.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 6.5F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.4138F));
+	}
+
+	private static LayerDefinition walleye() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-2.5F, -4.0F, -10.0F, 5.0F, 8.0F, 18.0F)
+				.texOffs(0, 26).addBox(-2.0F, -3.0F, -17.0F, 4.0F, 6.0F, 7.0F)
+				.texOffs(55, 20).addBox(0.0F, -8.0F, -9.0F, 0.0F, 4.0F, 6.0F, WEST)
+				.texOffs(0, 32).addBox(0.0F, -7.0F, -1.0F, 0.0F, 3.0F, 7.0F, WEST)
+				.texOffs(7, 33).addBox(0.0F, 4.0F, 0.0F, 0.0F, 3.0F, 6.0F, WEST)
+				.texOffs(41, 26).addBox(-2.5F, -1.5F, -14.0F, 5.0F, 2.0F, 2.0F),
+				PartPose.offset(0.0F, 17.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(29, 26).addBox(-1.5F, -2.0F, 0.0F, 3.0F, 4.0F, 3.0F)
+				.texOffs(22, 19).addBox(0.0F, -6.0F, 2.0F, 0.0F, 12.0F, 7.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 8.0F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.5294F));
+	}
+
+	private static LayerDefinition crappie() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-2.0F, -6.0F, -6.0F, 4.0F, 12.0F, 13.0F)
+				.texOffs(34, 0).addBox(-1.5F, -4.5F, -12.0F, 3.0F, 9.0F, 6.0F)
+				.texOffs(18, 25).addBox(-1.0F, -1.5F, -14.0F, 2.0F, 3.0F, 2.0F)
+				.texOffs(10, 17).addBox(0.0F, -11.0F, -3.0F, 0.0F, 6.0F, 8.0F, WEST)
+				.texOffs(26, 17).addBox(0.0F, 5.0F, -2.0F, 0.0F, 5.0F, 8.0F, WEST)
+				.texOffs(34, 25).addBox(-2.0F, -2.5F, -10.0F, 4.0F, 2.0F, 2.0F),
+				PartPose.offset(0.0F, 14.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(0, 25).addBox(-1.0F, -2.0F, 0.0F, 2.0F, 4.0F, 3.0F)
+				.texOffs(52, -5).addBox(0.0F, -6.0F, 2.0F, 0.0F, 12.0F, 5.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 7.0F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.3929F));
+	}
+
+	private static LayerDefinition sturgeon() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 37).addBox(-1.5F, -0.75F, -23.0F, 3.0F, 2.0F, 6.0F)
+				.texOffs(34, 26).addBox(-2.5F, -2.25F, -17.0F, 5.0F, 5.0F, 5.0F)
+				.texOffs(0, 0).addBox(-3.0F, -3.5F, -12.0F, 6.0F, 7.0F, 19.0F)
+				.texOffs(18, 44).addBox(0.0F, -6.0F, 1.0F, 0.0F, 3.0F, 4.0F, WEST)
+				.texOffs(22, 44).addBox(0.0F, 3.0F, 1.0F, 0.0F, 3.0F, 4.0F, WEST)
+				.texOffs(26, 48).addBox(0.5F, 1.5F, -19.0F, 1.0F, 2.0F, 1.0F)
+				.texOffs(30, 48).addBox(-1.5F, 1.5F, -19.0F, 1.0F, 2.0F, 1.0F)
+				.texOffs(34, 48).addBox(-3.0F, -1.0F, -15.0F, 6.0F, 1.0F, 1.0F)
+				.texOffs(18, 37).addBox(-1.0F, -4.5F, 3.0F, 2.0F, 1.0F, 2.0F)
+				.texOffs(8, 45).addBox(3.0F, -0.5F, 3.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(14, 45).addBox(-4.0F, -0.5F, 3.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(26, 37).addBox(-1.0F, -4.5F, 0.0F, 2.0F, 1.0F, 2.0F)
+				.texOffs(20, 45).addBox(3.0F, -0.5F, 0.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(26, 45).addBox(-4.0F, -0.5F, 0.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(34, 37).addBox(-1.0F, -4.5F, -3.0F, 2.0F, 1.0F, 2.0F)
+				.texOffs(32, 45).addBox(3.0F, -0.5F, -3.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(38, 45).addBox(-4.0F, -0.5F, -3.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(42, 37).addBox(-1.0F, -4.5F, -6.0F, 2.0F, 1.0F, 2.0F)
+				.texOffs(44, 45).addBox(3.0F, -0.5F, -6.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(50, 45).addBox(-4.0F, -0.5F, -6.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(50, 37).addBox(-1.0F, -4.5F, -9.0F, 2.0F, 1.0F, 2.0F)
+				.texOffs(56, 45).addBox(3.0F, -0.5F, -9.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(0, 48).addBox(-4.0F, -0.5F, -9.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(0, 45).addBox(-1.0F, -4.5F, -12.0F, 2.0F, 1.0F, 2.0F)
+				.texOffs(6, 48).addBox(3.0F, -0.5F, -12.0F, 1.0F, 1.0F, 2.0F)
+				.texOffs(12, 48).addBox(-4.0F, -0.5F, -12.0F, 1.0F, 1.0F, 2.0F),
+				PartPose.offset(0.0F, 18.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(0, 26).addBox(-1.5F, -1.75F, 0.0F, 3.0F, 3.0F, 8.0F)
+				.texOffs(22, 14).addBox(0.0F, -7.0F, 4.0F, 0.0F, 11.0F, 12.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 7.0F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.8696F));
+	}
+
+	private static LayerDefinition redSnapper() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-3.0F, -5.5F, -8.0F, 6.0F, 11.0F, 15.0F)
+				.texOffs(42, 0).addBox(-2.5F, -4.25F, -14.0F, 5.0F, 8.0F, 6.0F)
+				.texOffs(35, 26).addBox(-2.0F, -0.5F, -16.0F, 4.0F, 3.0F, 2.0F)
+				.texOffs(21, 12).addBox(0.0F, -10.0F, -8.0F, 0.0F, 5.0F, 14.0F, WEST)
+				.texOffs(0, 33).addBox(0.0F, 5.0F, -1.0F, 0.0F, 4.0F, 7.0F, WEST)
+				.texOffs(7, 36).addBox(0.0F, 5.0F, -9.0F, 0.0F, 4.0F, 4.0F, WEST)
+				.texOffs(47, 26).addBox(-3.0F, -3.0F, -12.0F, 6.0F, 2.0F, 2.0F),
+				PartPose.offset(0.0F, 15.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(7, 26).addBox(-2.0F, -2.0F, 0.0F, 4.0F, 4.0F, 3.0F)
+				.texOffs(0, 19).addBox(0.0F, -7.0F, 2.0F, 0.0F, 14.0F, 7.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 7.0F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.5625F));
+	}
+
+	private static LayerDefinition flounder() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-1.5F, -7.0F, -12.5F, 3.0F, 14.0F, 20.0F)
+				.texOffs(46, 0).addBox(-1.0F, -3.75F, -15.5F, 2.0F, 8.0F, 3.0F)
+				.texOffs(0, 12).addBox(0.0F, -11.0F, -14.5F, 0.0F, 7.0F, 22.0F, WEST)
+				.texOffs(22, 14).addBox(0.0F, 4.0F, -12.5F, 0.0F, 6.0F, 20.0F, WEST)
+				.texOffs(50, 34).addBox(-1.5F, -2.75F, -14.25F, 1.0F, 1.0F, 1.0F)
+				.texOffs(54, 34).addBox(-2.0F, -4.75F, -11.75F, 1.0F, 1.0F, 1.0F),
+				PartPose.offset(0.0F, 14.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(42, 34).addBox(-1.0F, -2.0F, 0.25F, 2.0F, 4.0F, 2.0F)
+				.texOffs(56, -7).addBox(0.0F, -5.0F, 1.0F, 0.0F, 10.0F, 7.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 7.5F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.5161F));
+	}
+
+	private static LayerDefinition tuna() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-4.0F, -5.5F, -10.0F, 8.0F, 11.0F, 17.0F)
+				.texOffs(0, 28).addBox(-3.0F, -4.0F, -16.0F, 6.0F, 8.0F, 6.0F)
+				.texOffs(40, 28).addBox(-2.0F, -1.25F, -18.0F, 4.0F, 3.0F, 2.0F)
+				.texOffs(46, 37).addBox(0.0F, -9.0F, -9.0F, 0.0F, 4.0F, 5.0F, WEST)
+				.texOffs(9, 39).addBox(0.0F, -10.0F, -1.0F, 0.0F, 5.0F, 3.0F, WEST)
+				.texOffs(51, 39).addBox(0.0F, 5.0F, -1.0F, 0.0F, 4.0F, 3.0F, WEST)
+				.texOffs(54, 37).addBox(0.0F, -7.0F, 2.0F, 0.0F, 2.0F, 5.0F, WEST)
+				.texOffs(59, 37).addBox(0.0F, 5.0F, 2.0F, 0.0F, 2.0F, 5.0F, WEST)
+				.texOffs(52, 19).addBox(4.5F, 0.0F, -10.0F, 0.0F, 5.0F, 9.0F, WEST)
+				.texOffs(0, 33).addBox(-4.5F, 0.0F, -10.0F, 0.0F, 5.0F, 9.0F, WEST)
+				.texOffs(12, 42).addBox(-3.5F, -2.5F, -14.0F, 7.0F, 2.0F, 2.0F),
+				PartPose.offset(0.0F, 15.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(24, 28).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 5.0F)
+				.texOffs(30, 42).addBox(-2.5F, -0.5F, 1.0F, 5.0F, 1.0F, 3.0F)
+				.texOffs(50, -7).addBox(0.0F, -9.0F, 4.0F, 0.0F, 18.0F, 7.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 7.0F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(1.0F));
+	}
+
+	private static LayerDefinition mahiMahi() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-2.0F, -4.75F, -10.5F, 4.0F, 9.0F, 16.0F)
+				.texOffs(0, 25).addBox(-1.5F, -6.0F, -16.5F, 3.0F, 10.0F, 6.0F)
+				.texOffs(30, 4).addBox(0.0F, -9.0F, -15.5F, 0.0F, 5.0F, 21.0F, WEST)
+				.texOffs(0, 29).addBox(0.0F, 4.0F, -6.5F, 0.0F, 3.0F, 12.0F, WEST)
+				.texOffs(51, 25).addBox(-2.0F, -2.5F, -15.0F, 4.0F, 2.0F, 2.0F),
+				PartPose.offset(0.0F, 15.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(18, 25).addBox(-1.0F, -1.5F, 0.0F, 2.0F, 3.0F, 4.0F)
+				.texOffs(40, -8).addBox(0.0F, -9.0F, 3.0F, 0.0F, 18.0F, 8.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 5.5F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.9091F));
+	}
+
+	private static LayerDefinition barracuda() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-2.0F, -3.0F, -8.875F, 4.0F, 6.0F, 18.0F)
+				.texOffs(0, 24).addBox(-1.5F, -2.5F, -14.875F, 3.0F, 5.0F, 6.0F)
+				.texOffs(42, 24).addBox(-1.0F, -1.25F, -17.875F, 2.0F, 1.0F, 3.0F)
+				.texOffs(30, 24).addBox(-1.0F, 0.25F, -19.125F, 2.0F, 1.0F, 4.0F)
+				.texOffs(52, 20).addBox(0.0F, -6.0F, -4.875F, 0.0F, 3.0F, 4.0F, WEST)
+				.texOffs(56, 20).addBox(0.0F, -6.0F, 4.125F, 0.0F, 3.0F, 4.0F, WEST)
+				.texOffs(60, 20).addBox(0.0F, 3.0F, 4.125F, 0.0F, 3.0F, 4.0F, WEST)
+				.texOffs(0, 35).addBox(-2.0F, -1.75F, -12.125F, 4.0F, 1.0F, 1.0F),
+				PartPose.offset(0.0F, 18.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(18, 24).addBox(-1.0F, -1.5F, 0.0F, 2.0F, 3.0F, 4.0F)
+				.texOffs(44, -7).addBox(0.0F, -6.0F, 3.0F, 0.0F, 12.0F, 7.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 9.125F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.732F));
+	}
+
+	private static LayerDefinition mooshroomMinnow() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-1.5F, -2.5F, -6.375F, 3.0F, 5.0F, 9.0F)
+				.texOffs(0, 14).addBox(-1.5F, -2.0F, -9.625F, 3.0F, 4.0F, 3.0F)
+				.texOffs(8, 21).addBox(-0.5F, -4.5F, -2.375F, 1.0F, 2.0F, 1.0F)
+				.texOffs(12, 14).addBox(-2.0F, -6.5F, -3.875F, 4.0F, 2.0F, 4.0F)
+				.texOffs(12, 21).addBox(-2.0F, -1.25F, -8.625F, 4.0F, 1.0F, 1.0F),
+				PartPose.offset(0.0F, 20.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(0, 21).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 2.0F)
+				.texOffs(24, -6).addBox(0.0F, -4.0F, 1.0F, 0.0F, 8.0F, 6.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 2.625F));
+		return LayerDefinition.create(mesh, 32, 32).apply(MeshTransformer.scaling(0.3636F));
+	}
+
+	private static LayerDefinition cometfish() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(40, 0).addBox(-2.5F, -3.5F, -19.0F, 5.0F, 7.0F, 7.0F)
+				.texOffs(0, 0).addBox(-3.0F, -4.0F, -12.0F, 6.0F, 8.0F, 14.0F)
+				.texOffs(28, 13).addBox(0.0F, -8.0F, -9.0F, 0.0F, 4.0F, 9.0F, WEST)
+				.texOffs(37, 22).addBox(-3.0F, -1.75F, -16.25F, 6.0F, 1.0F, 1.0F),
+				PartPose.offset(0.0F, 19.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(14, 22).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 4.0F)
+				.texOffs(0, 8).addBox(0.0F, -5.0F, 3.0F, 0.0F, 10.0F, 14.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 2.0F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.4211F));
 	}
 }

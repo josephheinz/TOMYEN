@@ -11,7 +11,8 @@ import net.minecraft.network.chat.Component;
  * What a rod, or one part fitted to it, changes about fishing with it. A rod's totals ({@link RodStats}) are its own
  * modifiers plus its parts'. Every field is a change from the baseline, so {@link #NONE} is "no change":
  * <ul>
- * <li>{@code biteTicks}: ticks off the wait for a bite (like Lure), {@code nightBiteTicks} more at night;</li>
+ * <li>{@code biteTicks}: ticks off the wait for a bite (like Lure), {@code nightBiteTicks} more at night,
+ * {@code rainBiteTicks} more in rain or murky (swamp) water;</li>
  * <li>{@code zone}: the minigame's green zone (and strike zone), +0.1 = 10% wider;</li>
  * <li>{@code speed}: how fast the fish (needle, marker, falling meter) moves, -0.1 = 10% slower;</li>
  * <li>{@code escape}: hold on the fish, 0 to 1: longer grace in the slack zone, extra misses allowed;</li>
@@ -19,11 +20,12 @@ import net.minecraft.network.chat.Component;
  * <li>{@code reel}: reel speed, +0.1 = catch progress fills 10% faster (and harder taps);</li>
  * <li>{@code assist}: a servo reel's help, 0 to 1: it nudges the needle back to centre;</li>
  * <li>{@code rarity}: bias toward rarer (lower weight) species, {@code nightRarity} more at night;</li>
+ * <li>{@code predator}: predators ({@link Fishing#PREDATOR_FISH}) are this much likelier to bite, +0.5 = half again;</li>
  * <li>{@code sonar}: the species shows before it bites; {@code cursedBonus}: cursed catches are one step easier.</li>
  * </ul>
  */
-public record RodModifiers(int biteTicks, int nightBiteTicks, float zone, float speed, float escape, float line,
-		float reel, float assist, float rarity, float nightRarity, boolean sonar, boolean cursedBonus) {
+public record RodModifiers(int biteTicks, int nightBiteTicks, int rainBiteTicks, float zone, float speed, float escape, float line,
+		float reel, float assist, float rarity, float nightRarity, float predator, boolean sonar, boolean cursedBonus) {
 	public static final RodModifiers NONE = builder().build();
 
 	public static Builder builder() {
@@ -31,9 +33,10 @@ public record RodModifiers(int biteTicks, int nightBiteTicks, float zone, float 
 	}
 
 	public RodModifiers plus(RodModifiers other) {
-		return new RodModifiers(biteTicks + other.biteTicks, nightBiteTicks + other.nightBiteTicks, zone + other.zone,
-				speed + other.speed, escape + other.escape, line + other.line, reel + other.reel, assist + other.assist,
-				rarity + other.rarity, nightRarity + other.nightRarity, sonar || other.sonar, cursedBonus || other.cursedBonus);
+		return new RodModifiers(biteTicks + other.biteTicks, nightBiteTicks + other.nightBiteTicks, rainBiteTicks + other.rainBiteTicks,
+				zone + other.zone, speed + other.speed, escape + other.escape, line + other.line, reel + other.reel, assist + other.assist,
+				rarity + other.rarity, nightRarity + other.nightRarity, predator + other.predator, sonar || other.sonar,
+				cursedBonus || other.cursedBonus);
 	}
 
 	/** One tooltip line per thing this changes, good changes blue and bad ones red, like attribute modifiers. */
@@ -45,6 +48,9 @@ public record RodModifiers(int biteTicks, int nightBiteTicks, float zone, float 
 		if (nightBiteTicks != 0) {
 			lines.add(line(nightBiteTicks > 0, "night_bite", seconds(nightBiteTicks)));
 		}
+		if (rainBiteTicks != 0) {
+			lines.add(line(rainBiteTicks > 0, "rain_bite", seconds(rainBiteTicks)));
+		}
 		percent(lines, zone, true, "zone");
 		if (speed != 0) {
 			lines.add(line(speed < 0, speed < 0 ? "fish_slower" : "fish_faster", percent(Math.abs(speed))));
@@ -55,6 +61,7 @@ public record RodModifiers(int biteTicks, int nightBiteTicks, float zone, float 
 		percent(lines, assist, true, "assist");
 		percent(lines, rarity, true, "rarity");
 		percent(lines, nightRarity, true, "night_rarity");
+		percent(lines, predator, true, "predator");
 		if (sonar) {
 			lines.add(line(true, "sonar"));
 		}
@@ -86,6 +93,7 @@ public record RodModifiers(int biteTicks, int nightBiteTicks, float zone, float 
 	public static final class Builder {
 		private int biteTicks;
 		private int nightBiteTicks;
+		private int rainBiteTicks;
 		private float zone;
 		private float speed;
 		private float escape;
@@ -94,6 +102,7 @@ public record RodModifiers(int biteTicks, int nightBiteTicks, float zone, float 
 		private float assist;
 		private float rarity;
 		private float nightRarity;
+		private float predator;
 		private boolean sonar;
 		private boolean cursedBonus;
 
@@ -107,6 +116,11 @@ public record RodModifiers(int biteTicks, int nightBiteTicks, float zone, float 
 
 		public Builder nightBiteTicks(int ticks) {
 			nightBiteTicks = ticks;
+			return this;
+		}
+
+		public Builder rainBiteTicks(int ticks) {
+			rainBiteTicks = ticks;
 			return this;
 		}
 
@@ -150,6 +164,11 @@ public record RodModifiers(int biteTicks, int nightBiteTicks, float zone, float 
 			return this;
 		}
 
+		public Builder predator(float value) {
+			predator = value;
+			return this;
+		}
+
 		public Builder sonar() {
 			sonar = true;
 			return this;
@@ -161,8 +180,8 @@ public record RodModifiers(int biteTicks, int nightBiteTicks, float zone, float 
 		}
 
 		public RodModifiers build() {
-			return new RodModifiers(biteTicks, nightBiteTicks, zone, speed, escape, line, reel, assist, rarity, nightRarity,
-					sonar, cursedBonus);
+			return new RodModifiers(biteTicks, nightBiteTicks, rainBiteTicks, zone, speed, escape, line, reel, assist, rarity, nightRarity,
+					predator, sonar, cursedBonus);
 		}
 	}
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.fishing.RodCondition;
 import com.jheinz.mymod.fishing.RodItem;
 import com.jheinz.mymod.fishing.RodStats;
 import com.jheinz.mymod.fishing.TackleBenchMenu;
@@ -54,7 +55,7 @@ public class TackleBenchScreen extends AbstractContainerScreen<TackleBenchMenu> 
 		row(graphics, x, y, line++, "hold", percent(stats.escape()), tone(stats.escape()));
 		row(graphics, x, y, line++, "line", percent(stats.line()), tone(stats.line()));
 		row(graphics, x, y, line++, "reel", percent(stats.reel() - 1.0f), tone(stats.reel() - 1.0f));
-		int bite = stats.biteTicks(false);
+		int bite = stats.biteTicks(false, false);
 		row(graphics, x, y, line++, "bite", Component.literal((bite > 0 ? "-" : bite < 0 ? "+" : "") + seconds(Math.abs(bite)) + "s"), tone(bite));
 		row(graphics, x, y, line++, "rare", percent(stats.rarityBias(false, 0)), tone(stats.rarityBias(false, 0)));
 		// The weight roll's lean from the rod's tier and bait (against an average species: no bait attraction).
@@ -74,6 +75,19 @@ public class TackleBenchScreen extends AbstractContainerScreen<TackleBenchMenu> 
 		}
 		if (stats.mods().nightBiteTicks() > 0) {
 			tags.append(Component.translatable("container.mymod.tackle_bench.tag.night").getString()).append("  ");
+		}
+		if (stats.mods().rainBiteTicks() > 0) {
+			tags.append(Component.translatable("container.mymod.tackle_bench.tag.rain").getString()).append("  ");
+		}
+		if (stats.mods().predator() > 0) {
+			tags.append(Component.translatable("container.mymod.tackle_bench.tag.predator").getString()).append("  ");
+		}
+		RodItem rodItem = (RodItem) rod.getItem();
+		if (rodItem.condition() != RodCondition.NONE) {
+			tags.append(Component.translatable(rodItem.condition().tagKey()).getString()).append("  ");
+		}
+		if (!rodItem.hasReel()) {
+			tags.append(Component.translatable("container.mymod.tackle_bench.tag.no_reel").getString()).append("  ");
 		}
 		if (stats.mods().cursedBonus()) {
 			tags.append(Component.translatable("container.mymod.tackle_bench.tag.cursed").getString()).append("  ");

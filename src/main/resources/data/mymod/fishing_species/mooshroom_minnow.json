@@ -1,0 +1,18 @@
+{
+  "item": "mymod:mooshroom_minnow",
+  "weight": 30,
+  "difficulty": 2,
+  "behavior": "darting",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": "minecraft:mushroom_fields",
+  "count": [
+    1,
+    3
+  ],
+  "size": {
+    "min_lb": 0.005,
+    "avg_lb": 0.02,
+    "max_lb": 0.1
+  }
+}

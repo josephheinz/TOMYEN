@@ -70,6 +70,9 @@ public class BaitItem extends Item {
 		if (effect.size() > 0.0f) {
 			tooltip.accept(Component.literal(" ").append(Component.translatable("tooltip.mymod.bait.size",
 					Math.round(effect.size() * 100.0f) + "%")).withStyle(ChatFormatting.BLUE));
+		} else if (effect.size() < 0.0f) {
+			tooltip.accept(Component.literal(" ").append(Component.translatable("tooltip.mymod.bait.smaller",
+					Math.round(-effect.size() * 100.0f) + "%")).withStyle(ChatFormatting.RED));
 		}
 		if (effect.attracts() != null) {
 			String tag = effect.attracts().location().getPath();
