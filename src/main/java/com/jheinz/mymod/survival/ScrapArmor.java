@@ -13,7 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import com.jheinz.mymod.exoskeleton.ExoSockets;
 
 /**
- * Scrap armor: plates of tech scrap riveted over leather. On its own it sits between leather and chainmail; what it's
+ * Scrap armor: salvaged junk metal bolted and strapped together (drawn as a 3D model, ScrapArmorRenderer on the
+ * client). On its own it sits between leather and chainmail; what it's
  * for is machines. Against a blow from a rogue machine ({@link Survival#MACHINES}: Skullcranes, Cathode Walkers, UFOs)
  * or any electric damage ({@link Survival#ELECTRIC}: alien zaps, shorts, lasers) each piece takes
  * {@link #REDUCTION_PER_PIECE} off, and the full set a further {@link #FULL_SET_BONUS}, with a spray of sparks as the

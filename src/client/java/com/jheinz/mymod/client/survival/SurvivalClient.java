@@ -6,7 +6,10 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 
 import com.jheinz.mymod.survival.Survival;
 
-/** The survival kit on the client: the thrown Molotov and pipe bomb are drawn as their item sprites. */
+/**
+ * The survival kit on the client: the thrown Molotov and pipe bomb are drawn as their item sprites, and worn Scrap
+ * armor as its 3D model ({@link ScrapArmorRenderer}).
+ */
 public final class SurvivalClient {
 	private SurvivalClient() {
 	}
@@ -14,5 +17,6 @@ public final class SurvivalClient {
 	public static void initialize() {
 		EntityRendererRegistry.register(Survival.MOLOTOV, ThrownItemRenderer::new);
 		EntityRendererRegistry.register(Survival.PIPE_BOMB, ThrownItemRenderer::new);
+		ScrapArmorRenderer.initialize();
 	}
 }

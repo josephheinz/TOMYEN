@@ -55,8 +55,8 @@ import com.jheinz.mymod.MyMod;
  * <ul>
  * <li>{@link CrowbarItem}: a knock-back club that pries iron doors open, rips scrap off pinned machines and breaks
  * crates and barrels fast.</li>
- * <li>Scrap armor ({@link ScrapArmor}): tech scrap riveted over leather, between leather and chainmail, that turns aside
- * machine blows and electric zaps.</li>
+ * <li>Scrap armor ({@link ScrapArmor}): junk metal bolted and strapped together, between leather and chainmail, that
+ * turns aside machine blows and electric zaps.</li>
  * <li>{@link MedicalItem}s: the Bandage and the First Aid Kit, which stop Bleeding (and the kit eases Radiation
  * Sickness).</li>
  * <li>Throwables: the {@link Molotov} (a fish-oil fire bomb, the early cousin of napalm) and the {@link PipeBomb}
@@ -121,6 +121,8 @@ public final class Survival {
 	// --- Items -----------------------------------------------------------------------------------------------------------
 	public static final Item CROWBAR = item("crowbar", CrowbarItem::new, crowbarProperties());
 
+	// The "scrap" equipment asset has no file: worn pieces are drawn as a 3D model on the client (ScrapArmorRenderer).
+	// The id stays so the game still treats the pieces as armor that's drawn by the armor layer, not a hat item.
 	public static final ArmorMaterial SCRAP_ARMOR_MATERIAL = new ArmorMaterial(11,
 			Map.of(ArmorType.BOOTS, 1, ArmorType.LEGGINGS, 3, ArmorType.CHESTPLATE, 5, ArmorType.HELMET, 2, ArmorType.BODY, 4),
 			12, EQUIP_SCRAP, 0.0f, 0.0f, REPAIRS_SCRAP_ARMOR, ResourceKey.create(EquipmentAssets.ROOT_ID, MyMod.id("scrap")));

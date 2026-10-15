@@ -1,11 +1,10 @@
-"""Builds the Scavenger's survival kit (com.jheinz.mymod.survival): every item sprite, the Scrap armor's worn layers,
-the bear trap and tripwire alarm block models and textures, the Trapped and Stunned effect icons, block states, item
-definitions, sounds, lang, and on the data side the recipes (with recipe-book advancements), block loot, the damage
-type and the tags the kit owns.
+"""Builds the Scavenger's survival kit (com.jheinz.mymod.survival): every item sprite, the bear trap and tripwire
+alarm block models and textures, the Trapped and Stunned effect icons, block states, item definitions, sounds, lang,
+and on the data side the recipes (with recipe-book advancements), block loot, the damage type and the tags the kit
+owns. The Scrap armor is worn as a 3D model, built by tools/gen_scrap_armor.py.
 
 Sprites are hand-placed pixel grids over short material ramps (outline darkest, light from the top left), drawn in
-vanilla's item style; the Scrap armor starts from vanilla's leather armor (item sprites and worn layers, read from the
-client jar), recoloured to tanned brown with riveted tech-scrap plates laid over it. The trap and alarm are detailed
+vanilla's item style; the Scrap armor's show the same junk its worn model is made of. The trap and alarm are detailed
 block models built cube by cube here, checked for z-fighting (tools/zfight.py) before they're written.
 
 Usage: python3 tools/gen_survival.py src/main/resources/assets/mymod [--preview preview_survival.png]"""
@@ -326,45 +325,97 @@ def satchel():
 
 
 def scrap_armor_sprites():
-    """Vanilla's leather armor sprites in tanned brown, with tech-scrap plates riveted over the chest, shoulders,
-    brow, knees and toes."""
-    out = {}
-    for piece in ("helmet", "chestplate", "leggings", "boots"):
-        img = recolour(vanilla("item/leather_" + piece), LEATHER)
-        # The undyed parts (laces, cuffs, straps) fill the holes in the dyed base: darker leather.
-        straps = recolour(vanilla("item/leather_" + piece + "_overlay"), LEATHER[:4])
-        for i, c in enumerate(straps.px):
-            if c[3]:
-                img.px[i] = c
-        out[piece] = img
-    plate = keys(KDMLW=SCRAP[:5], r=[RUST[2]], R=[RUST[1]], c=[COPPER[2]])
-    # Plates drawn over the recoloured leather, as (x, y, row) strings: '.' leaves the leather showing.
-    overlays = {
-        "helmet": [(4, 4, "KKKKKKKK"), (3, 5, "KWLcLLcLMK"), (3, 6, "KKMMrMMMKK"), (7, 7, "LM"), (7, 8, "MD"), (7, 9, "KK")],
-        "chestplate": [(1, 2, "KKK"), (1, 3, "KLK"), (1, 4, "KcK"), (12, 2, "KKK"), (12, 3, "KMK"), (12, 4, "KcK"),
-                       (5, 6, "KKKKKK"), (5, 7, "KWLLMK"), (5, 8, "KLcMRK"), (5, 9, "KMMrDK"), (5, 10, "KLMMDK"),
-                       (5, 11, "KcMDcK"), (5, 12, "KKKKKK")],
-        "leggings": [(3, 8, "KKKK"), (3, 9, "KLcK"), (3, 10, "KKKK"), (9, 8, "KKKK"), (9, 9, "KcMK"), (9, 10, "KKKK"),
-                     (4, 2, "KKKKKKKK"), (4, 3, "KMcLLcMK"), (4, 4, "KKKKKKKK")],
-        "boots": [(3, 4, "KLLK"), (3, 5, "KcMK"), (3, 6, "KKKK"), (9, 4, "KLMK"), (9, 5, "KMcK"), (9, 6, "KKKK")],
+    """The Scrap armor's sprites, drawn as the junk the worn pieces are made of (see gen_scrap_armor.py): a
+    galvanized pot helmet with a rusty brim, welding goggles and an antenna; a chestplate of galvanized steel and
+    copper over drum iron with a hubcap and a tire-and-saw-blade shoulder, a road-sign belly and a bandolier; tin-can
+    and pipe leggings with a soda-can knee and bottle caps; odd boots on tire soles."""
+    p = keys(KDMLWH=SCRAP, xrRo=RUST, qcC=COPPER[1:4], bB=BRASS[2:4], kl=[hexc("1a1a1c"), hexc("333336")],
+             s=[STEEL[4]], S=[STEEL[3]], e=[RED[3]], g=[hexc("22422f")], G=[hexc("3c6650")], h=[hexc("9cc0ac")],
+             d=[hexc("2c201a")], t=[hexc("4a3a2e")], Y=[hexc("c6a44c")], y=[hexc("2e2c2a")], E=[hexc("ac2a26")],
+             F=[hexc("6e1a1c")], u=[hexc("3e5a7e")], U=[hexc("587ca2")], P=[hexc("b02a26")], Q=[hexc("2c56a0")])
+    rows = {
+        "helmet": [
+            "................",
+            "..........e.....",
+            "..........D.....",
+            "...KKKKKKKKKK...",
+            "..KHWWWWWWWWLK..",
+            "..KWccLWLLLLMKkk",
+            "..KLqcMLLLLLMKl.",
+            "..KLMMLLLLLMDK..",
+            ".KoRoRRoRRoRRoK.",
+            ".KxrrRrrrRrrrxK.",
+            "..KMKKbBKKbBbKS.",
+            "..KLKbGgbKbhgbK.",
+            "..KDKbgGbKbggbK.",
+            "..KKKKbbKKKbbbK.",
+            "................",
+            "................",
+        ],
+        "chestplate": [
+            "..........KsK...",
+            ".KKKKK...KsSsK..",
+            "KMWHWMK.KkSSSkkK",
+            "KWHsHWKKKKkkkkkK",
+            "KMWHWMDLLcCCckkK",
+            ".KKKKKWLLcCccKK.",
+            "..KMLLLLMcCccqK.",
+            "..KDLLLLMccccqK.",
+            "..KDMMLMDqcccqK.",
+            "..KYYyyYYyyYYyK.",
+            "..KYyyYYyyYYyoK.",
+            "..KlLMlLMDlLMlK.",
+            "..KlMDlMDDlMDlK.",
+            "..KKKKKKKKKKKKK.",
+            "................",
+            "................",
+        ],
+        "leggings": [
+            "................",
+            "..KKKKKKKKKKKK..",
+            "..KddtdSsSdtdK..",
+            "..KxRRoKKdtddK..",
+            "..KRoRrK.KxrRK..",
+            "..KWHWWK.KDMDK..",
+            "..KLMLMK.KMDxK..",
+            "..KddddK.KddtK..",
+            "..KWHWWK.KMDDK..",
+            "..KMLLMK.KDrMK..",
+            "..KEPEEK.KtPtK..",
+            "..KPEEFK.KQtYK..",
+            "..KEEFFK.KtttK..",
+            "..KKKKKK.KKKKK..",
+            "................",
+            "................",
+        ],
+        "boots": [
+            "................",
+            "................",
+            "................",
+            "................",
+            "...KKKK..KKKK...",
+            "...KWLK..KUuK...",
+            "...KLMK..KuUK...",
+            "...KddKK.KCqKK..",
+            "...KMLDK.KUuKK..",
+            "..KKLMDK.KuuKK..",
+            ".KdtddDK.KdtxK..",
+            "KLWtdddKKoRdddK.",
+            "KMLMddtKKRxddtK.",
+            "KklklklKKklklklK",
+            ".KKKKKKK.KKKKKK.",
+            "................",
+        ],
     }
-    for piece, rows in overlays.items():
-        img = out[piece]
-        for x0, y, row in rows:
-            for i, ch in enumerate(row):
-                if ch != "." and img.get(x0 + i, y)[3]:
-                    img.set(x0 + i, y, plate[ch])
-    return out
-
-
-def recolour(img, ramp):
-    """Maps a greyscale sprite onto a ramp by brightness rank, keeping vanilla's shading where it was."""
-    levels = sorted({round(lum(c)) for c in img.px if c[3]})
-    out = img.copy()
-    for i, c in enumerate(img.px):
-        if c[3]:
-            rank = levels.index(round(lum(c))) / max(1, len(levels) - 1)
-            out.px[i] = ramp[min(len(ramp) - 1, int(round(rank * (len(ramp) - 1))))]
+    out = {}
+    for piece, grid in rows.items():
+        out[piece] = sprite(grid, p)
+    # The chestplate's bandolier: a dark strap from the right shoulder to the left hip, drawn over the plates.
+    chest = out["chestplate"]
+    for x, y in ((5, 4), (6, 5), (7, 6), (8, 7), (9, 8), (10, 9), (11, 10), (12, 11)):
+        chest.set(x, y, LEATHER[0])
+        if chest.get(x + 1, y)[3] and (x + 1, y) != (13, 11):
+            chest.set(x + 1, y, LEATHER[1])
     return out
 
 
@@ -381,78 +432,6 @@ def build_sprites():
     SPRITES["pipe_bomb"] = pipe_bomb()
     SPRITES["canteen"] = canteen()
     SPRITES["scavengers_satchel"] = satchel()
-
-
-# ======================================================================================================= armor layers
-
-def plate(img, x0, y0, x1, y1, rivets=True, rust=None):
-    """A riveted scrap plate over [x0..x1] x [y0..y1] (inclusive): dark rim, a bright top edge, mid-grey face shading
-    down to a darker bottom row, copper rivets in the corners and maybe one rust bloom."""
-    for y in range(y0, y1 + 1):
-        for x in range(x0, x1 + 1):
-            if x in (x0, x1) or y in (y0, y1):
-                c = SCRAP[1]
-            elif y == y0 + 1:
-                c = SCRAP[4]
-            elif y == y1 - 1 and y1 - y0 > 3:
-                c = SCRAP[2]
-            else:
-                c = SCRAP[3]
-            img.set(x, y, c)
-    if rivets and x1 - x0 >= 4 and y1 - y0 >= 3:
-        for x, y in ((x0 + 1, y0 + 1), (x1 - 1, y0 + 1), (x0 + 1, y1 - 1), (x1 - 1, y1 - 1)):
-            img.set(x, y, COPPER[2])
-    if rust:
-        img.set(rust[0], rust[1], RUST[2])
-
-
-def armor_layers():
-    """The worn Scrap armor: vanilla's leather layers in tanned brown (straps darker), plates over the brow and crown,
-    chest and back, shoulders, shins, knees and belt."""
-    layers = {}
-    for layer in ("humanoid", "humanoid_leggings"):
-        # Vanilla leather\x27s coverage, painted smooth: one tone, a lit top edge and a shadowed bottom edge on each
-        # side face of the model\x27s boxes (head, body, arm, leg in the standard layout).
-        shape = vanilla(f"entity/equipment/{layer}/leather")
-        img = Img(shape.w, shape.h)
-        edge = {}
-        for u, v, w, h, d in ((0, 0, 8, 8, 8), (16, 16, 8, 12, 4), (40, 16, 4, 12, 4), (0, 16, 4, 12, 4)):
-            for x in range(u, u + 2 * (d + w)):
-                edge[(x, v + d)] = "top"
-                edge[(x, v + d + h - 1)] = "bottom"
-        for y in range(shape.h):
-            for x in range(shape.w):
-                if shape.get(x, y)[3]:
-                    role = edge.get((x, y)) or ("top" if not shape.get(x, y - 1)[3] else "bottom" if not shape.get(x, y + 1)[3] else "")
-                    img.set(x, y, LEATHER[4] if role == "top" else LEATHER[2] if role == "bottom" else LEATHER[3])
-        straps = vanilla(f"entity/equipment/{layer}/leather_overlay")
-        for i, c in enumerate(straps.px):
-            if c[3]:
-                img.px[i] = LEATHER[1]
-        layers[layer] = img
-    body = layers["humanoid"]
-    plate(body, 8, 8, 15, 10, rivets=False)          # helmet brow band (head front)
-    body.set(9, 9, COPPER[2])
-    body.set(14, 9, COPPER[2])
-    plate(body, 10, 0, 13, 7, rivets=False)          # crest plate along the crown (head top)
-    plate(body, 0, 8, 7, 10, rivets=False)           # brow band round the sides and back
-    plate(body, 16, 8, 31, 10, rivets=False)
-    plate(body, 21, 20, 26, 25, rust=(23, 23))       # chest plate
-    plate(body, 33, 20, 38, 24)                      # back plate
-    plate(body, 44, 16, 47, 19, rivets=False)        # shoulder: top, outer side, front and back
-    plate(body, 40, 20, 43, 23, rivets=False)
-    plate(body, 44, 20, 47, 22, rivets=False)
-    plate(body, 52, 20, 55, 22, rivets=False)
-    plate(body, 4, 26, 7, 29, rivets=False)          # boot shin guards (front of the leg)
-    body.set(5, 27, COPPER[2])
-    legs = layers["humanoid_leggings"]
-    plate(legs, 4, 21, 7, 24, rivets=False)          # knee plates
-    legs.set(6, 22, COPPER[2])
-    plate(legs, 22, 27, 25, 30, rivets=False)        # belt buckle plate
-    legs.set(23, 28, COPPER[3])
-    plate(legs, 16, 27, 19, 30, rivets=False)        # hip tassets
-    plate(legs, 28, 27, 31, 30, rivets=False)
-    return layers
 
 
 # ======================================================================================================= block art
@@ -894,10 +873,6 @@ def write_assets():
               OrderedDict([("parent", "minecraft:item/handheld" if name == "crowbar" else "minecraft:item/generated"),
                            ("textures", {"layer0": m("item/" + name)})]))
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": m("item/" + name)}})
-    for layer, img in armor_layers().items():
-        img.save(os.path.join(TEX, "entity", "equipment", layer, "scrap.png"))
-    write(os.path.join(ASSETS, "equipment", "scrap.json"),
-          {"layers": {"humanoid": [{"texture": m("scrap")}], "humanoid_leggings": [{"texture": m("scrap")}]}})
     for kind in ("trapped", "stunned"):
         effect_icon(kind).save(os.path.join(TEX, "mob_effect", kind + ".png"))
 
@@ -1016,7 +991,6 @@ def write_data():
     tag(os.path.join(mine, "tags", "item", "repairs_scrap_armor.json"), [scrap])
     for piece, tag_name in (("helmet", "head_armor"), ("chestplate", "chest_armor"), ("leggings", "leg_armor"), ("boots", "foot_armor")):
         tag(os.path.join(vanilla_tags, "item", tag_name + ".json"), [m(f"scrap_{piece}")])
-    tag(os.path.join(vanilla_tags, "item", "trimmable_armor.json"), [m(f"scrap_{p}") for p in ("helmet", "chestplate", "leggings", "boots")])
     tag(os.path.join(vanilla_tags, "item", "enchantable", "melee_weapon.json"), [m("crowbar")])
     tag(os.path.join(vanilla_tags, "item", "enchantable", "durability.json"), [m("crowbar")])
     tag(os.path.join(vanilla_tags, "block", "mineable", "pickaxe.json"), [m("bear_trap"), m("silver_bear_trap")])
@@ -1054,59 +1028,6 @@ def element_quads(elements, tex, offset=(0, 0, 0)):
                     pts = [tuple((p[k] + offset[k] * 16) / 16.0 - 0.5 for k in range(3)) for p in pts]
                     quads.append((pts, c, False))
     return quads
-
-
-def box_quads(origin, size, uv, tex, inflate=0.0, mirror=False):
-    """A Minecraft entity cube (origin and size in pixels, y up) textured from the standard box UV layout at uv."""
-    x, y, z = origin
-    w, h, d = size
-    x0, y0, z0 = x - inflate, y - inflate, z - inflate
-    x1, y1, z1 = x + w + inflate, y + h + inflate, z + d + inflate
-    u, v = uv
-    faces = {
-        # direction: (u0, v0, uw, vh, corner function(s, q) with s across, q down)
-        "up": (u + d, v, w, d, lambda s, q: (x0 + (x1 - x0) * s, y1, z0 + (z1 - z0) * q)),
-        "down": (u + d + w, v, w, d, lambda s, q: (x0 + (x1 - x0) * s, y0, z0 + (z1 - z0) * q)),
-        "north": (u + d, v + d, w, h, lambda s, q: (x1 - (x1 - x0) * s, y1 - (y1 - y0) * q, z0)),
-        "east": (u, v + d, d, h, lambda s, q: (x0, y1 - (y1 - y0) * q, z1 - (z1 - z0) * s)),
-        "south": (u + d + w + d, v + d, w, h, lambda s, q: (x0 + (x1 - x0) * s, y1 - (y1 - y0) * q, z1)),
-        "west": (u + d + w, v + d, d, h, lambda s, q: (x1, y1 - (y1 - y0) * q, z0 + (z1 - z0) * s)),
-    }
-    quads = []
-    for direction, (fu, fv, fw, fh, corner) in faces.items():
-        for j in range(fh):
-            for i in range(fw):
-                c = tex.get(fu + (fw - 1 - i if mirror else i), fv + j)
-                if not c[3]:
-                    continue
-                pts = [corner(a / fw, b / fh) for a, b in ((i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1))]
-                quads.append(([(p[0] / 16.0, p[1] / 16.0, p[2] / 16.0) for p in pts], c, False))
-    return quads
-
-
-def figure_quads(skin, layers):
-    """A player (front to -z, as the north face) in Scrap armor: the skin, then the outer armor layer (inflated 1) on
-    head, body, arms and feet, and the leggings layer (inflated 0.5) on body and legs."""
-    q = []
-    parts = [  # name, origin, size, skin uv, armor uv
-        ("head", (-4, 24, -4), (8, 8, 8), (0, 0), (0, 0)),
-        ("body", (-4, 12, -2), (8, 12, 4), (16, 16), (16, 16)),
-        ("right_arm", (-8, 12, -2), (4, 12, 4), (40, 16), (40, 16)),
-        ("left_arm", (4, 12, -2), (4, 12, 4), (32, 48), (40, 16)),
-        ("right_leg", (-4, 0, -2), (4, 12, 4), (0, 16), (0, 16)),
-        ("left_leg", (0, 0, -2), (4, 12, 4), (16, 48), (0, 16)),
-    ]
-    for name, origin, size, skin_uv, armor_uv in parts:
-        q += box_quads(origin, size, skin_uv, skin)
-        mirror = name.startswith("left")
-        if name in ("head", "body", "right_arm", "left_arm"):
-            q += box_quads(origin, size, armor_uv, layers["humanoid"], 1.0, mirror)
-        if name in ("right_leg", "left_leg"):
-            q += box_quads(origin, size, armor_uv, layers["humanoid"], 1.0, mirror)
-            q += box_quads(origin, size, armor_uv, layers["humanoid_leggings"], 0.5, mirror)
-        if name == "body":
-            q += box_quads(origin, size, armor_uv, layers["humanoid_leggings"], 0.5)
-    return q
 
 
 def view(yaw, pitch):
@@ -1165,7 +1086,7 @@ def label(img, x, y, s, k=2, colour="#e9eff5"):
 
 
 def preview(path):
-    W, H = 1500, 1260
+    W, H = 1500, 790
     sheet = Img(W, H, hexc("2b2f36"))
     # Row 1: every sprite, 1x and 6x on a vanilla-grey slot.
     label(sheet, 20, 14, "ITEM SPRITES (1X AND 6X)")
@@ -1211,21 +1132,6 @@ def preview(path):
         sheet.fill(x, 700, x + 80, 760, hexc("8b8b8b"))
         sheet.paste(effect_icon(kind), x + 4, 704, 3)
         label(sheet, x + 86, 724, kind, 1)
-    # Row 4: the armor on a figure, front, three quarters and back, and the worn layers.
-    label(sheet, 20, 786, "SCRAP ARMOR ON A PLAYER (FRONT, 3/4, BACK) AND ITS WORN LAYERS")
-    skin = vanilla("entity/player/wide/steve")
-    layers = armor_layers()
-    figure = figure_quads(skin, layers)
-    for i, (yaw, pitch) in enumerate(((0, 0), (35, 12), (180, 0))):
-        x0 = 20 + i * 250
-        sheet.fill(x0, 810, x0 + 240, 1240, hexc("3c4450"))
-        render(sheet, figure, view(yaw, pitch), x0 + 120, 1215, 190)
-    for i, (layer, img) in enumerate(layers.items()):
-        x = 790
-        y = 810 + i * 220
-        sheet.fill(x, y, x + 64 * 6 + 8, y + 32 * 6 + 8, hexc("8b8b8b"))
-        sheet.paste(img, x + 4, y + 4, 6)
-        label(sheet, x + 400, y + 6, layer, 1)
     sheet.save(path)
     print("preview:", path)
 
