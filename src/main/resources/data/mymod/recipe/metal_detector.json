@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "R": "minecraft:redstone",
+    "T": "mymod:tech_scrap",
+    "I": "minecraft:iron_ingot",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    "RT ",
+    " I ",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:metal_detector"
+  }
+}

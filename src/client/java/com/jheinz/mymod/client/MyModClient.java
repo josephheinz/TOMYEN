@@ -43,6 +43,7 @@ import com.jheinz.mymod.client.neuralink.NeuralTrigger;
 import com.jheinz.mymod.client.neuralink.NeuralinkScreen;
 import com.jheinz.mymod.client.neuralink.NeuralinkVision;
 import com.jheinz.mymod.client.neuralink.OreScanner;
+import com.jheinz.mymod.client.detector.DetectorClient;
 import com.jheinz.mymod.client.dragonscale.DragonscaleClient;
 import com.jheinz.mymod.client.drill.DrillClient;
 import com.jheinz.mymod.client.energy.EnergyClient;
@@ -166,5 +167,6 @@ public class MyModClient implements ClientModInitializer {
 		EnergyClient.initialize();
 		FishingClient.initialize();
 		FishEntitiesClient.initialize();
+		DetectorClient.initialize();
 	}
 }

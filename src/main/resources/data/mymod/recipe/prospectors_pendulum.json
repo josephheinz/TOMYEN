@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "minecraft:copper_nugget",
+    "S": "minecraft:string",
+    "N": "minecraft:iron_nugget"
+  },
+  "pattern": [
+    " C",
+    " S",
+    " N"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:prospectors_pendulum"
+  }
+}

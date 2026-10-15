@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "minecraft:stick",
+    "A": "minecraft:amethyst_shard"
+  },
+  "pattern": [
+    "S S",
+    " A ",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:dowsing_rod"
+  }
+}

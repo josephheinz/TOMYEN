@@ -1,0 +1,70 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "minecraft:time",
+    "entries": [
+      {
+        "threshold": 0.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mymod:item/lunar_almanac_0"
+        }
+      },
+      {
+        "threshold": 0.125,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mymod:item/lunar_almanac_1"
+        }
+      },
+      {
+        "threshold": 0.25,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mymod:item/lunar_almanac_2"
+        }
+      },
+      {
+        "threshold": 0.375,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mymod:item/lunar_almanac_3"
+        }
+      },
+      {
+        "threshold": 0.5,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mymod:item/lunar_almanac_4"
+        }
+      },
+      {
+        "threshold": 0.625,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mymod:item/lunar_almanac_5"
+        }
+      },
+      {
+        "threshold": 0.75,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mymod:item/lunar_almanac_6"
+        }
+      },
+      {
+        "threshold": 0.875,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mymod:item/lunar_almanac_7"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mymod:item/lunar_almanac_0"
+    },
+    "source": "moon_phase",
+    "wobble": false
+  }
+}
