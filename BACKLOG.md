@@ -41,9 +41,37 @@ Mutated by uranium:
 - **Glowing Rat King.** A cluster of rats that splits when hit. Found near uranium deposits.
 - **Two-Headed Cow.** A passive mutant you can milk for anti-radiation milk.
 
+## Wacky weapons and gear
+- **Fish gun.** Fires your raw fish as ammo, and damage scales with fish weight. A trophy tuna is a cannonball.
+- **Leaf blower.** Knocks back mobs and items; upgrades into a vacuum that sucks up drops.
+- **Cathode TV helmet.** Wear a Cathode Walker's screen: static night vision, and your face shows emotes to other players.
+- **Soda-bottle jetpack.** An early-game, terrible jetpack that runs on sugar and slime.
+- **Trombone.** Plays notes. A sad trombone curses mobs with Weakness; a war march buffs allies.
+
+## Wacky mobs
+- **Shrimp with a gun.** Human-sized (not tiny): an ocean mob that shoots.
+- **Gnome army.** Garden gnomes that come alive at night near fae biomes and steal your crops in formation.
+- **The Accountant.** A slime in a suit, linked to the banker. Audits you, steals emeralds if your debt is overdue, and you can also **take out loans from him**.
+- **Josh (villager).** A villager named Josh who only sells Fish Fish.
+
+## Vehicles, structures and big systems
+- **Hogfire air force.** Rocket-saddle any animal: cow bombers, chicken interceptors, a horse with a minigun.
+- **Bathtub boat.** A fast speedboat made from a bathtub and an outboard motor that runs on kerosene.
+- **Abandoned shopping mall structure.** Vending mimics, mannequins that move when you aren't looking, and a food court full of loot. We might base the building on an existing structure, e.g. from Planet Minecraft (check the license and give credit).
+- **Dance-off.** Villagers challenge you to a rhythm minigame that reuses the fishing QTE system.
+- **Slot machine block.** Eats emeralds. The jackpot is guaranteed trophy-class bait (plus other prizes).
+- **Item fusing (late game).** Throw two items into a fae pond (or a late-game fusion setup) and they fuse into a new hybrid item, e.g. fish + sword = swordfish sword. Not every pair has to combine, but **design a large set of brand-new fusion-only items** so it's worth experimenting with.
+
+## Cosmic and Feywild
+- **Moon cheese meteorite.** A meteorite variant that's literally cheese. Mine it and eat it for low gravity.
+- **Upside-down Feywild region.** A biome where you walk on the ceiling.
+
 ## Fishing
 - **Fish Fish.** A new fish species named "Fish Fish".
 - **Josh.** A new fish species named "Josh".
+
+## Collecting (direction wanted)
+The user likes the idea of a collecting/flex system, but not the first pitches (trophy-room luck buff, fish fossils, kill counters, leaderboards). It needs fresh ideas.
 
 ## Gear and collecting
 - **Weapon skins.** Cosmetic finishes from rare drops, e.g. UFO chrome, a werewolf-fur grip, a fae-wood stock.
