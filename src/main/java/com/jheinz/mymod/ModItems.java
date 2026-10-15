@@ -155,6 +155,9 @@ public final class ModItems {
 	public static final MagazineItem M1911_MAGAZINE = magazine("m1911_magazine", 7, AMMO_45, 0);
 	/** A soft pouch of linked 5.56 for the M249. Packed like any magazine, a round at a time. */
 	public static final MagazineItem M249_AMMO_BOX = magazine("m249_ammo_box", 100, AMMO_556, 0);
+	/** A twin-drum 5.56 magazine for the M4, and a longer 9mm stick for the MP5 (the Gunsmith set). */
+	public static final MagazineItem STANAG_DRUM_MAGAZINE = magazine("stanag_drum_magazine", 60, AMMO_556, 20);
+	public static final MagazineItem MP5_EXTENDED_MAGAZINE = magazine("mp5_extended_magazine", 40, AMMO_9MM, 6);
 
 	public static final Item M4_UPPER_RECEIVER = part("m4_upper_receiver");
 	public static final Item M4_LOWER_RECEIVER = part("m4_lower_receiver");
@@ -197,7 +200,7 @@ public final class ModItems {
 
 	public static final Item M4 = gun("m4", 1000,
 			new GunStats(ModSounds.M4_SHOT, 1.5f, 96, 30, List.of(FireMode.AUTO, FireMode.SEMI)).withSpread(0.4f, 0.5f),
-			List.of(STANAG_MAGAZINE), AMMO_556);
+			List.of(STANAG_MAGAZINE, STANAG_DRUM_MAGAZINE), AMMO_556);
 	public static final Item GLOCK = gun("glock", 800,
 			new GunStats(ModSounds.GLOCK_SHOT, 2.5f, 48, 25, List.of(FireMode.SEMI, FireMode.BURST)).withSpread(0.8f, 0.9f),
 			List.of(GLOCK_MAGAZINE, GLOCK_DRUM_MAGAZINE), AMMO_9MM);
@@ -221,7 +224,7 @@ public final class ModItems {
 	public static final Item MP5 = gun("mp5", 1000,
 			new GunStats(ModSounds.MP5_SHOT, 0.9f, 64, 30, List.of(FireMode.AUTO, FireMode.BURST, FireMode.SEMI))
 					.withAutoTicks(2).withSpread(0.8f, 0.35f),
-			List.of(MP5_MAGAZINE), AMMO_9MM);
+			List.of(MP5_MAGAZINE, MP5_EXTENDED_MAGAZINE), AMMO_9MM);
 	// One round every tick in full-auto (about 1200 rpm): it empties a magazine in a second and a half.
 	public static final Item MAC10 = gun("mac10", 700,
 			new GunStats(ModSounds.MAC10_SHOT, 1.0f, 40, 25, List.of(FireMode.AUTO, FireMode.SEMI)).withAutoTicks(1).withSpread(1.5f, 0.45f),
@@ -463,10 +466,10 @@ public final class ModItems {
 							OIL_CAN_SUPPRESSOR, MUZZLE_BRAKE, FLASH_HIDER, LASER_SIGHT, GREEN_LASER_SIGHT, RED_DOT_SIGHT,
 							HOLOGRAPHIC_SIGHT, KOBRA_SIGHT, VERTICAL_GRIP, ANGLED_GRIP, STUBBY_GRIP, HANDSTOP, GLOCK_SWITCH);
 					List<ItemStack> ammo = new ArrayList<>();
-					ammo.addAll(ammoEntries(BULLET_CASING_556, AMMO_556, STANAG_MAGAZINE, GALIL_MAGAZINE, M249_AMMO_BOX));
+					ammo.addAll(ammoEntries(BULLET_CASING_556, AMMO_556, STANAG_MAGAZINE, STANAG_DRUM_MAGAZINE, GALIL_MAGAZINE, M249_AMMO_BOX));
 					ammo.addAll(ammoEntries(BULLET_CASING_762, AMMO_762, AK_MAGAZINE, AK_DRUM_MAGAZINE));
 					ammo.addAll(ammoEntries(BULLET_CASING_338, AMMO_338, AWP_MAGAZINE));
-					ammo.addAll(ammoEntries(BULLET_CASING_9MM, AMMO_9MM, GLOCK_MAGAZINE, GLOCK_DRUM_MAGAZINE, MP5_MAGAZINE));
+					ammo.addAll(ammoEntries(BULLET_CASING_9MM, AMMO_9MM, GLOCK_MAGAZINE, GLOCK_DRUM_MAGAZINE, MP5_MAGAZINE, MP5_EXTENDED_MAGAZINE));
 					ammo.addAll(ammoEntries(BULLET_CASING_45, AMMO_45, M1911_MAGAZINE, MAC10_MAGAZINE));
 					ammo.addAll(ammoEntries(BULLET_CASING_357, AMMO_357, SPEEDLOADER_357));
 					ammo.add(new ItemStack(SHELL_12G_BUCKSHOT));

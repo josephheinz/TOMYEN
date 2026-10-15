@@ -223,6 +223,56 @@ TABLE = {
         ("belt_rattle", mech(L(S2M + "Mag Pack/WAV/9mm Magazine Pack.wav", 0.20, 0.5), peak=-6.0), 1.0, 1.0),
         ("belt_rattle_2", mech(L(S2M + "Mag Pack/WAV/Mosin Top Load.wav", 0.22, 0.42), peak=-6.0), 1.0, 1.0),
     ],
+    # --- the Gunsmith set ---
+    # .38 Special from a two-inch barrel: a 9mm report dropped a little, with a .22's crack over it.
+    "snub_revolver_shot": [
+        ("snub_revolver_shot", shot(L(MM9 + "Single Isolated.wav"), L(LR22 + "Single Isolated WAV.wav", 0.12, 0.6, -7.0),
+                                    pitch=0.93, length=0.85, fade=0.45, rms=-14.0), 1.0, 1.0),
+        ("snub_revolver_shot_2", shot(L(MM9 + "Slow Burst Isolated.wav", 0.47), L(LR22 + "Double Tap Isolated WAV.wav", 0.20, 0.6, -7.0),
+                                      pitch=0.93, length=0.85, fade=0.45, rms=-14.0), 0.97, 1.0),
+    ],
+    # The same round from the rifle's long barrel, outdoors: the 9mm's full take with its tail, lower.
+    "lever_action_shot": [
+        ("lever_action_shot", shot(L(S2F + "9mm/WAV/9mm Single.wav", 0.0, 2.0), pitch=0.84, length=1.2, fade=0.7, rms=-13.5), 1.0, 1.0),
+        ("lever_action_shot_2", shot(L(S2F + "9mm/WAV/9mm Slow Burst.wav", 0.47, 2.0), pitch=0.84, length=1.2, fade=0.7, rms=-13.5),
+         0.97, 1.0),
+    ],
+    # The 20 gauge, a touch lower for the short barrels; both barrels at once is two takes stacked on one onset, with a tail.
+    "sawed_off_shot": [
+        ("sawed_off_shot", shot(L(G20 + "Single Isolated.wav"), pitch=0.9, hp=50, length=1.0, fade=0.55, rms=-12.0), 1.0, 1.0),
+        ("sawed_off_shot_2", shot(L(G20 + "Double Tap Isolated.wav", 0.25), pitch=0.9, hp=50, length=1.0, fade=0.55, rms=-12.0), 0.97, 1.0),
+    ],
+    "sawed_off_double_shot": [
+        ("sawed_off_double_shot", shot(L(G20 + "Single Isolated.wav"), L(G20 + "Slow Burst Isolated.wav", 0.50, 1.5, -2.0),
+                                       L(G20F + "Single.wav", 0.0, 2.5, -6.0), pitch=0.86, hp=45, length=1.5, fade=0.9, rms=-11.0),
+         1.0, 1.0),
+    ],
+    # No flare pistol in the packs: the 20 gauge pitched up and dulled to a hollow pop.
+    "flare_gun_shot": [
+        ("flare_gun_shot", shot(L(G20 + "Single Isolated.wav"), pitch=1.35, lp=2500, length=0.6, fade=0.35, rms=-16.0), 1.0, 1.0),
+    ],
+    # No nailer either: a .22 pitched up and thinned, under the AR's bolt release for the driver's clack.
+    "nail_gun_shot": [
+        ("nail_gun_shot", shot(L(LR22 + "Single Isolated WAV.wav", 0.12), L(S1R + "AR Bolt Release WAV.wav", 0.0, 0.4, -3.0),
+                               pitch=1.5, hp=300, lp=6000, length=0.35, fade=0.2, rms=-18.0), 1.0, 1.0),
+        ("nail_gun_shot_2", shot(L(LR22 + "Double Tap Isolated WAV.wav", 0.20), L(S1R + "AR Bolt Release WAV.wav", 0.0, 0.4, -3.0),
+                                 pitch=1.55, hp=300, lp=6000, length=0.35, fade=0.2, rms=-18.0), 1.03, 1.0),
+    ],
+    # Nor a spear gun: a bipod's legs slamming down, dropped low, over a muffled .22 for the air's thump.
+    "harpoon_gun_shot": [
+        ("harpoon_gun_shot", shot(L(S2M + "Bipod/WAV/Bipod Impact Both Legs.wav", 0.0, 0.6),
+                                  L(LR22 + "Single Isolated WAV.wav", 0.12, 0.8, -6.0), pitch=0.72, lp=2500, length=0.7, fade=0.4,
+                                  rms=-15.0), 1.0, 1.0),
+    ],
+    # A single-shot's break action opening and snapping shut.
+    "break_open": [("break_open", mech(L(S1R + "Single Shot Reload Part 1 WAV.wav", 0.1, 0.46)), 1.0, 1.0)],
+    "break_close": [("break_close", mech(L(S1R + "Single Shot Reload Part 2 WAV.wav", 0.15, 0.6)), 1.0, 1.0)],
+    # A lever gun's stroke cut in two, and a round pushed through its loading gate.
+    "lever_down": [("lever_down", mech(L(S1R + "Lever Cycle WAV.wav", 0.0, 0.3), fade=0.04), 1.0, 1.0)],
+    "lever_up": [("lever_up", mech(L(S1R + "Lever Cycle WAV.wav", 0.3, 0.5)), 1.0, 1.0)],
+    "lever_load": [("lever_load", mech(L(S1R + "Lever Reload WAV.wav", 0.5, 0.4), peak=-5.0), 1.0, 1.0)],
+    "bipod_deploy": [("bipod_deploy", mech(L(S2M + "Bipod/WAV/Bipod Deploy Both Legs.wav", 0.0, 0.8), peak=-6.0), 1.0, 1.0)],
+    "bipod_fold": [("bipod_fold", mech(L(S2M + "Bipod/WAV/Bipod Raise Both Legs.wav", 0.0, 0.8), peak=-6.0), 1.0, 1.0)],
     # The hammer falling on a dud.
     "misfire_click": [
         ("misfire_click", mech(L(S2M + "Pistol/WAV/9mm Pistol Dry Fire.wav", 0.0, 0.3), peak=-5.0), 1.0, 1.0),

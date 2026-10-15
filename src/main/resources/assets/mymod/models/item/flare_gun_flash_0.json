@@ -1,0 +1,279 @@
+{
+  "credit": "mymod muzzle flash - generated",
+  "texture_size": [
+    32,
+    32
+  ],
+  "textures": {
+    "flash": "mymod:item/muzzle_flash",
+    "particle": "mymod:item/muzzle_flash"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        -0.22,
+        2.8
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        -0.22,
+        2.8
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -6,
+        0
+      ],
+      "translation": [
+        -0.456,
+        3.136,
+        -1.603
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -6,
+        0
+      ],
+      "translation": [
+        -0.456,
+        3.136,
+        -1.603
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "elements": [
+    {
+      "from": [
+        7.99,
+        8.9,
+        -8.5
+      ],
+      "to": [
+        8.01,
+        11.9,
+        -4.35
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        10.39,
+        -8.57
+      ],
+      "to": [
+        9.5,
+        10.41,
+        -4.42
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            6,
+            6,
+            16
+          ],
+          "texture": "#flash"
+        },
+        "down": {
+          "uv": [
+            0,
+            6,
+            6,
+            16
+          ],
+          "texture": "#flash"
+        }
+      }
+    },
+    {
+      "from": [
+        7.99,
+        9.2,
+        -7.9
+      ],
+      "to": [
+        8.01,
+        11.6,
+        -4.37
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "rotation": {
+        "angle": 45.0,
+        "axis": "z",
+        "origin": [
+          8.0,
+          10.4,
+          -6.135
+        ]
+      },
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        }
+      }
+    },
+    {
+      "from": [
+        6.65,
+        9.05,
+        -4.75
+      ],
+      "to": [
+        9.35,
+        11.75,
+        -4.74
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            6,
+            16,
+            16
+          ],
+          "texture": "#flash"
+        },
+        "south": {
+          "uv": [
+            6,
+            6,
+            16,
+            16
+          ],
+          "texture": "#flash"
+        }
+      }
+    }
+  ]
+}

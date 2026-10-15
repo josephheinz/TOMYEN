@@ -49,6 +49,7 @@ import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.ModDamageTypes;
 import com.jheinz.mymod.attachment.AttachmentItem;
 import com.jheinz.mymod.attachment.Attachments;
+import com.jheinz.mymod.gunsmith.GunsmithAttachments;
 import com.jheinz.mymod.silver.EvilBane;
 
 /**
@@ -223,10 +224,10 @@ public class ShotgunItem extends GunItem {
 		return false;
 	}
 
-	/** Whether the action is worked by hand after every shot: a pump, or a homemade gun's bolt. */
+	/** Whether the action is worked by hand after every shot: a pump, a homemade gun's bolt, or a lever. */
 	private boolean worked(ItemStack gun) {
 		FireMode mode = fireMode(gun);
-		return mode == FireMode.PUMP || mode == FireMode.BOLT;
+		return mode == FireMode.PUMP || mode == FireMode.BOLT || mode == FireMode.LEVER;
 	}
 
 	/** Ticks to push one shell into the tube (before an Overclock). */
@@ -277,7 +278,8 @@ public class ShotgunItem extends GunItem {
 		Map<Entity, Float> blows = new LinkedHashMap<>();
 		Map<Entity, Vec3> hitAt = new LinkedHashMap<>();
 		for (int i = 0; i < shell.pellets(); i++) {
-			float[] dir = scatter(player, centre[0], centre[1], shell.spreadDegrees() * handled.pelletSpread());
+			float[] dir = scatter(player, centre[0], centre[1],
+					shell.spreadDegrees() * handled.pelletSpread() * GunsmithAttachments.pelletSpread(gun));
 			Vec3 look = Vec3.directionFromRotation(dir[0], dir[1]);
 			Vec3 end = eye.add(look.scale(shell.range()));
 			BlockHitResult blockHit = level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));

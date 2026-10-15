@@ -19,6 +19,7 @@ import com.jheinz.mymod.energy.EnergyWeapons;
 import com.jheinz.mymod.attachment.AttachmentItem;
 import com.jheinz.mymod.attachment.AttachmentSlot;
 import com.jheinz.mymod.attachment.Attachments;
+import com.jheinz.mymod.client.gunsmith.GunsmithClient;
 
 /**
  * Aiming down a fitted optic (red dot, holographic or Kobra): sneaking brings the gun up to the middle of
@@ -64,7 +65,10 @@ public final class GunAim {
 	}
 
 	private static Mount mount(Item gun) {
-		if (gun == ModItems.GLOCK) {
+		float[] gunsmith = GunsmithClient.opticMount(gun);
+		if (gunsmith != null) {
+			return new Mount(gunsmith[0], gunsmith[1], gunsmith[2]);
+		} else if (gun == ModItems.GLOCK) {
 			return new Mount(9.8f, 11.2f, NO_LIMIT);
 		} else if (gun == ModItems.M1911) {
 			return new Mount(1.8f, 11.0f, 7.2f);
@@ -133,6 +137,10 @@ public final class GunAim {
 			return new Optic(1.275f, 1.4f);
 		} else if (optic == ModItems.KOBRA_SIGHT) {
 			return new Optic(1.05f, 1.2f);
+		}
+		float[] scope = GunsmithClient.opticWindow(gun);
+		if (scope != null) {
+			return new Optic(scope[0], scope[1]);
 		}
 		return optic == null ? ironSights(gun.getItem()) : null;
 	}

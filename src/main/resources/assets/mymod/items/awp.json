@@ -312,6 +312,77 @@
         "fallback": {
           "type": "minecraft:empty"
         }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:muzzle_attachment",
+        "cases": [
+          {
+            "when": "mymod:compensator",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/awp_compensator"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "mymod:flashlight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/awp_flashlight"
+            }
+          },
+          {
+            "when": "mymod:bipod",
+            "model": {
+              "type": "minecraft:range_dispatch",
+              "property": "mymod:bipod",
+              "entries": [
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/attachment/awp_bipod_deployed"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mymod:item/attachment/awp_bipod"
+              }
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:grip_attachment",
+        "cases": [
+          {
+            "when": "mymod:rifle_sling",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/awp_rifle_sling"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
       }
     ]
   }

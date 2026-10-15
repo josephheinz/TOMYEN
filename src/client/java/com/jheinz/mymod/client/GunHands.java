@@ -16,6 +16,7 @@ import com.jheinz.mymod.GunRecoil;
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.energy.EnergyWeapons;
 import com.jheinz.mymod.client.launcher.LauncherAnimation;
+import com.jheinz.mymod.client.gunsmith.GunsmithClient;
 import com.jheinz.mymod.client.shoddy.ShoddyGunClient;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.minigun.Miniguns;
@@ -62,8 +63,11 @@ public final class GunHands {
 
 	public static Anchors anchors(Item gun) {
 		Anchors shoddy = ShoddyGunClient.anchors(gun);
+		Anchors gunsmith = GunsmithClient.anchors(gun);
 		if (shoddy != null) {
 			return shoddy;
+		} else if (gunsmith != null) {
+			return gunsmith;
 		} else if (gun == ModItems.M4) {
 			return rifle(-0.022f, 0.119f, 0.156f, 0.055f, 0.179f, -0.390f);
 		} else if (gun == ModItems.AKM) {

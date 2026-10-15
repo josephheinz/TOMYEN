@@ -923,6 +923,108 @@
         "fallback": {
           "type": "minecraft:empty"
         }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:muzzle_attachment",
+        "cases": [
+          {
+            "when": "mymod:compensator",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_compensator"
+            }
+          },
+          {
+            "when": "mymod:bayonet",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_bayonet"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "mymod:flashlight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_flashlight"
+            }
+          },
+          {
+            "when": "mymod:bipod",
+            "model": {
+              "type": "minecraft:range_dispatch",
+              "property": "mymod:bipod",
+              "entries": [
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mymod:item/attachment/akm_bipod_deployed"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mymod:item/attachment/akm_bipod"
+              }
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:grip_attachment",
+        "cases": [
+          {
+            "when": "mymod:rifle_sling",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_rifle_sling"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:optic_attachment",
+        "cases": [
+          {
+            "when": "mymod:hunting_scope_2x",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_hunting_scope_2x"
+            }
+          },
+          {
+            "when": "mymod:hunting_scope_4x",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/akm_hunting_scope_4x"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
       }
     ]
   }

@@ -334,6 +334,81 @@
         "fallback": {
           "type": "minecraft:empty"
         }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:muzzle_attachment",
+        "cases": [
+          {
+            "when": "mymod:bayonet",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/remington_870_bayonet"
+            }
+          },
+          {
+            "when": "mymod:shotgun_choke",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/remington_870_shotgun_choke"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "mymod:flashlight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/remington_870_flashlight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:grip_attachment",
+        "cases": [
+          {
+            "when": "mymod:rifle_sling",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/remington_870_rifle_sling"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:optic_attachment",
+        "cases": [
+          {
+            "when": "mymod:hunting_scope_2x",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/remington_870_hunting_scope_2x"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
       }
     ]
   }

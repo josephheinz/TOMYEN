@@ -12,6 +12,7 @@ import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.energy.EnergyWeapons;
+import com.jheinz.mymod.gunsmith.Gunsmith;
 import com.jheinz.mymod.industry.Industry;
 import com.jheinz.mymod.launcher.Launchers;
 import com.jheinz.mymod.mech.MechRecipes;
@@ -189,7 +190,8 @@ public final class StationRecipes {
 			recipe(ModItems.ARMOR_PLATE_LEVEL_3, 1, cost(Items.CLAY_BALL, 4), cost(Items.IRON_INGOT, 2), cost(Items.DIAMOND, 1))),
 			// The Mk I power armor torso, the Bulwark Walker's weapons, smoke launcher and autocannon ammunition, the Minigun and
 			// its parts, and the energy weapons.
-			Stream.of(PowerArmorRecipes.station(), MechRecipes.station(), Miniguns.station(), EnergyWeapons.stationRecipes())
+			Stream.of(PowerArmorRecipes.station(), MechRecipes.station(), Miniguns.station(), EnergyWeapons.stationRecipes(),
+					Gunsmith.stationRecipes())
 					.flatMap(List::stream)).toList();
 
 	static {
