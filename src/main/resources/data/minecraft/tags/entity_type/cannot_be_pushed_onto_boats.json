@@ -20,6 +20,19 @@
     "mymod:glowing_mutant_carp",
     "mymod:starlit_gar",
     "mymod:abyssal_squidling",
-    "mymod:ghoulfish"
+    "mymod:ghoulfish",
+    "mymod:largemouth_bass",
+    "mymod:bluegill",
+    "mymod:yellow_perch",
+    "mymod:walleye",
+    "mymod:crappie",
+    "mymod:sturgeon",
+    "mymod:red_snapper",
+    "mymod:flounder",
+    "mymod:tuna",
+    "mymod:mahi_mahi",
+    "mymod:barracuda",
+    "mymod:mooshroom_minnow",
+    "mymod:cometfish"
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "item": "mymod:tuna",
+  "weight": 4,
+  "difficulty": 5,
+  "behavior": "thrasher",
+  "min_rod_tier": 2,
+  "dimension": "minecraft:overworld",
+  "biomes": "#minecraft:is_ocean",
+  "size": {
+    "min_lb": 20.0,
+    "avg_lb": 150.0,
+    "max_lb": 1496.0
+  }
+}

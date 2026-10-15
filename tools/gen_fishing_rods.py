@@ -1,9 +1,10 @@
 """Builds the fishing system's art and data (see com.jheinz.mymod.fishing):
 
-* the six mod rods (bamboo, iron, steel, duralumin, magmasteel, star steel): a flat 16x16 texture each for the rod
-  at rest, cast, and bent under a fighting fish. They keep vanilla's fishing rod geometry (read from the client jar,
-  so the line still leaves from the tip) but each has its own shaft ramp, line guides, handle wrap, reel and tip;
-* the twelve rod parts (three each of line, hook, reel and lure), as plain item/generated sprites;
+* the eleven mod rods (stick pole, copper, bone, fae, froststeel, bamboo, iron, steel, duralumin, magmasteel, star
+  steel): a flat 16x16 texture each for the rod at rest, cast, and bent under a fighting fish. They keep vanilla's
+  fishing rod geometry (read from the client jar, so the line still leaves from the tip) but each has its own shaft
+  ramp, line guides, handle wrap, reel and tip (the stick pole has no reel, only spare line wound round the butt);
+* the nineteen rod parts (lines, hooks, reels and lures), as plain item/generated sprites;
 * the Tackle Bench: a modeled block (spruce top, dark oak legs, a tackle box on the shelf, a tray of lures, a spool
   and a rod on top), its blockstate, loot table and item, its menu background and the part slots' empty-slot icons;
 * item model definitions (the rods switch on mymod:rod_fighting, then vanilla's fishing_rod/cast), recipes with
@@ -351,8 +352,86 @@ def star_glint(img, state):
         img.set(12, 5, hexc("#f4fbff"))
 
 
+def bare_grip(wood, twine, bands=(-3,)):
+    """A grip painter for a pole with no wrap: bare wood, lashed with twine at the given wrap bands."""
+    w = [hexc(c) for c in wood]
+    t = [hexc(c) for c in twine]
+
+    def paint(img, texels):
+        for x, y in texels:
+            img.set(x, y, (t if stripe(x, y) in bands else w)[side(x, y)])
+    return paint
+
+
+def verdigris(img, roles):
+    """Patches of green verdigris on the copper shaft's shaded side, every few steps."""
+    for (x, y), role in roles.items():
+        if role == "o" and y <= 10 and (x - y) % 5 == 1:
+            img.set(x, y, hexc("#3f8a74"))
+        elif role == "d" and y <= 10 and (x - y) % 5 == 1:
+            img.set(x, y, hexc("#5fb39a"))
+
+
+def bone_joints(img, roles):
+    """Knuckled bone: a pale knob and a dark crease at every joint, as the bones are lashed end to end."""
+    for (x, y), role in roles.items():
+        if y <= 10 and role in "dmho":
+            if (x - y) % 7 == 0:
+                img.set(x, y, hexc({"d": "#6a6252", "m": "#8a8270", "h": "#a8a08c", "o": "#4a4438"}[role]))
+            elif (x - y) % 7 == 1:
+                img.set(x, y, hexc({"d": "#fffcf0", "m": "#fffcf0", "h": "#ffffff", "o": "#c8c0a8"}[role]))
+
+
+def frost_rime(img, roles):
+    """Rime on froststeel: white crystals along the lit side at intervals, as on the metal's own items."""
+    for (x, y), role in roles.items():
+        if role == "h" and y <= 9 and (x - y) % 4 == 0:
+            img.set(x, y, hexc("#ffffff"))
+
+
+def fae_sparkle(img, state):
+    """Fae dust sparkling off the tip and halfway up the shaft."""
+    if state != "bent":
+        img.set(15, 0, hexc("#ffd8f4", 220))
+        img.set(14, 0, hexc("#f2a8e0", 160))
+        img.set(10, 3, hexc("#fff6ff"))
+    else:
+        img.set(14, 4, hexc("#fff6ff"))
+
+
 ROD_ICONS = OrderedDict()
 RODS = [
+    # The stick pole: a bare stick, string tied to the tip, a bent pin for a hook, a twine lashing and no reel at all
+    # (just a few turns of spare line wound round the butt).
+    Rod("stick_pole", ["#2e2010", "#5a3f1c", "#7d5a2a", "#9c7438"], "#e8e4dc", "#e8e4dc", (), ["#e8e4dc", "#b8b0a0"],
+        ["#e8e4dc", "#c8c4bc"], ["#c8c8c8", "#7a7a7a"],
+        bare_grip(["#7d5a2a", "#5a3f1c", "#3e2a12"], ["#efe7d0", "#d8cfb8", "#a89c80"], bands=(-4,)),
+        reel_patch(["......", ".S....", "Ss....", "......"], {"S": "#efe7d0", "s": "#b8b0a0"})),
+    # Copper: a warm copper shaft spotted with verdigris, green guides, a dried-kelp wrap and a little copper reel.
+    Rod("copper_rod", ["#5e2a14", "#a0522d", "#c87a45", "#f0a878"], "#c8b8a8", "#3f8a74", (4, 8), ["#5fb39a", "#2e6a56"],
+        ["#c8b8a8", "#a89888"], ["#e8e0d8", "#8a8078"],
+        grip_bands(["#3a4a2a", "#526638", "#24301a"], ["#2e3c22", "#3a4a2a", "#1a2412"], cap=["#c87a45", "#f0a878", "#6e3518"]),
+        reel_patch(["......", ".CCc.", ".CHc.", ".cc.."], {"C": "#e09a65", "c": "#8a4a24", "H": "#f7c79e"}),
+        shaft_paint=verdigris),
+    # Bone: bleached, knuckled at each joint, black-wrapped guides and grip, a bone spool with a dark socket.
+    Rod("bone_rod", ["#8a8270", "#c8c0a8", "#e2dcc8", "#f8f4e8"], "#d8d0c0", "#2a2420", (3, 7), ["#f8f4e8", "#a89c88"],
+        ["#d8d0c0", "#b0a898"], ["#e8e2d0", "#8a8270"],
+        grip_bands(["#3a3430", "#4a4440", "#221e1a"], ["#e2dcc8", "#f8f4e8", "#a89c88"]),
+        reel_patch(["......", ".BBb.", ".BKb.", ".bb.."], {"B": "#e8e2d0", "b": "#8a8270", "K": "#2a2420"}),
+        shaft_paint=bone_joints),
+    # Fae: pale lavender fae silver, pink guides, fae silk, a glimmerwood grip in teal and pink, a crystal reel.
+    Rod("fae_rod", ["#5a4a7a", "#a898d0", "#d0c8f0", "#f4f0ff"], "#e3cff7", "#f2a8e0", (4, 8), ["#fff6ff", "#f2a8e0"],
+        ["#e3cff7", "#c8b4e8"], ["#fdf6ff", "#b79be0"],
+        grip_bands(["#3a8a8a", "#5ab8b0", "#245a5a"], ["#c070c8", "#f2a8e0", "#7a3a80"], cap=["#d0c8f0", "#f4f0ff", "#7a6aa0"]),
+        reel_patch(["......", ".PpW.", ".pPq.", ".qq.."], {"P": "#f2a8e0", "p": "#c070c8", "W": "#fff6ff", "q": "#7a3a80"}),
+        extra=fae_sparkle),
+    # Froststeel: glacier blue under white rime, white guides, an icicle tip, a frost-banded grip and an ice reel.
+    Rod("froststeel_rod", ["#16254A", "#2D4F86", "#86B2E0", "#D3E6FA"], "#c8e4f4", "#f4faff", (3, 6, 9), ["#f4faff", "#86b2e0"],
+        ["#c8e4f4", "#a0c4dc"], ["#f4faff", "#86b2e0"],
+        grip_bands(["#16254a", "#2d4f86", "#0e1730"], ["#d3e6fa", "#f4faff", "#86b2e0"], extra=[(3, 11), (2, 12)],
+                   cap=["#86b2e0", "#d3e6fa", "#2d4f86"]),
+        reel_patch(["......", ".IIi.", ".IWi.", ".ii.."], {"I": "#86b2e0", "i": "#2d4f86", "W": "#f4faff"}),
+        shaft_paint=frost_rime),
     # Bamboo: green, jointed, a twine-whipped grip, a little wooden spool of string for a reel.
     Rod("bamboo_rod", ["#2f4410", "#568112", "#78a030", "#97c463"], "#ded6bf", "#ded6bf", (), ["#ded6bf", "#a89c7a"],
         ["#cfc7b0", "#a8a08a"], ["#e0e0e0", "#8a8a8a"],
@@ -537,6 +616,103 @@ FINDER = [
 ]
 
 
+# A treble hook: one eye and shank, three bends: two swept out to the sides and one curling toward the viewer.
+TREBLE = [
+    "................",
+    ".......nn.......",
+    "......cbbc......",
+    "......b..b......",
+    "......cbbc......",
+    ".......ab.......",
+    ".......ab.......",
+    ".......ab.......",
+    "..a....ab....a..",
+    "..ab...ab...ba..",
+    "..xb...ab...bx..",
+    "...ab..ab..ba...",
+    "....abbabbba....",
+    ".....cccccc.....",
+    ".......cc.......",
+    "................",
+]
+# A cork bobber: a red cap over a white band and a cork body, a quill through it.
+BOBBER = [
+    "........q.......",
+    "........q.......",
+    "......oRRo......",
+    ".....oRrRRo.....",
+    "....oRrRRRRO....",
+    "....oRRRRRRO....",
+    "....oWWWWWWO....",
+    "....oKkKKdKO....",
+    "....oKKdKKKO....",
+    ".....OKKKKO.....",
+    "......OKKO......",
+    ".......qq.......",
+    ".......q........",
+    ".......q........",
+    "................",
+    "................",
+]
+# A dry fly: a barred hackle feather sweeping up and back from a red wrapped body, the hook below.
+FEATHER = [
+    "..............w.",
+    ".............wWo",
+    "............wWro",
+    "...........wWrwo",
+    "..........wWrgo.",
+    ".........wWrwo..",
+    "........wgrwo...",
+    ".......wWrgo....",
+    "......wWrwo.....",
+    ".....owgro......",
+    ".....oBBo.......",
+    "....oBbBo.......",
+    "....oBBo........",
+    "....kk..........",
+    "...k.k..........",
+    "....k...........",
+]
+# A spinner: a gold blade on a clevis turning round the wire, a red bead, a lead body and a hook.
+SPINNER = [
+    "................",
+    ".......i........",
+    "......i.i.......",
+    ".......i........",
+    ".......i.GGg....",
+    ".......iGYYGg...",
+    ".......GYYYGg...",
+    "......rGYYGg....",
+    "......rrGGg.....",
+    ".......i........",
+    "......SSS.......",
+    "......SsS.......",
+    ".......S........",
+    ".......i........",
+    "......h.h.......",
+    ".......h........",
+]
+# A rattle crankbait: a stubby copper fish body with a clear diving lip, an eye, and a hook below; seeds inside.
+RATTLE = [
+    "................",
+    "................",
+    "..........ooo...",
+    ".........oCCHo..",
+    "........oCCCHo..",
+    ".......oCsCCCo..",
+    "......oCCCsCo...",
+    ".....oCsCCCo....",
+    "....oECCsCo.....",
+    "...LoCCCCo......",
+    "..LLLoccO.......",
+    "..LL..h.........",
+    ".....h.h........",
+    "......h.........",
+    "................",
+    "................",
+]
+
+
 def spool(flange, line, loose=None):
     pal = {"F": flange[0], "f": flange[1], "g": flange[2], "A": line[0], "a": line[0], "B": line[1], "b": line[2],
            "C": line[2], "E": loose or line[1]}
@@ -583,6 +759,19 @@ PART_ART = OrderedDict([
     ("fish_finder", lambda: art(FINDER, {"O": "#6e564a", "L": "#eadcd2", "l": "#a88c7b", "D": "#1d2b22", "d": "#2c3b30",
                                          "s": "#173d22", "S": "#46e07a", "P": "#c8ffd8", "a": "#2c323a", "A": "#d94a3a",
                                          "r": "#d94a3a", "Y": "#46e07a"})),
+    # Early parts.
+    ("braided_line", lambda: spool(["#c8a070", "#9a7448", "#5a3e22"], ["#efe6cc", "#cfc2a0", "#9a8e70"], loose="#cfc2a0")),
+    ("treble_hook", lambda: art(TREBLE, {"a": "#f0dca8", "b": "#b08a50", "c": "#5a4020", "x": "#b08a50", "n": "#c8c8c8"})),
+    ("drag_reel", lambda: reel(["#d8b088", "#8a5a34", "#3e2412"], ["#2a1a10", "#c88a4a"], ["#5a3a1e", "#d8b088"], "#3e2412",
+                               teeth="#c88a4a")),
+    ("cork_bobber", lambda: art(BOBBER, {"o": "#4a2a1a", "O": "#2e1a10", "R": "#d83a2a", "r": "#ff7a5a", "W": "#f4f0e8",
+                                         "K": "#c8a070", "k": "#e8c898", "d": "#9a7448", "q": "#e8e0c8"})),
+    ("feather_lure", lambda: art(FEATHER, {"w": "#8a6a48", "W": "#e8dcc8", "r": "#5a3a1e", "g": "#6a4a2a", "o": "#3e2a18",
+                                           "B": "#c83a2a", "b": "#ff6a4a", "k": "#c8c8c8"})),
+    ("spinner_lure", lambda: art(SPINNER, {"i": "#b8b8b8", "G": "#e8b830", "Y": "#fff0a0", "g": "#a8781a", "r": "#d83a2a",
+                                           "S": "#5a6068", "s": "#8a9098", "h": "#c8c8c8"})),
+    ("rattle_lure", lambda: art(RATTLE, {"o": "#5a2a10", "O": "#3e1c0a", "C": "#c87a45", "H": "#f0b080", "s": "#8a4a24",
+                                         "c": "#a05a2a", "E": "#1a1a1a", "L": "#d8e8f0", "h": "#c8c8c8"})),
 ])
 
 
@@ -848,10 +1037,10 @@ def shaped(name, pattern, key, unlock, category="tools"):
     advancement(name, unlock, category)
 
 
-def shapeless(name, ingredients, unlock, category="tools"):
+def shapeless(name, ingredients, unlock, category="tools", count=1):
     write(os.path.join(DATA, "mymod", "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shapeless"), ("category", "equipment" if category == "tools" else "misc"),
-        ("ingredients", ingredients), ("result", OrderedDict([("count", 1), ("id", "mymod:" + name)]))]))
+        ("ingredients", ingredients), ("result", OrderedDict([("count", count), ("id", "mymod:" + name)]))]))
     advancement(name, unlock, category)
 
 
@@ -868,6 +1057,12 @@ def recipes():
     rod("duralumin_rod", "mymod:duralumin_sheet", "mymod:rubber")
     rod("magmasteel_rod", "mymod:magmasteel_ingot", "minecraft:blaze_rod")
     rod("star_steel_rod", "mymod:star_steel_ingot", "mymod:star_crystal_shard")
+    # The sideways rods. The stick pole is two sticks and a string: the first rod anyone can make.
+    shapeless("stick_pole", ["minecraft:stick", "minecraft:stick", "minecraft:string"], ["minecraft:string"])
+    rod("copper_rod", "minecraft:copper_ingot", "minecraft:dried_kelp")
+    rod("bone_rod", "minecraft:bone", "minecraft:bone")
+    rod("fae_rod", "mymod:fae_silver_ingot", "mymod:fae_dust")
+    rod("froststeel_rod", "mymod:froststeel_ingot", "minecraft:packed_ice")
     # Lines.
     shapeless("rubber_line", ["mymod:rubber", "mymod:rubber", "minecraft:string"], ["mymod:rubber"])
     shapeless("nose_hair_line", ["mymod:nose_hair", "mymod:nose_hair", "mymod:nose_hair", "minecraft:slime_ball"], ["mymod:nose_hair"])
@@ -890,6 +1085,18 @@ def recipes():
     shapeless("fae_dust_lure", ["mymod:fae_dust", "mymod:fae_dust", "minecraft:feather", "minecraft:gold_nugget"], ["mymod:fae_dust"])
     shaped("fish_finder", ["D", "T", "C"], OrderedDict([("D", "mymod:duralumin_sheet"), ("T", "mymod:cathode_tube"),
                                                        ("C", "mymod:computer_chip")]), ["mymod:cathode_tube", "mymod:computer_chip"])
+    # Early parts: string, nuggets, feathers, bark.
+    shapeless("braided_line", ["minecraft:string", "minecraft:string", "minecraft:string"], ["minecraft:string"])
+    shapeless("treble_hook", ["minecraft:iron_nugget", "minecraft:iron_nugget", "minecraft:iron_nugget", "minecraft:flint"],
+              ["minecraft:iron_nugget"])
+    shapeless("drag_reel", ["minecraft:copper_ingot", "minecraft:leather", "minecraft:iron_nugget", "minecraft:stick"],
+              ["minecraft:copper_ingot"])
+    shapeless("cork_bobber", ["#minecraft:oak_logs", "minecraft:string"], ["minecraft:string"], count=4)
+    shapeless("feather_lure", ["minecraft:feather", "minecraft:iron_nugget", "minecraft:string"], ["minecraft:feather"])
+    shapeless("spinner_lure", ["minecraft:gold_nugget", "minecraft:iron_nugget", "minecraft:iron_nugget", "minecraft:string"],
+              ["minecraft:gold_nugget"])
+    shapeless("rattle_lure", ["minecraft:copper_nugget", "minecraft:copper_nugget", "minecraft:pumpkin_seeds", "minecraft:string"],
+              ["minecraft:copper_nugget"])
     # The bench: a crafting table with a fishing rod over it, legs of planks, a string net.
     shaped("tackle_bench", ["SFS", "PTP", "P P"], OrderedDict([("S", "minecraft:string"), ("F", "minecraft:fishing_rod"),
                                                               ("P", "#minecraft:planks"), ("T", "minecraft:crafting_table")]),
@@ -985,6 +1192,28 @@ LANG = OrderedDict([
     ("item.mymod.glow_lure", "Glow Lure"),
     ("item.mymod.fae_dust_lure", "Fae Dust Lure"),
     ("item.mymod.fish_finder", "Fish Finder"),
+    ("item.mymod.stick_pole", "Stick & String Pole"),
+    ("item.mymod.copper_rod", "Copper Rod"),
+    ("item.mymod.bone_rod", "Bone Rod"),
+    ("item.mymod.fae_rod", "Fae Rod"),
+    ("item.mymod.froststeel_rod", "Froststeel Rod"),
+    ("item.mymod.braided_line", "Braided Fishing Line"),
+    ("item.mymod.treble_hook", "Treble Hook"),
+    ("item.mymod.drag_reel", "Drag Reel"),
+    ("item.mymod.cork_bobber", "Cork Bobber"),
+    ("item.mymod.feather_lure", "Feather Lure"),
+    ("item.mymod.spinner_lure", "Spinner Lure"),
+    ("item.mymod.rattle_lure", "Rattle Lure"),
+    ("tooltip.mymod.rod.no_reel", "No reel to fit"),
+    ("tooltip.mymod.rod.condition.cold", "In the cold:"),
+    ("tooltip.mymod.rod.condition.feywild", "In the Feywild:"),
+    ("tooltip.mymod.rod_effect.rain_bite", "Bites %ss sooner in rain or murky water"),
+    ("tooltip.mymod.rod_effect.predator", "%s predators drawn in"),
+    ("container.mymod.tackle_bench.tag.rain", "RAIN"),
+    ("container.mymod.tackle_bench.tag.predator", "PREDATOR"),
+    ("container.mymod.tackle_bench.tag.cold", "COLD"),
+    ("container.mymod.tackle_bench.tag.feywild", "FEY"),
+    ("container.mymod.tackle_bench.tag.no_reel", "NO-REEL"),
     ("block.mymod.tackle_bench", "Tackle Bench"),
     ("entity.mymod.rod_bobber", "Fishing Bobber"),
     ("container.mymod.tackle_bench", "Tackle Bench"),
@@ -1325,7 +1554,7 @@ def mash_body(level=0.58, line=0.43, left=0.4, under=False):
 
 
 def preview(path, rods, parts, sprites, gui, elements):
-    W, H = 1528, 1330
+    W, H = 1528, 1960
     sheet = Img(W, H, hexc("#1b2026"))
     text(sheet, 16, 14, "FISHING SYSTEM PREVIEW", "#e9eff5", 3)
 
@@ -1348,23 +1577,23 @@ def preview(path, rods, parts, sprites, gui, elements):
             sheet.paste(cell, x, 88 + j * 100)
 
     # Parts.
-    text(sheet, 730, 52, "PARTS: LINE / HOOK / REEL / LURE", "#8c9baa", 2)
+    text(sheet, 16, 400, "PARTS: LINE / HOOK / REEL / LURE", "#8c9baa", 2)
     for i, (name, img) in enumerate(parts.items()):
-        cx, cy = 730 + (i % 6) * 110, 80 + (i // 6) * 112
+        cx, cy = 16 + (i % 12) * 110, 424 + (i // 12) * 112
         cell = checker(80, 80)
         cell.paste(img, 0, 0, 5)
         sheet.paste(cell, cx, cy)
         label = name.replace("_", " ")
         text(sheet, cx + 40 - text_width(label) // 2, cy + 86, label, "#c8d2dc")
     # The empty-slot icons, on a slot's grey.
-    text(sheet, 730, 316, "EMPTY SLOT ICONS", "#8c9baa", 2)
+    text(sheet, 16, 660, "EMPTY SLOT ICONS", "#8c9baa", 2)
     for i, (name, img) in enumerate(sprites.items()):
         cell = Img(18, 18, hexc("#8b8b8b"))
         cell.paste(img, 1, 1)
-        sheet.paste(cell, 730 + i * 70, 340, 3)
+        sheet.paste(cell, 16 + i * 70, 684, 3)
 
     # First person.
-    text(sheet, 16, 400, "IN HAND (FIRST PERSON, LOWER RIGHT OF SCREEN, 2X): RESTING / FIGHTING", "#8c9baa", 2)
+    text(sheet, 16, 760, "IN HAND (FIRST PERSON, LOWER RIGHT OF SCREEN, 2X): RESTING / FIGHTING", "#8c9baa", 2)
     fw, fh = 224, 126
     for i, name in enumerate(ROD_NAMES):
         for j, suffix in enumerate(("", "_bent")):
@@ -1375,15 +1604,15 @@ def preview(path, rods, parts, sprites, gui, elements):
             for y in range(fh):
                 for x in range(fw):
                     img.set(x, y, full.get(x + fw - 20, y + fh))
-            sheet.paste(img, 16 + i * 230, 424 + j * 132)
+            sheet.paste(img, 16 + (i % 6) * 230, 784 + (i // 6) * 270 + j * 132)
 
     # The bench, and its menu.
-    text(sheet, 16, 700, "TACKLE BENCH", "#8c9baa", 2)
+    text(sheet, 16, 1330, "TACKLE BENCH", "#8c9baa", 2)
     textures = {"top": vanilla("block/spruce_planks"), "leg": vanilla("block/dark_oak_planks"), "kit": KIT}
     for i, yaw in enumerate((-35.0, 145.0)):
         project, turn = iso(300, 300, 13.0, yaw=yaw)
         img = render(bench_faces(elements, textures), project, turn, 300, 300, background=checker(300, 300))
-        sheet.paste(img, 16 + i * 310, 724)
+        sheet.paste(img, 16 + i * 310, 1354)
     menu = Img(176, 166)
     for y in range(166):
         for x in range(176):
@@ -1400,11 +1629,11 @@ def preview(path, rods, parts, sprites, gui, elements):
         text(menu, 100, 19 + i * 7, k, "#b9c6d2")
         text(menu, 164 - text_width(v), 19 + i * 7, v, c)
     text(menu, 40 - text_width("SONAR") // 2, 65, "SONAR", "#ffc66b")
-    sheet.paste(menu, 650, 724, 2)
-    text(sheet, 650, 1062, "MENU: ROD SLOT, LINE/HOOK/REEL/LURE, LIVE READOUT", "#8c9baa")
+    sheet.paste(menu, 650, 1354, 2)
+    text(sheet, 650, 1692, "MENU: ROD SLOT, LINE/HOOK/REEL/LURE, LIVE READOUT", "#8c9baa")
 
     # The three minigames, and a result.
-    text(sheet, 16, 1090, "MINIGAME HUD (GUI SCALE X2): TENSION / STRIKES / MASH / RESULT", "#8c9baa", 2)
+    text(sheet, 16, 1720, "MINIGAME HUD (GUI SCALE X2): TENSION / STRIKES / MASH / RESULT", "#8c9baa", 2)
     cod = vanilla("item/cod")
     panels = [
         hud_panel(22, "SOMETHING'S ON THE LINE!", 2, tension_body(), "HOLD RIGHT BUTTON / LEFT ALT TO REEL"),
@@ -1418,7 +1647,7 @@ def preview(path, rods, parts, sprites, gui, elements):
         backdrop.fill(185, 19, 187, 23, hexc("#ffffff"))
         big = scaled(panel, 2)
         backdrop.paste(big, (372 - big.w) // 2, 34)
-        sheet.paste(backdrop, 16 + i * 376, 1114)
+        sheet.paste(backdrop, 16 + i * 376, 1744)
     sheet.save(path)
     print("preview", path)
 

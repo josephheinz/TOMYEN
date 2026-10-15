@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "#minecraft:oak_logs",
+    "minecraft:string"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mymod:cork_bobber"
+  }
+}

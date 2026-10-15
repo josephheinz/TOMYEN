@@ -17,6 +17,10 @@ package com.jheinz.mymod.fishing;
  *   "time": "any",                        any | day | night (default any)
  *   "weather": "any",                     any | clear | rain | thunder (default any)
  *   "min_y": -64, "max_y": 320,           optional: the hook's block y range
+ *   "near_block": {                       optional: a block that must be close to the hook (checked every other
+ *     "block": "#mymod:meteorite_blocks", block, so it suits blocks that come in clumps)
+ *     "radius": 12                        a block id or "#ns:tag"; the radius 1..16 (default 8), two-thirds of it up and down
+ *   },
  *   "count": [1, 1],                      optional: how many are caught, [min, max] or a single number (default 1)
  *   "size": {                             optional: what it weighs, in lb (see FishSize); without it, never weighed
  *     "min_lb": 1, "avg_lb": 8,           the smallest catchable, and the typical catch (the roll's median)
@@ -56,6 +60,8 @@ import com.jheinz.mymod.MyMod;
 /** Loads the fishing species files (format above) on every data reload. */
 public final class FishingSpeciesLoader extends SimpleReloadListener<List<FishingSpecies>> {
 	public static final Identifier ID = MyMod.id("fishing_species");
+	/** near_block's search is a box this many blocks out (sampled every other block), so it's kept modest. */
+	private static final int MAX_NEAR_RADIUS = 16;
 	private static final FileToIdConverter FILES = FileToIdConverter.json("fishing_species");
 
 	@Override
@@ -165,8 +171,21 @@ public final class FishingSpeciesLoader extends SimpleReloadListener<List<Fishin
 				MyMod.LOGGER.warn("Fishing species {}: size needs 0 < min_lb <= avg_lb < max_lb, ignored", id);
 			}
 		}
+		FishingSpecies.Near near = null;
+		if (json.has("near_block")) {
+			JsonObject nearJson = json.getAsJsonObject("near_block");
+			String text = nearJson.has("block") ? nearJson.get("block").getAsString() : "";
+			boolean tag = text.startsWith("#");
+			Identifier block = Identifier.tryParse(tag ? text.substring(1) : text);
+			int radius = nearJson.has("radius") ? Mth.clamp(nearJson.get("radius").getAsInt(), 1, MAX_NEAR_RADIUS) : 8;
+			if (block == null || text.isEmpty()) {
+				MyMod.LOGGER.warn("Fishing species {}: near_block needs a \"block\" (an id or #tag), ignored", id);
+			} else {
+				near = new FishingSpecies.Near(tag, block, radius);
+			}
+		}
 		return new FishingSpecies(id, item.get(), weight, difficulty, behavior, minRodTier, lava, dimension, List.copyOf(biomes), time,
-				weather, minY, maxY, minCount, maxCount, size);
+				weather, minY, maxY, near, minCount, maxCount, size);
 	}
 
 	private static String lower(JsonObject json, String key) {

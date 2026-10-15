@@ -1,0 +1,17 @@
+{
+  "item": "mymod:flounder",
+  "weight": 24,
+  "difficulty": 1,
+  "behavior": "sinker",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "#minecraft:is_ocean",
+    "#minecraft:is_beach"
+  ],
+  "size": {
+    "min_lb": 0.5,
+    "avg_lb": 2.0,
+    "max_lb": 22.5
+  }
+}

@@ -10,6 +10,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.fish.AbstractSchoolingFish;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Every living fish of the mod's catch: vanilla's fish (swimming, fleeing players, flopping and suffocating on land,
@@ -17,6 +18,9 @@ import net.minecraft.world.level.Level;
  * that school do it like cod, but only with their own kind; loners never join a school.
  */
 public class ModFish extends AbstractSchoolingFish {
+	/** How hard a bottom dweller (a flounder, a sturgeon) sinks each tick it isn't chasing anything. */
+	private static final double BOTTOM_SINK = 0.012;
+
 	public ModFish(EntityType<? extends ModFish> type, Level level) {
 		super(type, level);
 	}
@@ -49,6 +53,15 @@ public class ModFish extends AbstractSchoolingFish {
 	public AbstractSchoolingFish startFollowing(AbstractSchoolingFish leader) {
 		// Loners spawned in a group don't fall in behind the first of it (they'd never swim about on their own).
 		return kind().schools() ? super.startFollowing(leader) : leader;
+	}
+
+	@Override
+	protected void travelInWater(Vec3 input, double baseGravity, boolean isFalling, double oldY) {
+		super.travelInWater(input, baseGravity, isFalling, oldY);
+		if (kind().isBottomDweller() && getTarget() == null) {
+			// Negatively buoyant: it drifts back down to the bed between swims (the move control lifts it 0.005 a tick).
+			setDeltaMovement(getDeltaMovement().add(0.0, -BOTTOM_SINK, 0.0));
+		}
 	}
 
 	@Override

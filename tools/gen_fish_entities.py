@@ -12,6 +12,10 @@ groups: a body root, a separately pivoted tail (and, for the eels, gulper and gh
 that move on their own (catfish whiskers, the anglerfish's lure, the pixie minnow's wings, the squidling's arms). Fins
 that run across a joint (the eels' skirts and crests) are cut at it, each piece keeping the whole fin's painting.
 
+The second catch (largemouth bass to cometfish) had no old item models: they're built new here in the same
+construction. The flounder is built standing on its edge like the rest, its eyed side on +z, and flagged flat in its
+RIG, so FishEntityRenderer always lays it on its side (eyes up) and its tail beats up and down.
+
 Entity model space is vanilla's: y down, the head toward -z, the lowest point on y = 24 (the ground). It is built at two
 units to the old pixel, so the old two-texels-a-pixel painting maps one texel to a unit, and the layer is then scaled
 (MeshTransformer.scaling) to the fish's size in the world, from a tetra the size of a small tropical fish to a swordfish
@@ -986,9 +990,406 @@ def ghoulfish():
 
 
 
+# ------------------------------------------------------------------------------------------------ the second catch
+#
+# Built new in the same construction (no old item model behind these): a body box, a head box, a tail stock, fin planes
+# and an eye box standing proud of the head on both flanks.
+
+
+def spotted_fin(spot, every=3):
+    """A fin painter with dark spots in a regular lattice over the usual rays (crappie fins)."""
+    def paint(f, part, face, p, i, j, w, h):
+        c = paint_fin(f, part, face, p, i, j, w, h)
+        if c is None:
+            return None
+        q = (p[0], p[1]) if part.axis == "z" else (p[2], p[1])
+        if (int(math.floor(q[0] * 2)) + 2 * int(math.floor(q[1] * 2))) % every == 0:
+            return spot
+        return c
+    return paint
+
+
+def largemouth_bass():
+    def pattern(x, y, t, face, part):
+        if face in ("north", "south") and part.name == "head" and x > 13.0 and -1.25 <= y < -0.75:
+            return C("2a2a18")                       # the big mouth's gape, running back past the eye
+        if face in ("north", "south", "up") and part.name in ("body", "head") and 0.42 < t < 0.6 and (x % 2.0) < 1.5:
+            return C("2e3e1e")                       # the dark, blotchy lateral band
+        return None
+    f = Fish("largemouth_bass", "Largemouth Bass",
+             [(0.2, C("eeeed4")), (0.38, C("d8dcb0")), (0.55, C("9aac62")), (0.75, C("6a8a3a")), (1.01, C("4a6a2a"))], -2.75, 2.75,
+             dict(base=C("5e7238"), light=C("8a9a58"), ray=C("3e5228"), edge=C("2e3e1e")),
+             cooked="cooked_largemouth_bass", title_cooked="Cooked Largemouth Bass", pattern=pattern,
+             gill=(11.5, 0.15, 0.85, C("3a4a22")), eye=dict(pupil=C("141414"), shine=C("f0f0d0"), rim=C("8a7a30")))
+    f.parts = [
+        zbox("body", "skin", 3, -2.75, 11, 2.75, 1.75),
+        zbox("head", "skin", 11, -2.25, 15, 2.0, 1.5),
+        zbox("jaw", "skin", 13, -2.5, 15.5, -1.5, 1.25),
+        zbox("wrist", "skin", 1.5, -1.25, 3, 1.25, 1.0),
+        fin("tail", [(2.0, -1.0), (-1.25, -3.25), (-0.5, 0.0), (-1.25, 3.25), (2.0, 1.0)], root=(2.5, 0.0)),
+        fin("dorsal", [(4.0, 2.5), (4.75, 4.75), (6.0, 4.25), (6.75, 3.5), (7.5, 4.5), (9.0, 4.25), (9.5, 2.5)], root=(7, 0)),
+        fin("anal", [(4.0, -2.5), (4.75, -4.25), (6.5, -4.0), (7.0, -2.5)], root=(5.5, 0)),
+        fin("pelvic", [(9.0, -2.5), (9.75, -4.0), (11.0, -3.75), (11.0, -2.5)], root=(10, 0)),
+        zbox("eye", "eye", 12.5, 0.25, 13.5, 1.25, 1.75),
+    ]
+    return f
+
+
+def bluegill():
+    def pattern(x, y, t, face, part):
+        if part.name == "head" and face in ("north", "south") and 9.5 <= x < 10.5 and -0.25 <= y < 1.25:
+            # The ear flap: a dark tab on the gill cover, edged in blue.
+            return C("3a6ad0") if y >= 1.0 or x < 9.75 else C("1a1a2a")
+        if face in ("north", "south") and t < 0.32 and x > 6.0:
+            return C("e8a040")                       # the orange breast
+        if face in ("north", "south", "up") and part.name == "body" and t > 0.35 and (x % 1.5) < 0.5:
+            return C("3a5248")                       # faint vertical bars
+        return None
+    f = Fish("bluegill", "Bluegill",
+             [(0.2, C("e8c060")), (0.35, C("c8c890")), (0.6, C("7a9a80")), (0.8, C("4a6a62")), (1.01, C("3a5a5a"))], -3.25, 3.25,
+             dict(base=C("4a6a62"), light=C("7a9a8a"), ray=C("2e4a4a"), edge=C("1e3434")),
+             cooked="cooked_bluegill", title_cooked="Cooked Bluegill", pattern=pattern,
+             eye=dict(pupil=C("141414"), shine=C("e8f0e8"), rim=C("4a5a40")))
+    f.parts = [
+        zbox("body", "skin", 3, -3.25, 9.5, 3.25, 1.25),
+        zbox("head", "skin", 9.5, -2.25, 12, 2.5, 1.0),
+        zbox("wrist", "skin", 1.75, -1.0, 3, 1.0, 0.75),
+        fin("tail", [(2.0, -0.75), (-0.25, -2.75), (0.5, 0.0), (-0.25, 2.75), (2.0, 0.75)], root=(2.5, 0.0)),
+        fin("dorsal", [(3.5, 3.0), (4.0, 5.0), (8.0, 5.25), (9.5, 3.0)], ray=0.14, root=(6.5, 0)),
+        fin("anal", [(3.5, -3.0), (4.0, -4.75), (6.5, -4.5), (7.0, -3.0)], root=(5, 0)),
+        zbox("eye", "eye", 10.5, 0.5, 11.5, 1.5, 1.25),
+    ]
+    return f
+
+
+def yellow_perch():
+    def pattern(x, y, t, face, part):
+        if face in ("north", "south", "up") and part.name in ("body", "head") and x < 11 and t > 0.4:
+            if ((x + 0.3 * y) % 1.75) < 0.6:
+                return C("3a4a1e")                   # six or seven dark saddles, narrowing toward the belly
+        return None
+    orange = dict(base=C("e87a30"), light=C("f0a050"), ray=C("c85a20"), edge=C("a04818"))
+    spiny = dict(base=C("8a8a38"), light=C("b8a850"), ray=C("6a6a28"), edge=C("3a3a14"))
+    f = Fish("yellow_perch", "Yellow Perch",
+             [(0.2, C("f4f0dc")), (0.4, C("e8d470")), (0.7, C("e0b838")), (1.01, C("8a7a28"))], -2.0, 2.0,
+             dict(base=C("b8a850"), light=C("d8c870"), ray=C("8a8a38"), edge=C("5a5420")),
+             cooked="cooked_yellow_perch", title_cooked="Cooked Yellow Perch", pattern=pattern,
+             gill=(10.75, 0.15, 0.85, C("6a6020")))
+    f.parts = [
+        zbox("body", "skin", 3, -2.0, 10.5, 2.0, 1.25),
+        zbox("head", "skin", 10.5, -1.5, 13.5, 1.5, 1.0),
+        zbox("wrist", "skin", 1.5, -1.0, 3, 1.0, 0.75),
+        fin("tail", [(2.0, -0.75), (-1.0, -2.75), (0.0, 0.0), (-1.0, 2.75), (2.0, 0.75)], root=(2.5, 0.0)),
+        fin("dorsal", [(6.5, 2.0), (7.0, 4.0), (9.5, 3.5), (10.0, 2.0)], colors=spiny, root=(8, 0)),
+        fin("dorsal_soft", [(3.5, 2.0), (4.0, 3.5), (5.75, 3.25), (6.0, 2.0)], root=(4.75, 0)),
+        fin("anal", [(3.5, -2.0), (4.0, -3.5), (5.5, -3.25), (5.75, -2.0)], colors=orange, root=(4.5, 0)),
+        fin("pelvic", [(9.0, -2.0), (9.5, -3.5), (10.5, -3.25), (10.5, -2.0)], colors=orange, root=(9.75, 0)),
+        zbox("eye", "eye", 11.5, 0.0, 12.5, 1.0, 1.25),
+    ]
+    return f
+
+
+def walleye():
+    def pattern(x, y, t, face, part):
+        if face in ("north", "south", "up") and part.name in ("body",) and t > 0.6 and (x % 2.5) < 1.0:
+            return C("4e4a20")                       # dark saddles over the olive-gold back
+        return None
+
+    def tail_fin(f, part, face, p, i, j, w, h):
+        c = paint_fin(f, part, face, p, i, j, w, h)
+        if c is not None and p[1] < -2.0 and p[0] < -0.25:
+            return C("f4f0e4")                       # the white tip of the lower lobe
+        return c
+    f = Fish("walleye", "Walleye",
+             [(0.2, C("f0ead0")), (0.45, C("c8b868")), (0.75, C("9a8a40")), (1.01, C("6a6430"))], -2.0, 2.0,
+             dict(base=C("7a7238"), light=C("a89c58"), ray=C("5a5428"), edge=C("3a3618")),
+             cooked="cooked_walleye", title_cooked="Cooked Walleye", pattern=pattern,
+             gill=(12.25, 0.15, 0.85, C("5a5428")),
+             # The walleye's eye: big, milky and glassy (it sees in the dark).
+             eye=dict(pupil=C("c8d4d0"), shine=C("ffffff"), iris=C("8a9a94"), rim=C("6a7470")))
+    f.mats = {"walleye_tail": tail_fin}
+    f.parts = [
+        zbox("body", "skin", 3, -2.0, 12, 2.0, 1.25),
+        zbox("head", "skin", 12, -1.5, 15.5, 1.5, 1.0),
+        zbox("wrist", "skin", 1.5, -1.0, 3, 1.0, 0.75),
+        fin("tail", [(2.0, -0.75), (-1.25, -3.0), (-0.25, 0.0), (-1.25, 3.0), (2.0, 0.75)], mat="walleye_tail", root=(2.5, 0.0)),
+        fin("dorsal", [(8.5, 2.0), (9.0, 4.0), (11.25, 3.5), (11.5, 2.0)], root=(10, 0)),
+        fin("dorsal_soft", [(4.0, 2.0), (4.5, 3.5), (7.0, 3.25), (7.5, 2.0)], root=(5.75, 0)),
+        fin("anal", [(4.0, -2.0), (4.5, -3.5), (6.5, -3.25), (7.0, -2.0)], root=(5.5, 0)),
+        zbox("eye", "eye", 13.0, -0.25, 14.0, 0.75, 1.25),
+    ]
+    return f
+
+
+def crappie():
+    def pattern(x, y, t, face, part):
+        if face in ("north", "south", "up") and part.name in ("body", "head") and t > 0.15:
+            if (int(math.floor(x * 2)) * 7 + int(math.floor((y + 4) * 2)) * 3) % 5 == 0:
+                return C("2e342a")                   # the black crappie's speckling
+        return None
+    f = Fish("crappie", "Crappie",
+             [(0.3, C("eef0e6")), (0.6, C("c8ccbc")), (0.85, C("8a9480")), (1.01, C("5a6a58"))], -3.0, 3.0,
+             dict(base=C("8a9080"), light=C("b8bcac"), ray=C("5a6050"), edge=C("3a4034")),
+             cooked="cooked_crappie", title_cooked="Cooked Crappie", pattern=pattern, edge=0.86,
+             eye=dict(pupil=C("141414"), shine=C("f0f0e8"), rim=C("6a7060")))
+    f.mats = {"spotfin": spotted_fin(C("2e342a"))}
+    f.parts = [
+        zbox("body", "skin", 3, -3.0, 9.5, 3.0, 1.0),
+        zbox("head", "skin", 9.5, -2.25, 12.5, 2.25, 0.75),
+        zbox("snout", "skin", 12.5, -0.75, 13.5, 0.75, 0.5),
+        zbox("wrist", "skin", 1.5, -1.0, 3, 1.0, 0.5),
+        fin("tail", [(2.0, -0.75), (-0.5, -2.75), (0.5, 0.0), (-0.5, 2.75), (2.0, 0.75)], root=(2.5, 0.0)),
+        fin("dorsal", [(4.0, 2.75), (4.75, 5.25), (7.5, 5.0), (8.0, 2.75)], mat="spotfin", root=(6, 0)),
+        fin("anal", [(3.5, -2.75), (4.25, -5.0), (7.0, -4.75), (7.5, -2.75)], mat="spotfin", root=(5.5, 0)),
+        zbox("eye", "eye", 10.5, 0.25, 11.5, 1.25, 1.0),
+    ]
+    return f
+
+
+def sturgeon():
+    def pattern(x, y, t, face, part):
+        return None
+    scute = dict(color=C("e2dec8"), rimmed=False)
+    f = Fish("sturgeon", "Sturgeon",
+             [(0.25, C("d8d2bc")), (0.5, C("8a887a")), (0.8, C("5a5850")), (1.01, C("4a4a42"))], -1.75, 1.75,
+             dict(base=C("4e4e44"), light=C("6e6e60"), ray=C("34342c"), edge=C("1e1e18")),
+             cooked="sturgeon_steak", title_cooked="Sturgeon Steak", pattern=pattern,
+             eye=dict(pupil=C("101010"), shine=C("d8d8c8"), rim=C("4a4a42")))
+    f.parts = [
+        zbox("snout", "skin", 15, -0.75, 18, 0.5, 0.75),
+        zbox("head", "skin", 12.5, -1.5, 15, 1.25, 1.25),
+        zbox("body", "skin", 3, -1.75, 12.5, 1.75, 1.5),
+        zbox("tail_stock", "skin", -1, -0.75, 3, 1.0, 0.75),
+        # A shark's tail: the upper lobe carries the spine on up and back, the lower one is short.
+        fin("tail", [(1.0, -0.5), (-0.5, -2.0), (-1.5, -0.5), (-5.0, 2.75), (-4.0, 3.25), (1.0, 1.0)], root=(1.5, 0.0)),
+        fin("dorsal", [(4.0, 1.75), (4.5, 3.0), (6.0, 2.75), (6.0, 1.75)], root=(5, 0)),
+        fin("anal", [(4.0, -1.75), (4.5, -2.75), (5.75, -2.5), (6.0, -1.75)], root=(5, 0)),
+        box("barbel_l", "solid", 15.5, -1.75, -0.75, 16.0, -0.75, -0.25, color=C("8a7a5a"), rimmed=False),
+        box("barbel_r", "solid", 15.5, -1.75, 0.25, 16.0, -0.75, 0.75, color=C("8a7a5a"), rimmed=False),
+        zbox("eye", "eye", 13.5, 0.0, 14.0, 0.5, 1.5),
+    ]
+    # Bony scutes: a row down the back and one along each flank.
+    for k, x in enumerate((4.0, 5.5, 7.0, 8.5, 10.0, 11.5)):
+        f.parts.append(box("scute_top%d" % k, "solid", x, 1.75, -0.5, x + 1.0, 2.25, 0.5, **scute))
+        f.parts.append(box("scute_l%d" % k, "solid", x, -0.25, -2.0, x + 1.0, 0.25, -1.5, **scute))
+        f.parts.append(box("scute_r%d" % k, "solid", x, -0.25, 1.5, x + 1.0, 0.25, 2.0, **scute))
+    return f
+
+
+def red_snapper():
+    def pattern(x, y, t, face, part):
+        return None
+    f = Fish("red_snapper", "Red Snapper",
+             [(0.25, C("f8d0c8")), (0.45, C("f08880")), (0.75, C("e05a5a")), (1.01, C("c83a48"))], -2.75, 2.75,
+             dict(base=C("e05a68"), light=C("f88a90"), ray=C("c03848"), edge=C("8a2030")),
+             cooked="cooked_red_snapper", title_cooked="Cooked Red Snapper", pattern=pattern,
+             gill=(11.0, 0.15, 0.85, C("a83040")), eye=dict(pupil=C("1a0808"), shine=C("ffe0e0"), iris=C("d02020")))
+    f.parts = [
+        zbox("body", "skin", 3, -2.75, 10.5, 2.75, 1.5),
+        zbox("head", "skin", 10.5, -2.0, 13.5, 2.25, 1.25),
+        zbox("snout", "skin", 13.5, -1.25, 14.5, 0.25, 1.0),
+        zbox("wrist", "skin", 1.5, -1.0, 3, 1.0, 1.0),
+        fin("tail", [(2.0, -0.75), (-1.25, -3.25), (0.0, 0.0), (-1.25, 3.25), (2.0, 0.75)], root=(2.5, 0.0)),
+        fin("dorsal", [(3.5, 2.5), (4.5, 4.75), (9.5, 4.25), (10.25, 2.5)], ray=0.12, root=(7, 0)),
+        fin("anal", [(3.5, -2.5), (4.25, -4.25), (6.25, -4.0), (6.75, -2.5)], root=(5, 0)),
+        fin("pelvic", [(9.0, -2.5), (9.75, -4.25), (10.75, -4.0), (10.75, -2.5)], root=(10, 0)),
+        zbox("eye", "eye", 11.5, 0.5, 12.5, 1.5, 1.5),
+    ]
+    return f
+
+
+def flounder():
+    """Built standing on its edge like the other fish, its eyed side (both eyes) on +z; the renderer lays it flat on that
+    side's opposite, so it lies on the bed looking up, as a flounder does (RIG flat)."""
+    spots = [(4.0, 1.5), (6.5, -1.0), (8.5, 2.0), (10.0, -1.75), (5.0, -2.5), (9.0, 0.25)]
+
+    def pattern(x, y, t, face, part):
+        if face == "north":
+            return C("eeeadc")                       # the blind side, pale
+        if face == "south" and part.name in ("body", "head"):
+            for sx, sy in spots:
+                d = math.hypot(x - sx, y - sy)
+                if d < 0.4:
+                    return C("d8c8a0")               # ocellated spots: a pale centre in a dark ring
+                if d < 0.85:
+                    return C("4a3824")
+            if ((int(math.floor(x * 2)) * 3 + int(math.floor((y + 4) * 2)) * 5) % 7) == 0:
+                return C("6a5034")                   # fine mottling
+        return None
+    f = Fish("flounder", "Flounder",
+             [(0.3, C("7a6040")), (0.7, C("947852")), (1.01, C("a88a60"))], -3.5, 3.5,
+             dict(base=C("8a6e48"), light=C("a88a60"), ray=C("6a5234"), edge=C("4a3a24")),
+             cooked="cooked_flounder", title_cooked="Cooked Flounder", pattern=pattern, edge=0.9,
+             eye=dict(pupil=C("141414"), shine=C("e8e0c8"), rim=C("5a4830")))
+    f.parts = [
+        zbox("body", "skin", 2, -3.5, 12, 3.5, 0.75),
+        zbox("head", "skin", 12, -2.25, 13.5, 2.0, 0.5),
+        zbox("wrist", "skin", 0.75, -1.0, 2, 1.0, 0.5),
+        # The fringe fins round the edge of the disc, top and bottom.
+        fin("dorsal", [(2.25, 2.0), (2.25, 3.25), (3.0, 4.75), (7.0, 5.25), (11.0, 4.75), (13.0, 2.75), (12.0, 2.0)],
+            ray=0.1, root=(7.5, 0)),
+        fin("anal", [(2.25, -2.0), (2.25, -3.25), (3.0, -4.75), (7.0, -5.0), (10.5, -4.25), (12.0, -2.5), (12.0, -2.0)],
+            ray=0.1, root=(7, 0)),
+        fin("tail", [(1.5, -0.75), (-0.75, -2.25), (-1.75, -1.0), (-1.75, 1.0), (-0.75, 2.25), (1.5, 0.75)], root=(2.0, 0.0)),
+        box("eye", "eye", 12.25, 0.75, 0.25, 13.0, 1.5, 0.75),
+        box("eye_b", "eye", 11.0, 1.75, 0.5, 11.75, 2.5, 1.0),
+    ]
+    return f
+
+
+def tuna():
+    def pattern(x, y, t, face, part):
+        return None
+    yellow = dict(base=C("e8c030"), light=C("f8e070"), ray=C("c89a20"), edge=C("8a6a10"))
+    f = Fish("tuna", "Tuna",
+             [(0.3, C("eef0f2")), (0.5, C("b8c4d0")), (0.62, C("3a6ab0")), (0.8, C("1e3a6a")), (1.01, C("142848"))], -2.75, 2.75,
+             dict(base=C("1e3a6a"), light=C("3a5a8a"), ray=C("142848"), edge=C("0a1428")),
+             cooked="tuna_steak", title_cooked="Tuna Steak", pattern=pattern,
+             gill=(11.75, 0.15, 0.85, C("142848")), eye=dict(pupil=C("101018"), shine=C("e8f0ff"), rim=C("5a6a8a")))
+    f.parts = [
+        zbox("body", "skin", 3, -2.75, 11.5, 2.75, 2.0),
+        zbox("head", "skin", 11.5, -2.0, 14.5, 2.0, 1.5),
+        zbox("snout", "skin", 14.5, -1.0, 15.5, 0.75, 1.0),
+        zbox("wrist", "skin", 0.5, -0.75, 3, 0.75, 0.75),
+        box("keel", "solid", 1.0, -0.25, -1.25, 2.5, 0.25, 1.25, color=C("142848"), rimmed=False),
+        # A crescent tail, stiff and swept.
+        fin("tail", [(1.0, -0.5), (-0.5, -2.0), (-2.5, -4.5), (-1.5, -1.75), (-1.0, 0.0), (-1.5, 1.75), (-2.5, 4.5),
+                     (-0.5, 2.0), (1.0, 0.5)], root=(1.5, 0.0)),
+        fin("dorsal", [(8.5, 2.5), (9.5, 4.5), (10.25, 4.25), (11.0, 2.5)], root=(9.75, 0)),
+        fin("dorsal_2", [(5.5, 2.5), (6.25, 4.75), (6.75, 4.5), (7.0, 2.5)], colors=yellow, root=(6.25, 0)),
+        fin("anal", [(5.5, -2.5), (6.25, -4.5), (6.75, -4.25), (7.0, -2.5)], colors=yellow, root=(6.25, 0)),
+        # Yellow finlets down the back and belly toward the tail.
+        fin("finlets_top", [(3.0, 2.5), (3.5, 3.25), (4.0, 2.75), (4.5, 3.25), (5.0, 2.75), (5.25, 2.5)], colors=yellow, ray=0,
+            root=(4, 0)),
+        fin("finlets_bottom", [(3.0, -2.5), (3.5, -3.25), (4.0, -2.75), (4.5, -3.25), (5.0, -2.75), (5.25, -2.5)],
+            colors=yellow, ray=0, root=(4, 0)),
+        fin("pectoral_l", [(11.0, -0.25), (7.0, -2.0), (7.5, -2.5), (11.5, -1.25)], z=-2.25, root=(11, -1)),
+        fin("pectoral_r", [(11.0, -0.25), (7.0, -2.0), (7.5, -2.5), (11.5, -1.25)], z=2.25, root=(11, -1)),
+        zbox("eye", "eye", 12.5, 0.25, 13.5, 1.25, 1.75),
+    ]
+    return f
+
+
+def mahi_mahi():
+    def pattern(x, y, t, face, part):
+        if face in ("north", "south") and part.name in ("body", "head") and 0.2 < t < 0.75:
+            if (int(math.floor(x * 2)) + int(math.floor((y + 4) * 2)) * 3) % 5 == 0:
+                return C("3a8ae0")                   # bright blue flecks
+        return None
+    blue = dict(base=C("2a6ac8"), light=C("5a9ae8"), ray=C("1a4a9a"), edge=C("0e2a5a"))
+    gold = dict(base=C("d8c030"), light=C("f0e070"), ray=C("b89a20"), edge=C("6a5a10"))
+    f = Fish("mahi_mahi", "Mahi-Mahi",
+             [(0.25, C("f0e8a0")), (0.5, C("d8d040")), (0.7, C("6ac060")), (1.01, C("2aa08a"))], -2.25, 3.0,
+             blue, cooked="cooked_mahi_mahi", title_cooked="Cooked Mahi-Mahi", pattern=pattern,
+             eye=dict(pupil=C("141414"), shine=C("f0ffe8"), rim=C("2a6a5a")))
+    f.parts = [
+        zbox("body", "skin", 3, -2.25, 11, 2.5, 1.0),
+        # The bull's blunt, square forehead.
+        zbox("head", "skin", 11, -2.0, 14, 3.0, 0.75),
+        zbox("wrist", "skin", 1.0, -0.75, 3, 0.75, 0.5),
+        fin("tail", [(1.5, -0.5), (-1.0, -2.5), (-2.5, -4.25), (-1.25, -1.25), (-0.75, 0.0), (-1.25, 1.25), (-2.5, 4.25),
+                     (-1.0, 2.5), (1.5, 0.5)], colors=gold, root=(2.0, 0.0)),
+        # One dorsal fin from the forehead to the tail.
+        fin("dorsal", [(3.0, 2.0), (3.5, 3.5), (12.5, 4.5), (13.5, 3.25), (13.5, 2.5)], ray=0.1, root=(8, 0)),
+        fin("anal", [(3.0, -2.0), (3.5, -3.25), (8.5, -3.25), (9.0, -2.0)], ray=0.12, root=(6, 0)),
+        zbox("eye", "eye", 12.25, 0.25, 13.25, 1.25, 1.0),
+    ]
+    return f
+
+
+def barracuda():
+    def pattern(x, y, t, face, part):
+        if face in ("north", "south") and part.name == "jaw_top" and y < 0.25 and int(math.floor(x * 4)) % 2 == 0:
+            return C("f0f0e8")                       # fangs along the upper jaw
+        if face in ("north", "south", "up") and part.name in ("body",) and t > 0.55 and (x % 1.75) < 0.6:
+            return C("2a3440")                       # dark bars over the back
+        if face in ("north", "south") and part.name == "body" and t < 0.35:
+            if (int(math.floor(x * 2)) * 5 + int(math.floor((y + 2) * 4))) % 7 == 0:
+                return C("1a1e22")                   # scattered black spots low on the flank
+        return None
+    f = Fish("barracuda", "Barracuda",
+             [(0.3, C("e8eef2")), (0.55, C("aab8c4")), (0.8, C("6a7a8a")), (1.01, C("4a5a6a"))], -1.5, 1.5,
+             dict(base=C("4a5a6a"), light=C("7a8a9a"), ray=C("2a3440"), edge=C("1a2028")),
+             cooked="cooked_barracuda", title_cooked="Cooked Barracuda", pattern=pattern,
+             eye=dict(pupil=C("101010"), shine=C("f0f0e0"), iris=C("c8b048")))
+    f.parts = [
+        zbox("body", "skin", 3, -1.5, 12, 1.5, 1.0),
+        zbox("head", "skin", 12, -1.25, 15, 1.25, 0.75),
+        zbox("jaw_top", "skin", 15, 0.0, 16.5, 0.75, 0.5),
+        # The underbite: the lower jaw juts past the upper.
+        zbox("jaw_bottom", "skin", 15, -0.75, 17.25, 0.0, 0.5),
+        zbox("wrist", "skin", 1.0, -0.75, 3, 0.75, 0.5),
+        fin("tail", [(1.5, -0.5), (-1.0, -2.25), (-2.0, -2.75), (-0.75, 0.0), (-2.0, 2.75), (-1.0, 2.25), (1.5, 0.5)],
+            root=(2.0, 0.0)),
+        fin("dorsal", [(8.0, 1.5), (8.5, 3.0), (9.5, 2.75), (10.0, 1.5)], root=(9, 0)),
+        fin("dorsal_2", [(3.5, 1.5), (4.0, 2.75), (5.0, 2.5), (5.25, 1.5)], root=(4.5, 0)),
+        fin("anal", [(3.5, -1.5), (4.0, -2.75), (5.0, -2.5), (5.25, -1.5)], root=(4.5, 0)),
+        zbox("eye", "eye", 13.0, 0.25, 13.75, 1.0, 1.0),
+    ]
+    return f
+
+
+def mooshroom_minnow():
+    def pattern(x, y, t, face, part):
+        if face in ("north", "south", "up") and part.name in ("body", "head"):
+            for sx, sy in ((3.0, 0.5), (5.0, -0.25), (4.25, 0.9), (6.25, 0.5), (2.5, -0.5)):
+                if math.hypot(x - sx, y - sy) < 0.4:
+                    return C("f4ece4")               # a mooshroom's white blotches
+        return None
+
+    def cap(f, part, face, p, i, j, w, h):
+        if face == "down":
+            return C("9a1a1a")
+        if (int(math.floor(p[0] * 2)) + int(math.floor(p[2] * 2)) * 2 + (0 if face == "up" else 1)) % 3 == 0:
+            return C("ffffff")
+        return C("e83a3a")
+    f = Fish("mooshroom_minnow", "Mooshroom Minnow",
+             [(0.35, C("ecd8c4")), (0.6, C("d03636")), (1.01, C("a81c1c"))], -1.25, 1.25,
+             dict(base=C("b82424"), light=C("e0c8b8"), ray=C("8a1414"), edge=C("5a0c0c")),
+             pattern=pattern, eye=dict(pupil=C("141414"), shine=C("ffffff")), gui_cap=1.1)
+    f.mats = {"cap": cap}
+    f.parts = [
+        zbox("body", "skin", 2, -1.25, 6.5, 1.25, 0.85),
+        zbox("head", "skin", 6.5, -1.0, 8.25, 1.0, 0.7),
+        zbox("wrist", "skin", 1.0, -0.5, 2.0, 0.5, 0.4),
+        fin("tail", [(1.5, -0.4), (-1.25, -1.75), (-0.5, 0.0), (-1.25, 1.75), (1.5, 0.4)], root=(2.0, 0.0)),
+        # A little red mushroom growing from its back.
+        box("stem", "solid", 4.0, 1.25, -0.25, 4.5, 2.25, 0.25, color=C("e8dcc8"), rimmed=False),
+        box("cap", "cap", 3.25, 2.25, -1.0, 5.25, 3.25, 1.0),
+        zbox("eye", "eye", 7.0, 0.0, 7.75, 0.75, 0.95),
+    ]
+    return f
+
+
+def cometfish():
+    def pattern(x, y, t, face, part):
+        if part.name == "head":
+            return C("fff0b0") if x > 12.25 else C("ffb84a")       # the blazing comet head
+        if face in ("north", "south", "up") and part.name == "body":
+            if abs(((x + 0.4 * y) % 2.5) - 1.25) < 0.25 and 0.15 < t < 0.85:
+                return C("ff8a2a")                   # cracks in the crust, still glowing
+        return None
+    flame = dict(base=C("ff9a2a"), light=C("ffe08a"), ray=C("e85a1a"), edge=C("fff0b0"))
+    f = Fish("cometfish", "Cometfish",
+             [(0.3, C("2a2436")), (0.7, C("3a3448")), (1.01, C("4a4260"))], -2.0, 2.0,
+             flame, pattern=pattern, eye=dict(pupil=C("3a1a08"), shine=C("fff6c8"), rim=C("e85a1a")))
+    f.parts = [
+        zbox("head", "skin", 10, -1.75, 13.5, 1.75, 1.25),
+        zbox("body", "skin", 3, -2.0, 10, 2.0, 1.5),
+        zbox("wrist", "skin", 1.0, -0.75, 3, 0.75, 0.75),
+        # The trail: long streaming flames for a tail.
+        fin("tail", [(1.5, -0.5), (-3.0, -2.5), (-2.0, -1.0), (-5.5, 0.0), (-2.0, 1.0), (-3.0, 2.5), (1.5, 0.5)],
+            root=(2.0, 0.0), emit=True, ray=0.3),
+        fin("dorsal", [(4.0, 2.0), (5.0, 3.5), (6.0, 2.75), (7.0, 3.75), (8.5, 2.0)], emit=True, ray=0, root=(6, 0)),
+        zbox("eye", "eye", 11.5, 0.25, 12.25, 1.0, 1.5),
+    ]
+    return f
+
+
 FISH = [brook_trout, mud_catfish, pike, mackerel, swordfish, anglerfish, glowfin_tetra, parrotfish, ice_char, bog_eel,
         cave_blindfish, sculk_gulper, pixie_minnow, moonscale_koi, magma_eel, ember_puffer, glowing_mutant_carp,
-        starlit_gar, abyssal_squidling, ghoulfish]
+        starlit_gar, abyssal_squidling, ghoulfish, largemouth_bass, bluegill, yellow_perch, walleye, crappie, sturgeon,
+        red_snapper, flounder, tuna, mahi_mahi, barracuda, mooshroom_minnow, cometfish]
 
 
 # ============================================================================================================= rigs
@@ -1044,6 +1445,21 @@ RIG = {
                                       ("tentacle_5", "body", (3.0, -0.15, -0.15), ["tentacle_b"])]),
     "ghoulfish": dict(length=15, groups=[("tail", "body", (6, 0, 0), ["spine", "ribs_l", "ribs_r"]),
                                          ("tail2", "tail", (1.0, 0, 0), ["tail"])]),
+    # The second catch.
+    "largemouth_bass": dict(length=17, groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
+    "bluegill": dict(length=10, bucket="tropical_fish", groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
+    "yellow_perch": dict(length=12, groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
+    "walleye": dict(length=18, bucket="salmon", groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
+    "crappie": dict(length=11, bucket="tropical_fish", groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
+    "sturgeon": dict(length=40, bucket="salmon", groups=[("tail", "body", (3, 0, 0), ["tail_stock", "tail"])]),
+    "red_snapper": dict(length=18, groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
+    # Drawn lying on its side (FishModelLayers.Shape.flat): the tail's wag becomes the up-and-down beat of a flatfish.
+    "flounder": dict(length=16, flat=True, groups=[("tail", "body", (2, 0, 0), ["wrist", "tail"])]),
+    "tuna": dict(length=36, bucket="salmon", groups=[("tail", "body", (3, 0, 0), ["wrist", "keel", "tail"])]),
+    "mahi_mahi": dict(length=30, bucket="tropical_fish", groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
+    "barracuda": dict(length=28, bucket="salmon", groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
+    "mooshroom_minnow": dict(length=7, bucket="tropical_fish", groups=[("tail", "body", (2, 0, 0), ["wrist", "tail"])]),
+    "cometfish": dict(length=16, glow=["fff0b0", "ffb84a", "ff8a2a"], groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
 }
 
 # The fish swimming in lava: their buckets hold lava.
@@ -1438,7 +1854,8 @@ def java_file(rigs):
     shapes = []
     for r in rigs:
         shapes.append(f"\t\t\tnew Shape(\"{r.f.name}\", FishModelLayers::{camel(r.f.name)}, {str(r.glows).lower()}, "
-                      f"{jf(r.height)}, {jf(r.half_width)}, {jf(max(0.15, min(0.8, 0.3 * r.length)))})")
+                      f"{jf(r.height)}, {jf(r.half_width)}, {jf(max(0.15, min(0.8, 0.3 * r.length)))}, "
+                      f"{str(RIG[r.f.name].get('flat', False)).lower()})")
     return f"""package com.jheinz.mymod.client.fishing.fish;
 
 import java.util.EnumSet;
@@ -1462,9 +1879,10 @@ import net.minecraft.core.Direction;
 public final class FishModelLayers {{
 	/**
 	 * A fish's model: its layer, whether it has a glow texture, its height and half its width in blocks (to lay it on
-	 * its side when it flops on land) and its shadow's radius.
+	 * its side when it flops on land), its shadow's radius, and whether it's a flatfish that always lies on its side.
 	 */
-	public record Shape(String id, Supplier<LayerDefinition> layer, boolean glows, float height, float halfWidth, float shadow) {{
+	public record Shape(String id, Supplier<LayerDefinition> layer, boolean glows, float height, float halfWidth, float shadow,
+			boolean flat) {{
 	}}
 
 	/** Fins are single faces, drawn from both sides by the entity cutout render type. */

@@ -2,6 +2,7 @@ package com.jheinz.mymod.fishing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 
 import net.minecraft.core.BlockPos;
@@ -15,8 +16,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import org.jspecify.annotations.Nullable;
+
+import com.jheinz.mymod.fishing.fish.FishKind;
 
 /**
  * One catchable thing from a {@code fishing_species} data file (see {@link FishingSpeciesLoader} for the format):
@@ -25,7 +30,7 @@ import org.jspecify.annotations.Nullable;
  */
 public record FishingSpecies(Identifier id, Item item, int weight, int difficulty, FishBehavior behavior, int minRodTier,
 		boolean lava, Identifier dimension, List<BiomeMatch> biomes, Time time, Weather weather, int minY, int maxY,
-		int minCount, int maxCount, @Nullable FishSize size) {
+		@Nullable Near near, int minCount, int maxCount, @Nullable FishSize size) {
 	private static volatile List<FishingSpecies> all = List.of();
 
 	public enum Time {
@@ -45,6 +50,20 @@ public record FishingSpecies(Identifier id, Item item, int weight, int difficult
 		@Override
 		public String toString() {
 			return (tag ? "#" : "") + id;
+		}
+	}
+
+	/** A block (or block tag, written "#ns:tag") that must be within {@code radius} blocks of the hook. */
+	public record Near(boolean tag, Identifier id, int radius) {
+		boolean test(ServerLevel level, BlockPos pos) {
+			TagKey<Block> blocks = tag ? TagKey.create(Registries.BLOCK, id) : null;
+			Predicate<BlockState> match = tag ? state -> state.is(blocks) : state -> BuiltInRegistries.BLOCK.getKey(state.getBlock()).equals(id);
+			return FishKind.nearBlock(level, pos, match, radius);
+		}
+
+		@Override
+		public String toString() {
+			return (tag ? "#" : "") + id + " within " + radius;
 		}
 	}
 
@@ -84,16 +103,21 @@ public record FishingSpecies(Identifier id, Item item, int weight, int difficult
 		if (!timeOk || !weatherOk) {
 			return false;
 		}
-		if (biomes.isEmpty()) {
-			return true;
-		}
-		Holder<Biome> biome = level.getBiome(pos);
-		for (BiomeMatch match : biomes) {
-			if (match.test(biome)) {
-				return true;
+		if (!biomes.isEmpty()) {
+			Holder<Biome> biome = level.getBiome(pos);
+			boolean biomeOk = false;
+			for (BiomeMatch match : biomes) {
+				if (match.test(biome)) {
+					biomeOk = true;
+					break;
+				}
+			}
+			if (!biomeOk) {
+				return false;
 			}
 		}
-		return false;
+		// Last: it's the one check that looks at blocks.
+		return near == null || near.test(level, pos);
 	}
 
 	/** The first species that catches {@code item}, or null. */

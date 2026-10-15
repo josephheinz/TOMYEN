@@ -13,9 +13,10 @@ Each wood's texture is painted from that vanilla plank's own colours (sorted int
 bands: a highlight and shadow rim, the groove, a couple of long grain lines; no noise. One texel is one model pixel.
 The model is checked for z-fighting (tools/zfight.py): faces in one plane only ever meet edge to edge.
 
-Baits. Eight 16x16 item sprites in vanilla's style (dark outline, lit from the top left, a few clean ramps): the worms
-and the grub are drawn along a centre line with banded segments; the chum bucket is vanilla's water bucket with chum in
-place of the water; the rest are hand-drawn rows. Also the Tackle Bench's empty bait-slot icon (an earthworm's
+Baits. Twelve 16x16 item sprites in vanilla's style (dark outline, lit from the top left, a few clean ramps): the
+worms, leeches and the grub are drawn along a centre line with banded segments; dough balls and seed mash are round
+lumps lit in three flat steps (blobs); the chum bucket is vanilla's water bucket with chum in place of the water; the
+rest are hand-drawn rows. Also the Tackle Bench's empty bait-slot icon (an earthworm's
 outline, as vanilla draws its empty-slot icons).
 
 Also written: blockstates, block and item models, item definitions, loot tables, the axe-mineable tag, the bait and
@@ -560,8 +561,90 @@ def chum_bucket():
     return img
 
 
+def blobs(discs, ramp, rim, flecks=()):
+    """Round lumps (discs (cx, cy, r) in sprite pixels, later ones in front), each lit from the top left in three flat
+    steps of ramp (dark, mid, light), the one behind shadowed where a front one overlaps it, all outlined like worm()."""
+    owner = {}
+    for y in range(16):
+        for x in range(16):
+            for i, (cx, cy, r) in enumerate(discs):
+                if math.hypot(x + 0.5 - cx, y + 0.5 - cy) <= r:
+                    owner[(x, y)] = i
+    img = Img(16, 16)
+    for (x, y), i in owner.items():
+        cx, cy, r = discs[i]
+        lit = -((x + 0.5 - cx) + (y + 0.5 - cy)) / (r * 1.4)
+        c = ramp[2] if lit > 0.35 else ramp[1] if lit > -0.35 else ramp[0]
+        if any(owner.get((x + dx, y + dy), -1) > i for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+            c = rim[0]                                 # a front lump's edge over this one
+        img.set(x, y, c)
+    for (x, y), c in flecks:
+        if (x, y) in owner:
+            img.set(x, y, hexc(c))
+    for y in range(16):
+        for x in range(16):
+            if (x, y) in owner:
+                continue
+            if any((x + dx, y + dy) in owner for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                img.set(x, y, rim[1] if ((x - 1, y) in owner or (x, y - 1) in owner) else rim[0])
+    return img
+
+
+def crickets():
+    """A field cricket side on, facing left: a dark brown body, its big jumping leg folded over its back, long
+    antennae swept back over it."""
+    return rows_sprite([
+        "................",
+        "................",
+        ".a..............",
+        "..aa............",
+        "....aa....oo....",
+        "......a..oLLo...",
+        "...oooo.oLLLLo..",
+        "..oHHhhoLLlLLLo.",
+        ".oEHhhBBLLlBBLo.",
+        ".ohHhBBBbbbbbbo.",
+        "..ohBBbbbbbbbbo.",
+        "...ooobbbbbbooL.",
+        "...l.l.ooooo..L.",
+        "..l..l..l.l...L.",
+        "................",
+        "................",
+    ], dict(o="1e1408", a="6a5034", H="8a6a40", h="5e4426", E="0a0a0a", B="6a4a28", b="44301a", L="9a7444", l="3a2a14"))
+
+
+def dough_balls():
+    """Three balls of bread dough, pale and soft, one in front of the other two."""
+    return blobs([(5.5, 6.5, 3.4), (10.5, 6.0, 3.2), (8.0, 10.5, 3.6)],
+                 [hexc("c8a86a"), hexc("e8d09a"), hexc("faf0cc")], (hexc("6a5028"), hexc("4a3818")))
+
+
+def seed_mash():
+    """A lump of mash: wheat seeds pressed together with bone meal, the seeds showing in a deliberate scatter."""
+    seeds = [((5, 7), "5a8a2a"), ((8, 5), "5a8a2a"), ((10, 8), "5a8a2a"), ((7, 10), "5a8a2a"), ((4, 10), "3e6a1e"),
+             ((11, 11), "3e6a1e"), ((9, 12), "5a8a2a"), ((6, 4), "3e6a1e")]
+    return blobs([(6.0, 8.0, 4.0), (10.0, 9.5, 3.6), (8.5, 6.0, 3.2)],
+                 [hexc("a89870"), hexc("d0c49c"), hexc("ece4c8")], (hexc("5a4e30"), hexc("3a3220")), seeds)
+
+
+def leeches():
+    """Two fat leeches: near-black backs, an orange-spotted stripe, blunt sucker ends."""
+    dark = [hexc("1a1814"), hexc("33302a"), hexc("4e4a3e")]
+    rim = (hexc("0e0c08"), hexc("080604"))
+    a = worm([(2.5, 12.0), (5.0, 10.0), (8.0, 11.0), (11.0, 9.0), (12.5, 6.0)], 1.45, dark, hexc("c8782a"), rim)
+    b = worm([(3.0, 6.0), (5.5, 3.5), (9.0, 3.5)], 1.3, dark, hexc("c8782a"), rim)
+    out = Img(16, 16)
+    out.paste(b, 0, 0)
+    out.paste(a, 0, 0)
+    return out
+
+
 BAITS = OrderedDict([
     ("earthworms", ("Earthworms", earthworms)),
+    ("crickets", ("Crickets", crickets)),
+    ("dough_balls", ("Dough Balls", dough_balls)),
+    ("seed_mash", ("Seed Mash", seed_mash)),
+    ("leeches", ("Leeches", leeches)),
     ("cut_bait", ("Cut Bait", cut_bait)),
     ("chum_bucket", ("Chum Bucket", chum_bucket)),
     ("glowworm", ("Glowworm", glowworm)),
@@ -626,11 +709,17 @@ def shapeless(name, ingredients, result, count, unlock, category="misc"):
 
 RAW_FISH = ["minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish"] + ["mymod:" + n for n in (
     "brook_trout", "mud_catfish", "pike", "mackerel", "swordfish", "anglerfish", "glowfin_tetra", "parrotfish", "ice_char",
-    "bog_eel", "cave_blindfish")]
+    "bog_eel", "cave_blindfish", "largemouth_bass", "bluegill", "yellow_perch", "walleye", "crappie", "sturgeon", "red_snapper",
+    "flounder", "tuna", "mahi_mahi", "barracuda")]
 PREDATOR_FISH = ["minecraft:cod", "minecraft:salmon"] + ["mymod:" + n for n in (
-    "pike", "swordfish", "anglerfish", "starlit_gar", "magma_eel", "mud_catfish", "bog_eel")]
-NIGHT_FISH = ["mymod:" + n for n in ("anglerfish", "starlit_gar", "abyssal_squidling", "ghoulfish", "glowfin_tetra", "sculk_gulper")]
+    "pike", "swordfish", "anglerfish", "starlit_gar", "magma_eel", "mud_catfish", "bog_eel", "largemouth_bass", "walleye",
+    "tuna", "mahi_mahi", "barracuda")]
+NIGHT_FISH = ["mymod:" + n for n in ("anglerfish", "starlit_gar", "abyssal_squidling", "ghoulfish", "glowfin_tetra", "sculk_gulper",
+                                     "walleye")]
 MUTANT_FISH = ["mymod:glowing_mutant_carp"]
+# Small fish of ponds and creeks (crickets), and the bottom feeders (dough balls).
+PANFISH = ["mymod:" + n for n in ("bluegill", "crappie", "yellow_perch", "brook_trout")]
+BOTTOM_FISH = ["minecraft:cod"] + ["mymod:" + n for n in ("mud_catfish", "glowing_mutant_carp", "sturgeon", "flounder")]
 
 
 def data():
@@ -639,6 +728,8 @@ def data():
     tag_add(os.path.join(item_tags, "predator_fish.json"), PREDATOR_FISH)
     tag_add(os.path.join(item_tags, "night_fish.json"), NIGHT_FISH)
     tag_add(os.path.join(item_tags, "mutant_fish.json"), MUTANT_FISH)
+    tag_add(os.path.join(item_tags, "panfish.json"), PANFISH)
+    tag_add(os.path.join(item_tags, "bottom_fish.json"), BOTTOM_FISH)
     tag_add(os.path.join(DATA, "minecraft", "tags", "block", "mineable", "axe.json"), ["mymod:%s_fish_mount" % w for w in WOODS])
     for wood in WOODS:
         # A board on two sticks with a gold nugget for the plate; unlocked by catching any fish.
@@ -655,6 +746,13 @@ def data():
     shapeless("glowworm", ["minecraft:glow_berries", "mymod:earthworms"], "mymod:glowworm", 2, "minecraft:glow_berries")
     shapeless("live_minnow_from_pixie_minnow", ["mymod:pixie_minnow", "minecraft:kelp"], "mymod:live_minnow", 2, "mymod:pixie_minnow")
     shapeless("live_minnow_from_mackerel", ["mymod:mackerel", "minecraft:kelp"], "mymod:live_minnow", 2, "mymod:mackerel")
+    shapeless("live_minnow_from_bluegill", ["mymod:bluegill", "minecraft:kelp"], "mymod:live_minnow", 2, "mymod:bluegill")
+    shapeless("live_minnow_from_mooshroom_minnow", ["mymod:mooshroom_minnow", "minecraft:kelp"], "mymod:live_minnow", 2,
+              "mymod:mooshroom_minnow")
+    # The new early baits: crickets and leeches are found (long grass; swamp dirt and mud), the rest made.
+    shapeless("dough_balls", ["minecraft:bread"], "mymod:dough_balls", 4, "minecraft:bread")
+    shapeless("seed_mash", ["minecraft:wheat_seeds", "minecraft:wheat_seeds", "minecraft:wheat_seeds", "minecraft:bone_meal"],
+              "mymod:seed_mash", 6, "minecraft:wheat_seeds")
     shapeless("magma_grub", ["minecraft:magma_cream", "mymod:earthworms"], "mymod:magma_grub", 4, "minecraft:magma_cream")
     shapeless("irradiated_bait", ["mymod:raw_uranium"] + ["mymod:cut_bait"] * 4, "mymod:irradiated_bait", 4, "mymod:raw_uranium")
     shapeless("irradiated_bait_from_mutant_carp", ["mymod:glowing_mutant_carp"], "mymod:irradiated_bait", 4,
@@ -689,6 +787,11 @@ LANG_ENTRIES = OrderedDict([
     ("tooltip.mymod.bait.attracts.predator_fish", "Draws in predators"),
     ("tooltip.mymod.bait.attracts.night_fish", "Draws in the fish of the night"),
     ("tooltip.mymod.bait.attracts.mutant_fish", "Draws in mutants"),
+    ("tooltip.mymod.bait.attracts.panfish", "Draws in panfish (bluegill, crappie, perch, trout)"),
+    ("tooltip.mymod.bait.attracts.bottom_fish", "Draws in bottom feeders (catfish, carp, sturgeon, flounder, cod)"),
+    ("tooltip.mymod.bait.attracted_size.panfish", "Bigger panfish +%s"),
+    ("tooltip.mymod.bait.attracted_size.bottom_fish", "Bigger bottom feeders +%s"),
+    ("tooltip.mymod.bait.smaller", "Smaller fish -%s"),
     ("tooltip.mymod.bait.attracted_size.predator_fish", "Bigger predators +%s"),
     ("tooltip.mymod.bait.attracted_size.night_fish", "Bigger night fish +%s"),
     ("tooltip.mymod.bait.attracted_size.mutant_fish", "Bigger mutants +%s"),
@@ -874,7 +977,7 @@ def wall(img, x0, y0, x1, y1):
 def preview(path, models):
     sys.path.insert(0, HERE)
     from gen_fishing_rods import text
-    W, H = 1180, 1000
+    W, H = 1180, 1000 + 180 * ((len(BAITS) - 1) // 8)
     sheet = Img(W, H, hexc("2b2f36"))
 
     def label(x, y, s, k=2, colour="#e9eff5"):
@@ -916,12 +1019,13 @@ def preview(path, models):
     for i, (name, (title, _)) in enumerate(BAITS.items()):
         img = Img(16, 16)
         img.px = list(BAIT_SPRITES[name].px)
-        x = 20 + i * 145
-        sheet.fill(x, 825, x + 16, 841, hexc("8b8b8b"))
-        sheet.paste(img, x, 825)
-        sheet.fill(x, 846, x + 128, 974, hexc("8b8b8b"))
-        sheet.paste(img, x, 846, 8)
-        label(x, 980, title, 1)
+        x = 20 + (i % 8) * 145
+        y = (i // 8) * 180
+        sheet.fill(x, 825 + y, x + 16, 841 + y, hexc("8b8b8b"))
+        sheet.paste(img, x, 825 + y)
+        sheet.fill(x, 846 + y, x + 128, 974 + y, hexc("8b8b8b"))
+        sheet.paste(img, x, 846 + y, 8)
+        label(x, 980 + y, title, 1)
     sheet.save(path)
     print("preview:", path)
 

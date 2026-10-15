@@ -1,0 +1,20 @@
+{
+  "item": "mymod:red_snapper",
+  "weight": 22,
+  "difficulty": 2,
+  "behavior": "steady",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "minecraft:warm_ocean",
+    "minecraft:lukewarm_ocean",
+    "minecraft:deep_lukewarm_ocean",
+    "minecraft:ocean",
+    "minecraft:deep_ocean"
+  ],
+  "size": {
+    "min_lb": 1.0,
+    "avg_lb": 5.0,
+    "max_lb": 50.4
+  }
+}

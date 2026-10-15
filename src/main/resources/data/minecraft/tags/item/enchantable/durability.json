@@ -16,6 +16,11 @@
     "mymod:steel_rod",
     "mymod:duralumin_rod",
     "mymod:magmasteel_rod",
-    "mymod:star_steel_rod"
+    "mymod:star_steel_rod",
+    "mymod:stick_pole",
+    "mymod:copper_rod",
+    "mymod:bone_rod",
+    "mymod:fae_rod",
+    "mymod:froststeel_rod"
   ]
 }

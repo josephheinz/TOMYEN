@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:copper_nugget",
+    "minecraft:copper_nugget",
+    "minecraft:pumpkin_seeds",
+    "minecraft:string"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:rattle_lure"
+  }
+}

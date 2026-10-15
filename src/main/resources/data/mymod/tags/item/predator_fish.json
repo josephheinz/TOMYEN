@@ -9,6 +9,11 @@
     "mymod:starlit_gar",
     "mymod:magma_eel",
     "mymod:mud_catfish",
-    "mymod:bog_eel"
+    "mymod:bog_eel",
+    "mymod:largemouth_bass",
+    "mymod:walleye",
+    "mymod:tuna",
+    "mymod:mahi_mahi",
+    "mymod:barracuda"
   ]
 }

@@ -14,6 +14,17 @@
     "mymod:parrotfish",
     "mymod:ice_char",
     "mymod:bog_eel",
-    "mymod:cave_blindfish"
+    "mymod:cave_blindfish",
+    "mymod:largemouth_bass",
+    "mymod:bluegill",
+    "mymod:yellow_perch",
+    "mymod:walleye",
+    "mymod:crappie",
+    "mymod:sturgeon",
+    "mymod:red_snapper",
+    "mymod:flounder",
+    "mymod:tuna",
+    "mymod:mahi_mahi",
+    "mymod:barracuda"
   ]
 }
