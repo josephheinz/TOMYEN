@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "mymod:steel_ingot",
+    "O": "mymod:optic_lens",
+    "X": "mymod:computer_chip",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "SOS",
+    "SXS",
+    "SRS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:meteorite_scanner"
+  }
+}

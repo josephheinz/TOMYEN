@@ -2653,5 +2653,173 @@
         "volume": 0.5
       }
     ]
+  },
+  "pendulum_tune": {
+    "subtitle": "subtitles.mymod.pendulum_tune",
+    "sounds": [
+      {
+        "name": "minecraft:block/amethyst/resonate1",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:block/amethyst/resonate2",
+        "pitch": 1.3
+      }
+    ]
+  },
+  "pendulum_tick": {
+    "subtitle": "subtitles.mymod.pendulum_tick",
+    "sounds": [
+      {
+        "name": "minecraft:block/chain/step1",
+        "volume": 0.6,
+        "pitch": 1.8
+      },
+      {
+        "name": "minecraft:block/chain/step2",
+        "volume": 0.6,
+        "pitch": 1.8
+      },
+      {
+        "name": "minecraft:block/chain/step3",
+        "volume": 0.6,
+        "pitch": 1.8
+      }
+    ]
+  },
+  "pendulum_found": {
+    "subtitle": "subtitles.mymod.pendulum_found",
+    "sounds": [
+      {
+        "name": "minecraft:note/icechime",
+        "volume": 0.6,
+        "pitch": 1.5
+      }
+    ]
+  },
+  "metal_detector_beep": {
+    "subtitle": "subtitles.mymod.metal_detector_beep",
+    "sounds": [
+      {
+        "name": "minecraft:note/bit",
+        "volume": 0.7
+      }
+    ]
+  },
+  "meteorite_scanner_ping": {
+    "subtitle": "subtitles.mymod.meteorite_scanner_ping",
+    "sounds": [
+      {
+        "name": "minecraft:note/pling",
+        "volume": 0.5,
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:block/amethyst/shimmer",
+        "volume": 0.3,
+        "pitch": 1.6
+      }
+    ]
+  },
+  "meteorite_scanner_arrived": {
+    "subtitle": "subtitles.mymod.meteorite_scanner_arrived",
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/activate",
+        "volume": 0.6,
+        "pitch": 1.6
+      }
+    ]
+  },
+  "dowsing_rod_twitch": {
+    "subtitle": "subtitles.mymod.dowsing_rod_twitch",
+    "sounds": [
+      {
+        "name": "minecraft:block/bamboo_wood/step1",
+        "volume": 0.7,
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:block/cherry_wood/step1",
+        "volume": 0.7,
+        "pitch": 1.3
+      }
+    ]
+  },
+  "ufo_radar_sweep": {
+    "subtitle": "subtitles.mymod.ufo_radar_sweep",
+    "sounds": [
+      {
+        "name": "minecraft:note/hat",
+        "volume": 0.5,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "ufo_radar_contact": {
+    "subtitle": "subtitles.mymod.ufo_radar_contact",
+    "sounds": [
+      {
+        "name": "minecraft:note/bell",
+        "volume": 0.6,
+        "pitch": 1.4
+      }
+    ]
+  },
+  "ufo_radar_alarm": {
+    "subtitle": "subtitles.mymod.ufo_radar_alarm",
+    "sounds": [
+      {
+        "name": "minecraft:note/bit",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:note/bit",
+        "pitch": 1.2
+      }
+    ]
+  },
+  "lunar_almanac_open": {
+    "subtitle": "subtitles.mymod.lunar_almanac_open",
+    "sounds": [
+      {
+        "name": "minecraft:item/book/open_flip1"
+      },
+      {
+        "name": "minecraft:item/book/open_flip2"
+      },
+      {
+        "name": "minecraft:item/book/open_flip3"
+      }
+    ]
+  },
+  "lunar_almanac_omen": {
+    "subtitle": "subtitles.mymod.lunar_almanac_omen",
+    "sounds": [
+      {
+        "name": "minecraft:ambient/cave/cave13",
+        "volume": 0.5,
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:ambient/cave/cave16",
+        "volume": 0.5,
+        "pitch": 0.8
+      }
+    ]
+  },
+  "ledger_open": {
+    "subtitle": "subtitles.mymod.ledger_open",
+    "sounds": [
+      {
+        "name": "minecraft:item/book/open_flip1",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:block/vault/insert",
+        "volume": 0.5,
+        "pitch": 1.4
+      }
+    ]
   }
 }

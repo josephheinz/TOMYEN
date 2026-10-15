@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.jheinz.mymod.alien.Aliens;
 import com.jheinz.mymod.bank.Banking;
 import com.jheinz.mymod.cathode.CathodeWalkers;
+import com.jheinz.mymod.detector.Detectors;
 import com.jheinz.mymod.fae.Fae;
 import com.jheinz.mymod.fishing.Fishing;
 import com.jheinz.mymod.dragonscale.Dragonscales;
@@ -111,6 +112,7 @@ public class MyMod implements ModInitializer {
 		Fishes.initialize();
 		FishEntities.initialize();
 		Fishing.initialize();
+		Detectors.initialize();
 		linkBlockItems();
 	}
 

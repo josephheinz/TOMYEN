@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "mymod:item/fae_dowsing_rod_right"
+  }
+}
