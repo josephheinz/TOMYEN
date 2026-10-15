@@ -38,6 +38,7 @@ import com.jheinz.mymod.client.Keyframes;
 import com.jheinz.mymod.client.Keyframes.Ease;
 import com.jheinz.mymod.client.Keyframes.Path;
 import com.jheinz.mymod.client.Keyframes.Track;
+import com.jheinz.mymod.client.gunsmith.GunsmithAnimation;
 import com.jheinz.mymod.client.shoddy.ShoddyGunClient;
 import com.jheinz.mymod.ModSounds;
 import com.jheinz.mymod.shoddy.ShoddyGunItem;
@@ -226,6 +227,10 @@ public final class ShotgunAnimation {
 
 	public static void inspect(LocalPlayer player) {
 		ItemStack held = player.getMainHandItem();
+		if (GunsmithAnimation.owns(held.getItem())) {
+			GunsmithAnimation.inspect(player);
+			return;
+		}
 		if (GunScope.zoom(player) <= 0.0f && !busy(held)) {
 			inspectStart = Util.getMillis();
 		}
@@ -235,6 +240,8 @@ public final class ShotgunAnimation {
 	public static boolean busy(ItemStack stack) {
 		if (!(stack.getItem() instanceof ShotgunItem)) {
 			return false;
+		} else if (GunsmithAnimation.owns(stack.getItem())) {
+			return GunsmithAnimation.busy(stack);
 		}
 		ShotgunAction action = stack.get(Shotguns.SHOTGUN_ACTION);
 		return action != null && (action.kind() == ShotgunAction.Kind.LOAD || now() < action.end())
@@ -246,7 +253,8 @@ public final class ShotgunAnimation {
 
 	private static void tickCues(LocalPlayer player, ItemStack held) {
 		ShotgunAction action = held.get(Shotguns.SHOTGUN_ACTION);
-		if (!(held.getItem() instanceof ShotgunItem) || action == null || action.kind() == ShotgunAction.Kind.CYCLE) {
+		if (!(held.getItem() instanceof ShotgunItem) || action == null || action.kind() == ShotgunAction.Kind.CYCLE
+				|| GunsmithAnimation.owns(held.getItem())) {
 			return;
 		}
 		if (action.start() != cueStart) {
@@ -304,6 +312,9 @@ public final class ShotgunAnimation {
 
 	/** The mymod:gun_animation frame: the pump's position, 0 (home) to 6 (all the way back). */
 	public static float frame(ItemStack stack, boolean holder) {
+		if (GunsmithAnimation.owns(stack.getItem())) {
+			return GunsmithAnimation.frame(stack, holder);
+		}
 		return Math.round(pumpTravel(stack, holder) * 6.0f);
 	}
 
@@ -410,6 +421,9 @@ public final class ShotgunAnimation {
 	public static void applyGunPose(PoseStack poseStack, ItemStack stack, GunHands.Anchors anchors, boolean mirrored) {
 		if (!(stack.getItem() instanceof ShotgunItem) || anchors == null) {
 			return;
+		} else if (GunsmithAnimation.owns(stack.getItem())) {
+			GunsmithAnimation.applyGunPose(poseStack, stack, anchors, mirrored);
+			return;
 		}
 		float i = since(inspectStart, INSPECT_MILLIS);
 		if (i < 1.0f) {
@@ -452,6 +466,8 @@ public final class ShotgunAnimation {
 	public static GunAnimation.HandOverride hand(ItemStack stack) {
 		if (!(stack.getItem() instanceof ShotgunItem)) {
 			return null;
+		} else if (GunsmithAnimation.owns(stack.getItem())) {
+			return GunsmithAnimation.hand(stack);
 		}
 		Item item = stack.getItem();
 		ShotgunAction action = stack.get(Shotguns.SHOTGUN_ACTION);
@@ -492,6 +508,9 @@ public final class ShotgunAnimation {
 	public static void submitShells(PoseStack poseStack, SubmitNodeCollector collector, int light, ItemStack stack, boolean mirrored,
 			LocalPlayer player) {
 		if (!(stack.getItem() instanceof ShotgunItem)) {
+			return;
+		} else if (GunsmithAnimation.owns(stack.getItem())) {
+			GunsmithAnimation.submitShells(poseStack, collector, light, stack, mirrored, player);
 			return;
 		}
 		ShotgunAction action = stack.get(Shotguns.SHOTGUN_ACTION);

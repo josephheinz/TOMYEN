@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import com.jheinz.mymod.FireMode;
 import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.gunsmith.GunsmithAttachments;
 
 /** Reading and changing the attachments fitted to a gun stack. */
 public final class Attachments {
@@ -58,6 +59,7 @@ public final class Attachments {
 	public static ItemStack attach(ItemStack gun, AttachmentItem attachment) {
 		AttachmentItem previous = get(gun, attachment.slot());
 		gun.set(attachment.slot().component(), attachment.builtInRegistryHolder());
+		GunsmithAttachments.refit(gun);
 		// A switch is fitted to fire full-auto, so start there.
 		if (attachment.slot() == AttachmentSlot.FIRE_CONTROL) {
 			gun.set(ModComponents.FIRE_MODE, FireMode.AUTO);
@@ -71,6 +73,7 @@ public final class Attachments {
 			AttachmentItem attachment = get(gun, slot);
 			if (attachment != null) {
 				gun.remove(slot.component());
+				GunsmithAttachments.refit(gun);
 				return new ItemStack(attachment);
 			}
 		}

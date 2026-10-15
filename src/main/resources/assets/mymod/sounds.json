@@ -3199,5 +3199,135 @@
         "pitch": 0.8
       }
     ]
+  },
+  "snub_revolver_shot": {
+    "subtitle": "subtitles.mymod.snub_revolver_shot",
+    "sounds": [
+      "mymod:snub_revolver_shot",
+      {
+        "name": "mymod:snub_revolver_shot_2",
+        "pitch": 0.97
+      }
+    ]
+  },
+  "lever_action_shot": {
+    "subtitle": "subtitles.mymod.lever_action_shot",
+    "sounds": [
+      "mymod:lever_action_shot",
+      {
+        "name": "mymod:lever_action_shot_2",
+        "pitch": 0.97
+      }
+    ]
+  },
+  "sawed_off_shot": {
+    "subtitle": "subtitles.mymod.sawed_off_shot",
+    "sounds": [
+      "mymod:sawed_off_shot",
+      {
+        "name": "mymod:sawed_off_shot_2",
+        "pitch": 0.97
+      }
+    ]
+  },
+  "sawed_off_double_shot": {
+    "subtitle": "subtitles.mymod.sawed_off_double_shot",
+    "sounds": [
+      "mymod:sawed_off_double_shot"
+    ]
+  },
+  "flare_gun_shot": {
+    "subtitle": "subtitles.mymod.flare_gun_shot",
+    "sounds": [
+      "mymod:flare_gun_shot"
+    ]
+  },
+  "nail_gun_shot": {
+    "subtitle": "subtitles.mymod.nail_gun_shot",
+    "sounds": [
+      "mymod:nail_gun_shot",
+      {
+        "name": "mymod:nail_gun_shot_2",
+        "pitch": 1.03
+      }
+    ]
+  },
+  "harpoon_gun_shot": {
+    "subtitle": "subtitles.mymod.harpoon_gun_shot",
+    "sounds": [
+      "mymod:harpoon_gun_shot"
+    ]
+  },
+  "break_open": {
+    "subtitle": "subtitles.mymod.break_open",
+    "sounds": [
+      "mymod:break_open"
+    ]
+  },
+  "break_close": {
+    "subtitle": "subtitles.mymod.break_close",
+    "sounds": [
+      "mymod:break_close"
+    ]
+  },
+  "lever_down": {
+    "subtitle": "subtitles.mymod.lever_down",
+    "sounds": [
+      "mymod:lever_down"
+    ]
+  },
+  "lever_up": {
+    "subtitle": "subtitles.mymod.lever_up",
+    "sounds": [
+      "mymod:lever_up"
+    ]
+  },
+  "lever_load": {
+    "subtitle": "subtitles.mymod.lever_load",
+    "sounds": [
+      "mymod:lever_load"
+    ]
+  },
+  "bipod_deploy": {
+    "subtitle": "subtitles.mymod.bipod_deploy",
+    "sounds": [
+      "mymod:bipod_deploy"
+    ]
+  },
+  "bipod_fold": {
+    "subtitle": "subtitles.mymod.bipod_fold",
+    "sounds": [
+      "mymod:bipod_fold"
+    ]
+  },
+  "slingshot_shot": {
+    "subtitle": "subtitles.mymod.slingshot_shot",
+    "sounds": [
+      {
+        "name": "minecraft:random/bow",
+        "pitch": 1.55,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:random/bow",
+        "pitch": 1.7,
+        "volume": 0.65
+      }
+    ]
+  },
+  "slingshot_draw": {
+    "subtitle": "subtitles.mymod.slingshot_draw",
+    "sounds": [
+      {
+        "name": "minecraft:item/crossbow/loading_middle1",
+        "pitch": 1.5,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle2",
+        "pitch": 1.6,
+        "volume": 0.5
+      }
+    ]
   }
 }

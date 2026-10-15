@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import com.jheinz.mymod.client.Keyframes.Ease;
 import com.jheinz.mymod.client.Keyframes.Path;
 import com.jheinz.mymod.client.Keyframes.Track;
+import com.jheinz.mymod.gunsmith.GunsmithGunItem;
 import com.jheinz.mymod.lmg.MachineGunItem;
 import com.jheinz.mymod.shoddy.ShoddyGunItem;
 import com.jheinz.mymod.shotgun.ShotgunAction;
@@ -148,7 +149,8 @@ public final class GunArmPoses {
 				return null;
 			}
 			float p = action.progress(minecraft.level.getGameTime() + minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false));
-			boolean shoddy = stack.getItem() instanceof ShoddyGunItem;
+			// A homemade or Gunsmith gun's part is reached for and worked by hand, not ridden like a pump.
+			boolean shoddy = stack.getItem() instanceof ShoddyGunItem || stack.getItem() instanceof GunsmithGunItem;
 			return switch (action.kind()) {
 				case LOAD -> new Target(SHELL.sample(p).point(), 0.2f);
 				case PUMP -> p < 1.0f ? new Target((shoddy ? WORK : PUMP).sample(p).point(), SHORT_DIP.sample(p)) : null;

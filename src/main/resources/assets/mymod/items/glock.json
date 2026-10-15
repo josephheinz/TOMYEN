@@ -1292,6 +1292,40 @@
             "type": "minecraft:empty"
           }
         }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:muzzle_attachment",
+        "cases": [
+          {
+            "when": "mymod:compensator",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/glock_compensator"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "mymod:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "mymod:flashlight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mymod:item/attachment/glock_flashlight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
       }
     ]
   }

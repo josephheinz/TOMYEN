@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.jheinz.mymod.GunItem;
 import com.jheinz.mymod.MagazineItem;
 import com.jheinz.mymod.ModNetworking;
+import com.jheinz.mymod.client.gunsmith.GunsmithClient;
 import com.jheinz.mymod.holy.CrucifixItem;
 
 /**
@@ -42,7 +43,10 @@ public abstract class MinecraftAttackMixin {
 			return;
 		}
 		Item held = player.getMainHandItem().getItem();
-		if (held instanceof GunItem) {
+		if (held instanceof GunItem && GunsmithClient.bayonetStab(player)) {
+			// A fitted bayonet with a mob under the crosshair: a thrust, as vanilla attacks.
+			return;
+		} else if (held instanceof GunItem) {
 			ClientPlayNetworking.send(ModNetworking.Reload.INSTANCE);
 			mymod$loadCooldown = LOAD_INTERVAL_TICKS;
 			cir.setReturnValue(false);

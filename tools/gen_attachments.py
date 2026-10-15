@@ -47,6 +47,41 @@ IRON_SIGHTS = {
 # The AK's rear sight block also carries the gas tube, so it stays, cut down to just under the dust cover's top.
 IRON_SIGHT_TRIMS = {"akm": {"rear_sight_base": 10.18}}
 
+# The Gunsmith set (tools/gen_gunsmith.py): its own guns take only Gunsmith attachments (own=True). GUNSMITH lists which of
+# those each gun takes, and where they mount (pixels, as above), mirroring the fit lists in gunsmith/Gunsmith.java:
+#   scope2 / scope4: on the optic mount; flashlight: on the laser's mount; bipod: (front z, underside y);
+#   sling: front and rear swivels ((z, y), (z, y)); bayonet: (ring z, ring centre y, ring radius, blade top y, handle length);
+#   choke: (muzzle z, bore y, barrel radius); compensator: on the muzzle mount.
+GUNS.update({
+    "lever_action": dict(own=True, muzzle=None, laser=(-11.2, 8.5), optic=(0.6, 11.0)),
+    "harpoon_gun": dict(own=True, muzzle=None, laser=(-6.9, 7.07), optic=None),
+    "nail_gun": dict(own=True, muzzle=None, laser=(-9.0, 8.2), optic=None),
+})
+IRON_SIGHTS["lever_action"] = ["rear_sight"]
+GUNSMITH = {
+    "m4": dict(scope2=True, scope4=True, flashlight=True, bipod=(-6.5, 6.1), sling=((-2.0, 6.1), (21.5, 5.0)),
+               bayonet=(-11.4, 8.0, 0.55, 7.3, 2.6), compensator=True),
+    "akm": dict(scope2=True, scope4=True, flashlight=True, bipod=(-1.0, 6.6), sling=((-4.0, 7.8), (23.0, 5.6)),
+                bayonet=(-11.5, 8.2, 0.55, 7.5, 1.9), compensator=True),
+    "galil": dict(scope2=True, scope4=True, flashlight=True, bipod=(-2.0, 6.6), sling=((-4.0, 5.9), (24.0, 4.4)),
+                  bayonet=(-12.9, 8.2, 0.55, 7.5, 1.9), compensator=True),
+    "awp": dict(flashlight=True, bipod=(-6.5, 6.5), sling=((-3.0, 6.5), (25.0, 3.4)), compensator=True),
+    "m249": dict(scope2=True, flashlight=True, sling=((-1.0, 6.1), (25.0, 4.5)), compensator=True),
+    "mp5": dict(flashlight=True, sling=((-5.0, 6.5), (21.0, 3.4)), compensator=True),
+    "glock": dict(flashlight=True, compensator=True),
+    "m1911": dict(flashlight=True, compensator=True),
+    "mac10": dict(flashlight=True, compensator=True),
+    "revolver_357": dict(flashlight=True),
+    "remington_870": dict(scope2=True, flashlight=True, sling=((-13.8, 7.08), (26.4, 3.35)), bayonet=(-14.15, 7.7, 0.78, 7.6, 0.0),
+                          choke=(-15.9, 9.0, 0.55)),
+    "spas12": dict(scope2=True, flashlight=True, sling=((-14.6, 6.3), (26.0, 3.22)), bayonet=(-15.1, 7.6, 0.86, 7.5, 0.0),
+                   choke=(-15.9, 9.2, 0.62)),
+    "lever_action": dict(scope2=True, scope4=True, flashlight=True, bipod=(-5.6, 7.95), sling=((-4.0, 7.95), (18.0, 3.7)),
+                         bayonet=(-13.95, 10.0, 0.72, 9.2, 0.0)),
+    "harpoon_gun": dict(flashlight=True, sling=((-8.0, 7.15), (9.2, 6.9))),
+    "nail_gun": dict(flashlight=True),
+}
+
 # Pistols whose optic (and switch) sit on the slide: how far back the slide is in each racking frame
 # (the mymod:gun_animation frames 1-6), so those parts ride along with it.
 SLIDE_TRAVEL = {"glock": [0.417, 0.833, 1.25, 1.667, 2.083, 2.5], "m1911": [0.417, 0.833, 1.25, 1.667, 2.083, 2.5]}
@@ -334,9 +369,10 @@ def write_model(gun, name, elements, display):
 
 
 def select(component, cases):
-    """cases: (attachment item id, model id) pairs."""
+    """cases: (attachment item id, model id or model node) pairs."""
     return OrderedDict([("type", "minecraft:select"), ("property", "minecraft:component"), ("component", component),
-                        ("cases", [OrderedDict([("when", item), ("model", OrderedDict([("type", "minecraft:model"), ("model", model)]))])
+                        ("cases", [OrderedDict([("when", item), ("model", model if isinstance(model, dict)
+                                                                 else OrderedDict([("type", "minecraft:model"), ("model", model)]))])
                                    for item, model in cases]),
                         ("fallback", OrderedDict(type="minecraft:empty"))])
 
@@ -371,6 +407,203 @@ def write_without_iron_sights(gun, name):
     with open(os.path.join(MODELS, "no_iron_sights", f"{name}.json"), "w") as f:
         json.dump(model, f, indent=2)
         f.write("\n")
+
+
+
+# ------------------------------------------------------------------------------------------------ Gunsmith attachments
+
+# Their swatches, in rows 4-6 of the atlas: flat, deliberate tones, no jitter.
+SCOPE_BODY, SCOPE_RING, RETICLE_DARK, FL_BODY = cell(0, 4), cell(1, 4), cell(2, 4), cell(3, 4)
+FL_LENS, FL_HEAD, BIPOD_LEG, SLING_STRAP = cell(4, 4), cell(5, 4), cell(6, 4), cell(7, 4)
+SLING_HW, BLADE, BLADE_GRIP, CHOKE = cell(0, 5), cell(1, 5), cell(2, 5), cell(3, 5)
+COMP_BODY, COMP_PORT, SCOPE_TOP, BLADE_SPINE = cell(4, 5), cell(5, 5), cell(6, 5), cell(7, 5)
+# Where each scope's eyepiece window is relative to its mount (GunAim mirrors these): up, and back from the mount's front.
+SCOPE2_WINDOW = (1.25, 7.3)
+SCOPE4_WINDOW = (1.35, 9.4)
+
+
+def oct_tube(zf, zb, cy, r, swatch, cap=None, caps=(True, True)):
+    """A solid octagonal bar along z centred on (8, cy): four bands, ends staggered a hair so the caps never fight."""
+    a = 2 * r * math.tan(math.pi / 8)
+    out = []
+    for k, (angle, w, h) in enumerate([(0, r, a / 2), (0, a / 2, r), (45, r, a / 2), (-45, r, a / 2)]):
+        d = 0.01 * k
+        faces = {}
+        if cap:
+            faces["north"] = faces["south"] = cap
+        only = tuple(f for f in ("north", "east", "south", "west", "up", "down")
+                     if not (f == "north" and not caps[0]) and not (f == "south" and not caps[1]))
+        out.append(box(8 - w, cy - h, zf + d, 8 + w, cy + h, zb - d, swatch, only=only,
+                       rot=("z", angle, (8, cy, zf)) if angle else None, **faces))
+    return out
+
+
+def hunting_scope(zf, ytop, power):
+    """A hunting scope in two steel rings on a clamp base: a matte tube, a flared objective bell (bigger on the 4x), windage
+    and elevation turrets, a ribbed ocular bell with a rubber eyecup, blue-tinted glass front and back, and a black duplex
+    reticle on the rear glass (the window GunAim lines up with the eye)."""
+    long4 = power == 4
+    cy = ytop + (SCOPE4_WINDOW if long4 else SCOPE2_WINDOW)[0]
+    rear = zf + (SCOPE4_WINDOW if long4 else SCOPE2_WINDOW)[1]
+    tube_f, tube_b = zf - (1.0 if long4 else 0.4), rear - 1.6
+    bell_r = 0.95 if long4 else 0.75
+    out = []
+    out += oct_tube(tube_f, tube_b, cy, 0.5, SCOPE_BODY, caps=(False, False))
+    out += oct_tube(tube_f - (1.7 if long4 else 1.1), tube_f, cy, bell_r, SCOPE_BODY, cap=SCOPE_RING, caps=(True, False))
+    out += oct_tube(tube_f - 0.5, tube_f + 0.02, cy, bell_r - 0.12 if long4 else 0.62, SCOPE_BODY, caps=(False, False))
+    out += oct_tube(tube_b, rear - 0.3, cy, 0.68, SCOPE_BODY, cap=SCOPE_RING, caps=(True, False))
+    out += oct_tube(rear - 0.3, rear, cy, 0.72, RUBBER, cap=RUBBER, caps=(False, True))
+    # Turrets: elevation on top, windage on the right, a ring of grip on each.
+    tz = (tube_f + tube_b) / 2 - 0.3
+    out.append(box(7.68, cy + 0.45, tz, 8.32, cy + 1.0, tz + 0.64, SCOPE_BODY, up=SCOPE_TOP))
+    out.append(box(7.62, cy + 0.85, tz - 0.04, 8.38, cy + 0.95, tz + 0.68, SCOPE_RING, up=SCOPE_TOP))
+    out.append(box(8.45, cy - 0.32, tz, 9.0, cy + 0.32, tz + 0.64, SCOPE_BODY, east=SCOPE_TOP))
+    # Rings and their clamp base on the rail.
+    for rz in (tube_f + 0.5, tube_b - 1.0):
+        out.append(box(7.35, ytop - 0.05, rz - 0.35, 8.65, ytop + 0.3, rz + 0.35, MOUNT))
+        out.append(box(7.75, ytop + 0.3, rz - 0.25, 8.25, cy - 0.45, rz + 0.25, SCOPE_RING))
+        out += oct_tube(rz - 0.3, rz + 0.3, cy, 0.62, SCOPE_RING, caps=(True, True))
+        out.append(box(8.62, ytop + 0.02, rz - 0.15, 8.8, ytop + 0.24, rz + 0.15, BOLT))
+    # Glass, front and back, and the duplex reticle just in front of the rear glass.
+    gr = 0.58 if not long4 else 0.6
+    out.append(glass(8 - gr, cy - gr, 8 + gr, cy + gr, rear - 0.12, GLASS_BLUE))
+    fr = bell_r - 0.1
+    out.append(glass(8 - fr, cy - fr, 8 + fr, cy + fr, tube_f - (1.6 if long4 else 1.0), GLASS_BLUE))
+    t = 0.035
+    # Each line on its own plane, a hair apart, so where they cross they never fight.
+    for k, (x0, x1, y0, y1) in enumerate(((8 - gr, 8 + gr, cy - t, cy + t), (8 - t, 8 + t, cy - gr, cy + gr),
+                                          (8 - gr, 8 - 0.25, cy - 2 * t, cy + 2 * t), (8 + 0.25, 8 + gr, cy - 2 * t, cy + 2 * t),
+                                          (8 - 2 * t, 8 + 2 * t, cy - gr, cy - 0.25), (8 - 2 * t, 8 + 2 * t, cy + 0.25, cy + gr))):
+        z = rear - 0.16 - 0.004 * k
+        out.append(box(x0, y0, z, x1, y1, z + 0.01, RETICLE_DARK, only=("south",)))
+    return out
+
+
+def flashlight(zf, ytop):
+    """A weapon light on a rail clamp under the barrel: an anodised body, a knurled bell head with a glowing lens, a tail
+    switch, and the clamp with its thumb screw."""
+    cy = ytop - 0.75
+    out = []
+    out.append(box(7.6, ytop - 0.3, zf + 0.6, 8.4, ytop + 0.02, zf + 2.4, MOUNT))
+    out.append(box(8.4, ytop - 0.25, zf + 1.2, 8.62, ytop - 0.05, zf + 1.8, BOLT))
+    for k, (angle, w, h) in enumerate([(0, 0.5, 0.21), (0, 0.21, 0.5), (45, 0.5, 0.21), (-45, 0.5, 0.21)]):
+        out.append(box(8 - w, cy - h, zf + 0.9 + 0.01 * k, 8 + w, cy + h, zf + 3.3 - 0.01 * k, FL_BODY,
+                       rot=("z", angle, (8, cy, zf)) if angle else None, only=("east", "south", "west", "up", "down")))
+    for k, (angle, w, h) in enumerate([(0, 0.66, 0.27), (0, 0.27, 0.66), (45, 0.66, 0.27), (-45, 0.66, 0.27)]):
+        out.append(box(8 - w, cy - h, zf + 0.01 * k, 8 + w, cy + h, zf + 0.92 - 0.01 * k, FL_HEAD,
+                       rot=("z", angle, (8, cy, zf)) if angle else None, only=("east", "south", "west", "up", "down")))
+    out.append(box(7.42, cy - 0.58, zf - 0.03, 8.58, cy + 0.58, zf - 0.02, FL_LENS, only=("north",), emit=True))
+    out.append(box(7.7, cy - 0.3, zf + 3.28, 8.3, cy + 0.3, zf + 3.55, RUBBER))
+    return out
+
+
+def bipod(zf, ytop, deployed):
+    """A folding bipod on a rail clamp: two steel legs with telescoping lower halves and rubber feet. Folded they lie forward
+    along the barrel; deployed (braced) they swing down and splay."""
+    out = [box(7.32, ytop - 0.45, zf - 0.2, 8.68, ytop + 0.02, zf + 1.4, MOUNT), box(8.68, ytop - 0.35, zf + 0.4, 8.88, ytop - 0.1, zf + 0.8, BOLT)]
+    pivot = (8, ytop - 0.3, zf + 0.2)
+    for side in (-1, 1):
+        x = 8 + side * 0.48
+        leg = [box(x - 0.17, ytop - 4.2, zf + 0.05, x + 0.17, ytop - 0.3, zf + 0.39, BIPOD_LEG),
+               box(x - 0.12, ytop - 5.6, zf + 0.1, x + 0.12, ytop - 4.15, zf + 0.34, BIPOD_LEG),
+               box(x - 0.22, ytop - 5.9, zf - 0.02, x + 0.22, ytop - 5.55, zf + 0.46, RUBBER)]
+        if deployed:
+            m = gunkit.mul(gunkit.rz(side * 14), gunkit.rx(10))
+        else:
+            m = gunkit.rx(-86 + side * 2)
+        out += gunkit.rotate(leg, m, (x, pivot[1], pivot[2]))
+    return out
+
+
+def sling(front, rear):
+    """A webbing sling hanging between a swivel under the fore-end and one under the stock: three straps sagging between them,
+    and the two swivel loops."""
+    (fz, fy), (bz, by) = front, rear
+    sag = 2.2 + 0.04 * (bz - fz)
+    low = (fz + (bz - fz) * 0.42, min(fy, by) - sag)
+    pts = [(fz, fy - 0.55), (fz + (low[0] - fz) * 0.55, (fy - 0.55 + low[1]) / 2 - 0.5), low,
+           ((low[0] + bz) / 2, (low[1] + by - 0.45) / 2 - 0.4), (bz, by - 0.45)]
+    out = []
+    for k, ((z0, y0), (z1, y1)) in enumerate(zip(pts, pts[1:])):
+        length = math.hypot(z1 - z0, y1 - y0)
+        angle = math.degrees(math.atan2(y1 - y0, z1 - z0))
+        d = 0.01 * (k % 2)
+        strap = box(7.68 + d, y0 - 0.06, z0, 8.32 - d, y0 + 0.06, z0 + length + 0.05, SLING_STRAP)
+        out += gunkit.rotate([strap], gunkit.rx(-angle), (8, y0, z0))
+    for z, y in ((fz, fy), (bz, by)):
+        out.append(box(7.62, y - 0.6, z - 0.32, 8.38, y - 0.45, z + 0.32, SLING_HW))
+        out.append(box(7.62, y - 0.45, z - 0.32, 8.38, y + 0.02, z - 0.17, SLING_HW))
+        out.append(box(7.62, y - 0.45, z + 0.17, 8.38, y + 0.02, z + 0.32, SLING_HW))
+    return out
+
+
+def bayonet(ring_z, ring_y, ring_r, blade_top, handle):
+    """A bayonet: a socket ring round the barrel (or the magazine tube) at ring_z, a neck down to the blade, a polished blade
+    running forward under the muzzle with a darker spine, and on a knife bayonet a ribbed handle reaching back to the lug."""
+    out = oct_tube(ring_z, ring_z + 0.7, ring_y, ring_r, SLING_HW, caps=(True, True))
+    out.append(box(7.75, blade_top - 0.1, ring_z + 0.1, 8.25, ring_y - ring_r + 0.05, ring_z + 0.6, SLING_HW))
+    out.append(box(7.62, blade_top - 0.3, ring_z - 0.25, 8.38, blade_top + 0.12, ring_z + 0.665, BLADE_GRIP))
+    out.append(box(7.88, blade_top - 0.95, ring_z - 8.6, 8.12, blade_top, ring_z - 0.25, BLADE, up=BLADE_SPINE))
+    tip = box(7.89, blade_top - 0.95, ring_z - 9.6, 8.11, blade_top - 0.05, ring_z - 8.6, BLADE, up=BLADE_SPINE)
+    out += gunkit.rotate([tip], gunkit.rx(-22), (8, blade_top - 0.95, ring_z - 8.6))
+    if handle > 0:
+        out.append(box(7.67, blade_top - 0.85, ring_z + 0.75, 8.33, blade_top + 0.05, ring_z + 0.75 + handle, BLADE_GRIP))
+        out.append(box(7.65, blade_top - 0.9, ring_z + 0.75 + handle, 8.35, blade_top + 0.1, ring_z + 1.0 + handle, SLING_HW))
+    return out
+
+
+def choke(z, y, r):
+    """An extended choke tube threaded into the muzzle: a knurled band and a plain front with its narrowed bore."""
+    out = oct_tube(z - 1.6, z + 0.02, y, r + 0.08, CHOKE, cap=SUP_CAP, caps=(True, False))
+    out += oct_tube(z - 0.7, z - 0.3, y, r + 0.16, SLING_HW, caps=(True, True))
+    return out
+
+
+def compensator(z, y):
+    """A compensator: a short black body with three ports cut in its top and a narrowed front."""
+    out = oct_tube(z - 2.4, z, y, 0.62, COMP_BODY, cap=SUP_CAP, caps=(True, False))
+    for k in range(3):
+        zz = z - 2.0 + 0.6 * k
+        out.append(box(7.75, y + 0.62, zz, 8.25, y + 0.64, zz + 0.32, COMP_PORT, only=("up",)))
+    return out
+
+
+def gunsmith_layers(gun, spec, fits, case, on_slide):
+    """The Gunsmith attachments' layers for one gun: each slot its own select (fitted items in a slot never overlap, so a
+    second select on the same component only ever adds the one that's fitted)."""
+    layers = []
+    muzzle = []
+    if fits.get("compensator") and spec.get("muzzle"):
+        muzzle.append(case("compensator", compensator(*spec["muzzle"])))
+    if fits.get("bayonet"):
+        muzzle.append(case("bayonet", bayonet(*fits["bayonet"])))
+    if fits.get("choke"):
+        muzzle.append(case("shotgun_choke", choke(*fits["choke"])))
+    if muzzle:
+        layers.append(select("mymod:muzzle_attachment", muzzle))
+    under = []
+    if fits.get("flashlight"):
+        under.append(case("flashlight", flashlight(*spec["laser"])))
+    if fits.get("bipod"):
+        folded = case("bipod", bipod(*fits["bipod"], False))
+        deployed = case("bipod_deployed", bipod(*fits["bipod"], True))
+        # Swung down while the holder is braced on it (mymod:bipod, the M249's, eases 0-3 as they crouch and stand).
+        under.append((folded[0], OrderedDict([("type", "minecraft:range_dispatch"), ("property", "mymod:bipod"),
+                                              ("entries", [OrderedDict([("threshold", 1.5), ("model", OrderedDict(
+                                                  [("type", "minecraft:model"), ("model", deployed[1])]))])]),
+                                              ("fallback", OrderedDict([("type", "minecraft:model"), ("model", folded[1])]))])))
+    if under:
+        layers.append(select("mymod:underbarrel_attachment", under))
+    if fits.get("sling"):
+        layers.append(select("mymod:grip_attachment", [case("rifle_sling", sling(*fits["sling"]))]))
+    optics = []
+    if fits.get("scope2") and spec.get("optic"):
+        optics.append(("hunting_scope_2x", lambda: hunting_scope(*spec["optic"], 2)))
+    if fits.get("scope4") and spec.get("optic"):
+        optics.append(("hunting_scope_4x", lambda: hunting_scope(*spec["optic"], 4)))
+    if optics:
+        layers.append(on_slide("mymod:optic_attachment", optics))
+    return layers
 
 
 for gun, spec in GUNS.items():
@@ -409,24 +642,27 @@ for gun, spec in GUNS.items():
         entries.append(OrderedDict([("threshold", len(travel) + 0.5), ("model", resting)]))
         return OrderedDict([("type", "minecraft:range_dispatch"), ("property", "mymod:gun_animation"), ("entries", entries),
                             ("fallback", resting)])
+    own = spec.get("own", False)
     if spec.get("muzzle"):
         z, y = spec["muzzle"]
         layers.append(select("mymod:muzzle_attachment", [
             case("suppressor", suppressor(z, y, spec["sup"])), case("oil_can_suppressor", oil_can(z, y)),
             case("muzzle_brake", muzzle_brake(z, y)), case("flash_hider", flash_hider(z, y))]))
-    layers.append(select("mymod:underbarrel_attachment", [
-        case("laser_sight", laser(*spec["laser"])), case("green_laser_sight", green_laser(*spec["laser"]))]))
+    if not own:
+        layers.append(select("mymod:underbarrel_attachment", [
+            case("laser_sight", laser(*spec["laser"])), case("green_laser_sight", green_laser(*spec["laser"]))]))
     if spec.get("grip"):
         gz, gy = spec["grip"]
         layers.append(select("mymod:grip_attachment", [
             case("vertical_grip", vertical_grip(gz, gy)), case("angled_grip", angled_grip(gz, gy)),
             case("stubby_grip", stubby_grip(gz, gy)), case("handstop", handstop(gz, gy))]))
-    if spec.get("optic"):
+    if spec.get("optic") and not own:
         o = spec["optic"]
         layers.append(on_slide("mymod:optic_attachment", [
             ("red_dot_sight", lambda: red_dot(*o)), ("holographic_sight", lambda: holographic(*o)), ("kobra_sight", lambda: kobra(*o))]))
     if spec.get("switch"):
         layers.append(on_slide("mymod:fire_control_attachment", [("glock_switch", glock_switch)]))
+    layers += gunsmith_layers(gun, spec, GUNSMITH.get(gun, {}), case, on_slide)
 
     path = os.path.join(ITEMS, f"{gun}.json")
     item = json.load(open(path), object_pairs_hook=OrderedDict)
@@ -500,6 +736,26 @@ fill(*EOTECH_BUTTON, lambda x, y: rgb(0x4A4D52 if y > 0 else 0x5C6066, jitter=2)
 fill(*GRIP_BODY, lambda x, y: rgb(0x1E1F21 if x % 2 else 0x26272A, jitter=2))
 fill(*GRIP_SIDE, lambda x, y: rgb(0x151517 if (x + y) % 2 else 0x232427))
 fill(*GRIP_CAP, lambda x, y: rgb(0x303236 if y == 0 else 0x2A2B2E, jitter=2))
+
+# The Gunsmith attachments' swatches: flat tones with a highlight row where a part has a top edge.
+def flat_fill(swatch, top, body, bottom=None):
+    fill(*swatch, lambda x, y: rgb(top if y == 0 else bottom if bottom is not None and y == 3 else body))
+flat_fill(SCOPE_BODY, 0x3C3F44, 0x222428, 0x1A1B1E)
+flat_fill(SCOPE_RING, 0x8A9098, 0x5E646C, 0x464B52)
+fill(*RETICLE_DARK, lambda x, y: rgb(0x0C0C0E))
+flat_fill(FL_BODY, 0x50534A, 0x373A32, 0x2C2E27)
+fill(*FL_LENS, lambda x, y: rgb(0xFFF8E4 if 1 <= x <= 2 and 1 <= y <= 2 else 0xF2E2B4))
+fill(*FL_HEAD, lambda x, y: rgb(0x2A2C30 if (x + y) % 2 else 0x41444A))
+flat_fill(BIPOD_LEG, 0xB0B6BE, 0x80868E, 0x60666E)
+fill(*SLING_STRAP, lambda x, y: rgb(0x4E5530 if y in (0, 3) else 0x6E7744 if x % 2 == 0 else 0x666F3E))
+flat_fill(SLING_HW, 0xA6ACB4, 0x7C828A, 0x5C6168)
+flat_fill(BLADE, 0xF4F7FA, 0xC6CCD2, 0x9AA0A8)
+fill(*BLADE_GRIP, lambda x, y: rgb(0x2E3034 if y % 2 == 0 else 0x1C1D20))
+fill(*CHOKE, lambda x, y: rgb(0x8E949C if (x + y) % 2 else 0x5E636A))
+flat_fill(COMP_BODY, 0x44474C, 0x26282B, 0x1C1D20)
+fill(*COMP_PORT, lambda x, y: rgb(0x050505))
+fill(*SCOPE_TOP, lambda x, y: rgb(0x4A4E54 if x in (0, 2) else 0x2A2C30))
+flat_fill(BLADE_SPINE, 0x7E848C, 0x6A7078, 0x5A6068)
 png(os.path.join(TEX, "item/attachment_parts.png"), W, W, px)
 
 
@@ -656,8 +912,67 @@ def dot_texture(name, core, mid, edge):
 dot_texture("laser_dot", 0xFF5A48, 0xFF2A1A, 0xD01810)
 dot_texture("green_laser_dot", 0x9AFFA0, 0x40FF50, 0x18C028)
 
+
+# The Gunsmith attachments' icons: drawn row by row, one palette.
+GS_PAL = {"k": 0x16171A, "K": 0x2A2C30, "g": 0x3C3F44, "s": 0x5E646C, "S": 0x8A9098, "w": 0xC6CCD2, "W": 0xF4F7FA,
+          "b": 0x9CC8E8, "B": 0x6D8FA8, "y": 0xFFF4D8, "Y": 0xF2E2B4, "o": 0x373A32, "O": 0x50534A, "l": 0x6E7744,
+          "L": 0x4E5530, "r": 0x2E3034, "c": 0x8E949C, "C": 0x5E636A, "m": 0x45484D, "M": 0x6A6E74}
+
+
+def gs_icon(name, rows):
+    pixels = []
+    for y, row in enumerate(rows):
+        assert len(row) == 16, (name, row)
+        for x, ch in enumerate(row):
+            if ch != ".":
+                pixels.append((x, y, GS_PAL[ch]))
+    icon(name, pixels)
+
+
+gs_icon("hunting_scope_2x", [
+    "................", "................", "................", "................", ".......gg.......",
+    "..ggKKKKKKKKgg..", ".bgSsssssssssgK.", ".bgsssssssssgkK.", ".BgKKKKKKKKKKgk.", "..gg.mm..mm.gg..",
+    "....MmmM.MmmM...", "....mmmmmmmmm...", "................", "................", "................",
+    "................"])
+gs_icon("hunting_scope_4x", [
+    "................", "................", "................", "......gg........", ".gg...gg........",
+    "bgSgKKKKKKKKKgg.", "bgsssssssssssgKk", "bgsssssssssssgKk", "BgKgKKKKKKKKKgkk", ".gg..mm...mm.gg.",
+    "....MmmM..MmmM..", "....mmmmmmmmmm..", "................", "................", "................",
+    "................"])
+gs_icon("flashlight", [
+    "................", "................", "................", "................", "................",
+    "......MMMMM.....", "..KKKKmmmmm.....", ".yOOOOOOOOOOk...", ".yOooooooooOk...", ".YoooooooooOk...",
+    "..KKKKooooooo...", "................", "................", "................", "................",
+    "................"])
+gs_icon("bipod", [
+    "................", "................", "....MMMMMM......", "....mmmmmm......", ".....sS.Ss......",
+    ".....sS.Ss......", "....sS...Ss.....", "....sS...Ss.....", "...sS.....Ss....", "...sS.....Ss....",
+    "..sS.......Ss...", "..sS.......Ss...", ".kkK.......Kkk..", ".kk.........kk..", "................",
+    "................"])
+gs_icon("rifle_sling", [
+    "................", ".SS.............", ".S.S............", ".SllL...........", "..lLlL..........",
+    "...lLlL.........", "....lLlL........", ".....lLlL.......", "......lLlL......", ".......lLlL.....",
+    "........lLlL....", ".........lLlL...", "..........lLlS..", "...........S.S..", "............SS..",
+    "................"])
+gs_icon("bayonet", [
+    "...............W", "..............Ww", ".............Wws", "............Wws.", "...........Wws..",
+    "..........Wws...", ".........Wws....", "........Wws.....", ".......Wws......", "......MSs.......",
+    ".....MMSM.......", "....rrM.........", "...rrr..........", "..rrr...........", ".rrr............",
+    "................"])
+gs_icon("shotgun_choke", [
+    "................", "................", "................", "................", "................",
+    "...KcCcCcCcSSSk.", "..kKCcCcCcCMMMk.", "..kKcCcCcCcMMMk.", "...KCcCcCcCSSSk.", "................",
+    "................", "................", "................", "................", "................",
+    "................"])
+gs_icon("compensator", [
+    "................", "................", "................", "................", "................",
+    "....gkgkgkgg....", "...gKKKKKKKKgk..", "...KKKKKKKKKKkk.", "...KKKKKKKKKKkk.", "...gKKKKKKKKgk..",
+    "................", "................", "................", "................", "................",
+    "................"])
+
 # Item models for the attachment items.
-for name in ["suppressor", "laser_sight", "red_dot_sight", "glock_switch", "oil_can_suppressor", "muzzle_brake", "flash_hider",
+for name in ["hunting_scope_2x", "hunting_scope_4x", "flashlight", "bipod", "rifle_sling", "bayonet", "shotgun_choke", "compensator",
+             "suppressor", "laser_sight", "red_dot_sight", "glock_switch", "oil_can_suppressor", "muzzle_brake", "flash_hider",
              "green_laser_sight", "holographic_sight", "kobra_sight", "vertical_grip", "angled_grip", "stubby_grip", "handstop"]:
     with open(os.path.join(MODELS, f"{name}.json"), "w") as f:
         json.dump(OrderedDict([("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0=f"mymod:item/{name}"))]), f, indent=2)

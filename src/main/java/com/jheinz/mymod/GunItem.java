@@ -40,6 +40,7 @@ import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.attachment.AttachmentItem;
 import com.jheinz.mymod.attachment.Attachments;
+import com.jheinz.mymod.gunsmith.GunsmithAttachments;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.neuralink.NeuralinkModule;
 import com.jheinz.mymod.silver.EvilBane;
@@ -100,9 +101,13 @@ public class GunItem extends Item {
 		GunStats fitted = stats(gun);
 		if (isOneHanded(holder)) {
 			boolean handgun = isHandgun();
-			fitted = fitted.withRecoil(fitted.recoilDegrees() * (handgun ? 1.2f : 1.6f))
-					.withSpread(fitted.spreadDegrees() * (handgun ? 1.25f : 1.8f), fitted.bloomPerShot() * (handgun ? 1.1f : 1.4f));
+			// A sling takes part of the strain.
+			float strain = GunsmithAttachments.oneHandedStrain(gun);
+			fitted = fitted.withRecoil(fitted.recoilDegrees() * (1.0f + ((handgun ? 1.2f : 1.6f) - 1.0f) * strain))
+					.withSpread(fitted.spreadDegrees() * (1.0f + ((handgun ? 1.25f : 1.8f) - 1.0f) * strain),
+							fitted.bloomPerShot() * (1.0f + ((handgun ? 1.1f : 1.4f) - 1.0f) * strain));
 		}
+		fitted = GunsmithAttachments.braced(gun, holder, fitted);
 		if (NeuralinkItem.isActive(holder, NeuralinkModule.SMART_LINK)) {
 			fitted = fitted.withSpread(fitted.spreadDegrees() * SMART_LINK_SPREAD, fitted.bloomPerShot() * SMART_LINK_BLOOM);
 		}

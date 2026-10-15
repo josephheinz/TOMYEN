@@ -29,7 +29,9 @@ import com.jheinz.mymod.ModSounds;
 import com.jheinz.mymod.client.Keyframes.Ease;
 import com.jheinz.mymod.client.Keyframes.Path;
 import com.jheinz.mymod.client.Keyframes.Track;
+import com.jheinz.mymod.client.gunsmith.GunsmithClient;
 import com.jheinz.mymod.client.launcher.LauncherAnimation;
+import com.jheinz.mymod.gunsmith.Gunsmith;
 import com.jheinz.mymod.client.lmg.M249Animation;
 import com.jheinz.mymod.client.shotgun.ShotgunAnimation;
 import com.jheinz.mymod.launcher.RocketLauncherItem;
@@ -205,6 +207,10 @@ public final class GunAnimation {
 			// Rounds go into the cylinder from the left; the gun rolls over to bring it to the support hand.
 			return new Motion(null, false, null, 0, null, 0, 0, 1.0f, mag(-0.041f, 0.276f, -0.411f), mag(0, 0, 0),
 					new Pose(34, 12, 16, 0.05f));
+		} else if (gun == Gunsmith.NAIL_GUN) {
+			// No action to work: the servo drives it. The strip goes in under the body like an SMG's (tools/gen_gunsmith.py).
+			return new Motion(null, false, null, 0, null, 0, 0, 1.1f, GunsmithClient.nailGunMagPoint(), GunsmithClient.nailGunMagStep(),
+					RIFLE_RELOAD);
 		} else if (gun == Napalm.FLAMETHROWER) {
 			// No action to work; the valve knob on top (tools/gen_napalm.py) is where the hand finishes a refuel.
 			return new Motion(null, false, null, 0, null, 0, 0, 0.9f, GunMotion.onGun(gun, new Vector3f(8.0f, 10.8f, 10.2f)),

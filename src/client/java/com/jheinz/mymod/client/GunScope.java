@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import com.jheinz.mymod.GunItem;
 import com.jheinz.mymod.GunStats;
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.client.gunsmith.GunsmithClient;
 import com.jheinz.mymod.launcher.RocketLauncherItem;
 
 /** Sneaking in first person with a scoped gun looks through the scope: zoomed view behind the scope and its reticle. */
@@ -45,7 +46,8 @@ public final class GunScope {
 
 	/** Whether the player is looking through the gun's own scope (as opposed to a red dot sight). */
 	public static boolean throughScope(Player player) {
-		return zoom(player) > 0.0f && player.getMainHandItem().getItem() instanceof GunItem gun && gun.stats().scoped();
+		return zoom(player) > 0.0f && player.getMainHandItem().getItem() instanceof GunItem gun
+				&& (gun.stats().scoped() || GunsmithClient.fullScope(player.getMainHandItem()));
 	}
 
 	/** Draws the scope, blacking out everything around a centred circle; its reticle stands in for the crosshair. */
