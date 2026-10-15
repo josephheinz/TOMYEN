@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "mymod:star_steel_ingot",
+    "C": "mymod:star_crystal_block",
+    "T": "mymod:tungsten_carbide",
+    "F": "mymod:foundry",
+    "M": "mymod:meteorite_bricks"
+  },
+  "pattern": [
+    "SCS",
+    "TFT",
+    "MMM"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:star_forge"
+  }
+}

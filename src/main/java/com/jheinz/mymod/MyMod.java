@@ -48,6 +48,7 @@ import com.jheinz.mymod.uranium.Uranium;
 import com.jheinz.mymod.voidsteel.Voidsteel;
 import com.jheinz.mymod.werewolf.Werewolves;
 import com.jheinz.mymod.station.ModMenus;
+import com.jheinz.mymod.starforge.StarForge;
 
 public class MyMod implements ModInitializer {
 	public static final String MOD_ID = "mymod";
@@ -111,6 +112,7 @@ public class MyMod implements ModInitializer {
 		Fishes.initialize();
 		FishEntities.initialize();
 		Fishing.initialize();
+		StarForge.initialize();
 		linkBlockItems();
 	}
 

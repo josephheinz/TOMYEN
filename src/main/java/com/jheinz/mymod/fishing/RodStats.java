@@ -5,6 +5,8 @@ import net.minecraft.world.item.ItemStack;
 
 import org.jspecify.annotations.Nullable;
 
+import com.jheinz.mymod.starforge.InfusionEffects;
+
 /**
  * A rod's totals: its tier, whether it fishes lava, its own modifiers plus every fitted part's (and its bait's, while
  * there's bait that works on this rod), and the bait itself (null if none).
@@ -28,6 +30,8 @@ public record RodStats(int tier, boolean lava, RodModifiers mods, @Nullable Bait
 				total = total.plus(part.modifiers());
 			}
 		}
+		// A Star Forge infusion (Starlit, Fae-Kissed, Featherweight) works like one more part.
+		total = total.plus(InfusionEffects.rodModifiers(rod));
 		RodBait loaded = RodBait.of(rod);
 		BaitItem bait = loaded == null ? null : loaded.bait();
 		if (bait != null && bait.works(item.fishesLava())) {

@@ -43,7 +43,11 @@
 		"EntityDragonscaleFireMixin",
 		"LivingEntityStarSteelMixin",
 		"PlayerStarSteelMixin",
-		"VillagerHostilesSensorWerewolfMixin"
+		"VillagerHostilesSensorWerewolfMixin",
+		"LivingEntityInfusionMixin",
+		"PlayerInfusionMixin",
+		"EnchantmentHelperInfusionMixin",
+		"ItemStackInfusionMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
