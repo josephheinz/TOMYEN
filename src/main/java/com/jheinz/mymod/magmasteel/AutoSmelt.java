@@ -24,11 +24,14 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
+import com.jheinz.mymod.starforge.InfusionEffects;
+
 /**
  * Magmasteel tools smelt what they mine: every drop of a broken block that has a furnace recipe comes out as that
  * recipe's result (raw iron as iron ingots, sand as glass, cobblestone as stone), with the experience a furnace
  * would have given, a puff of flame and a hiss. Fortune multiplies the drops before they're smelted. Silk Touch
- * turns it off, so a magmasteel pickaxe can still take ore blocks whole.
+ * turns it off, so a magmasteel pickaxe can still take ore blocks whole. Tools and drills with the Star Forge's
+ * Molten infusion do the same (see InfusionEffects).
  */
 public final class AutoSmelt {
 	private AutoSmelt() {
@@ -39,7 +42,7 @@ public final class AutoSmelt {
 			return;
 		}
 		ItemInstance tool = context.getOptional(LootContextParams.TOOL);
-		if (tool == null || !Magmasteel.SET.minesWith(tool) || hasSilkTouch(tool)) {
+		if (tool == null || !Magmasteel.SET.minesWith(tool) && !InfusionEffects.autoSmelts(tool) || hasSilkTouch(tool)) {
 			return;
 		}
 		ServerLevel level = context.getLevel();

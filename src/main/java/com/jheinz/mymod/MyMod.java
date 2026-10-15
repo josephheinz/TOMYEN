@@ -52,6 +52,7 @@ import com.jheinz.mymod.werewolf.Werewolves;
 import com.jheinz.mymod.banana.Bananas;
 import com.jheinz.mymod.station.ModMenus;
 import com.jheinz.mymod.survival.Survival;
+import com.jheinz.mymod.starforge.StarForge;
 
 public class MyMod implements ModInitializer {
 	public static final String MOD_ID = "mymod";
@@ -119,6 +120,7 @@ public class MyMod implements ModInitializer {
 		Fishing.initialize();
 		Detectors.initialize();
 		Survival.initialize();
+		StarForge.initialize();
 		linkBlockItems();
 	}
 

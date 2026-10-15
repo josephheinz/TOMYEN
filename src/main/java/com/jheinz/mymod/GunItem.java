@@ -43,6 +43,7 @@ import com.jheinz.mymod.attachment.Attachments;
 import com.jheinz.mymod.neuralink.NeuralinkItem;
 import com.jheinz.mymod.neuralink.NeuralinkModule;
 import com.jheinz.mymod.silver.EvilBane;
+import com.jheinz.mymod.starforge.InfusionEffects;
 
 /**
  * A magazine-fed hitscan firearm. Each use fires one round from the inserted magazine (a burst fires the rest
@@ -108,9 +109,9 @@ public class GunItem extends Item {
 		return fitted;
 	}
 
-	/** How long a reload takes for this holder relative to normal: half while overclocked. */
+	/** How long a reload takes for this holder relative to normal: half while overclocked, less with a Featherweight gun. */
 	public static float reloadFactor(LivingEntity holder) {
-		return holder.hasEffect(ModEffects.OVERCLOCKED) ? OVERCLOCK_RELOAD_FACTOR : 1.0f;
+		return (holder.hasEffect(ModEffects.OVERCLOCKED) ? OVERCLOCK_RELOAD_FACTOR : 1.0f) * InfusionEffects.reloadFactor(holder);
 	}
 
 	/** Holding a gun with something in the off hand, so the gun is held in one hand. */
