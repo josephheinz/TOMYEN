@@ -1682,5 +1682,9 @@
   "item.mymod.live_minnow": "Live Minnow",
   "item.mymod.magma_grub": "Magma Grub",
   "item.mymod.irradiated_bait": "Irradiated Bait",
-  "item.mymod.star_bait": "Star Bait"
+  "item.mymod.star_bait": "Star Bait",
+  "item.mymod.big_red_boots": "Big Red Boots",
+  "item.mymod.big_red_boots.falls": "Big rubber feet soak up half of every fall",
+  "item.mymod.big_red_boots.stomp": "Land from 4+ blocks up to stomp nearby mobs away",
+  "item.mymod.big_red_boots.waddle": "Waddles a little; never tramples farmland"
 }

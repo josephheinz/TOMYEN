@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jheinz.mymod.alien.Aliens;
 import com.jheinz.mymod.bank.Banking;
+import com.jheinz.mymod.bigredboots.BigRedBoots;
 import com.jheinz.mymod.cathode.CathodeWalkers;
 import com.jheinz.mymod.fae.Fae;
 import com.jheinz.mymod.fishing.Fishing;
@@ -106,6 +107,7 @@ public class MyMod implements ModInitializer {
 		Skullcranes.initialize();
 		CathodeWalkers.initialize();
 		Werewolves.initialize();
+		BigRedBoots.initialize();
 		EnergyWeapons.initialize();
 		Aliens.initialize();
 		Fishes.initialize();

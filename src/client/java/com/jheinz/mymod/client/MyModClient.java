@@ -26,6 +26,7 @@ import com.jheinz.mymod.ModParticles;
 import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.client.alien.AlienClient;
 import com.jheinz.mymod.client.bank.BankClient;
+import com.jheinz.mymod.client.bigredboots.BigRedBootsRenderer;
 import com.jheinz.mymod.client.cathode.CathodeWalkerClient;
 import com.jheinz.mymod.client.cart.ShoppingCartModel;
 import com.jheinz.mymod.client.cart.ShoppingCartRenderer;
@@ -152,6 +153,7 @@ public class MyModClient implements ClientModInitializer {
 		SkullcraneClient.initialize();
 		CathodeWalkerClient.initialize();
 		WerewolfClient.initialize();
+		BigRedBootsRenderer.initialize();
 		SoulVacuumClient.initialize();
 		SilverClient.initialize();
 		NapalmClient.initialize();
