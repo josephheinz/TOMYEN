@@ -70,9 +70,6 @@ Mutated by uranium:
 - **Fish Fish.** A new fish species named "Fish Fish".
 - **Josh.** A new fish species named "Josh".
 
-## Collecting (direction wanted)
-The user likes the idea of a collecting/flex system, but not the first pitches (trophy-room luck buff, fish fossils, kill counters, leaderboards). It needs fresh ideas.
-
-## Gear and collecting
+## Gear
 - **Weapon skins.** Cosmetic finishes from rare drops, e.g. UFO chrome, a werewolf-fur grip, a fae-wood stock.
 - **Taxidermy.** Extend the Fish Mount idea to mobs you've killed, e.g. a werewolf head or a Cathode Walker screen on the wall.
