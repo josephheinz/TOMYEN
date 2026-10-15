@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": "minecraft:iron_nugget",
+    "L": "minecraft:leather",
+    "B": "minecraft:glass_bottle"
+  },
+  "pattern": [
+    " N ",
+    "LBL",
+    " L "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:canteen"
+  }
+}

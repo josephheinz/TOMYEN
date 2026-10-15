@@ -4,6 +4,7 @@
     "mymod:tackle_bench",
     "mymod:oak_fish_mount",
     "mymod:spruce_fish_mount",
-    "mymod:dark_oak_fish_mount"
+    "mymod:dark_oak_fish_mount",
+    "mymod:tripwire_alarm"
   ]
 }

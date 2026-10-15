@@ -52,6 +52,8 @@
     "mymod:star_steel_block",
     "mymod:froststeel_block",
     "mymod:voidsteel_block",
-    "mymod:mech_gantry"
+    "mymod:mech_gantry",
+    "mymod:bear_trap",
+    "mymod:silver_bear_trap"
   ]
 }
