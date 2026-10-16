@@ -15,6 +15,8 @@ import com.jheinz.mymod.cathode.CathodeWalkers;
 import com.jheinz.mymod.fishing.fish.Fishes;
 import com.jheinz.mymod.scrapbench.SalvageRecipe.Output;
 import com.jheinz.mymod.skullcrane.Skullcranes;
+import com.jheinz.mymod.sodajetpack.SodaJetpacks;
+import com.jheinz.mymod.tvhelmet.TvHelmets;
 
 /**
  * What the Scrap Bench's salvage mode breaks down, in list order: fished-up junk and machine parts first (the bench's
@@ -30,6 +32,8 @@ public final class SalvageRecipes {
 			salvage(Skullcranes.SERVO_ARM, out(ScrapBench.SPRING, 2), out(ScrapBench.SCREWS, 2), out(ModItems.TECH_SCRAP, 1)),
 			salvage(Skullcranes.OPTIC_LENS, out(Items.GLASS_PANE, 1), out(ScrapBench.SCREWS, 1), out(ModItems.TECH_SCRAP, 1)),
 			salvage(CathodeWalkers.CATHODE_TUBE, out(Items.GLASS_PANE, 1), out(Items.COPPER_NUGGET, 3), out(ModItems.TECH_SCRAP, 1)),
+			salvage(TvHelmets.TV_HELMET, out(CathodeWalkers.CATHODE_TUBE, 1), out(Items.COPPER_NUGGET, 4), out(ScrapBench.SCREWS, 1)),
+			salvage(SodaJetpacks.SODA_JETPACK, out(Items.GLASS_BOTTLE, 2), out(Items.STRING, 2), out(Items.LEATHER, 1)),
 			// Hardware.
 			salvage(Items.RAIL, out(Items.IRON_NUGGET, 3)),
 			salvage(Items.IRON_CHAIN, out(Items.IRON_NUGGET, 8)),

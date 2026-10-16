@@ -3425,5 +3425,261 @@
         "pitch": 0.96
       }
     ]
+  },
+  "tv_helmet_toggle": {
+    "subtitle": "subtitles.mymod.tv_helmet_toggle",
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "pitch": 1.3,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/copper_bulb/toggle",
+        "pitch": 1.5,
+        "volume": 0.5
+      }
+    ]
+  },
+  "tv_helmet_channel": {
+    "subtitle": "subtitles.mymod.tv_helmet_channel",
+    "sounds": [
+      {
+        "name": "minecraft:random/click_stereo",
+        "pitch": 1.8,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 2.0,
+        "volume": 0.15
+      }
+    ]
+  },
+  "soda_jetpack_thrust": {
+    "subtitle": "subtitles.mymod.soda_jetpack_thrust",
+    "sounds": [
+      {
+        "name": "minecraft:block/bubble_column/upwards_inside",
+        "pitch": 1.6,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 1.8,
+        "volume": 0.35
+      },
+      {
+        "name": "minecraft:block/bubble_column/bubble1",
+        "pitch": 1.4,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/bubble_column/bubble2",
+        "pitch": 1.4,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/bubble_column/bubble3",
+        "pitch": 1.4,
+        "volume": 0.6
+      }
+    ]
+  },
+  "soda_jetpack_sputter": {
+    "subtitle": "subtitles.mymod.soda_jetpack_sputter",
+    "sounds": [
+      {
+        "name": "minecraft:random/pop",
+        "pitch": 0.6,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/candle/extinguish1",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:block/candle/extinguish2",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:block/candle/extinguish3",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:mob/slime/small1",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/slime/small2",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/slime/small3",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/slime/small4",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/slime/small5",
+        "pitch": 1.6,
+        "volume": 0.6
+      }
+    ]
+  },
+  "soda_jetpack_spin": {
+    "subtitle": "subtitles.mymod.soda_jetpack_spin",
+    "sounds": [
+      {
+        "name": "minecraft:block/bubble_column/whirlpool_inside",
+        "pitch": 1.5
+      }
+    ]
+  },
+  "soda_jetpack_flat": {
+    "subtitle": "subtitles.mymod.soda_jetpack_flat",
+    "sounds": [
+      {
+        "name": "minecraft:item/bottle/empty1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:item/bottle/empty2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 0.5,
+        "volume": 0.6
+      }
+    ]
+  },
+  "soda_jetpack_shake": {
+    "subtitle": "subtitles.mymod.soda_jetpack_shake",
+    "sounds": [
+      {
+        "name": "minecraft:item/bundle/drop_contents1",
+        "pitch": 1.5,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:item/bundle/drop_contents2",
+        "pitch": 1.5,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:item/bundle/drop_contents3",
+        "pitch": 1.5,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:item/bottle/fill1",
+        "pitch": 1.7,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:item/bottle/fill2",
+        "pitch": 1.7,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:item/bottle/fill3",
+        "pitch": 1.7,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:item/bottle/fill4",
+        "pitch": 1.7,
+        "volume": 0.5
+      }
+    ]
+  },
+  "soda_jetpack_charged": {
+    "subtitle": "subtitles.mymod.soda_jetpack_charged",
+    "sounds": [
+      {
+        "name": "minecraft:random/pop",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 1.5,
+        "volume": 0.5
+      }
+    ]
+  },
+  "soda_jetpack_refuel": {
+    "subtitle": "subtitles.mymod.soda_jetpack_refuel",
+    "sounds": [
+      {
+        "name": "minecraft:item/bottle/fill1",
+        "pitch": 1.3,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:item/bottle/fill2",
+        "pitch": 1.3,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:item/bottle/fill3",
+        "pitch": 1.3,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:item/bottle/fill4",
+        "pitch": 1.3,
+        "volume": 0.6
+      }
+    ]
+  },
+  "soda_jetpack_crash": {
+    "subtitle": "subtitles.mymod.soda_jetpack_crash",
+    "sounds": [
+      {
+        "name": "minecraft:block/decorated_pot/shatter1",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/decorated_pot/shatter2",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/decorated_pot/shatter3",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/decorated_pot/shatter4",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/decorated_pot/shatter5",
+        "pitch": 1.6,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:random/pop",
+        "pitch": 0.5
+      }
+    ]
+  },
+  "fizz_charge_burp": {
+    "subtitle": "subtitles.mymod.fizz_charge_burp",
+    "sounds": [
+      {
+        "name": "minecraft:random/burp",
+        "pitch": 1.4
+      }
+    ]
   }
 }

@@ -9,8 +9,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.jheinz.mymod.client.neuralink.NeuralTrigger;
+import com.jheinz.mymod.client.tvhelmet.TvEmoteWheel;
 
-/** While the Neuralink's module selector is open, the mouse steers its cursor and the view stays put. */
+/** While the Neuralink's module selector or the TV Helmet's emote wheel is open, the mouse steers its cursor and the view stays put. */
 @Mixin(MouseHandler.class)
 public abstract class MouseHandlerRadialMixin {
 	@Shadow
@@ -22,6 +23,9 @@ public abstract class MouseHandlerRadialMixin {
 	private void mymod$steerSelector(double mousea, CallbackInfo ci) {
 		if (NeuralTrigger.isSelecting()) {
 			NeuralTrigger.moveCursor(accumulatedDX, accumulatedDY);
+			ci.cancel();
+		} else if (TvEmoteWheel.isSelecting()) {
+			TvEmoteWheel.moveCursor(accumulatedDX, accumulatedDY);
 			ci.cancel();
 		}
 	}
