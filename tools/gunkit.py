@@ -343,10 +343,10 @@ def write(path, obj):
 
 
 def model(kit, elements, displays=None, parent=None, credit=None):
-    m = OrderedDict([("credit", credit or f"mymod {kit.key} - generated"), ("texture_size", [kit.size, kit.size])])
+    m = OrderedDict([("credit", credit or f"tomyen {kit.key} - generated"), ("texture_size", [kit.size, kit.size])])
     if parent:
         m["parent"] = parent
-    m["textures"] = OrderedDict([(kit.key, "mymod:" + kit.texture), ("particle", "mymod:" + kit.texture)])
+    m["textures"] = OrderedDict([(kit.key, "tomyen:" + kit.texture), ("particle", "tomyen:" + kit.texture)])
     if displays:
         m["display"] = displays
     m["elements"] = elements
@@ -354,7 +354,7 @@ def model(kit, elements, displays=None, parent=None, credit=None):
 
 
 def ref(path):
-    return OrderedDict([("type", "minecraft:model"), ("model", "mymod:item/" + path)])
+    return OrderedDict([("type", "minecraft:model"), ("model", "tomyen:item/" + path)])
 
 
 EMPTY = OrderedDict([("type", "minecraft:empty")])
@@ -386,7 +386,7 @@ def composite(*models):
 def flat_icon(models_root, items_root, name, item_model=None):
     """A plain 2D inventory sprite (textures/item/<name>.png), like the bullets and magazines."""
     write(os.path.join(models_root, name + ".json"), OrderedDict([
-        ("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0="mymod:item/" + name))]))
+        ("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0="tomyen:item/" + name))]))
     if items_root:
         write(os.path.join(items_root, name + ".json"), {"model": item_model or ref(name)})
 
@@ -485,18 +485,18 @@ def flash_models(models_dir, gun, z, y, displays):
         for ctx in ("gui", "ground", "fixed"):
             flash_displays[ctx] = display([0, 0, 0], [0, 0, 0], 0)
         write(os.path.join(models_dir, f"{gun}_flash_{v}.json"),
-              model(FLASH, elements, flash_displays, credit="mymod muzzle flash - generated"))
+              model(FLASH, elements, flash_displays, credit="tomyen muzzle flash - generated"))
         names.append(f"{gun}_flash_{v}")
     return names
 
 
 def with_flash(body, flashes, hidden_by=()):
-    """The gun's item model with its flash: mymod:muzzle_flash is 0 with none showing, else 1-3 for the variant. Not a
+    """The gun's item model with its flash: tomyen:muzzle_flash is 0 with none showing, else 1-3 for the variant. Not a
     composite at the top, which tools/gen_attachments.py would take for its own wrapper. hidden_by: muzzle attachments
     (item ids) that smother the flash."""
     def flash(name):
         if not hidden_by:
             return ref(name)
-        return OrderedDict([("type", "minecraft:select"), ("property", "minecraft:component"), ("component", "mymod:muzzle_attachment"),
+        return OrderedDict([("type", "minecraft:select"), ("property", "minecraft:component"), ("component", "tomyen:muzzle_attachment"),
                             ("cases", [OrderedDict([("when", list(hidden_by)), ("model", EMPTY)])]), ("fallback", ref(name))])
-    return range_dispatch("mymod:muzzle_flash", [(k + 0.5, composite(body, flash(f))) for k, f in enumerate(flashes)], body)
+    return range_dispatch("tomyen:muzzle_flash", [(k + 0.5, composite(body, flash(f))) for k, f in enumerate(flashes)], body)

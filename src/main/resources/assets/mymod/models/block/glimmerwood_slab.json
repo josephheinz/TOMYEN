@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "mymod:block/glimmerwood_planks",
-    "side": "mymod:block/glimmerwood_planks",
-    "top": "mymod:block/glimmerwood_planks"
-  }
-}

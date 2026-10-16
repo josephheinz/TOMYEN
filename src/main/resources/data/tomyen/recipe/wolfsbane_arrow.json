@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "minecraft:arrow",
+    "P": "tomyen:wolfsbane_paste"
+  },
+  "pattern": [
+    "AAA",
+    "APA",
+    "AAA"
+  ],
+  "result": {
+    "count": 8,
+    "id": "tomyen:wolfsbane_arrow"
+  }
+}

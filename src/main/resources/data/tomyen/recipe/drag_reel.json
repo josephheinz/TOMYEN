@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:copper_ingot",
+    "minecraft:leather",
+    "minecraft:iron_nugget",
+    "minecraft:stick"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:drag_reel"
+  }
+}

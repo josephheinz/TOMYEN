@@ -15,7 +15,7 @@ import zlib
 sys.path.insert(0, os.path.dirname(__file__))
 from gen_longswords import read_png  # noqa: E402
 
-ASSETS = os.path.join(os.path.dirname(__file__), "..", "src", "main", "resources", "assets", "mymod")
+ASSETS = os.path.join(os.path.dirname(__file__), "..", "src", "main", "resources", "assets", "tomyen")
 TEX = os.path.join(ASSETS, "textures", "item")
 CLEAR = (0, 0, 0, 0)
 
@@ -76,13 +76,13 @@ def item(name, make):
         w, h, px = make(variant)
         png(os.path.join(TEX, name + variant + ".png"), w, h, px)
         write_json(os.path.join(ASSETS, "models", "item", name + variant + ".json"),
-                {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name + variant}})
+                {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name + variant}})
     write_json(os.path.join(ASSETS, "items", name + ".json"), {"model": {
         "type": "minecraft:condition",
         "property": "minecraft:has_component",
-        "component": "mymod:magazine_contents",
-        "on_true": {"type": "minecraft:model", "model": "mymod:item/" + name + "_loaded"},
-        "on_false": {"type": "minecraft:model", "model": "mymod:item/" + name}}})
+        "component": "tomyen:magazine_contents",
+        "on_true": {"type": "minecraft:model", "model": "tomyen:item/" + name + "_loaded"},
+        "on_false": {"type": "minecraft:model", "model": "tomyen:item/" + name}}})
 
 
 if __name__ == "__main__":

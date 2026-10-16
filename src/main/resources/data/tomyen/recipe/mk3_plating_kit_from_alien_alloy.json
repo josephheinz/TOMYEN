@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "tomyen:computer_chip",
+    "A": "tomyen:alien_alloy",
+    "G": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    "CAC",
+    "GAG",
+    "CAC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:mk3_plating_kit"
+  }
+}

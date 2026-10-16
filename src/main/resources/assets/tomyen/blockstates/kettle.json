@@ -1,0 +1,364 @@
+{
+  "variants": {
+    "facing=north,hung=false,tea=none,water=0": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=none,water=1": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=none,water=2": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=none,water=3": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=steeping,water=0": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=steeping,water=1": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=steeping,water=2": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=steeping,water=3": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=ready,water=0": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=ready,water=1": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=ready,water=2": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=north,hung=false,tea=ready,water=3": {
+      "model": "tomyen:block/kettle"
+    },
+    "facing=east,hung=false,tea=none,water=0": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=none,water=1": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=none,water=2": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=none,water=3": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=steeping,water=0": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=steeping,water=1": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=steeping,water=2": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=steeping,water=3": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=ready,water=0": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=ready,water=1": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=ready,water=2": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=east,hung=false,tea=ready,water=3": {
+      "model": "tomyen:block/kettle",
+      "y": 90
+    },
+    "facing=south,hung=false,tea=none,water=0": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=none,water=1": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=none,water=2": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=none,water=3": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=steeping,water=0": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=steeping,water=1": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=steeping,water=2": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=steeping,water=3": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=ready,water=0": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=ready,water=1": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=ready,water=2": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=south,hung=false,tea=ready,water=3": {
+      "model": "tomyen:block/kettle",
+      "y": 180
+    },
+    "facing=west,hung=false,tea=none,water=0": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=none,water=1": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=none,water=2": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=none,water=3": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=steeping,water=0": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=steeping,water=1": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=steeping,water=2": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=steeping,water=3": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=ready,water=0": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=ready,water=1": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=ready,water=2": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=west,hung=false,tea=ready,water=3": {
+      "model": "tomyen:block/kettle",
+      "y": 270
+    },
+    "facing=north,hung=true,tea=none,water=0": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=none,water=1": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=none,water=2": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=none,water=3": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=steeping,water=0": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=steeping,water=1": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=steeping,water=2": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=steeping,water=3": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=ready,water=0": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=ready,water=1": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=ready,water=2": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=north,hung=true,tea=ready,water=3": {
+      "model": "tomyen:block/kettle_hung"
+    },
+    "facing=east,hung=true,tea=none,water=0": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=none,water=1": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=none,water=2": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=none,water=3": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=steeping,water=0": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=steeping,water=1": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=steeping,water=2": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=steeping,water=3": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=ready,water=0": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=ready,water=1": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=ready,water=2": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=east,hung=true,tea=ready,water=3": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 90
+    },
+    "facing=south,hung=true,tea=none,water=0": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=none,water=1": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=none,water=2": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=none,water=3": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=steeping,water=0": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=steeping,water=1": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=steeping,water=2": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=steeping,water=3": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=ready,water=0": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=ready,water=1": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=ready,water=2": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=south,hung=true,tea=ready,water=3": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 180
+    },
+    "facing=west,hung=true,tea=none,water=0": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=none,water=1": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=none,water=2": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=none,water=3": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=steeping,water=0": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=steeping,water=1": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=steeping,water=2": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=steeping,water=3": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=ready,water=0": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=ready,water=1": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=ready,water=2": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    },
+    "facing=west,hung=true,tea=ready,water=3": {
+      "model": "tomyen:block/kettle_hung",
+      "y": 270
+    }
+  }
+}

@@ -2,8 +2,8 @@
 muzzle flash both share with the M249.
 
 Each gun gets its model at rest plus six frames of the pump being worked (the fore-end and action bars sliding back,
-the bolt opening in the ejection port), chosen by the mymod:gun_animation item model property (1-6, see
-ShotgunAnimation), and a muzzle flash layer chosen by mymod:muzzle_flash. Shells get a flat inventory sprite plus 3D
+the bolt opening in the ejection port), chosen by the tomyen:gun_animation item model property (1-6, see
+ShotgunAnimation), and a muzzle flash layer chosen by tomyen:muzzle_flash. Shells get a flat inventory sprite plus 3D
 models (live and fired) that the client draws in the hand while loading and flying out of the ejection port; those
 are separate item model definitions, picked with the item_model component.
 
@@ -78,7 +78,7 @@ def write_gun(kit, name, frames, grip, support, sight, fp_scale, gui_scale, flas
         check(f"{name}_f{i}", elements)
         write(os.path.join(MODELS, name + (f"_f{i}" if i else "") + ".json"), model(kit, elements, displays))
     flashes = flash_models(MODELS, name, flash_at[0], flash_at[1], displays)
-    body = range_dispatch("mymod:gun_animation",
+    body = range_dispatch("tomyen:gun_animation",
                           [(k - 0.5, ref(f"{name}_f{k}")) for k in range(1, len(frames))] + [(len(frames) - 0.5, ref(name))],
                           ref(name))
     write(os.path.join(ITEMS, name + ".json"), {"model": with_flash(body, flashes)})
@@ -448,7 +448,7 @@ def shell_sprite(name, hull, hull_dark, hull_hi, front):
         "................",
     ]
     sprite(os.path.join(TEX, f"item/{name}.png"), rows, pal)
-    write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
+    write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
     write(os.path.join(ITEMS, name + ".json"), {"model": ref(name)})
 
 

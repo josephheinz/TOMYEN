@@ -9,5 +9,5 @@ pluginManagement {
 	}
 }
 
-// Should match your mymod
-rootProject.name = 'mymod'
+// Should match your tomyen
+rootProject.name = 'tomyen'

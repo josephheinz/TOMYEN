@@ -1,9 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "mymod:bluegill",
-    "mymod:crappie",
-    "mymod:yellow_perch",
-    "mymod:brook_trout"
-  ]
-}

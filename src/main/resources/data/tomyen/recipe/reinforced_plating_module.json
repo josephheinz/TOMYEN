@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:iron_block",
+    "minecraft:iron_block",
+    "tomyen:computer_chip",
+    "tomyen:tech_scrap"
+  ],
+  "result": {
+    "id": "tomyen:reinforced_plating_module"
+  }
+}

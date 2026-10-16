@@ -1,0 +1,39 @@
+package com.jheinz.tomyen.client.mixin;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.FirstPersonHandsAndItems;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
+import net.minecraft.world.InteractionHand;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.jheinz.tomyen.GunItem;
+
+/**
+ * Using an item without swinging drops it to the bottom of the screen and raises it again. Firing a gun
+ * is a use, so skip that: the recoil animation is the only motion a shot should cause.
+ */
+@Mixin(FirstPersonHandsAndItems.class)
+public abstract class FirstPersonHandsAndItemsMixin {
+	/** Using an off-hand item would normally hide the main hand; a held gun stays on screen. */
+	@Inject(method = "evaluateWhichHandsToRender", at = @At("HEAD"), cancellable = true)
+	private static void tomyen$keepGunShown(LocalPlayer player,
+			CallbackInfoReturnable<FirstPersonHandsAndItemsRenderState.HandRenderSelection> cir) {
+		if (player.getMainHandItem().getItem() instanceof GunItem) {
+			cir.setReturnValue(FirstPersonHandsAndItemsRenderState.HandRenderSelection.RENDER_BOTH_HANDS);
+		}
+	}
+
+	@Inject(method = "itemUsed", at = @At("HEAD"), cancellable = true)
+	private void tomyen$noDipOnFire(InteractionHand hand, CallbackInfo ci) {
+		Minecraft minecraft = Minecraft.getInstance();
+		if (minecraft.player != null && minecraft.player.getItemInHand(hand).getItem() instanceof GunItem) {
+			ci.cancel();
+		}
+	}
+}

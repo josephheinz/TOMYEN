@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "tomyen:polished_meteorite_stone",
+  "result": {
+    "count": 1,
+    "id": "tomyen:meteorite_brick_stairs"
+  }
+}

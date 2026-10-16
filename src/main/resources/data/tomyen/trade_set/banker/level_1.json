@@ -1,0 +1,11 @@
+{
+  "amount": 4,
+  "random_sequence": "tomyen:trade_set/banker/level_1",
+  "trades": [
+    "tomyen:banker/1/emerald_credit_card",
+    "tomyen:banker/1/emerald_debit_card",
+    "tomyen:banker/1/paper_emerald",
+    "tomyen:banker/1/gold_ingot_emerald",
+    "tomyen:banker/1/sunken_coin_pouch_emerald"
+  ]
+}

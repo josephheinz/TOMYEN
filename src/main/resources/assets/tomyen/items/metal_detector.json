@@ -1,0 +1,34 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "tomyen:detector",
+    "entries": [
+      {
+        "threshold": 0.02,
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/metal_detector_1"
+        }
+      },
+      {
+        "threshold": 0.45,
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/metal_detector_2"
+        }
+      },
+      {
+        "threshold": 0.75,
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/metal_detector_3"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "tomyen:item/metal_detector_0"
+    },
+    "reading": "signal"
+  }
+}

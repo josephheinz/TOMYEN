@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:piston",
+    "minecraft:piston",
+    "minecraft:slime_ball",
+    "tomyen:computer_chip",
+    "tomyen:tech_scrap"
+  ],
+  "result": {
+    "id": "tomyen:servo_legs_module"
+  }
+}

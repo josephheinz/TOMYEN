@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "mymod:item/shopping_cart_spawn_egg"
-  }
-}

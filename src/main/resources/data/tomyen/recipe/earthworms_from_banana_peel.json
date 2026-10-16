@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:banana_peel",
+    "minecraft:dirt"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tomyen:earthworms"
+  }
+}

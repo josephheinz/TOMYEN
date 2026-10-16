@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_lantern",
+  "textures": {
+    "lantern": "tomyen:block/fairy_in_a_bottle"
+  }
+}

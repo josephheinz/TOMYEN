@@ -1,7 +1,0 @@
-{
-  "parent": "mymod:item/crucifix_raised",
-  "textures": {
-    "parts": "mymod:item/holy_silver_crucifix_parts",
-    "particle": "mymod:item/holy_silver_crucifix_parts"
-  }
-}

@@ -1,7 +1,7 @@
 """Z-fight check for the Gunsmith attachments as fitted: each attachment model on its own, and against the gun it sits on
 (only faces of the attachment are checked against the gun, so the gun's own faces aren't re-judged).
 
-Usage: python3 tools/check_gunsmith_attachments.py src/main/resources/assets/mymod"""
+Usage: python3 tools/check_gunsmith_attachments.py src/main/resources/assets/tomyen"""
 import glob, json, os, sys
 
 sys.path.insert(0, os.path.dirname(__file__))

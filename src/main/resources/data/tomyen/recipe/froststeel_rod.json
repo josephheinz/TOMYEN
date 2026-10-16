@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "M": "tomyen:froststeel_ingot",
+    "S": "minecraft:string",
+    "H": "minecraft:packed_ice"
+  },
+  "pattern": [
+    "  M",
+    " MS",
+    "H S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:froststeel_rod"
+  }
+}

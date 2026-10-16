@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": "minecraft:gunpowder",
+    "I": "minecraft:iron_ingot",
+    "N": "tomyen:napalm_canister",
+    "S": "tomyen:tech_scrap"
+  },
+  "pattern": [
+    " S ",
+    " N ",
+    "IGI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:pg7_napalm_rocket"
+  }
+}

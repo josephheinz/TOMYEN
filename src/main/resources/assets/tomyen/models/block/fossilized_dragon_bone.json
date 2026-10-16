@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "tomyen:block/fossilized_dragon_bone_top",
+    "side": "tomyen:block/fossilized_dragon_bone_side"
+  }
+}

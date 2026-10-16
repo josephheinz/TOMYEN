@@ -4,10 +4,10 @@ right), joint (bottom left) and light (bottom right). Every cube of the model un
 quadrant, so each material is just a tileable patch. The glow texture holds only the light quadrant, drawn
 again full-bright over the rest.
 
-Usage: python3 tools/gen_exo.py src/main/resources/assets/mymod"""
+Usage: python3 tools/gen_exo.py src/main/resources/assets/tomyen"""
 import json, os, struct, sys, zlib
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
 
 
@@ -151,6 +151,6 @@ MODELS = os.path.join(ASSETS, "models/item")
 ITEMS = os.path.join(ASSETS, "items")
 for name in ["exoskeleton", *MODULE_SYMBOLS]:
     write_json(os.path.join(MODELS, name + ".json"),
-               {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
-    write_json(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+               {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
+    write_json(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 print("ok")

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "tomyen:steel_ingot",
+    "R": "minecraft:redstone",
+    "P": "minecraft:piston",
+    "C": "tomyen:empty_canister"
+  },
+  "pattern": [
+    "SSS",
+    "RPR",
+    "SCS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:pump_jack"
+  }
+}

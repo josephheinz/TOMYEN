@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "top": "tomyen:block/foundry_top",
+    "bottom": "tomyen:block/foundry_bottom",
+    "side": "tomyen:block/foundry_side",
+    "front": "tomyen:block/foundry_front"
+  }
+}

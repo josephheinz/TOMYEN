@@ -1,0 +1,7 @@
+{
+  "parent": "tomyen:block/bear_trap_open",
+  "textures": {
+    "tex": "tomyen:block/silver_bear_trap",
+    "particle": "tomyen:block/silver_bear_trap"
+  }
+}

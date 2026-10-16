@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:cathode_tube",
+    "tomyen:tech_scrap",
+    "minecraft:glistering_melon_slice"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:bio_monitor_module"
+  }
+}

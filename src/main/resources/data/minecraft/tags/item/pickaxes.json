@@ -1,13 +1,13 @@
 {
   "values": [
-    "mymod:magmasteel_pickaxe",
-    "mymod:soul_steel_pickaxe",
-    "mymod:holy_silver_pickaxe",
-    "mymod:fae_silver_pickaxe",
-    "mymod:star_steel_pickaxe",
-    "mymod:froststeel_pickaxe",
-    "mymod:voidsteel_pickaxe",
-    "#mymod:drills",
-    "mymod:bloom_steel_pickaxe"
+    "tomyen:magmasteel_pickaxe",
+    "tomyen:soul_steel_pickaxe",
+    "tomyen:holy_silver_pickaxe",
+    "tomyen:fae_silver_pickaxe",
+    "tomyen:star_steel_pickaxe",
+    "tomyen:froststeel_pickaxe",
+    "tomyen:voidsteel_pickaxe",
+    "#tomyen:drills",
+    "tomyen:bloom_steel_pickaxe"
   ]
 }

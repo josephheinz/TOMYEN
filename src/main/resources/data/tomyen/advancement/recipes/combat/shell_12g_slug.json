@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_remington_870": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tomyen:remington_870"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_spas12": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tomyen:spas12"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tomyen:steel_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "tomyen:shell_12g_slug"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_remington_870",
+      "has_spas12",
+      "has_steel_ingot",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tomyen:shell_12g_slug"
+    ]
+  }
+}

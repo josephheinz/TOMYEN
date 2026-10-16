@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:froststeel_ingot"
+  ],
+  "result": {
+    "count": 9,
+    "id": "tomyen:froststeel_nugget"
+  }
+}

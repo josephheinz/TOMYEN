@@ -5,7 +5,7 @@ Villager outfit UVs follow vanilla's VillagerModel: a box at (u, v) of size (w, 
 (u+d, v), its front at (u+d, v+d), sides at (u, v+d) and (u+d+w, v+d), and its back at (u+2d+w, v+d)."""
 import json, os, random, struct, sys, zlib
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
 rnd = random.Random(11)
 CLEAR = (0, 0, 0, 0)
@@ -149,19 +149,19 @@ front.save(os.path.join(TEX, "block", "atm_front.png"))
 
 write_json(os.path.join(ASSETS, "models", "block", "atm.json"), {
     "parent": "minecraft:block/orientable",
-    "textures": {"front": "mymod:block/atm_front", "side": "mymod:block/atm_side", "top": "mymod:block/atm_top"},
+    "textures": {"front": "tomyen:block/atm_front", "side": "tomyen:block/atm_side", "top": "tomyen:block/atm_top"},
 })
 write_json(os.path.join(ASSETS, "blockstates", "atm.json"), {"variants": {
-    "facing=north": {"model": "mymod:block/atm"},
-    "facing=east": {"model": "mymod:block/atm", "y": 90},
-    "facing=south": {"model": "mymod:block/atm", "y": 180},
-    "facing=west": {"model": "mymod:block/atm", "y": 270},
+    "facing=north": {"model": "tomyen:block/atm"},
+    "facing=east": {"model": "tomyen:block/atm", "y": 90},
+    "facing=south": {"model": "tomyen:block/atm", "y": 180},
+    "facing=west": {"model": "tomyen:block/atm", "y": 270},
 }})
-write_json(os.path.join(ASSETS, "items", "atm.json"), {"model": {"type": "minecraft:model", "model": "mymod:block/atm"}})
+write_json(os.path.join(ASSETS, "items", "atm.json"), {"model": {"type": "minecraft:model", "model": "tomyen:block/atm"}})
 for name in CARDS:
     write_json(os.path.join(ASSETS, "models", "item", name + ".json"),
-               {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
-    write_json(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+               {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
+    write_json(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 
 # --- Banker villager outfit ------------------------------------------------------------------------------

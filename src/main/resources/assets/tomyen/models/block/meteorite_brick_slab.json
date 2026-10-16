@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "tomyen:block/meteorite_bricks",
+    "side": "tomyen:block/meteorite_bricks",
+    "top": "tomyen:block/meteorite_bricks"
+  }
+}

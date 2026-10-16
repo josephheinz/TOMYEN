@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "tomyen:servo_arm",
+    "S": "tomyen:steel_ingot",
+    "G": "tomyen:geared_reel",
+    "P": "tomyen:computer_chip"
+  },
+  "pattern": [
+    " A ",
+    "SGS",
+    " P "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:servo_reel"
+  }
+}

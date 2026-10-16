@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "minecraft:has_component",
+    "component": "tomyen:magazine_contents",
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "tomyen:item/awp_magazine_loaded"
+    },
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "tomyen:item/awp_magazine"
+    }
+  }
+}

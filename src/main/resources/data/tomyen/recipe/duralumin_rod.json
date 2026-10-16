@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "M": "tomyen:duralumin_sheet",
+    "S": "minecraft:string",
+    "H": "tomyen:rubber"
+  },
+  "pattern": [
+    "  M",
+    " MS",
+    "H S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:duralumin_rod"
+  }
+}

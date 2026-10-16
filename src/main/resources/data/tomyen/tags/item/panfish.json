@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "tomyen:bluegill",
+    "tomyen:crappie",
+    "tomyen:yellow_perch",
+    "tomyen:brook_trout"
+  ]
+}

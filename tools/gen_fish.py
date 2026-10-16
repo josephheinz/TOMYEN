@@ -13,11 +13,11 @@ Every palette colour also has a role, which is how the cooked sprite is made fro
 cod and salmon: body colours ('b') are browned through a roast ramp in the same light-to-dark order, fins and tails
 ('f') go a darker brown, outlines ('o') a deep brown, and the rest ('k': eyes, bills, bone) is kept as it is.
 
-Also written: data/mymod/fishing_species/<fish>.json (where each fish is caught, read by the fishing system), the
+Also written: data/tomyen/fishing_species/<fish>.json (where each fish is caught, read by the fishing system), the
 cooking recipes (furnace, smoker, campfire), the crafting uses, the banker's trades for prize fish and old coins (and
 their places in its trade sets), lang entries, and the vanilla #minecraft:fishes tag. Junk and treasure (JUNK: the old
 boot, rusty scrap, the tackle box and the sunken coin pouch) are species too, with no size and no fishes tag; the two
-that open get gift loot tables (loot_table/gameplay). The #mymod:meteorite_blocks tag marks a fallen meteorite, which
+that open get gift loot tables (loot_table/gameplay). The #tomyen:meteorite_blocks tag marks a fallen meteorite, which
 the Cometfish's species file looks for nearby (near_block).
 
 The preview (optional argument) shows every sprite at 1x and 8x, raw and cooked side by side, next to vanilla's cod
@@ -31,8 +31,8 @@ from gunkit import png, write  # noqa: E402
 
 REPO = os.path.dirname(HERE)
 RES = os.path.join(REPO, "src", "main", "resources")
-ASSETS = os.path.join(RES, "assets", "mymod")
-DATA = os.path.join(RES, "data", "mymod")
+ASSETS = os.path.join(RES, "assets", "tomyen")
+DATA = os.path.join(RES, "data", "tomyen")
 MODELS = os.path.join(ASSETS, "models", "item")
 ITEMS = os.path.join(ASSETS, "items")
 TEXTURES = os.path.join(ASSETS, "textures", "item", "fish")
@@ -956,7 +956,7 @@ OCEAN_WARM = ["minecraft:warm_ocean", "minecraft:lukewarm_ocean", "minecraft:dee
 COLD = ["minecraft:frozen_river", "minecraft:frozen_ocean", "minecraft:deep_frozen_ocean", "minecraft:cold_ocean",
         "minecraft:deep_cold_ocean", "minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:ice_spikes",
         "minecraft:grove", "minecraft:snowy_beach", "minecraft:snowy_slopes"]
-FEYWILD = ["mymod:feywild_glade", "mymod:feywild_mushroom_wilds"]
+FEYWILD = ["tomyen:feywild_glade", "tomyen:feywild_mushroom_wilds"]
 # Freshwater: rivers, and the lakes and ponds of the biomes each fish likes.
 WARM_FRESH = ["#minecraft:is_river", "minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:plains",
               "minecraft:sunflower_plains", "#minecraft:is_forest", "minecraft:savanna", "#minecraft:is_jungle"]
@@ -991,9 +991,9 @@ SPECIES_DATA = OrderedDict([
     ("cave_blindfish", (18, 2, "steady", 0, dict(dimension=OVERWORLD, biomes=["minecraft:lush_caves",
                                                                            "minecraft:dripstone_caves"], max_y=40))),
     ("sculk_gulper", (8, 4, "sinker", 2, dict(dimension=OVERWORLD, biomes="minecraft:deep_dark", max_y=-20))),
-    ("pixie_minnow", (24, 3, "darting", 0, dict(dimension="mymod:feywild", biomes=FEYWILD, count=[1, 3]))),
+    ("pixie_minnow", (24, 3, "darting", 0, dict(dimension="tomyen:feywild", biomes=FEYWILD, count=[1, 3]))),
     # The Feywild's clock is fixed and never counts as night, so the koi bites at any time there.
-    ("moonscale_koi", (5, 4, "floater", 3, dict(dimension="mymod:feywild", biomes=FEYWILD))),
+    ("moonscale_koi", (5, 4, "floater", 3, dict(dimension="tomyen:feywild", biomes=FEYWILD))),
     ("magma_eel", (14, 4, "thrasher", 3, dict(fluid="lava", dimension=NETHER, biomes="#minecraft:is_nether"))),
     ("ember_puffer", (10, 3, "floater", 3, dict(fluid="lava", dimension=NETHER, biomes=[
         "minecraft:nether_wastes", "minecraft:basalt_deltas", "minecraft:crimson_forest"]))),
@@ -1024,7 +1024,7 @@ SPECIES_DATA = OrderedDict([
     ("mooshroom_minnow", (30, 2, "darting", 0, dict(dimension=OVERWORLD, biomes="minecraft:mushroom_fields", count=[1, 3]))),
     # Only in water near a fallen meteorite (a crash site's meteorite stone or meteoric iron ore within 12 blocks).
     ("cometfish", (20, 4, "thrasher", 1, dict(dimension=OVERWORLD, near_block=OrderedDict([
-        ("block", "#mymod:meteorite_blocks"), ("radius", 12)])))),
+        ("block", "#tomyen:meteorite_blocks"), ("radius", 12)])))),
     # Junk and treasure: never weighed, never mounted as fish, and no fight to speak of.
     ("tackle_box", (2, 2, "sinker", 0, dict(dimension=OVERWORLD))),
     ("sunken_coin_pouch", (2, 1, "sinker", 0, dict(dimension=OVERWORLD, biomes=["#minecraft:is_ocean", "#minecraft:is_river",
@@ -1081,7 +1081,7 @@ KEY_ORDER = ["item", "weight", "difficulty", "behavior", "min_rod_tier", "fluid"
 
 def species_json(name):
     weight, difficulty, behavior, tier, extra = SPECIES_DATA[name]
-    obj = dict(item="mymod:" + name, weight=weight, difficulty=difficulty, behavior=behavior, min_rod_tier=tier)
+    obj = dict(item="tomyen:" + name, weight=weight, difficulty=difficulty, behavior=behavior, min_rod_tier=tier)
     obj.update(extra)
     if name in SIZES:
         lo, avg, hi = SIZES[name]
@@ -1099,10 +1099,10 @@ def recipe_with_unlock(name, body, category, unlock):
         ("criteria", OrderedDict([
             ("has_item", OrderedDict([("conditions", OrderedDict([("items", [OrderedDict([("items", unlock)])])])),
                                       ("trigger", "minecraft:inventory_changed")])),
-            ("has_the_recipe", OrderedDict([("conditions", OrderedDict([("recipes", "mymod:" + name)])),
+            ("has_the_recipe", OrderedDict([("conditions", OrderedDict([("recipes", "tomyen:" + name)])),
                                             ("trigger", "minecraft:recipe_unlocked")]))])),
         ("requirements", [["has_item", "has_the_recipe"]]),
-        ("rewards", OrderedDict([("recipes", ["mymod:" + name])]))])
+        ("rewards", OrderedDict([("recipes", ["tomyen:" + name])]))])
     write(os.path.join(DATA, "advancement", "recipes", category, name + ".json"), adv)
 
 
@@ -1111,7 +1111,7 @@ def cooking(raw, cooked):
                                 ("campfire_cooking", "_from_campfire_cooking", 600)):
         recipe_with_unlock(cooked + suffix, OrderedDict([
             ("type", "minecraft:" + kind), ("category", "food"), ("cookingtime", ticks), ("experience", 0.35),
-            ("ingredient", "mymod:" + raw), ("result", OrderedDict([("id", "mymod:" + cooked)]))]), "food", "mymod:" + raw)
+            ("ingredient", "tomyen:" + raw), ("result", OrderedDict([("id", "tomyen:" + cooked)]))]), "food", "tomyen:" + raw)
 
 
 def shapeless(name, ingredients, result, count=1, unlock=None, category="misc"):
@@ -1126,52 +1126,52 @@ def write_recipes():
             cooking(f.name, f.cooked)
     # Fish oil: rendered from oily fish into a bottle; burns like coal, and four of them make a canister of bio-crude
     # for the Refinery (kerosene, then rocket fuel or napalm).
-    shapeless("fish_oil_from_mackerel", ["mymod:mackerel", "minecraft:glass_bottle"], "mymod:fish_oil")
-    shapeless("fish_oil_from_bog_eel", ["mymod:bog_eel", "minecraft:glass_bottle"], "mymod:fish_oil")
-    shapeless("fish_oil_from_magma_eel", ["mymod:magma_eel", "minecraft:glass_bottle", "minecraft:glass_bottle",
-                                          "minecraft:glass_bottle"], "mymod:fish_oil", 3)
-    shapeless("crude_oil_canister_from_fish_oil", ["mymod:empty_canister", "mymod:fish_oil", "mymod:fish_oil",
-                                                   "mymod:fish_oil", "mymod:fish_oil"], "mymod:crude_oil_canister",
-              unlock="mymod:fish_oil")
+    shapeless("fish_oil_from_mackerel", ["tomyen:mackerel", "minecraft:glass_bottle"], "tomyen:fish_oil")
+    shapeless("fish_oil_from_bog_eel", ["tomyen:bog_eel", "minecraft:glass_bottle"], "tomyen:fish_oil")
+    shapeless("fish_oil_from_magma_eel", ["tomyen:magma_eel", "minecraft:glass_bottle", "minecraft:glass_bottle",
+                                          "minecraft:glass_bottle"], "tomyen:fish_oil", 3)
+    shapeless("crude_oil_canister_from_fish_oil", ["tomyen:empty_canister", "tomyen:fish_oil", "tomyen:fish_oil",
+                                                   "tomyen:fish_oil", "tomyen:fish_oil"], "tomyen:crude_oil_canister",
+              unlock="tomyen:fish_oil")
     # The anglerfish's lure lights ink.
-    shapeless("glow_ink_sac_from_anglerfish", ["mymod:anglerfish", "minecraft:ink_sac", "minecraft:ink_sac"],
+    shapeless("glow_ink_sac_from_anglerfish", ["tomyen:anglerfish", "minecraft:ink_sac", "minecraft:ink_sac"],
               "minecraft:glow_ink_sac", 2)
-    shapeless("fae_dust_from_pixie_minnow", ["mymod:pixie_minnow"], "mymod:fae_dust")
+    shapeless("fae_dust_from_pixie_minnow", ["tomyen:pixie_minnow"], "tomyen:fae_dust")
     # Ice char freeze packed ice hard enough for the Froststeel quench.
-    shapeless("blue_ice_from_ice_char", ["mymod:ice_char", "minecraft:packed_ice", "minecraft:packed_ice",
+    shapeless("blue_ice_from_ice_char", ["tomyen:ice_char", "minecraft:packed_ice", "minecraft:packed_ice",
                                          "minecraft:packed_ice", "minecraft:packed_ice"], "minecraft:blue_ice")
     # A drowned soul wrung out of three ghoulfish, into the Foundry for soul steel.
-    shapeless("soul_charge_from_ghoulfish", ["mymod:ghoulfish", "mymod:ghoulfish", "mymod:ghoulfish",
-                                             "#minecraft:soul_fire_base_blocks"], "mymod:soul_charge")
-    shapeless("blaze_powder_from_ember_puffer", ["mymod:ember_puffer"], "minecraft:blaze_powder", 2)
-    shapeless("sculk_from_sculk_gulper", ["mymod:sculk_gulper"], "minecraft:sculk", 2)
-    shapeless("leather_from_old_boot", ["mymod:old_boot"], "minecraft:leather")
+    shapeless("soul_charge_from_ghoulfish", ["tomyen:ghoulfish", "tomyen:ghoulfish", "tomyen:ghoulfish",
+                                             "#minecraft:soul_fire_base_blocks"], "tomyen:soul_charge")
+    shapeless("blaze_powder_from_ember_puffer", ["tomyen:ember_puffer"], "minecraft:blaze_powder", 2)
+    shapeless("sculk_from_sculk_gulper", ["tomyen:sculk_gulper"], "minecraft:sculk", 2)
+    shapeless("leather_from_old_boot", ["tomyen:old_boot"], "minecraft:leather")
     # Tuna is the oiliest fish there is: two bottles from one.
-    shapeless("fish_oil_from_tuna", ["mymod:tuna", "minecraft:glass_bottle", "minecraft:glass_bottle"], "mymod:fish_oil", 2)
+    shapeless("fish_oil_from_tuna", ["tomyen:tuna", "minecraft:glass_bottle", "minecraft:glass_bottle"], "tomyen:fish_oil", 2)
     # Isinglass: a sturgeon's swim bladder boils down to glue, the old way (slime balls, for sticky pistons and leads).
-    shapeless("slime_ball_from_sturgeon", ["mymod:sturgeon"], "minecraft:slime_ball", 3)
+    shapeless("slime_ball_from_sturgeon", ["tomyen:sturgeon"], "minecraft:slime_ball", 3)
     # A mooshroom minnow in a bowl is mushroom stew, near enough.
-    shapeless("mushroom_stew_from_mooshroom_minnow", ["mymod:mooshroom_minnow", "mymod:mooshroom_minnow", "minecraft:bowl"],
+    shapeless("mushroom_stew_from_mooshroom_minnow", ["tomyen:mooshroom_minnow", "tomyen:mooshroom_minnow", "minecraft:bowl"],
               "minecraft:mushroom_stew")
     # A cometfish's scales are flecked with star crystal: it cuts straight into Star Bait.
-    shapeless("star_bait_from_cometfish", ["mymod:cometfish"], "mymod:star_bait", 2)
+    shapeless("star_bait_from_cometfish", ["tomyen:cometfish"], "tomyen:star_bait", 2)
     # Rusty scrap: picked over for tech scrap, or melted down for its iron.
-    shapeless("tech_scrap_from_rusty_scrap", ["mymod:rusty_scrap", "mymod:rusty_scrap"], "mymod:tech_scrap")
+    shapeless("tech_scrap_from_rusty_scrap", ["tomyen:rusty_scrap", "tomyen:rusty_scrap"], "tomyen:tech_scrap")
     for kind, suffix, ticks in (("smelting", "", 200), ("blasting", "_from_blasting", 100)):
         recipe_with_unlock("iron_nugget_from_rusty_scrap" + suffix, OrderedDict([
             ("type", "minecraft:" + kind), ("category", "misc"), ("cookingtime", ticks), ("experience", 0.1),
-            ("ingredient", "mymod:rusty_scrap"), ("result", OrderedDict([("id", "minecraft:iron_nugget")]))]), "misc",
-            "mymod:rusty_scrap")
+            ("ingredient", "tomyen:rusty_scrap"), ("result", OrderedDict([("id", "minecraft:iron_nugget")]))]), "misc",
+            "tomyen:rusty_scrap")
     # The banker pays for the prize fish, and for old coins (listed in its trade sets).
     for level, wanted, emeralds, xp in ((3, "moonscale_koi", 4, 15), (4, "starlit_gar", 6, 15), (3, "sturgeon", 5, 15),
                                         (2, "tuna", 3, 10), (1, "sunken_coin_pouch", 3, 5)):
         write(os.path.join(DATA, "villager_trade", "banker", str(level), wanted + "_emerald.json"), OrderedDict([
             ("gives", OrderedDict([("id", "minecraft:emerald"), ("count", emeralds)])), ("max_uses", 8),
-            ("reputation_discount", 0.05), ("wants", OrderedDict([("id", "mymod:" + wanted)])), ("xp", xp)]))
+            ("reputation_discount", 0.05), ("wants", OrderedDict([("id", "tomyen:" + wanted)])), ("xp", xp)]))
         trade_set = os.path.join(DATA, "trade_set", "banker", "level_%d.json" % level)
         with open(trade_set) as fh:
             obj = json.load(fh, object_pairs_hook=OrderedDict)
-        entry = "mymod:banker/%d/%s_emerald" % (level, wanted)
+        entry = "tomyen:banker/%d/%s_emerald" % (level, wanted)
         if entry not in obj["trades"]:
             obj["trades"].append(entry)
         write(trade_set, obj)
@@ -1180,16 +1180,16 @@ def write_recipes():
 def meteorite_tag():
     """The blocks a fallen meteorite leaves (a crash site's shell and ore): Cometfish bite in water near them."""
     write(os.path.join(DATA, "tags", "block", "meteorite_blocks.json"),
-          OrderedDict([("replace", False), ("values", ["mymod:meteorite_stone", "mymod:meteoric_iron_ore"])]))
+          OrderedDict([("replace", False), ("values", ["tomyen:meteorite_stone", "tomyen:meteoric_iron_ore"])]))
 
 
 # A loot bag's contents: an entry per (item, weight, min count, max count).
 TACKLE_BOX_LOOT = [
-    ("mymod:iron_hook", 6, 1, 1), ("mymod:treble_hook", 4, 1, 1), ("mymod:braided_line", 5, 1, 1),
-    ("mymod:cork_bobber", 6, 1, 2), ("mymod:feather_lure", 5, 1, 1), ("mymod:spinner_lure", 4, 1, 1),
-    ("mymod:rattle_lure", 4, 1, 1), ("mymod:copper_reel", 3, 1, 1), ("mymod:drag_reel", 2, 1, 1),
-    ("mymod:earthworms", 8, 4, 8), ("mymod:crickets", 6, 3, 6), ("mymod:dough_balls", 6, 3, 6),
-    ("mymod:leeches", 4, 2, 4), ("mymod:cut_bait", 4, 2, 4), ("minecraft:string", 5, 2, 5),
+    ("tomyen:iron_hook", 6, 1, 1), ("tomyen:treble_hook", 4, 1, 1), ("tomyen:braided_line", 5, 1, 1),
+    ("tomyen:cork_bobber", 6, 1, 2), ("tomyen:feather_lure", 5, 1, 1), ("tomyen:spinner_lure", 4, 1, 1),
+    ("tomyen:rattle_lure", 4, 1, 1), ("tomyen:copper_reel", 3, 1, 1), ("tomyen:drag_reel", 2, 1, 1),
+    ("tomyen:earthworms", 8, 4, 8), ("tomyen:crickets", 6, 3, 6), ("tomyen:dough_balls", 6, 3, 6),
+    ("tomyen:leeches", 4, 2, 4), ("tomyen:cut_bait", 4, 2, 4), ("minecraft:string", 5, 2, 5),
     ("minecraft:iron_nugget", 4, 2, 6)]
 COIN_POUCH_LOOT = [("minecraft:emerald", 5, 1, 3), ("minecraft:gold_nugget", 6, 3, 9), ("minecraft:gold_ingot", 1, 1, 1)]
 
@@ -1205,7 +1205,7 @@ def loot_bag(name, entries, rolls):
         ("type", "minecraft:gift"),
         ("pools", [OrderedDict([("rolls", OrderedDict([("type", "minecraft:uniform"), ("min", rolls[0]), ("max", rolls[1])])),
                                 ("entries", [entry(*e) for e in entries])])]),
-        ("random_sequence", "mymod:gameplay/" + name)]))
+        ("random_sequence", "tomyen:gameplay/" + name)]))
 
 
 # ====================================================================================================== fish oil
@@ -1226,9 +1226,9 @@ def fish_oil_texture():
             out.append(c)
     png(os.path.join(TEXTURES, "fish_oil.png"), w, h, out)
     write(os.path.join(MODELS, "fish_oil.json"), OrderedDict([("parent", "minecraft:item/generated"),
-                                                               ("textures", OrderedDict(layer0="mymod:item/fish/fish_oil"))]))
+                                                               ("textures", OrderedDict(layer0="tomyen:item/fish/fish_oil"))]))
     write(os.path.join(ITEMS, "fish_oil.json"), {"model": OrderedDict([("type", "minecraft:model"),
-                                                                        ("model", "mymod:item/fish_oil")])})
+                                                                        ("model", "tomyen:item/fish_oil")])})
 
 
 
@@ -1296,9 +1296,9 @@ def merge_lang(entries):
 def generated(name):
     """A flat item: vanilla's item/generated parent with the sprite as its one layer, and its item definition."""
     write(os.path.join(MODELS, name + ".json"), OrderedDict([
-        ("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0="mymod:item/fish/" + name))]))
+        ("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0="tomyen:item/fish/" + name))]))
     write(os.path.join(ITEMS, name + ".json"),
-          {"model": OrderedDict([("type", "minecraft:model"), ("model", "mymod:item/" + name)])})
+          {"model": OrderedDict([("type", "minecraft:model"), ("model", "tomyen:item/" + name)])})
 
 
 def main():
@@ -1309,24 +1309,24 @@ def main():
     for s in SPRITES:
         png(os.path.join(TEXTURES, s.name + ".png"), 16, 16, s.pixels(False))
         generated(s.name)
-        lang["item.mymod." + s.name] = s.title
+        lang["item.tomyen." + s.name] = s.title
         if s.name not in JUNK:
-            tag_values.append("mymod:" + s.name)
+            tag_values.append("tomyen:" + s.name)
         if s.cooked:
             png(os.path.join(TEXTURES, s.cooked + ".png"), 16, 16, s.pixels(True))
             generated(s.cooked)
-            lang["item.mymod." + s.cooked] = s.title_cooked
-            tag_values.append("mymod:" + s.cooked)
+            lang["item.tomyen." + s.cooked] = s.title_cooked
+            tag_values.append("tomyen:" + s.cooked)
         write(os.path.join(SPECIES, s.name + ".json"), species_json(s.name))
     fish_oil_texture()
-    lang["item.mymod.fish_oil"] = "Fish Oil"
-    lang["item.mymod.glowing_mutant_carp.desc"] = "Faintly radioactive"
-    lang["item.mymod.sculk_gulper.desc"] = "Full of swallowed experience"
-    lang["tooltip.mymod.loot_bag.open"] = "Right-click to open"
-    lang["tooltip.mymod.sunken_coin_pouch"] = "A banker pays well for old coins"
-    lang["tooltip.mymod.cometfish"] = "Still warm from the sky"
-    lang["tooltip.mymod.mooshroom_minnow"] = "Tastes like suspicious stew"
-    lang["tooltip.mymod.barracuda"] = "Raw reef predators can carry ciguatera"
+    lang["item.tomyen.fish_oil"] = "Fish Oil"
+    lang["item.tomyen.glowing_mutant_carp.desc"] = "Faintly radioactive"
+    lang["item.tomyen.sculk_gulper.desc"] = "Full of swallowed experience"
+    lang["tooltip.tomyen.loot_bag.open"] = "Right-click to open"
+    lang["tooltip.tomyen.sunken_coin_pouch"] = "A banker pays well for old coins"
+    lang["tooltip.tomyen.cometfish"] = "Still warm from the sky"
+    lang["tooltip.tomyen.mooshroom_minnow"] = "Tastes like suspicious stew"
+    lang["tooltip.tomyen.barracuda"] = "Raw reef predators can carry ciguatera"
     merge_lang(lang)
     write(os.path.join(RES, "data", "minecraft", "tags", "item", "fishes.json"),
           OrderedDict([("replace", False), ("values", tag_values)]))

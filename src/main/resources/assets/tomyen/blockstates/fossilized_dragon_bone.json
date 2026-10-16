@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "tomyen:block/fossilized_dragon_bone",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "tomyen:block/fossilized_dragon_bone"
+    },
+    "axis=z": {
+      "model": "tomyen:block/fossilized_dragon_bone",
+      "x": 90
+    }
+  }
+}

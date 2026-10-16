@@ -1,10 +1,10 @@
-"""Paints the detectors and writes everything around them (see com.jheinz.mymod.detector).
+"""Paints the detectors and writes everything around them (see com.jheinz.tomyen.detector).
 
 Every sprite is a flat 16x16 item texture in vanilla's manner: each part a shape with a one-texel outline, a
 highlight along its upper-left edge and a shadow along its lower-right one, and small palettes with no noise. Parts
 borrow vanilla's colours where they are made of vanilla things (the stick, the string, the iron and copper nuggets, the
 amethyst shard), and the two books start from vanilla's own book sprite, recoloured and given their own marks. Moving
-parts are separate frames picked by the mymod:detector item model property (see DetectorProperty):
+parts are separate frames picked by the tomyen:detector item model property (see DetectorProperty):
 
   prospectors_pendulum_0..6   the bob from far left to far right (reading "pendulum", -1..1)
   metal_detector_0..3         the LED: off, green, amber, red (reading "signal")
@@ -20,7 +20,7 @@ re-pitched) and the English names and HUD strings, merged into the shared files.
 With --preview PATH it also writes a sheet of every sprite, scaled up beside the vanilla items they're made from,
 and mockups of each gadget's HUD panel as DetectorHud draws it.
 
-Usage: python3 tools/gen_detectors.py src/main/resources/assets/mymod [--preview path.png]"""
+Usage: python3 tools/gen_detectors.py src/main/resources/assets/tomyen [--preview path.png]"""
 import json, math, os, sys, zipfile
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -31,7 +31,7 @@ from gen_longswords import client_jar, read_png
 from gunkit import png
 
 ASSETS = ARGS[0] if ARGS else sys.exit(__doc__.rsplit("Usage: ", 1)[1])
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 TEX = os.path.join(ASSETS, "textures", "item")
 JAR = zipfile.ZipFile(client_jar())
 CLEAR = (0, 0, 0, 0)
@@ -409,8 +409,8 @@ HANDHELD = {"metal_detector", "dowsing_rod", "fae_dowsing_rod"}
 
 
 def model(texture, parent="minecraft:item/generated"):
-    write_json(os.path.join(ASSETS, "models", "item", texture + ".json"), {"parent": parent, "textures": {"layer0": "mymod:item/" + texture}})
-    return {"type": "minecraft:model", "model": "mymod:item/" + texture}
+    write_json(os.path.join(ASSETS, "models", "item", texture + ".json"), {"parent": parent, "textures": {"layer0": "tomyen:item/" + texture}})
+    return {"type": "minecraft:model", "model": "tomyen:item/" + texture}
 
 
 def dispatch(prop, entries, fallback, scale=None):
@@ -427,20 +427,20 @@ def define(name, item_model):
 
 # The pendulum: seven bob positions over -1..1, the middle one also the resting sprite.
 pendulum_models = [model(f"prospectors_pendulum_{i}") for i in range(7)]
-define("prospectors_pendulum", dict(dispatch("mymod:detector", [(-1.0 + 2 * (i + 1) / 7.0, pendulum_models[i + 1]) for i in range(6)],
+define("prospectors_pendulum", dict(dispatch("tomyen:detector", [(-1.0 + 2 * (i + 1) / 7.0, pendulum_models[i + 1]) for i in range(6)],
                                              pendulum_models[0]), reading="pendulum"))
 metal = [model(f"metal_detector_{i}", "minecraft:item/handheld") for i in range(4)]
-define("metal_detector", dict(dispatch("mymod:detector", [(0.02, metal[1]), (0.45, metal[2]), (0.75, metal[3])], metal[0]), reading="signal"))
+define("metal_detector", dict(dispatch("tomyen:detector", [(0.02, metal[1]), (0.45, metal[2]), (0.75, metal[3])], metal[0]), reading="signal"))
 scan_none = model("meteorite_scanner")
-define("meteorite_scanner", dict(dispatch("mymod:detector", [(i / 8.0, model(f"meteorite_scanner_{i}")) for i in range(8)], scan_none),
+define("meteorite_scanner", dict(dispatch("tomyen:detector", [(i / 8.0, model(f"meteorite_scanner_{i}")) for i in range(8)], scan_none),
                                  reading="bearing", sectors=8))
 for name in ("dowsing_rod", "fae_dowsing_rod"):
     idle = model(name, "minecraft:item/handheld")
     poses = {p: model(f"{name}_{p}", "minecraft:item/handheld") for p in ("ahead", "right", "left")}
-    define(name, dict(dispatch("mymod:detector", [(0.0, poses["ahead"]), (0.25, poses["right"]), (0.5, idle), (0.75, poses["left"])], idle),
+    define(name, dict(dispatch("tomyen:detector", [(0.0, poses["ahead"]), (0.25, poses["right"]), (0.5, idle), (0.75, poses["left"])], idle),
                       reading="bearing", sectors=4))
 radar_models = [model(n) for n in ("ufo_radar", "ufo_radar_contact", "ufo_radar_alert")]
-define("ufo_radar", dict(dispatch("mymod:detector", [(0.25, radar_models[1]), (0.75, radar_models[2])], radar_models[0]), reading="signal"))
+define("ufo_radar", dict(dispatch("tomyen:detector", [(0.25, radar_models[1]), (0.75, radar_models[2])], radar_models[0]), reading="signal"))
 moon = [model(f"lunar_almanac_{i}") for i in range(8)]
 define("lunar_almanac", dict(dispatch("minecraft:time", [(i / 8.0, moon[i]) for i in range(8)], moon[0]), source="moon_phase", wobble=False))
 define("ledger", model("ledger"))
@@ -452,33 +452,33 @@ def advancement(name, category, unlock):
         "parent": "minecraft:recipes/root",
         "criteria": {
             "has_item": {"conditions": {"items": [{"items": unlock}]}, "trigger": "minecraft:inventory_changed"},
-            "has_the_recipe": {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"}},
+            "has_the_recipe": {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"}},
         "requirements": [["has_item", "has_the_recipe"]],
-        "rewards": {"recipes": ["mymod:" + name]}})
+        "rewards": {"recipes": ["tomyen:" + name]}})
 
 
 def shaped(name, pattern, key, unlock):
     write_json(os.path.join(DATA, "recipe", name + ".json"), {"type": "minecraft:crafting_shaped", "category": "equipment", "key": key,
-                                                              "pattern": pattern, "result": {"count": 1, "id": "mymod:" + name}})
+                                                              "pattern": pattern, "result": {"count": 1, "id": "tomyen:" + name}})
     advancement(name, "tools", unlock)
 
 
 def shapeless(name, ingredients, unlock):
     write_json(os.path.join(DATA, "recipe", name + ".json"), {"type": "minecraft:crafting_shapeless", "category": "equipment",
-                                                              "ingredients": ingredients, "result": {"count": 1, "id": "mymod:" + name}})
+                                                              "ingredients": ingredients, "result": {"count": 1, "id": "tomyen:" + name}})
     advancement(name, "tools", unlock)
 
 
 shaped("prospectors_pendulum", [" C", " S", " N"], {"C": "minecraft:copper_nugget", "S": "minecraft:string", "N": "minecraft:iron_nugget"},
        "minecraft:iron_nugget")
 shaped("dowsing_rod", ["S S", " A ", " S "], {"S": "minecraft:stick", "A": "minecraft:amethyst_shard"}, "minecraft:amethyst_shard")
-shapeless("fae_dowsing_rod", ["mymod:dowsing_rod", "mymod:fae_dust", "mymod:fae_dust"], "mymod:fae_dust")
+shapeless("fae_dowsing_rod", ["tomyen:dowsing_rod", "tomyen:fae_dust", "tomyen:fae_dust"], "tomyen:fae_dust")
 # The metal detector is assembled on the Scrap Bench (scrapbench/BenchRecipes.java).
-shaped("meteorite_scanner", ["SOS", "SXS", "SRS"], {"S": "mymod:steel_ingot", "O": "mymod:optic_lens", "X": "mymod:computer_chip",
-                                                    "R": "minecraft:redstone"}, "mymod:optic_lens")
-shaped("ufo_radar", ["SKS", "XTX", "SRS"], {"S": "mymod:steel_ingot", "K": "mymod:copper_coil", "X": "mymod:computer_chip",
-                                            "T": "mymod:cathode_tube", "R": "minecraft:redstone"}, "mymod:cathode_tube")
-shapeless("lunar_almanac", ["minecraft:book", "minecraft:clock", "mymod:silver_nugget"], "minecraft:clock")
+shaped("meteorite_scanner", ["SOS", "SXS", "SRS"], {"S": "tomyen:steel_ingot", "O": "tomyen:optic_lens", "X": "tomyen:computer_chip",
+                                                    "R": "minecraft:redstone"}, "tomyen:optic_lens")
+shaped("ufo_radar", ["SKS", "XTX", "SRS"], {"S": "tomyen:steel_ingot", "K": "tomyen:copper_coil", "X": "tomyen:computer_chip",
+                                            "T": "tomyen:cathode_tube", "R": "minecraft:redstone"}, "tomyen:cathode_tube")
+shapeless("lunar_almanac", ["minecraft:book", "minecraft:clock", "tomyen:silver_nugget"], "minecraft:clock")
 shapeless("ledger", ["minecraft:book", "minecraft:emerald", "minecraft:ink_sac"], "minecraft:emerald")
 
 
@@ -492,7 +492,7 @@ def merge_json(path, entries):
 
 
 def sound(name, *variants, subtitle=None):
-    return {"subtitle": "subtitles.mymod." + (subtitle or name), "sounds": [dict(v) for v in variants]}
+    return {"subtitle": "subtitles.tomyen." + (subtitle or name), "sounds": [dict(v) for v in variants]}
 
 
 def v(name, pitch=1.0, volume=1.0):
@@ -523,128 +523,128 @@ merge_json(os.path.join(ASSETS, "sounds.json"), {
 
 # ================================================================================================= language
 LANG = {
-    "item.mymod.prospectors_pendulum": "Prospector's Pendulum",
-    "item.mymod.prospectors_pendulum.hint": "Right-click an ore onto it to tune it; held, it swings toward that ore",
-    "item.mymod.prospectors_pendulum.tooltip_tuned": "Tuned to %s",
-    "item.mymod.prospectors_pendulum.tuned": "The pendulum hums: tuned to %s",
-    "item.mymod.prospectors_pendulum.untuned": "Untuned: right-click an ore onto it, or use it with an ore in your other hand",
-    "item.mymod.metal_detector": "Metal Detector",
-    "item.mymod.metal_detector.hint": "Beeps faster near metal ore, meteorite fragments, buried caches and dropped scrap",
-    "item.mymod.meteorite_scanner": "Meteorite Scanner",
-    "item.mymod.meteorite_scanner.hint": "Points to the nearest meteorite crash site found so far",
-    "item.mymod.dowsing_rod": "Dowsing Rod",
-    "item.mymod.dowsing_rod.hint": "Tugs toward the nearest Fae Ring, if one is close",
-    "item.mymod.fae_dowsing_rod": "Fae Dowsing Rod",
-    "item.mymod.fae_dowsing_rod.hint": "Points to the nearest Fae Ring, and says how far",
-    "item.mymod.ufo_radar": "UFO Radar",
-    "item.mymod.ufo_radar.hint": "Shows saucers nearby; carried anywhere, it warns of new contacts, abductions and landings",
-    "item.mymod.lunar_almanac": "Lunar Almanac",
-    "item.mymod.lunar_almanac.hint": "Tonight's moon, and the nights until the next full moon",
-    "item.mymod.lunar_almanac.reading": "%s: %s",
-    "item.mymod.ledger": "Ledger",
-    "item.mymod.ledger.hint": "Keeps your books: vault, cards, debt and when it's due",
-    "item.mymod.ledger.vault": "Vault: %s emeralds",
-    "item.mymod.ledger.cards": "Credit cards: %s of %s charged",
-    "detector.mymod.pendulum.untuned": "Untuned",
-    "detector.mymod.pendulum.tune_hint": "Right-click an ore onto it",
-    "detector.mymod.pendulum.tuned": "Tuned: %s",
-    "detector.mymod.pendulum.still": "Hangs still: none within %s",
-    "detector.mymod.pendulum.pull_level": "%s %s",
-    "detector.mymod.pendulum.pull_below": "%s %s, below",
-    "detector.mymod.pendulum.pull_above": "%s %s, above",
-    "detector.mymod.pendulum.pull.strong": "Strong pull",
-    "detector.mymod.pendulum.pull.steady": "Steady pull",
-    "detector.mymod.pendulum.pull.faint": "Faint pull",
-    "detector.mymod.metal.none": "No signal",
-    "detector.mymod.metal.signal": "Signal %s%%",
-    "detector.mymod.metal.sweep": "Sweep it low and slow",
-    "detector.mymod.metal.find": "%s, %s",
-    "detector.mymod.metal.below": "%s down",
-    "detector.mymod.metal.above": "%s up",
-    "detector.mymod.metal.level": "level",
-    "detector.mymod.metal.kind.ore": "Ore",
-    "detector.mymod.metal.kind.meteorite": "Meteoric",
-    "detector.mymod.metal.kind.cache": "A cache",
-    "detector.mymod.metal.kind.buried": "Buried",
-    "detector.mymod.metal.kind.scrap": "Scrap",
-    "detector.mymod.scanner.wrong_world": "No crash sites in this world",
-    "detector.mymod.scanner.none": "No crash site logged",
-    "detector.mymod.scanner.none_range": "within %s blocks",
-    "detector.mymod.scanner.site": "%s Crash site, %s m",
-    "detector.mymod.scanner.here": "Crash site right here",
-    "detector.mymod.scanner.dig": "The core lies under the crater",
-    "detector.mymod.scanner.meteor": "Meteor falling! %s m %s",
-    "detector.mymod.rod.feywild": "The rod spins wildly",
-    "detector.mymod.rod.wrong_world": "No fae rings in this world",
-    "detector.mymod.rod.none": "Nothing stirs",
-    "detector.mymod.rod.none_range": "No ring within %s blocks",
-    "detector.mymod.rod.here": "The rod dips: a ring is here",
-    "detector.mymod.rod.ring": "%s Fae ring, %s m",
-    "detector.mymod.rod.tug": "%s %s",
-    "detector.mymod.rod.tug.strong": "Strong tug",
-    "detector.mymod.rod.tug.steady": "Steady tug",
-    "detector.mymod.rod.tug.faint": "Faint tug",
-    "detector.mymod.rod.awake": "Rings are awake tonight",
-    "detector.mymod.rod.asleep": "Rings wake at nightfall",
-    "detector.mymod.radar.clear": "Clear for %s blocks",
-    "detector.mymod.radar.contact": "1 contact",
-    "detector.mymod.radar.contacts": "%s contacts",
-    "detector.mymod.radar.new_contact": "UFO Radar: contact, %s m %s",
-    "detector.mymod.radar.abducting": "Abduction! %s m %s",
-    "detector.mymod.radar.landing": "UFO landing, %s m %s",
-    "detector.mymod.moon.none": "No moon here",
-    "detector.mymod.moon.full_moon": "Full Moon",
-    "detector.mymod.moon.waning_gibbous": "Waning Gibbous",
-    "detector.mymod.moon.third_quarter": "Third Quarter",
-    "detector.mymod.moon.waning_crescent": "Waning Crescent",
-    "detector.mymod.moon.new_moon": "New Moon",
-    "detector.mymod.moon.waxing_crescent": "Waxing Crescent",
-    "detector.mymod.moon.first_quarter": "First Quarter",
-    "detector.mymod.moon.waxing_gibbous": "Waxing Gibbous",
-    "detector.mymod.moon.full_now": "Full moon: they walk tonight",
-    "detector.mymod.moon.full_tonight": "Full moon tonight",
-    "detector.mymod.moon.full_in_one": "Full moon tomorrow night",
-    "detector.mymod.moon.full_in": "Full moon in %s nights",
-    "detector.mymod.almanac.omen": "Something is wrong here...",
-    "detector.mymod.almanac.hunted": "Something is hunting nearby",
-    "detector.mymod.ledger.vault": "Vault: %s emeralds",
-    "detector.mymod.ledger.vault_unknown": "Vault: ?",
-    "detector.mymod.ledger.cards": "Cards: %s / %s charged",
-    "detector.mymod.ledger.debt_free": "Debt free",
-    "detector.mymod.ledger.owed": "Owed: %s emeralds",
-    "detector.mymod.ledger.due": "Collectors in %s",
-    "detector.mymod.ledger.hunting": "Collectors are hunting you!",
-    "detector.mymod.ore.coal": "Coal",
-    "detector.mymod.ore.iron": "Iron",
-    "detector.mymod.ore.copper": "Copper",
-    "detector.mymod.ore.gold": "Gold",
-    "detector.mymod.ore.redstone": "Redstone",
-    "detector.mymod.ore.lapis": "Lapis",
-    "detector.mymod.ore.diamond": "Diamond",
-    "detector.mymod.ore.emerald": "Emerald",
-    "detector.mymod.ore.quartz": "Quartz",
-    "detector.mymod.ore.ancient_debris": "Ancient Debris",
-    "detector.mymod.ore.silver": "Silver",
-    "detector.mymod.ore.fae_silver": "Fae Silver",
-    "detector.mymod.ore.tungsten": "Tungsten",
-    "detector.mymod.ore.uranium": "Uranium",
-    "detector.mymod.ore.meteoric_iron": "Meteoric Iron",
-    "detector.mymod.ore.bauxite": "Bauxite",
-    "detector.mymod.ore.oil_shale": "Oil Shale",
-    "detector.mymod.ore.dragon_scale_fossil": "Dragon Fossil",
-    "subtitles.mymod.pendulum_tune": "Pendulum hums",
-    "subtitles.mymod.pendulum_tick": "Pendulum ticks",
-    "subtitles.mymod.pendulum_found": "Pendulum chimes",
-    "subtitles.mymod.metal_detector_beep": "Metal detector beeps",
-    "subtitles.mymod.meteorite_scanner_ping": "Scanner pings",
-    "subtitles.mymod.meteorite_scanner_arrived": "Scanner locks on",
-    "subtitles.mymod.dowsing_rod_twitch": "Dowsing rod twitches",
-    "subtitles.mymod.ufo_radar_sweep": "Radar blips",
-    "subtitles.mymod.ufo_radar_contact": "Radar contact",
-    "subtitles.mymod.ufo_radar_alarm": "Radar alarm",
-    "subtitles.mymod.lunar_almanac_open": "Almanac pages turn",
-    "subtitles.mymod.lunar_almanac_omen": "Something feels wrong",
-    "subtitles.mymod.ledger_open": "Ledger opens",
+    "item.tomyen.prospectors_pendulum": "Prospector's Pendulum",
+    "item.tomyen.prospectors_pendulum.hint": "Right-click an ore onto it to tune it; held, it swings toward that ore",
+    "item.tomyen.prospectors_pendulum.tooltip_tuned": "Tuned to %s",
+    "item.tomyen.prospectors_pendulum.tuned": "The pendulum hums: tuned to %s",
+    "item.tomyen.prospectors_pendulum.untuned": "Untuned: right-click an ore onto it, or use it with an ore in your other hand",
+    "item.tomyen.metal_detector": "Metal Detector",
+    "item.tomyen.metal_detector.hint": "Beeps faster near metal ore, meteorite fragments, buried caches and dropped scrap",
+    "item.tomyen.meteorite_scanner": "Meteorite Scanner",
+    "item.tomyen.meteorite_scanner.hint": "Points to the nearest meteorite crash site found so far",
+    "item.tomyen.dowsing_rod": "Dowsing Rod",
+    "item.tomyen.dowsing_rod.hint": "Tugs toward the nearest Fae Ring, if one is close",
+    "item.tomyen.fae_dowsing_rod": "Fae Dowsing Rod",
+    "item.tomyen.fae_dowsing_rod.hint": "Points to the nearest Fae Ring, and says how far",
+    "item.tomyen.ufo_radar": "UFO Radar",
+    "item.tomyen.ufo_radar.hint": "Shows saucers nearby; carried anywhere, it warns of new contacts, abductions and landings",
+    "item.tomyen.lunar_almanac": "Lunar Almanac",
+    "item.tomyen.lunar_almanac.hint": "Tonight's moon, and the nights until the next full moon",
+    "item.tomyen.lunar_almanac.reading": "%s: %s",
+    "item.tomyen.ledger": "Ledger",
+    "item.tomyen.ledger.hint": "Keeps your books: vault, cards, debt and when it's due",
+    "item.tomyen.ledger.vault": "Vault: %s emeralds",
+    "item.tomyen.ledger.cards": "Credit cards: %s of %s charged",
+    "detector.tomyen.pendulum.untuned": "Untuned",
+    "detector.tomyen.pendulum.tune_hint": "Right-click an ore onto it",
+    "detector.tomyen.pendulum.tuned": "Tuned: %s",
+    "detector.tomyen.pendulum.still": "Hangs still: none within %s",
+    "detector.tomyen.pendulum.pull_level": "%s %s",
+    "detector.tomyen.pendulum.pull_below": "%s %s, below",
+    "detector.tomyen.pendulum.pull_above": "%s %s, above",
+    "detector.tomyen.pendulum.pull.strong": "Strong pull",
+    "detector.tomyen.pendulum.pull.steady": "Steady pull",
+    "detector.tomyen.pendulum.pull.faint": "Faint pull",
+    "detector.tomyen.metal.none": "No signal",
+    "detector.tomyen.metal.signal": "Signal %s%%",
+    "detector.tomyen.metal.sweep": "Sweep it low and slow",
+    "detector.tomyen.metal.find": "%s, %s",
+    "detector.tomyen.metal.below": "%s down",
+    "detector.tomyen.metal.above": "%s up",
+    "detector.tomyen.metal.level": "level",
+    "detector.tomyen.metal.kind.ore": "Ore",
+    "detector.tomyen.metal.kind.meteorite": "Meteoric",
+    "detector.tomyen.metal.kind.cache": "A cache",
+    "detector.tomyen.metal.kind.buried": "Buried",
+    "detector.tomyen.metal.kind.scrap": "Scrap",
+    "detector.tomyen.scanner.wrong_world": "No crash sites in this world",
+    "detector.tomyen.scanner.none": "No crash site logged",
+    "detector.tomyen.scanner.none_range": "within %s blocks",
+    "detector.tomyen.scanner.site": "%s Crash site, %s m",
+    "detector.tomyen.scanner.here": "Crash site right here",
+    "detector.tomyen.scanner.dig": "The core lies under the crater",
+    "detector.tomyen.scanner.meteor": "Meteor falling! %s m %s",
+    "detector.tomyen.rod.feywild": "The rod spins wildly",
+    "detector.tomyen.rod.wrong_world": "No fae rings in this world",
+    "detector.tomyen.rod.none": "Nothing stirs",
+    "detector.tomyen.rod.none_range": "No ring within %s blocks",
+    "detector.tomyen.rod.here": "The rod dips: a ring is here",
+    "detector.tomyen.rod.ring": "%s Fae ring, %s m",
+    "detector.tomyen.rod.tug": "%s %s",
+    "detector.tomyen.rod.tug.strong": "Strong tug",
+    "detector.tomyen.rod.tug.steady": "Steady tug",
+    "detector.tomyen.rod.tug.faint": "Faint tug",
+    "detector.tomyen.rod.awake": "Rings are awake tonight",
+    "detector.tomyen.rod.asleep": "Rings wake at nightfall",
+    "detector.tomyen.radar.clear": "Clear for %s blocks",
+    "detector.tomyen.radar.contact": "1 contact",
+    "detector.tomyen.radar.contacts": "%s contacts",
+    "detector.tomyen.radar.new_contact": "UFO Radar: contact, %s m %s",
+    "detector.tomyen.radar.abducting": "Abduction! %s m %s",
+    "detector.tomyen.radar.landing": "UFO landing, %s m %s",
+    "detector.tomyen.moon.none": "No moon here",
+    "detector.tomyen.moon.full_moon": "Full Moon",
+    "detector.tomyen.moon.waning_gibbous": "Waning Gibbous",
+    "detector.tomyen.moon.third_quarter": "Third Quarter",
+    "detector.tomyen.moon.waning_crescent": "Waning Crescent",
+    "detector.tomyen.moon.new_moon": "New Moon",
+    "detector.tomyen.moon.waxing_crescent": "Waxing Crescent",
+    "detector.tomyen.moon.first_quarter": "First Quarter",
+    "detector.tomyen.moon.waxing_gibbous": "Waxing Gibbous",
+    "detector.tomyen.moon.full_now": "Full moon: they walk tonight",
+    "detector.tomyen.moon.full_tonight": "Full moon tonight",
+    "detector.tomyen.moon.full_in_one": "Full moon tomorrow night",
+    "detector.tomyen.moon.full_in": "Full moon in %s nights",
+    "detector.tomyen.almanac.omen": "Something is wrong here...",
+    "detector.tomyen.almanac.hunted": "Something is hunting nearby",
+    "detector.tomyen.ledger.vault": "Vault: %s emeralds",
+    "detector.tomyen.ledger.vault_unknown": "Vault: ?",
+    "detector.tomyen.ledger.cards": "Cards: %s / %s charged",
+    "detector.tomyen.ledger.debt_free": "Debt free",
+    "detector.tomyen.ledger.owed": "Owed: %s emeralds",
+    "detector.tomyen.ledger.due": "Collectors in %s",
+    "detector.tomyen.ledger.hunting": "Collectors are hunting you!",
+    "detector.tomyen.ore.coal": "Coal",
+    "detector.tomyen.ore.iron": "Iron",
+    "detector.tomyen.ore.copper": "Copper",
+    "detector.tomyen.ore.gold": "Gold",
+    "detector.tomyen.ore.redstone": "Redstone",
+    "detector.tomyen.ore.lapis": "Lapis",
+    "detector.tomyen.ore.diamond": "Diamond",
+    "detector.tomyen.ore.emerald": "Emerald",
+    "detector.tomyen.ore.quartz": "Quartz",
+    "detector.tomyen.ore.ancient_debris": "Ancient Debris",
+    "detector.tomyen.ore.silver": "Silver",
+    "detector.tomyen.ore.fae_silver": "Fae Silver",
+    "detector.tomyen.ore.tungsten": "Tungsten",
+    "detector.tomyen.ore.uranium": "Uranium",
+    "detector.tomyen.ore.meteoric_iron": "Meteoric Iron",
+    "detector.tomyen.ore.bauxite": "Bauxite",
+    "detector.tomyen.ore.oil_shale": "Oil Shale",
+    "detector.tomyen.ore.dragon_scale_fossil": "Dragon Fossil",
+    "subtitles.tomyen.pendulum_tune": "Pendulum hums",
+    "subtitles.tomyen.pendulum_tick": "Pendulum ticks",
+    "subtitles.tomyen.pendulum_found": "Pendulum chimes",
+    "subtitles.tomyen.metal_detector_beep": "Metal detector beeps",
+    "subtitles.tomyen.meteorite_scanner_ping": "Scanner pings",
+    "subtitles.tomyen.meteorite_scanner_arrived": "Scanner locks on",
+    "subtitles.tomyen.dowsing_rod_twitch": "Dowsing rod twitches",
+    "subtitles.tomyen.ufo_radar_sweep": "Radar blips",
+    "subtitles.tomyen.ufo_radar_contact": "Radar contact",
+    "subtitles.tomyen.ufo_radar_alarm": "Radar alarm",
+    "subtitles.tomyen.lunar_almanac_open": "Almanac pages turn",
+    "subtitles.tomyen.lunar_almanac_omen": "Something feels wrong",
+    "subtitles.tomyen.ledger_open": "Ledger opens",
 }
 merge_json(os.path.join(ASSETS, "lang", "en_us.json"), LANG)
 

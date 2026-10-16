@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/spyglass_in_hand",
-  "textures": {
-    "spyglass": "mymod:item/starlight_lens_model"
-  }
-}

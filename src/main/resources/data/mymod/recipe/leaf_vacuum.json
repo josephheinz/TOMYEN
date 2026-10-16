@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:crafting_transmute",
-  "category": "equipment",
-  "input": "mymod:leaf_blower",
-  "material": "mymod:vacuum_kit",
-  "result": {
-    "id": "mymod:leaf_vacuum"
-  }
-}

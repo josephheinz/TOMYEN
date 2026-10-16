@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "mymod:item/fish/glowing_mutant_carp_spawn_egg"
-  }
-}

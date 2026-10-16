@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "tomyen:star_steel"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "tomyen:star_steel"
+      }
+    ]
+  }
+}

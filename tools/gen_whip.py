@@ -5,11 +5,11 @@ recipe (with its recipe-book advancement) and adds the whip to the melee weapon 
 With ffmpeg on the path it also synthesises the crack and snag sounds (stereo, like gen_industry.py's: ffmpeg's own
 Vorbis encoder only takes two channels).
 
-Usage: python3 tools/gen_whip.py src/main/resources/assets/mymod"""
+Usage: python3 tools/gen_whip.py src/main/resources/assets/tomyen"""
 import json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave, zlib
 from collections import OrderedDict
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
 DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data"))
 rnd = random.Random(61)
@@ -203,28 +203,28 @@ def write(path, obj):
 
 
 write(os.path.join(MODELS, "nose_hair_whip.json"),
-      OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/nose_hair_whip"})]))
+      OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/nose_hair_whip"})]))
 write(os.path.join(MODELS, "nose_hair_whip_in_hand.json"),
-      OrderedDict([("parent", "minecraft:item/handheld"), ("textures", {"layer0": "mymod:item/nose_hair_whip_in_hand"})]))
+      OrderedDict([("parent", "minecraft:item/handheld"), ("textures", {"layer0": "tomyen:item/nose_hair_whip_in_hand"})]))
 write(os.path.join(ITEMS, "nose_hair_whip.json"), {"model": OrderedDict([
     ("type", "minecraft:select"), ("property", "minecraft:display_context"),
-    ("cases", [{"when": ["gui", "ground", "fixed"], "model": {"type": "minecraft:model", "model": "mymod:item/nose_hair_whip"}}]),
-    ("fallback", {"type": "minecraft:model", "model": "mymod:item/nose_hair_whip_in_hand"})])})
-write(os.path.join(ASSETS, "particles/whip_crack.json"), {"textures": ["mymod:whip_crack_%d" % i for i in range(4)]})
+    ("cases", [{"when": ["gui", "ground", "fixed"], "model": {"type": "minecraft:model", "model": "tomyen:item/nose_hair_whip"}}]),
+    ("fallback", {"type": "minecraft:model", "model": "tomyen:item/nose_hair_whip_in_hand"})])})
+write(os.path.join(ASSETS, "particles/whip_crack.json"), {"textures": ["tomyen:whip_crack_%d" % i for i in range(4)]})
 
 # Six nose hairs braided onto a stick, bound on with a Giant Booger.
-write(os.path.join(DATA, "mymod/recipe/nose_hair_whip.json"), OrderedDict([
+write(os.path.join(DATA, "tomyen/recipe/nose_hair_whip.json"), OrderedDict([
     ("type", "minecraft:crafting_shaped"), ("category", "equipment"),
-    ("key", OrderedDict([("B", "mymod:giant_booger"), ("H", "mymod:nose_hair"), ("S", "minecraft:stick")])),
+    ("key", OrderedDict([("B", "tomyen:giant_booger"), ("H", "tomyen:nose_hair"), ("S", "minecraft:stick")])),
     ("pattern", ["HHH", "HBH", "SH "]),
-    ("result", OrderedDict([("count", 1), ("id", "mymod:nose_hair_whip")]))]))
-write(os.path.join(DATA, "mymod/advancement/recipes/combat/nose_hair_whip.json"), OrderedDict([
+    ("result", OrderedDict([("count", 1), ("id", "tomyen:nose_hair_whip")]))]))
+write(os.path.join(DATA, "tomyen/advancement/recipes/combat/nose_hair_whip.json"), OrderedDict([
     ("parent", "minecraft:recipes/root"),
     ("criteria", OrderedDict([
-        ("has_nose_hair", {"conditions": {"items": [{"items": "mymod:nose_hair"}]}, "trigger": "minecraft:inventory_changed"}),
-        ("has_the_recipe", {"conditions": {"recipes": "mymod:nose_hair_whip"}, "trigger": "minecraft:recipe_unlocked"})])),
+        ("has_nose_hair", {"conditions": {"items": [{"items": "tomyen:nose_hair"}]}, "trigger": "minecraft:inventory_changed"}),
+        ("has_the_recipe", {"conditions": {"recipes": "tomyen:nose_hair_whip"}, "trigger": "minecraft:recipe_unlocked"})])),
     ("requirements", [["has_nose_hair", "has_the_recipe"]]),
-    ("rewards", {"recipes": ["mymod:nose_hair_whip"]})]))
+    ("rewards", {"recipes": ["tomyen:nose_hair_whip"]})]))
 
 
 def add_to_tag(rel, entry):
@@ -236,8 +236,8 @@ def add_to_tag(rel, entry):
 
 
 # Melee weapon: Sharpness, Smite, Bane of Arthropods, Knockback, Fire Aspect and Looting. Durability: Unbreaking and Mending.
-add_to_tag("enchantable/melee_weapon.json", "mymod:nose_hair_whip")
-add_to_tag("enchantable/durability.json", "mymod:nose_hair_whip")
+add_to_tag("enchantable/melee_weapon.json", "tomyen:nose_hair_whip")
+add_to_tag("enchantable/durability.json", "tomyen:nose_hair_whip")
 
 # ---------------------------------------------------------------------------------------------- sounds
 RATE = 44100

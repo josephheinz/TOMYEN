@@ -1,0 +1,9 @@
+{
+  "amount": 3,
+  "random_sequence": "tomyen:trade_set/banker/level_4",
+  "trades": [
+    "tomyen:banker/4/diamond_emerald",
+    "tomyen:banker/4/emerald_gold_block",
+    "tomyen:banker/4/starlit_gar_emerald"
+  ]
+}

@@ -1,0 +1,306 @@
+{
+  "credit": "tomyen muzzle flash - generated",
+  "texture_size": [
+    32,
+    32
+  ],
+  "textures": {
+    "flash": "tomyen:item/muzzle_flash",
+    "particle": "tomyen:item/muzzle_flash"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        -0.61,
+        0.59
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        -0.61,
+        0.59
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -8,
+        0
+      ],
+      "translation": [
+        -0.235,
+        2.504,
+        1.664
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -8,
+        0
+      ],
+      "translation": [
+        -0.235,
+        2.504,
+        1.664
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "elements": [
+    {
+      "from": [
+        7.99,
+        8.45,
+        -9.8
+      ],
+      "to": [
+        8.01,
+        10.95,
+        -5.05
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "rotation": {
+        "angle": 60.0,
+        "axis": "z",
+        "origin": [
+          8.0,
+          9.7,
+          -7.425
+        ]
+      },
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        }
+      }
+    },
+    {
+      "from": [
+        6.75,
+        9.69,
+        -9.87
+      ],
+      "to": [
+        9.25,
+        9.71,
+        -5.12
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "rotation": {
+        "angle": 60.0,
+        "axis": "z",
+        "origin": [
+          8.0,
+          9.7,
+          -7.495
+        ]
+      },
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            6,
+            6,
+            16
+          ],
+          "texture": "#flash"
+        },
+        "down": {
+          "uv": [
+            0,
+            6,
+            6,
+            16
+          ],
+          "texture": "#flash"
+        }
+      }
+    },
+    {
+      "from": [
+        7.99,
+        8.7,
+        -9.2
+      ],
+      "to": [
+        8.01,
+        10.7,
+        -5.07
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "rotation": {
+        "angle": 105.0,
+        "axis": "z",
+        "origin": [
+          8.0,
+          9.7,
+          -7.135
+        ]
+      },
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#flash"
+        }
+      }
+    },
+    {
+      "from": [
+        6.875,
+        8.575,
+        -5.45
+      ],
+      "to": [
+        9.125,
+        10.825,
+        -5.44
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "rotation": {
+        "angle": 60.0,
+        "axis": "z",
+        "origin": [
+          8.0,
+          9.7,
+          -5.445
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            6,
+            16,
+            16
+          ],
+          "texture": "#flash"
+        },
+        "south": {
+          "uv": [
+            6,
+            6,
+            16,
+            16
+          ],
+          "texture": "#flash"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:mech_gantry"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "tomyen:blocks/mech_gantry"
+}

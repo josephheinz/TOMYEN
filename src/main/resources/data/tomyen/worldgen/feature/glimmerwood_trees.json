@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:random_selector",
+  "default": "tomyen:glimmerwood_tree_checked",
+  "features": [
+    {
+      "chance": 0.35,
+      "feature": "tomyen:fancy_glimmerwood_tree_checked"
+    }
+  ]
+}

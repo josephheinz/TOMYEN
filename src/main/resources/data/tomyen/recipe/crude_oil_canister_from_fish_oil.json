@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:empty_canister",
+    "tomyen:fish_oil",
+    "tomyen:fish_oil",
+    "tomyen:fish_oil",
+    "tomyen:fish_oil"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:crude_oil_canister"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "tomyen:detector",
+    "entries": [
+      {
+        "threshold": -0.7142857142857143,
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/prospectors_pendulum_1"
+        }
+      },
+      {
+        "threshold": -0.4285714285714286,
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/prospectors_pendulum_2"
+        }
+      },
+      {
+        "threshold": -0.1428571428571429,
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/prospectors_pendulum_3"
+        }
+      },
+      {
+        "threshold": 0.1428571428571428,
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/prospectors_pendulum_4"
+        }
+      },
+      {
+        "threshold": 0.4285714285714286,
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/prospectors_pendulum_5"
+        }
+      },
+      {
+        "threshold": 0.7142857142857142,
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/prospectors_pendulum_6"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "tomyen:item/prospectors_pendulum_0"
+    },
+    "reading": "pendulum"
+  }
+}

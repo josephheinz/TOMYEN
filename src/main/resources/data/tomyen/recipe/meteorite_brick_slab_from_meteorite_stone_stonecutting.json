@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "tomyen:meteorite_stone",
+  "result": {
+    "count": 2,
+    "id": "tomyen:meteorite_brick_slab"
+  }
+}

@@ -1,10 +1,10 @@
 {
   "values": [
-    "mymod:bleeding",
-    "mymod:neural_overload",
-    "mymod:optic_laser",
-    "mymod:radiation",
-    "mymod:napalm",
-    "mymod:napalm_burn"
+    "tomyen:bleeding",
+    "tomyen:neural_overload",
+    "tomyen:optic_laser",
+    "tomyen:radiation",
+    "tomyen:napalm",
+    "tomyen:napalm_burn"
   ]
 }

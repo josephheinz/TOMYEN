@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "mymod:block/polished_meteorite_stone",
-    "side": "mymod:block/polished_meteorite_stone",
-    "top": "mymod:block/polished_meteorite_stone"
-  }
-}

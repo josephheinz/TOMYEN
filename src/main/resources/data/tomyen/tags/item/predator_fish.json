@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cod",
+    "minecraft:salmon",
+    "tomyen:pike",
+    "tomyen:swordfish",
+    "tomyen:anglerfish",
+    "tomyen:starlit_gar",
+    "tomyen:magma_eel",
+    "tomyen:mud_catfish",
+    "tomyen:bog_eel",
+    "tomyen:largemouth_bass",
+    "tomyen:walleye",
+    "tomyen:tuna",
+    "tomyen:mahi_mahi",
+    "tomyen:barracuda"
+  ]
+}

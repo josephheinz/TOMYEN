@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "mymod:item/shell_12g_holy_silver_buckshot"
-  }
-}

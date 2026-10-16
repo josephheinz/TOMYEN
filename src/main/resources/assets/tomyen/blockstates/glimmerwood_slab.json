@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tomyen:block/glimmerwood_slab"
+    },
+    "type=double": {
+      "model": "tomyen:block/glimmerwood_planks"
+    },
+    "type=top": {
+      "model": "tomyen:block/glimmerwood_slab_top"
+    }
+  }
+}

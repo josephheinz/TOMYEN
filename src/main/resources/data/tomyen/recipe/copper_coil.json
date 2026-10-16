@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "R": "tomyen:rubber"
+  },
+  "pattern": [
+    " C ",
+    "CRC",
+    " C "
+  ],
+  "result": {
+    "count": 2,
+    "id": "tomyen:copper_coil"
+  }
+}

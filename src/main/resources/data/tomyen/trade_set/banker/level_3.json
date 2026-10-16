@@ -1,0 +1,11 @@
+{
+  "amount": 3,
+  "random_sequence": "tomyen:trade_set/banker/level_3",
+  "trades": [
+    "tomyen:banker/3/emerald_and_gold_ingot_gold_credit_card",
+    "tomyen:banker/3/emerald_clock",
+    "tomyen:banker/3/moonscale_koi_emerald",
+    "tomyen:banker/3/sturgeon_emerald",
+    "tomyen:banker/3/emerald_blueprint"
+  ]
+}

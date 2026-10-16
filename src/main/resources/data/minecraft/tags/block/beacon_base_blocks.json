@@ -1,10 +1,10 @@
 {
   "values": [
-    "mymod:magmasteel_block",
-    "mymod:soul_steel_block",
-    "mymod:star_steel_block",
-    "mymod:froststeel_block",
-    "mymod:voidsteel_block",
-    "mymod:bloom_steel_block"
+    "tomyen:magmasteel_block",
+    "tomyen:soul_steel_block",
+    "tomyen:star_steel_block",
+    "tomyen:froststeel_block",
+    "tomyen:voidsteel_block",
+    "tomyen:bloom_steel_block"
   ]
 }

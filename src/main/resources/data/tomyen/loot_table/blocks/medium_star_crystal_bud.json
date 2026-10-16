@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": "minecraft:tool/can_silk_touch",
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:medium_star_crystal_bud"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "tomyen:blocks/medium_star_crystal_bud"
+}

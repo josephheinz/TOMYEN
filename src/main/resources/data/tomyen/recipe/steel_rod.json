@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "M": "tomyen:steel_ingot",
+    "S": "minecraft:string",
+    "H": "tomyen:rubber"
+  },
+  "pattern": [
+    "  M",
+    " MS",
+    "H S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:steel_rod"
+  }
+}

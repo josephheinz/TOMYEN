@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "minecraft:copper_nugget",
+    "G": "minecraft:gunpowder",
+    "I": "minecraft:iron_ingot",
+    "P": "minecraft:paper"
+  },
+  "pattern": [
+    " I ",
+    "PGP",
+    " C "
+  ],
+  "result": {
+    "count": 4,
+    "id": "tomyen:shell_12g_slug"
+  }
+}

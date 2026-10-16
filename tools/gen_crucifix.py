@@ -424,7 +424,7 @@ def display(rot, tr, sc):
 
 
 write(os.path.join(MODELS, "crucifix.json"), OrderedDict([
-    ("textures", OrderedDict([("parts", "mymod:item/crucifix_parts"), ("particle", "mymod:item/crucifix_parts")])),
+    ("textures", OrderedDict([("parts", "tomyen:item/crucifix_parts"), ("particle", "tomyen:item/crucifix_parts")])),
     ("elements", elements),
     ("display", OrderedDict([
         ("thirdperson_righthand", display([0, 0, 0], [0, 2.0, 1.5], 0.5)),
@@ -435,17 +435,17 @@ write(os.path.join(MODELS, "crucifix.json"), OrderedDict([
     ])),
 ]))
 # Held up and out toward the middle of the screen while charging a beam.
-write(os.path.join(MODELS, "crucifix_raised.json"), OrderedDict([("parent", "mymod:item/crucifix"), ("display", OrderedDict([
+write(os.path.join(MODELS, "crucifix_raised.json"), OrderedDict([("parent", "tomyen:item/crucifix"), ("display", OrderedDict([
     ("thirdperson_righthand", display([-70, 0, 0], [0, 4, 3], 0.55)),
     ("firstperson_righthand", display([0, 0, 0], [-4.5, 5.5, -5.5], 0.62)),
 ]))]))
-write(os.path.join(MODELS, "crucifix_icon.json"), OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/crucifix"})]))
+write(os.path.join(MODELS, "crucifix_icon.json"), OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/crucifix"})]))
 write(os.path.join(ITEMS, "crucifix.json"), {"model": OrderedDict([
     ("type", "minecraft:select"), ("property", "minecraft:display_context"),
-    ("cases", [{"when": ["gui"], "model": {"type": "minecraft:model", "model": "mymod:item/crucifix_icon"}}]),
+    ("cases", [{"when": ["gui"], "model": {"type": "minecraft:model", "model": "tomyen:item/crucifix_icon"}}]),
     ("fallback", OrderedDict([("type", "minecraft:condition"), ("property", "minecraft:using_item"),
-                              ("on_true", {"type": "minecraft:model", "model": "mymod:item/crucifix_raised"}),
-                              ("on_false", {"type": "minecraft:model", "model": "mymod:item/crucifix"})]))])})
+                              ("on_true", {"type": "minecraft:model", "model": "tomyen:item/crucifix_raised"}),
+                              ("on_false", {"type": "minecraft:model", "model": "tomyen:item/crucifix"})]))])})
 
 # ----------------------------------------------------------------------------------------------- 32x32 sprite
 S = 32

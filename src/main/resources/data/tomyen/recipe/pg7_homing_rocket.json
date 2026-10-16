@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "tomyen:computer_chip",
+    "D": "minecraft:diamond",
+    "P": "minecraft:glass_pane",
+    "R": "tomyen:pg7_rocket"
+  },
+  "pattern": [
+    " P ",
+    "CRC",
+    " D "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:pg7_homing_rocket"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "tomyen:star_steel_ingot",
+    "C": "tomyen:star_crystal_block",
+    "T": "tomyen:tungsten_carbide",
+    "F": "tomyen:foundry",
+    "M": "tomyen:meteorite_bricks"
+  },
+  "pattern": [
+    "SCS",
+    "TFT",
+    "MMM"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:star_forge"
+  }
+}

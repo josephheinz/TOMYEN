@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "tomyen:block/atm_front",
+    "side": "tomyen:block/atm_side",
+    "top": "tomyen:block/atm_top"
+  }
+}

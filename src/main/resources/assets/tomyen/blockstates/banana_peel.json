@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "tomyen:block/banana_peel"
+    },
+    "facing=east": {
+      "model": "tomyen:block/banana_peel",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "tomyen:block/banana_peel",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tomyen:block/banana_peel",
+      "y": 270
+    }
+  }
+}

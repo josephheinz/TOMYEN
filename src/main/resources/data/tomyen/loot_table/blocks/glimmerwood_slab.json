@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "tomyen:glimmerwood_slab",
+                "state": {
+                  "type": "double"
+                }
+              },
+              "count": 2
+            },
+            {
+              "type": "minecraft:explosion_decay"
+            }
+          ],
+          "name": "tomyen:glimmerwood_slab"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "tomyen:blocks/glimmerwood_slab"
+}

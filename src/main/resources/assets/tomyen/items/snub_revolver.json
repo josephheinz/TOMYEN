@@ -1,0 +1,280 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "tomyen:muzzle_flash",
+    "entries": [
+      {
+        "threshold": 0.5,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:range_dispatch",
+              "property": "tomyen:gun_animation",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f1"
+                  }
+                },
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f2"
+                  }
+                },
+                {
+                  "threshold": 2.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f3"
+                  }
+                },
+                {
+                  "threshold": 3.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f4"
+                  }
+                },
+                {
+                  "threshold": 4.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f5"
+                  }
+                },
+                {
+                  "threshold": 5.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f6"
+                  }
+                },
+                {
+                  "threshold": 6.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/snub_revolver"
+              }
+            },
+            {
+              "type": "minecraft:model",
+              "model": "tomyen:item/snub_revolver_flash_0"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 1.5,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:range_dispatch",
+              "property": "tomyen:gun_animation",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f1"
+                  }
+                },
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f2"
+                  }
+                },
+                {
+                  "threshold": 2.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f3"
+                  }
+                },
+                {
+                  "threshold": 3.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f4"
+                  }
+                },
+                {
+                  "threshold": 4.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f5"
+                  }
+                },
+                {
+                  "threshold": 5.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f6"
+                  }
+                },
+                {
+                  "threshold": 6.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/snub_revolver"
+              }
+            },
+            {
+              "type": "minecraft:model",
+              "model": "tomyen:item/snub_revolver_flash_1"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 2.5,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:range_dispatch",
+              "property": "tomyen:gun_animation",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f1"
+                  }
+                },
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f2"
+                  }
+                },
+                {
+                  "threshold": 2.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f3"
+                  }
+                },
+                {
+                  "threshold": 3.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f4"
+                  }
+                },
+                {
+                  "threshold": 4.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f5"
+                  }
+                },
+                {
+                  "threshold": 5.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver_f6"
+                  }
+                },
+                {
+                  "threshold": 6.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/snub_revolver"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/snub_revolver"
+              }
+            },
+            {
+              "type": "minecraft:model",
+              "model": "tomyen:item/snub_revolver_flash_2"
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:range_dispatch",
+      "property": "tomyen:gun_animation",
+      "entries": [
+        {
+          "threshold": 0.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/snub_revolver_f1"
+          }
+        },
+        {
+          "threshold": 1.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/snub_revolver_f2"
+          }
+        },
+        {
+          "threshold": 2.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/snub_revolver_f3"
+          }
+        },
+        {
+          "threshold": 3.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/snub_revolver_f4"
+          }
+        },
+        {
+          "threshold": 4.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/snub_revolver_f5"
+          }
+        },
+        {
+          "threshold": 5.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/snub_revolver_f6"
+          }
+        },
+        {
+          "threshold": 6.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/snub_revolver"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "tomyen:item/snub_revolver"
+      }
+    }
+  }
+}

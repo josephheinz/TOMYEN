@@ -1,14 +1,14 @@
 {
   "values": [
-    "mymod:bauxite_ore",
-    "mymod:oil_shale",
-    "mymod:deepslate_oil_shale",
-    "mymod:silver_ore",
-    "mymod:deepslate_silver_ore",
-    "mymod:tungsten_ore",
-    "mymod:uranium_ore",
-    "mymod:deepslate_uranium_ore",
-    "mymod:fae_silver_ore",
-    "mymod:meteoric_iron_ore"
+    "tomyen:bauxite_ore",
+    "tomyen:oil_shale",
+    "tomyen:deepslate_oil_shale",
+    "tomyen:silver_ore",
+    "tomyen:deepslate_silver_ore",
+    "tomyen:tungsten_ore",
+    "tomyen:uranium_ore",
+    "tomyen:deepslate_uranium_ore",
+    "tomyen:fae_silver_ore",
+    "tomyen:meteoric_iron_ore"
   ]
 }

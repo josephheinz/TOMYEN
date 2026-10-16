@@ -1,15 +1,15 @@
 {
   "values": [
-    "mymod:plate_carrier",
-    "mymod:magmasteel_chestplate",
-    "mymod:soul_steel_chestplate",
-    "mymod:holy_silver_chestplate",
-    "mymod:hazmat_suit",
-    "mymod:dragonscale_chestplate",
-    "mymod:star_steel_chestplate",
-    "mymod:froststeel_chestplate",
-    "mymod:voidsteel_chestplate",
-    "mymod:scrap_chestplate",
-    "mymod:bloom_steel_chestplate"
+    "tomyen:plate_carrier",
+    "tomyen:magmasteel_chestplate",
+    "tomyen:soul_steel_chestplate",
+    "tomyen:holy_silver_chestplate",
+    "tomyen:hazmat_suit",
+    "tomyen:dragonscale_chestplate",
+    "tomyen:star_steel_chestplate",
+    "tomyen:froststeel_chestplate",
+    "tomyen:voidsteel_chestplate",
+    "tomyen:scrap_chestplate",
+    "tomyen:bloom_steel_chestplate"
   ]
 }

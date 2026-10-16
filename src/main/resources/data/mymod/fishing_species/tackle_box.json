@@ -1,8 +1,0 @@
-{
-  "item": "mymod:tackle_box",
-  "weight": 2,
-  "difficulty": 2,
-  "behavior": "sinker",
-  "min_rod_tier": 0,
-  "dimension": "minecraft:overworld"
-}

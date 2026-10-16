@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "mymod:polished_meteorite_stone",
-  "result": {
-    "count": 1,
-    "id": "mymod:polished_meteorite_stone_stairs"
-  }
-}

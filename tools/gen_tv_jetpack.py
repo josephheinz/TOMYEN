@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The Cathode TV Helmet and the Soda-Bottle Jetpack (see com.jheinz.mymod.tvhelmet / sodajetpack and their client
+"""The Cathode TV Helmet and the Soda-Bottle Jetpack (see com.jheinz.tomyen.tvhelmet / sodajetpack and their client
 packages): both worn models, their textures, the helmet's glowing screen frames (one per emote frame) and the emote
 wheel's icons, the flat 16x16 item sprites (the helmet, the jetpack and the Fizz Charge), and the items' data: item
 models and definitions, the crafting recipes with their recipe-book advancements, tags, sounds and lang.
@@ -55,11 +55,11 @@ from coplanar import Face, fights  # noqa: E402
 
 REPO = os.path.dirname(HERE)
 RES = os.path.join(REPO, "src", "main", "resources")
-ASSETS = os.path.join(RES, "assets", "mymod")
+ASSETS = os.path.join(RES, "assets", "tomyen")
 DATA = os.path.join(RES, "data")
 LANG = os.path.join(ASSETS, "lang", "en_us.json")
 SOUNDS = os.path.join(ASSETS, "sounds.json")
-CLIENT = os.path.join(REPO, "src", "client", "java", "com", "jheinz", "mymod", "client")
+CLIENT = os.path.join(REPO, "src", "client", "java", "com", "jheinz", "tomyen", "client")
 TV_JAVA = os.path.join(CLIENT, "tvhelmet", "TvHelmetModel.java")
 JP_JAVA = os.path.join(CLIENT, "sodajetpack", "SodaJetpackModel.java")
 SCALE = 2
@@ -913,40 +913,40 @@ def tag_add(path, entry):
 
 for item in ("tv_helmet", "soda_jetpack", "fizz_charge"):
     write(os.path.join(ASSETS, "models", "item", f"{item}.json"),
-          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": f"mymod:item/{item}"})]))
-    write(os.path.join(ASSETS, "items", f"{item}.json"), {"model": {"type": "minecraft:model", "model": f"mymod:item/{item}"}})
+          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": f"tomyen:item/{item}"})]))
+    write(os.path.join(ASSETS, "items", f"{item}.json"), {"model": {"type": "minecraft:model", "model": f"tomyen:item/{item}"}})
 
 
 def advancement(category, recipe, criteria):
     crit = OrderedDict((f"has_{item.split(':')[1]}", {"conditions": {"items": [{"items": item}]},
                                                       "trigger": "minecraft:inventory_changed"}) for item in criteria)
-    crit["has_the_recipe"] = {"conditions": {"recipes": f"mymod:{recipe}"}, "trigger": "minecraft:recipe_unlocked"}
-    write(os.path.join(DATA, "mymod", "advancement", "recipes", category, f"{recipe}.json"), OrderedDict([
+    crit["has_the_recipe"] = {"conditions": {"recipes": f"tomyen:{recipe}"}, "trigger": "minecraft:recipe_unlocked"}
+    write(os.path.join(DATA, "tomyen", "advancement", "recipes", category, f"{recipe}.json"), OrderedDict([
         ("parent", "minecraft:recipes/root"), ("criteria", crit), ("requirements", [list(crit.keys())]),
-        ("rewards", {"recipes": [f"mymod:{recipe}"]})]))
+        ("rewards", {"recipes": [f"tomyen:{recipe}"]})]))
 
 
 # The TV Helmet: a Cathode Tube behind a glass pane, copper wiring and redstone, in a wooden cabinet.
-write(os.path.join(DATA, "mymod", "recipe", "tv_helmet.json"), OrderedDict([
+write(os.path.join(DATA, "tomyen", "recipe", "tv_helmet.json"), OrderedDict([
     ("type", "minecraft:crafting_shaped"), ("category", "equipment"),
     ("key", OrderedDict([("C", "minecraft:copper_ingot"), ("G", "minecraft:glass_pane"), ("P", "#minecraft:planks"),
-                         ("R", "minecraft:redstone"), ("T", "mymod:cathode_tube")])),
+                         ("R", "minecraft:redstone"), ("T", "tomyen:cathode_tube")])),
     ("pattern", ["CRC", "GTG", "PPP"]),
-    ("result", OrderedDict([("count", 1), ("id", "mymod:tv_helmet")]))]))
-advancement("combat", "tv_helmet", ["mymod:cathode_tube"])
+    ("result", OrderedDict([("count", 1), ("id", "tomyen:tv_helmet")]))]))
+advancement("combat", "tv_helmet", ["tomyen:cathode_tube"])
 # The Fizz Charge: sugar and slime shaken up in a bottle.
-write(os.path.join(DATA, "mymod", "recipe", "fizz_charge.json"), OrderedDict([
+write(os.path.join(DATA, "tomyen", "recipe", "fizz_charge.json"), OrderedDict([
     ("type", "minecraft:crafting_shapeless"), ("category", "misc"),
     ("ingredients", ["minecraft:sugar", "minecraft:sugar", "minecraft:slime_ball", "minecraft:glass_bottle"]),
-    ("result", OrderedDict([("count", 1), ("id", "mymod:fizz_charge")]))]))
-advancement("misc", "fizz_charge", ["minecraft:slime_ball", "mymod:soda_jetpack"])
+    ("result", OrderedDict([("count", 1), ("id", "tomyen:fizz_charge")]))]))
+advancement("misc", "fizz_charge", ["minecraft:slime_ball", "tomyen:soda_jetpack"])
 # Helmet enchantments go on through head_armor.
-tag_add(os.path.join(DATA, "minecraft", "tags", "item", "head_armor.json"), "mymod:tv_helmet")
+tag_add(os.path.join(DATA, "minecraft", "tags", "item", "head_armor.json"), "tomyen:tv_helmet")
 
 
 # Sounds: vanilla sounds, repitched.
 def ev(subtitle, *sounds):
-    return OrderedDict([("subtitle", "subtitles.mymod." + subtitle),
+    return OrderedDict([("subtitle", "subtitles.tomyen." + subtitle),
                         ("sounds", [OrderedDict([("name", "minecraft:" + n)] + list(extra.items())) for n, extra in sounds])])
 
 
@@ -976,51 +976,51 @@ merge(SOUNDS, OrderedDict([
 ]))
 
 merge(LANG, OrderedDict([
-    ("item.mymod.tv_helmet", "Cathode TV Helmet"),
-    ("item.mymod.tv_helmet.screen", "Your face is a screen: pick emotes with the Emote Wheel key"),
-    ("item.mymod.tv_helmet.vision", "Static night vision, toggled with the TV Night Vision key"),
-    ("item.mymod.tv_helmet.water", "Heavy, and shorts out in water and rain"),
-    ("item.mymod.soda_jetpack", "Soda-Bottle Jetpack"),
-    ("item.mymod.soda_jetpack.fly", "Hold Jump in the air for weak, wobbly thrust"),
-    ("item.mymod.soda_jetpack.fuel", "Burns sugar (thrust) and slime (longer bursts), or Fizz Charges"),
-    ("item.mymod.soda_jetpack.shake", "Gone flat? Sneak and hold Use, hands empty, to shake it"),
-    ("item.mymod.fizz_charge", "Fizz Charge"),
-    ("item.mymod.fizz_charge.fuel", "Jetpack fuel: sugar and slime in one, burns longest"),
-    ("key.category.mymod.tv_helmet", "My Mod: TV Helmet"),
-    ("key.mymod.tv_emote", "Emote Wheel (tap: next)"),
-    ("key.mymod.tv_night_vision", "TV Night Vision"),
-    ("tv_helmet.mymod.emote.happy", "Happy"),
-    ("tv_helmet.mymod.emote.laugh", "XD"),
-    ("tv_helmet.mymod.emote.angry", "Angry"),
-    ("tv_helmet.mymod.emote.sad", "Sad"),
-    ("tv_helmet.mymod.emote.surprised", "Surprised"),
-    ("tv_helmet.mymod.emote.cat", ":3"),
-    ("tv_helmet.mymod.emote.cool", "Cool"),
-    ("tv_helmet.mymod.emote.skull", "Skull"),
-    ("tv_helmet.mymod.emote.heart", "Heart"),
-    ("tv_helmet.mymod.emote.question", "?"),
-    ("tv_helmet.mymod.emote.bars", "Colour Bars"),
-    ("tv_helmet.mymod.emote.static", "Static"),
-    ("tv_helmet.mymod.night_vision.on", "TV night vision: on"),
-    ("tv_helmet.mymod.night_vision.off", "TV night vision: off"),
-    ("tv_helmet.mymod.shorted", "Your TV shorted out!"),
-    ("tv_helmet.mymod.wheel.hint", "Release to pick"),
-    ("soda_jetpack.mymod.flat", "Your jetpack went flat! Sneak and hold Use (hands empty) to shake it"),
-    ("soda_jetpack.mymod.charged", "Jetpack pressurised!"),
-    ("soda_jetpack.mymod.empty", "Out of fizz: carry sugar, slime or Fizz Charges"),
-    ("hud.mymod.soda_jetpack.flat", "FLAT"),
-    ("hud.mymod.soda_jetpack.shake", "SHAKE!"),
-    ("subtitles.mymod.tv_helmet_toggle", "TV clicks"),
-    ("subtitles.mymod.tv_helmet_channel", "TV changes channel"),
-    ("subtitles.mymod.soda_jetpack_thrust", "Jetpack fizzes"),
-    ("subtitles.mymod.soda_jetpack_sputter", "Jetpack sputters"),
-    ("subtitles.mymod.soda_jetpack_spin", "Jetpack spins out"),
-    ("subtitles.mymod.soda_jetpack_flat", "Jetpack goes flat"),
-    ("subtitles.mymod.soda_jetpack_shake", "Bottles rattle"),
-    ("subtitles.mymod.soda_jetpack_charged", "Jetpack pops"),
-    ("subtitles.mymod.soda_jetpack_refuel", "Jetpack glugs"),
-    ("subtitles.mymod.soda_jetpack_crash", "Jetpack crashes"),
-    ("subtitles.mymod.fizz_charge_burp", "Burp"),
+    ("item.tomyen.tv_helmet", "Cathode TV Helmet"),
+    ("item.tomyen.tv_helmet.screen", "Your face is a screen: pick emotes with the Emote Wheel key"),
+    ("item.tomyen.tv_helmet.vision", "Static night vision, toggled with the TV Night Vision key"),
+    ("item.tomyen.tv_helmet.water", "Heavy, and shorts out in water and rain"),
+    ("item.tomyen.soda_jetpack", "Soda-Bottle Jetpack"),
+    ("item.tomyen.soda_jetpack.fly", "Hold Jump in the air for weak, wobbly thrust"),
+    ("item.tomyen.soda_jetpack.fuel", "Burns sugar (thrust) and slime (longer bursts), or Fizz Charges"),
+    ("item.tomyen.soda_jetpack.shake", "Gone flat? Sneak and hold Use, hands empty, to shake it"),
+    ("item.tomyen.fizz_charge", "Fizz Charge"),
+    ("item.tomyen.fizz_charge.fuel", "Jetpack fuel: sugar and slime in one, burns longest"),
+    ("key.category.tomyen.tv_helmet", "TOMYEN: TV Helmet"),
+    ("key.tomyen.tv_emote", "Emote Wheel (tap: next)"),
+    ("key.tomyen.tv_night_vision", "TV Night Vision"),
+    ("tv_helmet.tomyen.emote.happy", "Happy"),
+    ("tv_helmet.tomyen.emote.laugh", "XD"),
+    ("tv_helmet.tomyen.emote.angry", "Angry"),
+    ("tv_helmet.tomyen.emote.sad", "Sad"),
+    ("tv_helmet.tomyen.emote.surprised", "Surprised"),
+    ("tv_helmet.tomyen.emote.cat", ":3"),
+    ("tv_helmet.tomyen.emote.cool", "Cool"),
+    ("tv_helmet.tomyen.emote.skull", "Skull"),
+    ("tv_helmet.tomyen.emote.heart", "Heart"),
+    ("tv_helmet.tomyen.emote.question", "?"),
+    ("tv_helmet.tomyen.emote.bars", "Colour Bars"),
+    ("tv_helmet.tomyen.emote.static", "Static"),
+    ("tv_helmet.tomyen.night_vision.on", "TV night vision: on"),
+    ("tv_helmet.tomyen.night_vision.off", "TV night vision: off"),
+    ("tv_helmet.tomyen.shorted", "Your TV shorted out!"),
+    ("tv_helmet.tomyen.wheel.hint", "Release to pick"),
+    ("soda_jetpack.tomyen.flat", "Your jetpack went flat! Sneak and hold Use (hands empty) to shake it"),
+    ("soda_jetpack.tomyen.charged", "Jetpack pressurised!"),
+    ("soda_jetpack.tomyen.empty", "Out of fizz: carry sugar, slime or Fizz Charges"),
+    ("hud.tomyen.soda_jetpack.flat", "FLAT"),
+    ("hud.tomyen.soda_jetpack.shake", "SHAKE!"),
+    ("subtitles.tomyen.tv_helmet_toggle", "TV clicks"),
+    ("subtitles.tomyen.tv_helmet_channel", "TV changes channel"),
+    ("subtitles.tomyen.soda_jetpack_thrust", "Jetpack fizzes"),
+    ("subtitles.tomyen.soda_jetpack_sputter", "Jetpack sputters"),
+    ("subtitles.tomyen.soda_jetpack_spin", "Jetpack spins out"),
+    ("subtitles.tomyen.soda_jetpack_flat", "Jetpack goes flat"),
+    ("subtitles.tomyen.soda_jetpack_shake", "Bottles rattle"),
+    ("subtitles.tomyen.soda_jetpack_charged", "Jetpack pops"),
+    ("subtitles.tomyen.soda_jetpack_refuel", "Jetpack glugs"),
+    ("subtitles.tomyen.soda_jetpack_crash", "Jetpack crashes"),
+    ("subtitles.tomyen.fizz_charge_burp", "Burp"),
 ]))
 
 

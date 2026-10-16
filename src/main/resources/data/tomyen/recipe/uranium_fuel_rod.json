@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "tomyen:steel_ingot",
+    "E": "tomyen:enriched_uranium"
+  },
+  "pattern": [
+    "S",
+    "E",
+    "S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:uranium_fuel_rod"
+  }
+}

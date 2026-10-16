@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "R": "tomyen:rubber",
+    "G": "minecraft:glass_pane"
+  },
+  "pattern": [
+    "RRR",
+    "RGR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:hazmat_helmet"
+  }
+}

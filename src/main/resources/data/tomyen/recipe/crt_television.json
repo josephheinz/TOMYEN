@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "#minecraft:planks",
+    "T": "tomyen:cathode_tube",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "PPP",
+    "PTR",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:crt_television"
+  }
+}

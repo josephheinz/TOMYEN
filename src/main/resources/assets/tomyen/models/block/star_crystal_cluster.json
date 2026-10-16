@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "tomyen:block/star_crystal_cluster"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "H": "tomyen:holy_silver_ingot",
+    "C": "tomyen:crucifix"
+  },
+  "pattern": [
+    " H ",
+    "HCH",
+    " H "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:holy_silver_crucifix"
+  }
+}

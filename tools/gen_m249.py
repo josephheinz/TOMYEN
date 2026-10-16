@@ -8,14 +8,14 @@ them, the front sight post on its triangular base atop the gas block, a flash hi
 receiver, wider than the receiver itself.
 
 The gun's item definition stacks layers, each picked by item model properties (see M249Animation):
-  - the body, by mymod:gun_animation: 0 at rest, 1-6 the charging handle drawn back, 7-12 the feed cover swinging
+  - the body, by tomyen:gun_animation: 0 at rest, 1-6 the charging handle drawn back, 7-12 the feed cover swinging
     open (its back end up, 12 fully open), 13-16 cover open while the box is changed;
   - the ammo box: seated, lowered (14, 15) or gone (16), only with one loaded;
   - the belt: from the box up the left side into the feed tray, with as many rounds as are left once fewer than
-    nine remain (mymod:loaded_rounds), so it shortens as the box runs dry; lifted out and hanging from the box
+    nine remain (tomyen:loaded_rounds), so it shortens as the box runs dry; lifted out and hanging from the box
     while the box is changed (13-15);
-  - the bipod, by mymod:bipod: folded under the handguard (0) through to deployed (3) as the holder crouches;
-  - the muzzle flash, by mymod:muzzle_flash.
+  - the bipod, by tomyen:bipod: folded under the handguard (0) through to deployed (3) as the holder crouches;
+  - the muzzle flash, by tomyen:muzzle_flash.
 
 The iron sights are a ghost ring and a post: the rear sight is an open octagonal ring the eye looks through (nothing
 in front of it rises above the rail), and the front post's tip sits on the ring's centre line, SIGHT_Y.
@@ -360,28 +360,28 @@ def out_model(name, elements):
 rest = out_model("m249", body())
 handle_frames = [out_model(f"m249_c{k}", body(handle=HANDLE_TRAVEL * k / 6)) for k in range(1, 7)]
 cover_frames = [out_model(f"m249_o{k}", body(angle=COVER_OPEN * k / 6)) for k in range(1, 7)]
-body_layer = range_dispatch("mymod:gun_animation",
+body_layer = range_dispatch("tomyen:gun_animation",
                             [(k - 0.5, handle_frames[k - 1]) for k in range(1, 7)]
                             + [(k - 0.5, cover_frames[k - 7]) for k in range(7, 13)]
                             + [(12.5, cover_frames[-1]), (16.5, rest)], rest)
 
 seated = out_model("m249_box", ammo_box())
-box_layer = range_dispatch("mymod:gun_animation", [
+box_layer = range_dispatch("tomyen:gun_animation", [
     (13.5, out_model("m249_box_lowered_1", ammo_box(1.5))), (14.5, out_model("m249_box_lowered_2", ammo_box(3.0))),
     (15.5, EMPTY), (16.5, seated)], seated)
 
-belts = range_dispatch("mymod:loaded_rounds", [(n - 0.5, out_model(f"m249_belt_{n}", belt(n))) for n in range(1, BELT_MAX + 1)], EMPTY)
-belt_layer = range_dispatch("mymod:gun_animation", [
+belts = range_dispatch("tomyen:loaded_rounds", [(n - 0.5, out_model(f"m249_belt_{n}", belt(n))) for n in range(1, BELT_MAX + 1)], EMPTY)
+belt_layer = range_dispatch("tomyen:gun_animation", [
     (12.5, out_model("m249_belt_hanging_0", hanging_belt(0))), (13.5, out_model("m249_belt_hanging_1", hanging_belt(1.5))),
     (14.5, out_model("m249_belt_hanging_2", hanging_belt(3.0))), (15.5, EMPTY), (16.5, belts)], belts)
 
-bipod_layer = range_dispatch("mymod:bipod", [(k - 0.5, out_model(f"m249_bipod_{k}", bipod(k / 3))) for k in range(1, 4)],
+bipod_layer = range_dispatch("tomyen:bipod", [(k - 0.5, out_model(f"m249_bipod_{k}", bipod(k / 3))) for k in range(1, 4)],
                              out_model("m249_bipod_0", bipod(0.0)))
 
-gun = has_component("mymod:loaded_magazine", composite(body_layer, box_layer, belt_layer, bipod_layer),
+gun = has_component("tomyen:loaded_magazine", composite(body_layer, box_layer, belt_layer, bipod_layer),
                     composite(body_layer, bipod_layer))
 flashes = flash_models(MODELS, "m249", MUZZLE, BY, DISPLAYS)
-write(os.path.join(ITEMS, "m249.json"), {"model": with_flash(gun, flashes, ("mymod:suppressor", "mymod:oil_can_suppressor"))})
+write(os.path.join(ITEMS, "m249.json"), {"model": with_flash(gun, flashes, ("tomyen:suppressor", "tomyen:oil_can_suppressor"))})
 FLASH.save(TEX)
 
 # Weapon Station parts.
@@ -403,8 +403,8 @@ BODY = ["...doooooooood..", "...dossssssood..", "...doooooooood..", "...dossssoo
 BODY = [(row + "................")[:16] for row in BODY]
 for name, top in (("m249_ammo_box", TOP_EMPTY), ("m249_ammo_box_loaded", TOP_FULL)):
     sprite(os.path.join(TEX, f"item/{name}.png"), top + BODY, PAL)
-    write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
-write(os.path.join(ITEMS, "m249_ammo_box.json"), {"model": has_component("mymod:magazine_contents", ref("m249_ammo_box_loaded"),
+    write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
+write(os.path.join(ITEMS, "m249_ammo_box.json"), {"model": has_component("tomyen:magazine_contents", ref("m249_ammo_box_loaded"),
                                                                          ref("m249_ammo_box"))})
 
 t = DISPLAYS["firstperson_righthand"]

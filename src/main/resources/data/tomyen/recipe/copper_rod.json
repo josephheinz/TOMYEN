@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "M": "minecraft:copper_ingot",
+    "S": "minecraft:string",
+    "H": "minecraft:dried_kelp"
+  },
+  "pattern": [
+    "  M",
+    " MS",
+    "H S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:copper_rod"
+  }
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Big Red Boots (see com.jheinz.mymod.bigredboots and client/bigredboots): the worn model, its texture, the item
+"""Big Red Boots (see com.jheinz.tomyen.bigredboots and client/bigredboots): the worn model, its texture, the item
 sprite, and the item's data.
 
 Run from anywhere: python3 tools/gen_big_red_boots.py [--preview out.png]
@@ -39,10 +39,10 @@ from coplanar import Face, fights  # noqa: E402
 
 REPO = os.path.dirname(HERE)
 RES = os.path.join(REPO, "src", "main", "resources")
-ASSETS = os.path.join(RES, "assets", "mymod")
+ASSETS = os.path.join(RES, "assets", "tomyen")
 DATA = os.path.join(RES, "data")
 LANG = os.path.join(ASSETS, "lang", "en_us.json")
-JAVA = os.path.join(REPO, "src", "client", "java", "com", "jheinz", "mymod", "client", "bigredboots", "BigRedBootsModel.java")
+JAVA = os.path.join(REPO, "src", "client", "java", "com", "jheinz", "tomyen", "client", "bigredboots", "BigRedBootsModel.java")
 PREVIEW = os.path.abspath(sys.argv[sys.argv.index("--preview") + 1]) if "--preview" in sys.argv else None
 
 # ================================================================================================== the model
@@ -367,30 +367,30 @@ def tag_add(path, entry):
 
 
 write(os.path.join(ASSETS, "models", "item", "big_red_boots.json"),
-      OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/big_red_boots"})]))
-write(os.path.join(ASSETS, "items", "big_red_boots.json"), {"model": {"type": "minecraft:model", "model": "mymod:item/big_red_boots"}})
+      OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/big_red_boots"})]))
+write(os.path.join(ASSETS, "items", "big_red_boots.json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/big_red_boots"}})
 
 # Rubber from the refinery, red dye and a pair of leather boots to pull them over.
-write(os.path.join(DATA, "mymod", "recipe", "big_red_boots.json"), OrderedDict([
+write(os.path.join(DATA, "tomyen", "recipe", "big_red_boots.json"), OrderedDict([
     ("type", "minecraft:crafting_shaped"), ("category", "equipment"),
-    ("key", OrderedDict([("B", "minecraft:leather_boots"), ("D", "minecraft:red_dye"), ("R", "mymod:rubber")])),
+    ("key", OrderedDict([("B", "minecraft:leather_boots"), ("D", "minecraft:red_dye"), ("R", "tomyen:rubber")])),
     ("pattern", ["RDR", "RBR"]),
-    ("result", OrderedDict([("count", 1), ("id", "mymod:big_red_boots")]))]))
-write(os.path.join(DATA, "mymod", "advancement", "recipes", "combat", "big_red_boots.json"), OrderedDict([
+    ("result", OrderedDict([("count", 1), ("id", "tomyen:big_red_boots")]))]))
+write(os.path.join(DATA, "tomyen", "advancement", "recipes", "combat", "big_red_boots.json"), OrderedDict([
     ("parent", "minecraft:recipes/root"),
     ("criteria", OrderedDict([
-        ("has_rubber", {"conditions": {"items": [{"items": "mymod:rubber"}]}, "trigger": "minecraft:inventory_changed"}),
-        ("has_the_recipe", {"conditions": {"recipes": "mymod:big_red_boots"}, "trigger": "minecraft:recipe_unlocked"})])),
+        ("has_rubber", {"conditions": {"items": [{"items": "tomyen:rubber"}]}, "trigger": "minecraft:inventory_changed"}),
+        ("has_the_recipe", {"conditions": {"recipes": "tomyen:big_red_boots"}, "trigger": "minecraft:recipe_unlocked"})])),
     ("requirements", [["has_rubber", "has_the_recipe"]]),
-    ("rewards", {"recipes": ["mymod:big_red_boots"]})]))
+    ("rewards", {"recipes": ["tomyen:big_red_boots"]})]))
 # Boot enchantments (Feather Falling, Depth Strider, Frost Walker, Soul Speed...) go on through the foot_armor tag.
-tag_add(os.path.join(DATA, "minecraft", "tags", "item", "foot_armor.json"), "mymod:big_red_boots")
+tag_add(os.path.join(DATA, "minecraft", "tags", "item", "foot_armor.json"), "tomyen:big_red_boots")
 
 merge(LANG, OrderedDict([
-    ("item.mymod.big_red_boots", "Big Red Boots"),
-    ("item.mymod.big_red_boots.falls", "Big rubber feet soak up half of every fall"),
-    ("item.mymod.big_red_boots.stomp", "Land from 4+ blocks up to stomp nearby mobs away"),
-    ("item.mymod.big_red_boots.waddle", "Waddles a little; never tramples farmland"),
+    ("item.tomyen.big_red_boots", "Big Red Boots"),
+    ("item.tomyen.big_red_boots.falls", "Big rubber feet soak up half of every fall"),
+    ("item.tomyen.big_red_boots.stomp", "Land from 4+ blocks up to stomp nearby mobs away"),
+    ("item.tomyen.big_red_boots.waddle", "Waddles a little; never tramples farmland"),
 ]))
 
 

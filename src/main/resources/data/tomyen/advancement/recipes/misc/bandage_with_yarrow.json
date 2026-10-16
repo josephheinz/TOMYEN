@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_yarrow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tomyen:yarrow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "tomyen:bandage_with_yarrow"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_yarrow"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tomyen:bandage_with_yarrow"
+    ]
+  }
+}

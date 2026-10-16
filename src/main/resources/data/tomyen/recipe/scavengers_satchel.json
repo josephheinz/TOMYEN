@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "minecraft:string",
+    "L": "minecraft:leather",
+    "T": "tomyen:tech_scrap"
+  },
+  "pattern": [
+    " S ",
+    "LTL",
+    "LLL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:scavengers_satchel"
+  }
+}

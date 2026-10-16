@@ -2,7 +2,7 @@
 GENERATED markers), its entity texture and the glow layer for its eyes, its spawn egg, the Werewolf Pelt and the Feral
 Lining exoskeleton module made from it, and their item models and definitions. On the data side it writes the
 werewolf's loot table, the pelt's recipes (with recipe-book advancements) and adds the werewolf to the
-mymod:holy_vulnerable entity tag. Its sounds (vanilla wolf and cat sounds, pitched down) and lang entries are merged
+tomyen:holy_vulnerable entity tag. Its sounds (vanilla wolf and cat sounds, pitched down) and lang entries are merged
 into sounds.json and en_us.json.
 
 The texture is painted in smooth ramps from vanilla colours: a dark, desaturated coat (the black wolf's greys), a dull
@@ -19,13 +19,13 @@ lunging swipe while hunting; the howl; a hunting stalk; and the head up close mi
 preview_werewolf_texture.png, using the same cubes, pivots and UV layout as the Java model, and a Python twin of its
 animation.
 
-Usage: python3 tools/gen_werewolf.py src/main/resources/assets/mymod [--preview DIR]"""
+Usage: python3 tools/gen_werewolf.py src/main/resources/assets/tomyen [--preview DIR]"""
 import json, math, os, struct, sys, zlib
 from collections import OrderedDict
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 PREVIEW = sys.argv[sys.argv.index("--preview") + 1] if "--preview" in sys.argv else None
 
 
@@ -598,8 +598,8 @@ def merge(path, entries):
 
 for name in ("werewolf_pelt", "feral_lining_module", "werewolf_spawn_egg"):
     write(os.path.join(MODELS, name + ".json"),
-          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/" + name})]))
-    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/" + name})]))
+    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 
 def drop(item, low, high, looting=1.0):
@@ -611,8 +611,8 @@ def drop(item, low, high, looting=1.0):
 
 write(os.path.join(DATA, "loot_table/entities/werewolf.json"), OrderedDict([
     ("type", "minecraft:entity"),
-    ("pools", [drop("mymod:werewolf_pelt", 1, 2), drop("minecraft:bone", 0, 2)]),
-    ("random_sequence", "mymod:entities/werewolf")]))
+    ("pools", [drop("tomyen:werewolf_pelt", 1, 2), drop("minecraft:bone", 0, 2)]),
+    ("random_sequence", "tomyen:entities/werewolf")]))
 
 
 def advancement(name, ingredient, category="misc"):
@@ -620,9 +620,9 @@ def advancement(name, ingredient, category="misc"):
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
             ("has_item", {"conditions": {"items": [{"items": ingredient}]}, "trigger": "minecraft:inventory_changed"}),
-            ("has_the_recipe", {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
+            ("has_the_recipe", {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
         ("requirements", [["has_item", "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
 def shapeless(name, ingredients, result, count, category="misc"):
@@ -634,9 +634,9 @@ def shapeless(name, ingredients, result, count, category="misc"):
 
 # A pelt tans down to leather (and so into everything leather goes into: the hazmat suit, the pig flight harness, the
 # servo arm backpack...); two of them line an exoskeleton, as the other modules are made.
-shapeless("leather_from_werewolf_pelt", ["mymod:werewolf_pelt"], "minecraft:leather", 2)
-shapeless("feral_lining_module", ["mymod:werewolf_pelt", "mymod:werewolf_pelt", "minecraft:leather", "mymod:computer_chip",
-                                  "mymod:tech_scrap"], "mymod:feral_lining_module", 1, "equipment")
+shapeless("leather_from_werewolf_pelt", ["tomyen:werewolf_pelt"], "minecraft:leather", 2)
+shapeless("feral_lining_module", ["tomyen:werewolf_pelt", "tomyen:werewolf_pelt", "minecraft:leather", "tomyen:computer_chip",
+                                  "tomyen:tech_scrap"], "tomyen:feral_lining_module", 1, "equipment")
 
 
 def tag_add(path, entry):
@@ -648,7 +648,7 @@ def tag_add(path, entry):
 
 
 # Silver and holy light bite it (it isn't undead: the sun doesn't burn it).
-tag_add(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), "mymod:werewolf")
+tag_add(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), "tomyen:werewolf")
 
 
 def vanilla(names, pitch, **extra):
@@ -658,53 +658,53 @@ def vanilla(names, pitch, **extra):
 # Vanilla sounds, pitched down: there's no wolf howl in the game any more, so a big wolf's whine, slowed right down,
 # stands in, carrying four times as far as most sounds.
 SOUNDS = OrderedDict([
-    ("werewolf_growl", OrderedDict([("subtitle", "subtitles.mymod.werewolf_growl"),
+    ("werewolf_growl", OrderedDict([("subtitle", "subtitles.tomyen.werewolf_growl"),
                                     ("sounds", vanilla(["mob/wolf/angry/growl%d" % i for i in (1, 2, 3)], 0.6))])),
-    ("werewolf_howl", OrderedDict([("subtitle", "subtitles.mymod.werewolf_howl"),
+    ("werewolf_howl", OrderedDict([("subtitle", "subtitles.tomyen.werewolf_howl"),
                                    ("sounds", vanilla(["mob/wolf/big/whine", "mob/wolf/classic/whine"], 0.5, attenuation_distance=64))])),
-    ("werewolf_hurt", OrderedDict([("subtitle", "subtitles.mymod.werewolf_hurt"),
+    ("werewolf_hurt", OrderedDict([("subtitle", "subtitles.tomyen.werewolf_hurt"),
                                    ("sounds", vanilla(["mob/wolf/big/hurt%d" % i for i in (1, 2, 3)], 0.65))])),
-    ("werewolf_death", OrderedDict([("subtitle", "subtitles.mymod.werewolf_death"),
+    ("werewolf_death", OrderedDict([("subtitle", "subtitles.tomyen.werewolf_death"),
                                     ("sounds", vanilla(["mob/wolf/big/death"], 0.55))])),
-    ("werewolf_hiss", OrderedDict([("subtitle", "subtitles.mymod.werewolf_hiss"),
+    ("werewolf_hiss", OrderedDict([("subtitle", "subtitles.tomyen.werewolf_hiss"),
                                    ("sounds", vanilla(["mob/cat/hiss%d" % i for i in (1, 2, 3)], 0.6))])),
 ])
 merge(os.path.join(ASSETS, "sounds.json"), SOUNDS)
 
 LANG = OrderedDict([
-    ("entity.mymod.werewolf", "Werewolf"),
-    ("item.mymod.werewolf_spawn_egg", "Werewolf Spawn Egg"),
-    ("item.mymod.werewolf_pelt", "Werewolf Pelt"),
-    ("item.mymod.feral_lining_module", "Feral Lining Module"),
-    ("exo_module.mymod.feral_lining", "Feral Lining"),
-    ("exo_module.mymod.feral_lining.description", "+10% speed and +1 attack damage"),
-    ("item.mymod.holy_silver_ingot.cure", "Use on a cursed villager: lifts the werewolf curse"),
-    ("item.mymod.crucifix.undead", "Only harms the undead and the unholy; triple damage to vampires, werewolves, the Schnozzle "
+    ("entity.tomyen.werewolf", "Werewolf"),
+    ("item.tomyen.werewolf_spawn_egg", "Werewolf Spawn Egg"),
+    ("item.tomyen.werewolf_pelt", "Werewolf Pelt"),
+    ("item.tomyen.feral_lining_module", "Feral Lining Module"),
+    ("exo_module.tomyen.feral_lining", "Feral Lining"),
+    ("exo_module.tomyen.feral_lining.description", "+10% speed and +1 attack damage"),
+    ("item.tomyen.holy_silver_ingot.cure", "Use on a cursed villager: lifts the werewolf curse"),
+    ("item.tomyen.crucifix.undead", "Only harms the undead and the unholy; triple damage to vampires, werewolves, the Schnozzle "
                                    "and skullcranes"),
-    ("gamerule.mymod.werewolves", "Werewolves"),
-    ("gamerule.mymod.werewolves.description", "Whether villagers can carry the werewolf curse, and whether cursed villagers "
+    ("gamerule.tomyen.werewolves", "Werewolves"),
+    ("gamerule.tomyen.werewolves.description", "Whether villagers can carry the werewolf curse, and whether cursed villagers "
                                               "turn into werewolves on full-moon nights."),
-    ("subtitles.mymod.werewolf_growl", "Something growls"),
-    ("subtitles.mymod.werewolf_howl", "Werewolf howls"),
-    ("subtitles.mymod.werewolf_hurt", "Werewolf hurts"),
-    ("subtitles.mymod.werewolf_death", "Werewolf dies"),
-    ("subtitles.mymod.werewolf_hiss", "Something hisses"),
-    ("message.mymod.werewolf.cured", "The curse lifts"),
-    ("commands.mymod.werewolf.cursed", "%s now carries the werewolf curse"),
-    ("commands.mymod.werewolf.cured", "Lifted the werewolf curse from %s"),
-    ("commands.mymod.werewolf.is_werewolf", "%s is a werewolf"),
-    ("commands.mymod.werewolf.is_cursed", "%s carries the werewolf curse"),
-    ("commands.mymod.werewolf.not_cursed", "%s isn't cursed"),
-    ("commands.mymod.werewolf.unrolled", "%s hasn't been checked for the curse yet"),
-    ("commands.mymod.werewolf.transforming", "%s is changing"),
-    ("commands.mymod.werewolf.reverted", "%s is a villager again"),
-    ("commands.mymod.werewolf.no_target", "No villager or werewolf there (look at one, or name targets)"),
+    ("subtitles.tomyen.werewolf_growl", "Something growls"),
+    ("subtitles.tomyen.werewolf_howl", "Werewolf howls"),
+    ("subtitles.tomyen.werewolf_hurt", "Werewolf hurts"),
+    ("subtitles.tomyen.werewolf_death", "Werewolf dies"),
+    ("subtitles.tomyen.werewolf_hiss", "Something hisses"),
+    ("message.tomyen.werewolf.cured", "The curse lifts"),
+    ("commands.tomyen.werewolf.cursed", "%s now carries the werewolf curse"),
+    ("commands.tomyen.werewolf.cured", "Lifted the werewolf curse from %s"),
+    ("commands.tomyen.werewolf.is_werewolf", "%s is a werewolf"),
+    ("commands.tomyen.werewolf.is_cursed", "%s carries the werewolf curse"),
+    ("commands.tomyen.werewolf.not_cursed", "%s isn't cursed"),
+    ("commands.tomyen.werewolf.unrolled", "%s hasn't been checked for the curse yet"),
+    ("commands.tomyen.werewolf.transforming", "%s is changing"),
+    ("commands.tomyen.werewolf.reverted", "%s is a villager again"),
+    ("commands.tomyen.werewolf.no_target", "No villager or werewolf there (look at one, or name targets)"),
 ])
 merge(os.path.join(ASSETS, "lang", "en_us.json"), LANG)
 
 
 # ---------------------------------------------------------------------------------------------- the Java model
-JAVA = os.path.normpath(os.path.join(ASSETS, "..", "..", "..", "..", "client", "java", "com", "jheinz", "mymod", "client",
+JAVA = os.path.normpath(os.path.join(ASSETS, "..", "..", "..", "..", "client", "java", "com", "jheinz", "tomyen", "client",
                                      "werewolf", "WerewolfModel.java"))
 
 

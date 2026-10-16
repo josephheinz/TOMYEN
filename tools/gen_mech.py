@@ -20,11 +20,11 @@ model and deck texture, and the crafting recipes with their recipe-book advancem
 
 `--preview PATH` renders the walker from the front, the back and the side, and assembled in its gantry, to a PNG.
 
-Usage: python3 tools/gen_mech.py src/main/resources/assets/mymod [--java] [--check] [--preview PATH]"""
+Usage: python3 tools/gen_mech.py src/main/resources/assets/tomyen [--java] [--check] [--preview PATH]"""
 import json, math, os, struct, sys, zlib
 
-ASSETS = sys.argv[1]  # .../assets/mymod
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+ASSETS = sys.argv[1]  # .../assets/tomyen
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 TEX = os.path.join(ASSETS, "textures")
 CLEAR = (0, 0, 0, 0)
 # The shared texture: wide enough for the walker's detail and the gantry frame (the models declare the same size).
@@ -1066,8 +1066,8 @@ def icons():
                 c.set(x, y, PALETTE[ch])
         c.save(os.path.join(TEX, "item", name + ".png"))
         write_json(os.path.join(ASSETS, "models", "item", name + ".json"),
-                   {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
-        write_json(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+                   {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
+        write_json(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 
 def gantry_block():
@@ -1080,10 +1080,10 @@ def gantry_block():
             seam = x == 8 or y == 8
             c.set(x, y, TRIM if edge else shade(FRAME, 0.8) if seam else shade(FRAME, 1.05 - 0.1 * y / 15))
     c.save(os.path.join(TEX, "block", "mech_gantry.png"))
-    write_json(os.path.join(ASSETS, "models", "block", "mech_gantry.json"), {"textures": {"particle": "mymod:block/mech_gantry"}})
+    write_json(os.path.join(ASSETS, "models", "block", "mech_gantry.json"), {"textures": {"particle": "tomyen:block/mech_gantry"}})
     write_json(os.path.join(ASSETS, "blockstates", "mech_gantry.json"), {"variants": {
-        "facing=north": {"model": "mymod:block/mech_gantry"}, "facing=east": {"model": "mymod:block/mech_gantry", "y": 90},
-        "facing=south": {"model": "mymod:block/mech_gantry", "y": 180}, "facing=west": {"model": "mymod:block/mech_gantry", "y": 270}}})
+        "facing=north": {"model": "tomyen:block/mech_gantry"}, "facing=east": {"model": "tomyen:block/mech_gantry", "y": 90},
+        "facing=south": {"model": "tomyen:block/mech_gantry", "y": 180}, "facing=west": {"model": "tomyen:block/mech_gantry", "y": 270}}})
 
 
 # --- Recipes and their recipe-book advancements ---------------------------------------------------------------------------
@@ -1096,9 +1096,9 @@ def advancement(name, category, unlock_item):
         "parent": "minecraft:recipes/root",
         "criteria": {
             "has_item": {"conditions": {"items": [{"items": unlock_item}]}, "trigger": "minecraft:inventory_changed"},
-            "has_the_recipe": {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"}},
+            "has_the_recipe": {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"}},
         "requirements": [["has_item", "has_the_recipe"]],
-        "rewards": {"recipes": ["mymod:" + name]}})
+        "rewards": {"recipes": ["tomyen:" + name]}})
 
 
 def shaped(name, result, pattern, key, unlock, count=1, category="misc", folder="misc"):
@@ -1112,22 +1112,22 @@ def recipes():
     """Built from what the rest of the mod makes: steel and duralumin, tungsten carbide joints, rubber seals, computer
     chips, and Skullcrane Servo Arms as the muscle in every actuator."""
     # The gantry: steel blocks for the frame, Servo Arms as its hoists, a chip for the assembly controller.
-    shaped("mech_gantry", "mymod:mech_gantry", ["SCS", "A A", "PPP"],
-           {"S": "mymod:steel_block", "C": "mymod:computer_chip", "A": "mymod:servo_arm", "P": "mymod:steel_plate"},
-           "mymod:steel_block")
+    shaped("mech_gantry", "tomyen:mech_gantry", ["SCS", "A A", "PPP"],
+           {"S": "tomyen:steel_block", "C": "tomyen:computer_chip", "A": "tomyen:servo_arm", "P": "tomyen:steel_plate"},
+           "tomyen:steel_block")
     # Two actuators: a Servo Arm with a tungsten carbide joint, rubber seals and a steel housing.
-    shaped("mech_actuator", "mymod:mech_actuator", [" C ", "RAR", " S "],
-           {"C": "mymod:tungsten_carbide", "R": "mymod:rubber", "A": "mymod:servo_arm", "S": "mymod:steel_ingot"},
-           "mymod:servo_arm", 2)
-    shaped("mech_legs", "mymod:mech_legs", ["PAP", "T T", "B B"],
-           {"P": "mymod:steel_plate", "A": "mymod:mech_actuator", "T": "mymod:tungsten_carbide", "B": "mymod:steel_block"},
-           "mymod:mech_actuator", category="equipment", folder="combat")
-    shaped("mech_arm", "mymod:mech_arm", ["BP", "AT", "BP"],
-           {"P": "mymod:steel_plate", "A": "mymod:mech_actuator", "T": "mymod:tungsten_carbide", "B": "mymod:steel_block"},
-           "mymod:mech_actuator", category="equipment", folder="combat")
+    shaped("mech_actuator", "tomyen:mech_actuator", [" C ", "RAR", " S "],
+           {"C": "tomyen:tungsten_carbide", "R": "tomyen:rubber", "A": "tomyen:servo_arm", "S": "tomyen:steel_ingot"},
+           "tomyen:servo_arm", 2)
+    shaped("mech_legs", "tomyen:mech_legs", ["PAP", "T T", "B B"],
+           {"P": "tomyen:steel_plate", "A": "tomyen:mech_actuator", "T": "tomyen:tungsten_carbide", "B": "tomyen:steel_block"},
+           "tomyen:mech_actuator", category="equipment", folder="combat")
+    shaped("mech_arm", "tomyen:mech_arm", ["BP", "AT", "BP"],
+           {"P": "tomyen:steel_plate", "A": "tomyen:mech_actuator", "T": "tomyen:tungsten_carbide", "B": "tomyen:steel_block"},
+           "tomyen:mech_actuator", category="equipment", folder="combat")
     # A light duralumin hold on a chest, sealed with rubber.
-    shaped("mech_cargo_pod", "mymod:mech_cargo_pod", ["DDD", "DCD", "RRR"],
-           {"D": "mymod:duralumin_sheet", "C": "minecraft:chest", "R": "mymod:rubber"}, "mymod:mech_actuator")
+    shaped("mech_cargo_pod", "tomyen:mech_cargo_pod", ["DDD", "DCD", "RRR"],
+           {"D": "tomyen:duralumin_sheet", "C": "minecraft:chest", "R": "tomyen:rubber"}, "tomyen:mech_actuator")
 
 
 if __name__ == "__main__":

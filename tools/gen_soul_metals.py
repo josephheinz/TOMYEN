@@ -11,7 +11,7 @@ soul steel block a rune. Tool handles keep their own colours, and the models use
 item/handheld, item/generated).
 
 The Soul Vacuum and the Soul Charge are new kinds of item, so they're drawn from scratch: the vacuum is a 3D model
-(gunkit) held like a gun, with a glass canister whose soul glow and nozzle light grow with the mymod:soul_fill model
+(gunkit) held like a gun, with a glass canister whose soul glow and nozzle light grow with the tomyen:soul_fill model
 property; the charge is a 16x16 sprite.
 
 On the data side: shaped recipes in vanilla's patterns with recipe-book advancements, block loot tables, and entries in
@@ -19,15 +19,15 @@ the tool, armor, mining, beacon and repair tags (merged into existing tag files)
 With ffmpeg on the path it synthesises the vacuum's motor loop and the soul wail (stereo: ffmpeg's own Vorbis encoder
 only takes two channels).
 
-Usage: python3 tools/gen_soul_metals.py src/main/resources/assets/mymod"""
+Usage: python3 tools/gen_soul_metals.py src/main/resources/assets/tomyen"""
 import glob, json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave, zipfile, zlib
 from collections import OrderedDict
 
 sys.path.insert(0, os.path.dirname(__file__))
 from gunkit import Kit, check, display, placed, centred, bounds_centre, model, ref, range_dispatch, png, write
 
-ASSETS = sys.argv[1]  # .../assets/mymod
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+ASSETS = sys.argv[1]  # .../assets/tomyen
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 TAGS = os.path.normpath(os.path.join(DATA, "..", "minecraft", "tags"))
 TEX = os.path.join(ASSETS, "textures")
 MODELS, ITEMS = os.path.join(ASSETS, "models"), os.path.join(ASSETS, "items")
@@ -303,20 +303,20 @@ ARMOR = ["helmet", "chestplate", "leggings", "boots"]
 
 def item_model(name, parent):
     write(os.path.join(MODELS, "item", name + ".json"), OrderedDict([
-        ("parent", parent), ("textures", OrderedDict(layer0="mymod:item/" + name))]))
+        ("parent", parent), ("textures", OrderedDict(layer0="tomyen:item/" + name))]))
     write(os.path.join(ITEMS, name + ".json"), {"model": ref(name)})
 
 
 def block_files(name):
-    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "mymod:block/" + name}}})
+    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "tomyen:block/" + name}}})
     write(os.path.join(MODELS, "block", name + ".json"), OrderedDict([
-        ("parent", "minecraft:block/cube_all"), ("textures", OrderedDict(all="mymod:block/" + name))]))
-    write(os.path.join(ITEMS, name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "mymod:block/" + name)])})
+        ("parent", "minecraft:block/cube_all"), ("textures", OrderedDict(all="tomyen:block/" + name))]))
+    write(os.path.join(ITEMS, name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "tomyen:block/" + name)])})
     write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), OrderedDict([
         ("type", "minecraft:block"),
         ("pools", [OrderedDict([("condition", {"type": "minecraft:survives_explosion"}),
-                                ("entries", [{"type": "minecraft:item", "name": "mymod:" + name}]), ("rolls", 1)])]),
-        ("random_sequence", "mymod:blocks/" + name)]))
+                                ("entries", [{"type": "minecraft:item", "name": "tomyen:" + name}]), ("rolls", 1)])]),
+        ("random_sequence", "tomyen:blocks/" + name)]))
 
 
 for metal, (base, fn, worn) in METALS.items():
@@ -339,7 +339,7 @@ for metal, (base, fn, worn) in METALS.items():
         item_model(f"{metal}_{tool}", "minecraft:item/handheld")
     block_files(f"{metal}_block")
     write(os.path.join(ASSETS, "equipment", metal + ".json"), {"layers": OrderedDict([
-        ("humanoid", [{"texture": "mymod:" + metal}]), ("humanoid_leggings", [{"texture": "mymod:" + metal}])])})
+        ("humanoid", [{"texture": "tomyen:" + metal}]), ("humanoid_leggings", [{"texture": "tomyen:" + metal}])])})
 
 # ===================================================================================================== soul charge
 
@@ -511,7 +511,7 @@ K.save(TEX)
 for level, elements in enumerate(frames):
     write(os.path.join(MODELS, "item", f"soul_vacuum_{level}.json"), model(K, elements, DISPLAYS))
 # Empty below the first soul; then a step brighter each quarter.
-write(os.path.join(ITEMS, "soul_vacuum.json"), {"model": range_dispatch("mymod:soul_fill", [
+write(os.path.join(ITEMS, "soul_vacuum.json"), {"model": range_dispatch("tomyen:soul_fill", [
     (0.01, ref("soul_vacuum_1")), (0.26, ref("soul_vacuum_2")), (0.51, ref("soul_vacuum_3")), (0.76, ref("soul_vacuum_4"))],
     ref("soul_vacuum_0"))})
 
@@ -526,9 +526,9 @@ def advancement(name, category, unlock_item):
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
             ("has_item", {"conditions": {"items": [{"items": unlock_item}]}, "trigger": "minecraft:inventory_changed"}),
-            ("has_the_recipe", {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
+            ("has_the_recipe", {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
         ("requirements", [["has_item", "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
 def shaped(name, result, pattern, key, unlock, count=1, category="misc", book=None):
@@ -550,20 +550,20 @@ TOOL_PATTERNS = {"sword": ["X", "X", "#"], "pickaxe": ["XXX", " # ", " # "], "ax
 ARMOR_PATTERNS = {"helmet": ["XXX", "X X"], "chestplate": ["X X", "XXX", "XXX"], "leggings": ["XXX", "X X", "X X"],
                   "boots": ["X X", "X X"]}
 for metal in METALS:
-    ingot, nugget, block = f"mymod:{metal}_ingot", f"mymod:{metal}_nugget", f"mymod:{metal}_block"
+    ingot, nugget, block = f"tomyen:{metal}_ingot", f"tomyen:{metal}_nugget", f"tomyen:{metal}_block"
     shaped(f"{metal}_block", block, ["###", "###", "###"], {"#": ingot}, ingot, category="building")
     shapeless(f"{metal}_ingot_from_{metal}_block", ingot, [block], block, 9)
     shaped(f"{metal}_ingot_from_nuggets", ingot, ["###", "###", "###"], {"#": nugget}, nugget)
     shapeless(f"{metal}_nugget", nugget, [ingot], ingot, 9)
     for tool, pattern in TOOL_PATTERNS.items():
         # Weapons file under combat in the recipe book, the rest under tools (equipment); both are equipment recipes.
-        shaped(f"{metal}_{tool}", f"mymod:{metal}_{tool}", pattern, {"X": ingot, "#": "minecraft:stick"}, ingot,
+        shaped(f"{metal}_{tool}", f"tomyen:{metal}_{tool}", pattern, {"X": ingot, "#": "minecraft:stick"}, ingot,
                category="equipment", book="combat" if tool == "sword" else "equipment")
     for piece, pattern in ARMOR_PATTERNS.items():
-        shaped(f"{metal}_{piece}", f"mymod:{metal}_{piece}", pattern, {"X": ingot}, ingot, category="equipment", book="combat")
-shaped("soul_vacuum", "mymod:soul_vacuum", ["PGP", "ILC", " RI"],
-       {"P": "mymod:steel_plate", "G": "minecraft:glass", "I": "mymod:steel_ingot", "L": "minecraft:soul_lantern",
-        "C": "mymod:computer_chip", "R": "minecraft:redstone"}, "minecraft:soul_lantern", category="equipment")
+        shaped(f"{metal}_{piece}", f"tomyen:{metal}_{piece}", pattern, {"X": ingot}, ingot, category="equipment", book="combat")
+shaped("soul_vacuum", "tomyen:soul_vacuum", ["PGP", "ILC", " RI"],
+       {"P": "tomyen:steel_plate", "G": "minecraft:glass", "I": "tomyen:steel_ingot", "L": "minecraft:soul_lantern",
+        "C": "tomyen:computer_chip", "R": "minecraft:redstone"}, "minecraft:soul_lantern", category="equipment")
 
 # ============================================================================================================= tags
 
@@ -582,21 +582,21 @@ def merge_tag(path, values):
 
 
 for metal in METALS:
-    merge_tag(os.path.join(DATA, "tags", "item", f"repairs_{metal}.json"), [f"mymod:{metal}_ingot"])
+    merge_tag(os.path.join(DATA, "tags", "item", f"repairs_{metal}.json"), [f"tomyen:{metal}_ingot"])
 for kind in TOOLS:
-    merge_tag(os.path.join(TAGS, "item", kind + "s.json"), [f"mymod:{m}_{kind}" for m in METALS])
+    merge_tag(os.path.join(TAGS, "item", kind + "s.json"), [f"tomyen:{m}_{kind}" for m in METALS])
 for piece, tag in zip(ARMOR, ["head_armor", "chest_armor", "leg_armor", "foot_armor"]):
-    merge_tag(os.path.join(TAGS, "item", tag + ".json"), [f"mymod:{m}_{piece}" for m in METALS])
-merge_tag(os.path.join(TAGS, "item", "beacon_payment_items.json"), [f"mymod:{m}_ingot" for m in METALS])
-blocks = [f"mymod:{m}_block" for m in METALS]
+    merge_tag(os.path.join(TAGS, "item", tag + ".json"), [f"tomyen:{m}_{piece}" for m in METALS])
+merge_tag(os.path.join(TAGS, "item", "beacon_payment_items.json"), [f"tomyen:{m}_ingot" for m in METALS])
+blocks = [f"tomyen:{m}_block" for m in METALS]
 merge_tag(os.path.join(TAGS, "block", "mineable", "pickaxe.json"), blocks)
 merge_tag(os.path.join(TAGS, "block", "needs_iron_tool.json"), blocks)
 merge_tag(os.path.join(TAGS, "block", "beacon_base_blocks.json"), blocks)
 # What the Soul Vacuum can't take (bosses, and the tank, which is a vehicle), and the elites that fight it.
 merge_tag(os.path.join(DATA, "tags", "entity_type", "soul_vacuum_immune.json"),
-          ["minecraft:wither", "minecraft:ender_dragon", "minecraft:warden", "minecraft:elder_guardian", "mymod:tank"])
+          ["minecraft:wither", "minecraft:ender_dragon", "minecraft:warden", "minecraft:elder_guardian", "tomyen:tank"])
 merge_tag(os.path.join(DATA, "tags", "entity_type", "soul_vacuum_resistant.json"),
-          ["mymod:schnozzle", "mymod:vampire", "minecraft:ravager", "minecraft:evoker", "minecraft:piglin_brute",
+          ["tomyen:schnozzle", "tomyen:vampire", "minecraft:ravager", "minecraft:evoker", "minecraft:piglin_brute",
            "minecraft:iron_golem"])
 
 # ============================================================================================================= lang
@@ -604,29 +604,29 @@ merge_tag(os.path.join(DATA, "tags", "entity_type", "soul_vacuum_resistant.json"
 LANG = OrderedDict()
 NAMES = {"magmasteel": "Magmasteel", "soul_steel": "Soul Steel"}
 for metal, title in NAMES.items():
-    LANG[f"item.mymod.{metal}_ingot"] = f"{title} Ingot"
-    LANG[f"item.mymod.{metal}_nugget"] = f"{title} Nugget"
-    LANG[f"block.mymod.{metal}_block"] = f"Block of {title}"
+    LANG[f"item.tomyen.{metal}_ingot"] = f"{title} Ingot"
+    LANG[f"item.tomyen.{metal}_nugget"] = f"{title} Nugget"
+    LANG[f"block.tomyen.{metal}_block"] = f"Block of {title}"
     for part in TOOLS + ARMOR:
-        LANG[f"item.mymod.{metal}_{part}"] = f"{title} {part.capitalize()}"
+        LANG[f"item.tomyen.{metal}_{part}"] = f"{title} {part.capitalize()}"
 LANG.update({
-    "item.mymod.magmasteel.auto_smelt": "Smelts what it mines (not with Silk Touch)",
-    "item.mymod.magmasteel.ignites": "Sets what it hits alight",
-    "item.mymod.magmasteel.armor_piece": "Each piece: -15% fire damage",
-    "item.mymod.magmasteel.armor_set": "Full set: fire immunity, and walk on lava",
-    "item.mymod.soul_steel.lifesteal": "Kills heal you 2 hearts",
-    "item.mymod.soul_steel.armor_set": "Full set: weaker monsters dread you",
-    "item.mymod.soul_charge": "Soul Charge",
-    "item.mymod.soul_vacuum": "Soul Vacuum",
-    "item.mymod.soul_vacuum.souls": "Souls: %s/%s",
-    "item.mymod.soul_vacuum.weak_souls": "(%s weak: two make a charge)",
-    "item.mymod.soul_vacuum.use": "Hold use to suck up a mob's soul",
-    "item.mymod.soul_vacuum.release": "Sneak-use to release souls as Soul Charges",
-    "item.mymod.soul_vacuum.full": "The canister is full: sneak-use to release the souls",
-    "item.mymod.soul_vacuum.empty": "No souls to release",
-    "item.mymod.soul_vacuum.resists": "%s resists! Weaken it below a quarter of its health",
-    "subtitles.mymod.soul_vacuum_loop": "Soul Vacuum whines",
-    "subtitles.mymod.soul_wail": "Soul wails",
+    "item.tomyen.magmasteel.auto_smelt": "Smelts what it mines (not with Silk Touch)",
+    "item.tomyen.magmasteel.ignites": "Sets what it hits alight",
+    "item.tomyen.magmasteel.armor_piece": "Each piece: -15% fire damage",
+    "item.tomyen.magmasteel.armor_set": "Full set: fire immunity, and walk on lava",
+    "item.tomyen.soul_steel.lifesteal": "Kills heal you 2 hearts",
+    "item.tomyen.soul_steel.armor_set": "Full set: weaker monsters dread you",
+    "item.tomyen.soul_charge": "Soul Charge",
+    "item.tomyen.soul_vacuum": "Soul Vacuum",
+    "item.tomyen.soul_vacuum.souls": "Souls: %s/%s",
+    "item.tomyen.soul_vacuum.weak_souls": "(%s weak: two make a charge)",
+    "item.tomyen.soul_vacuum.use": "Hold use to suck up a mob's soul",
+    "item.tomyen.soul_vacuum.release": "Sneak-use to release souls as Soul Charges",
+    "item.tomyen.soul_vacuum.full": "The canister is full: sneak-use to release the souls",
+    "item.tomyen.soul_vacuum.empty": "No souls to release",
+    "item.tomyen.soul_vacuum.resists": "%s resists! Weaken it below a quarter of its health",
+    "subtitles.tomyen.soul_vacuum_loop": "Soul Vacuum whines",
+    "subtitles.tomyen.soul_wail": "Soul wails",
 })
 lang_path = os.path.join(ASSETS, "lang", "en_us.json")
 with open(lang_path) as f:
@@ -642,7 +642,7 @@ sounds_path = os.path.join(ASSETS, "sounds.json")
 with open(sounds_path) as f:
     sounds = json.load(f, object_pairs_hook=OrderedDict)
 for name in ("soul_vacuum_loop", "soul_wail"):
-    sounds[name] = OrderedDict([("subtitle", "subtitles.mymod." + name), ("sounds", ["mymod:" + name])])
+    sounds[name] = OrderedDict([("subtitle", "subtitles.tomyen." + name), ("sounds", ["tomyen:" + name])])
 write(sounds_path, sounds)
 
 RATE = 22050

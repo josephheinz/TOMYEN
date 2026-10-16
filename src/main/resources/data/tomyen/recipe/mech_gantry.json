@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "tomyen:steel_block",
+    "C": "tomyen:computer_chip",
+    "A": "tomyen:servo_arm",
+    "P": "tomyen:steel_plate"
+  },
+  "pattern": [
+    "SCS",
+    "A A",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:mech_gantry"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bowl",
+    "tomyen:garlic",
+    "tomyen:yarrow",
+    "minecraft:carrot",
+    "minecraft:potato"
+  ],
+  "result": {
+    "id": "tomyen:herb_stew"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:scarecrow",
+    "tomyen:tech_scrap",
+    "tomyen:tech_scrap",
+    "minecraft:redstone"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:scrap_scarecrow"
+  }
+}

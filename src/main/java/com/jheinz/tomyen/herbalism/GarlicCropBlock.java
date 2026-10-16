@@ -1,0 +1,58 @@
+package com.jheinz.tomyen.herbalism;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+/**
+ * Garlic on farmland: four stages like beetroot, planted from a garlic bulb and harvested for two to four more. Bone
+ * meal brings it on a stage or so at a time.
+ */
+public class GarlicCropBlock extends CropBlock {
+	public static final int MAX_AGE = 3;
+	public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
+	private static final VoxelShape[] SHAPES = Block.boxes(MAX_AGE, age -> Block.column(16.0, 0.0, 3 + age * 3));
+
+	public GarlicCropBlock(Properties properties) {
+		super(properties);
+	}
+
+	@Override
+	protected IntegerProperty getAgeProperty() {
+		return AGE;
+	}
+
+	@Override
+	public int getMaxAge() {
+		return MAX_AGE;
+	}
+
+	@Override
+	protected ItemLike getBaseSeedId() {
+		return Herbalism.GARLIC;
+	}
+
+	@Override
+	protected int getBonemealAgeIncrease(Level level) {
+		return super.getBonemealAgeIncrease(level) / 3;
+	}
+
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		builder.add(AGE);
+	}
+
+	@Override
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		return SHAPES[getAge(state)];
+	}
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "tomyen:carbide_drill_bit",
+    "T": "tomyen:tungsten_carbide",
+    "C": "tomyen:computer_chip",
+    "D": "tomyen:steel_drill",
+    "P": "tomyen:steel_plate"
+  },
+  "pattern": [
+    " TB",
+    "CDT",
+    "P  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:tungsten_carbide_drill"
+  }
+}

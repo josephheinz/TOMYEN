@@ -1,5 +1,5 @@
 """Builds the Gunsmith guns (Slingshot, Flare Gun, Snub Revolver, Sawed-off, Lever-Action Rifle, Nail Gun, Harpoon Gun) and
-their ammo: one shared texture atlas, each gun at rest plus six frames of its moving part, chosen by mymod:gun_animation (1-6;
+their ammo: one shared texture atlas, each gun at rest plus six frames of its moving part, chosen by tomyen:gun_animation (1-6;
 client: GunsmithAnimation), loaded and empty variants where the round shows (the Slingshot's stone, the Harpoon Gun's spear),
 the Nail Gun's magazine frames (7-12, as GunAnimation's reload), muzzle flash layers, the small 3D rounds drawn in the hand
 while loading, flat inventory sprites for the ammo, and client/gunsmith/GunsmithRigs.java: every display transform, hand
@@ -7,7 +7,7 @@ hold and moving-part point the client animates from, so the models and the anima
 
 Art follows gunsmith_kit.py: clearly separate parts in clean material ramps, wood with placed grain, no noise.
 
-Usage: python3 tools/gen_gunsmith.py src/main/resources/assets/mymod [--preview out.png | --preview rows_dir/]
+Usage: python3 tools/gen_gunsmith.py src/main/resources/assets/tomyen [--preview out.png | --preview rows_dir/]
 Then, since this rewrites the guns' item models: tools/gen_gunsmith_mags.py, tools/gen_attachments.py (which wraps every gun's
 item model with its attachment layers), tools/check_gunsmith_attachments.py and tools/preview_gunsmith.py, in that order."""
 import math, os, sys
@@ -28,7 +28,7 @@ if "--preview" in ARGS:
 ASSETS = ARGS[0]
 TEX = os.path.join(ASSETS, "textures")
 MODELS, ITEMS = os.path.join(ASSETS, "models/item"), os.path.join(ASSETS, "items")
-JAVA = os.path.join(os.path.dirname(__file__), "..", "src", "client", "java", "com", "jheinz", "mymod", "client", "gunsmith",
+JAVA = os.path.join(os.path.dirname(__file__), "..", "src", "client", "java", "com", "jheinz", "tomyen", "client", "gunsmith",
                     "GunsmithRigs.java")
 
 # ============================================================================================================== atlas
@@ -739,7 +739,7 @@ RIGS = {}
 
 def gun_tree(name, frames_of, variants=None):
     """The gun_animation range over frames 1-6 of one variant."""
-    return range_dispatch("mymod:gun_animation",
+    return range_dispatch("tomyen:gun_animation",
                           [(k - 0.5, ref(frames_of(k))) for k in range(1, FRAMES + 1)] + [(FRAMES + 0.5, ref(frames_of(0)))],
                           ref(frames_of(0)))
 
@@ -761,7 +761,7 @@ def write_gun(name, build, grip, support, fp_scale, flash_at=None, pistol=False,
     body = gun_tree(name, lambda k: name + (f"_f{k}" if k else ""))
     if loaded:
         write_frames(name, loaded, displays, "_loaded")
-        body = range_dispatch("mymod:loaded_rounds", [(0.5, gun_tree(name, lambda k: name + "_loaded" + (f"_f{k}" if k else "")))],
+        body = range_dispatch("tomyen:loaded_rounds", [(0.5, gun_tree(name, lambda k: name + "_loaded" + (f"_f{k}" if k else "")))],
                               body)
     if flash_at:
         flashes = flash_models(MODELS, name, flash_at[0], flash_at[1], displays)
@@ -827,13 +827,13 @@ def write_nail_gun():
 
     def loaded(k):
         m = lambda kind: ref(names[kind] + (f"_m{k}" if k else ""))
-        return has_component("mymod:loaded_magazine",
+        return has_component("tomyen:loaded_magazine",
                              __import__("collections").OrderedDict([("type", "minecraft:select"), ("property", "minecraft:component"),
-                                                                    ("component", "mymod:loaded_magazine_type"),
-                                                                    ("cases", [{"when": "mymod:nail_coil", "model": m("coil")}]),
+                                                                    ("component", "tomyen:loaded_magazine_type"),
+                                                                    ("cases", [{"when": "tomyen:nail_coil", "model": m("coil")}]),
                                                                     ("fallback", m("strip"))]),
                              ref("nail_gun_no_mag"))
-    body = range_dispatch("mymod:gun_animation", [(6 + k - 0.5, loaded(k)) for k in range(1, 7)] + [(12.5, loaded(0))], loaded(0))
+    body = range_dispatch("tomyen:gun_animation", [(6 + k - 0.5, loaded(k)) for k in range(1, 7)] + [(12.5, loaded(0))], loaded(0))
     write(os.path.join(ITEMS, "nail_gun.json"), {"model": body})
     report("nail_gun", variants["strip"][0], displays, NG_GRIP, NG_SUPPORT)
     SUMMARY.append(("nail_gun", variants["strip"][0], variants["coil"][0], displays))
@@ -959,7 +959,7 @@ def sprites():
     }
     for name, r in rows.items():
         sprite(os.path.join(TEX, f"item/{name}.png"), r, pal)
-        write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
+        write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
         if name not in ("nail_strip", "nail_coil"):
             write(os.path.join(ITEMS, name + ".json"), {"model": ref(name)})
     # The magazines' sprites show their fill bar in the inventory; plain models.
@@ -977,7 +977,7 @@ def jv(v):
 
 
 def write_java():
-    lines = ["package com.jheinz.mymod.client.gunsmith;", "", "import org.joml.Vector3f;", "",
+    lines = ["package com.jheinz.tomyen.client.gunsmith;", "", "import org.joml.Vector3f;", "",
              "/**", " * Where things are on the Gunsmith guns: generated by tools/gen_gunsmith.py from the models, so the animations",
              " * (GunsmithAnimation, GunsmithClient) stay on the parts. Display transforms are first-person (translation in pixels,",
              " * yaw in degrees, scale); GRIP and SUPPORT are hand holds in the held item's space (blocks); every other point is in",

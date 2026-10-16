@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "tomyen:item/prospectors_pendulum_3"
+  }
+}

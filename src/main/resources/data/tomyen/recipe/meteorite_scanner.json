@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "tomyen:steel_ingot",
+    "O": "tomyen:optic_lens",
+    "X": "tomyen:computer_chip",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "SOS",
+    "SXS",
+    "SRS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:meteorite_scanner"
+  }
+}

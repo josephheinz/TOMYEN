@@ -36,7 +36,7 @@ sys.argv = _argv
 
 REPO = os.path.dirname(HERE)
 RES = os.path.join(REPO, "src", "main", "resources")
-ASSETS = os.path.join(RES, "assets", "mymod")
+ASSETS = os.path.join(RES, "assets", "tomyen")
 DATA = os.path.join(RES, "data")
 TEX = os.path.join(ASSETS, "textures")
 PREVIEW = sys.argv[sys.argv.index("--preview") + 1] if "--preview" in sys.argv else None
@@ -470,8 +470,8 @@ def model(elements, lit):
         out.append(e2)
     return OrderedDict([
         ("parent", "minecraft:block/block"),
-        ("textures", OrderedDict([("particle", "minecraft:block/bricks"), ("base", "mymod:block/bloomery"),
-                                  ("glow", "mymod:block/bloomery_glow" if lit else "mymod:block/bloomery_glow_cold")])),
+        ("textures", OrderedDict([("particle", "minecraft:block/bricks"), ("base", "tomyen:block/bloomery"),
+                                  ("glow", "tomyen:block/bloomery_glow" if lit else "tomyen:block/bloomery_glow_cold")])),
         ("elements", out),
     ])
 
@@ -814,8 +814,8 @@ def bloom_steel_art():
 
 
 # ===================================================================================================== data
-RECIPES = os.path.join(DATA, "mymod", "recipe")
-ADVANCEMENTS = os.path.join(DATA, "mymod", "advancement", "recipes")
+RECIPES = os.path.join(DATA, "tomyen", "recipe")
+ADVANCEMENTS = os.path.join(DATA, "tomyen", "advancement", "recipes")
 TAGS = os.path.join(DATA, "minecraft", "tags")
 
 
@@ -824,10 +824,10 @@ def advancement(name, category, unlocks):
     criteria = OrderedDict()
     for criterion, item in unlocks.items():
         criteria[criterion] = {"conditions": {"items": [{"items": item}]}, "trigger": "minecraft:inventory_changed"}
-    criteria["has_the_recipe"] = {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"}
+    criteria["has_the_recipe"] = {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"}
     write(os.path.join(ADVANCEMENTS, category, name + ".json"), OrderedDict([
         ("parent", "minecraft:recipes/root"), ("criteria", criteria),
-        ("requirements", [list(criteria)]), ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("requirements", [list(criteria)]), ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
 def shaped(name, result, pattern, key, unlocks, count=1, category="misc", book=None):
@@ -857,17 +857,17 @@ def merge_tag(path, values):
 
 
 def loot(name):
-    write(os.path.join(DATA, "mymod", "loot_table", "blocks", name + ".json"), OrderedDict([
+    write(os.path.join(DATA, "tomyen", "loot_table", "blocks", name + ".json"), OrderedDict([
         ("type", "minecraft:block"),
         ("pools", [OrderedDict([("condition", {"type": "minecraft:survives_explosion"}),
-                                ("entries", [{"type": "minecraft:item", "name": "mymod:" + name}]), ("rolls", 1)])]),
-        ("random_sequence", "mymod:blocks/" + name)]))
+                                ("entries", [{"type": "minecraft:item", "name": "tomyen:" + name}]), ("rolls", 1)])]),
+        ("random_sequence", "tomyen:blocks/" + name)]))
 
 
 def item_model(name, parent):
     write(os.path.join(ASSETS, "models", "item", name + ".json"), OrderedDict([
-        ("parent", parent), ("textures", OrderedDict(layer0="mymod:item/" + name))]))
-    write(os.path.join(ASSETS, "items", name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "mymod:item/" + name)])})
+        ("parent", parent), ("textures", OrderedDict(layer0="tomyen:item/" + name))]))
+    write(os.path.join(ASSETS, "items", name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "tomyen:item/" + name)])})
 
 
 TOOL_PATTERNS = {"sword": ["X", "X", "#"], "pickaxe": ["XXX", " # ", " # "], "axe": ["XX", "X#", " #"],
@@ -881,40 +881,40 @@ def data():
     variants = OrderedDict()
     for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
         for lit in ("false", "true"):
-            v = OrderedDict([("model", "mymod:block/bloomery_lit" if lit == "true" else "mymod:block/bloomery")])
+            v = OrderedDict([("model", "tomyen:block/bloomery_lit" if lit == "true" else "tomyen:block/bloomery")])
             if y:
                 v["y"] = y
             variants[f"facing={facing},lit={lit}"] = v
     write(os.path.join(ASSETS, "blockstates", "bloomery.json"), {"variants": variants})
-    write(os.path.join(ASSETS, "items", "bloomery.json"), {"model": {"type": "minecraft:model", "model": "mymod:block/bloomery_lit"}})
+    write(os.path.join(ASSETS, "items", "bloomery.json"), {"model": {"type": "minecraft:model", "model": "tomyen:block/bloomery_lit"}})
     loot("bloomery")
     # Bricks for the hearth, clay for the shaft, cobblestone for the footing, leather for the bellows, iron for the tuyere.
-    shaped("bloomery", "mymod:bloomery", ["BCB", "L I", "SSS"],
+    shaped("bloomery", "tomyen:bloomery", ["BCB", "L I", "SSS"],
            OrderedDict([("B", "minecraft:bricks"), ("C", "minecraft:clay"), ("L", "minecraft:leather"), ("I", "minecraft:iron_ingot"),
                         ("S", "#minecraft:stone_crafting_materials")]),
            OrderedDict([("has_raw_iron", "minecraft:raw_iron"), ("has_bricks", "minecraft:bricks"), ("has_clay", "minecraft:clay_ball")]))
 
     # Bloom steel's kit.
     metal = "bloom_steel"
-    ingot, nugget, block = f"mymod:{metal}_ingot", f"mymod:{metal}_nugget", f"mymod:{metal}_block"
+    ingot, nugget, block = f"tomyen:{metal}_ingot", f"tomyen:{metal}_nugget", f"tomyen:{metal}_block"
     has_ingot = {"has_bloom_steel": ingot}
     shaped(f"{metal}_block", block, ["###", "###", "###"], {"#": ingot}, has_ingot, category="building")
     shapeless(f"{metal}_ingot_from_{metal}_block", ingot, [block], {"has_block": block}, 9)
     shaped(f"{metal}_ingot_from_nuggets", ingot, ["###", "###", "###"], {"#": nugget}, {"has_nugget": nugget})
     shapeless(f"{metal}_nugget", nugget, [ingot], has_ingot, 9)
     for tool, pattern in TOOL_PATTERNS.items():
-        shaped(f"{metal}_{tool}", f"mymod:{metal}_{tool}", pattern, {"X": ingot, "#": "minecraft:stick"}, has_ingot,
+        shaped(f"{metal}_{tool}", f"tomyen:{metal}_{tool}", pattern, {"X": ingot, "#": "minecraft:stick"}, has_ingot,
                category="equipment", book="combat" if tool == "sword" else "equipment")
     for piece, pattern in ARMOR_PATTERNS.items():
-        shaped(f"{metal}_{piece}", f"mymod:{metal}_{piece}", pattern, {"X": ingot}, has_ingot, category="equipment", book="combat")
-    sword = f"mymod:{metal}_sword"
-    shaped(f"{metal}_long_sword", f"mymod:{metal}_long_sword", ["S  ", " S ", "  S"], {"S": sword}, {"has_sword": sword},
+        shaped(f"{metal}_{piece}", f"tomyen:{metal}_{piece}", pattern, {"X": ingot}, has_ingot, category="equipment", book="combat")
+    sword = f"tomyen:{metal}_sword"
+    shaped(f"{metal}_long_sword", f"tomyen:{metal}_long_sword", ["S  ", " S ", "  S"], {"S": sword}, {"has_sword": sword},
            category="equipment", book="combat")
     # Steel parts made with bloom steel instead, at its premium (BloomSteelRecipes): half as much again, rounded up.
     # The drill bit: steel's takes three, this five.
-    shaped("steel_drill_bit_from_bloom_steel", "mymod:steel_drill_bit", ["BB", "B ", "BB"], {"B": ingot}, has_ingot)
+    shaped("steel_drill_bit_from_bloom_steel", "tomyen:steel_drill_bit", ["BB", "B ", "BB"], {"B": ingot}, has_ingot)
     # The steel rod: steel's two become three, and with no rubber yet its grip is leather, as the iron rod's is.
-    shaped("steel_rod_from_bloom_steel", "mymod:steel_rod", ["  B", " BS", "LBS"],
+    shaped("steel_rod_from_bloom_steel", "tomyen:steel_rod", ["  B", " BS", "LBS"],
            OrderedDict([("B", ingot), ("S", "minecraft:string"), ("L", "minecraft:leather")]), has_ingot, category="equipment")
 
     for name in [f"{metal}_ingot", f"{metal}_nugget", "bloom"] + [f"{metal}_{p}" for p in ARMOR]:
@@ -923,58 +923,58 @@ def data():
         item_model(f"{metal}_{tool}", "minecraft:item/handheld")
     name = f"{metal}_long_sword"
     write(os.path.join(ASSETS, "models", "item", name + ".json"), OrderedDict([
-        ("parent", "minecraft:item/handheld"), ("textures", OrderedDict(layer0=f"mymod:item/{name}")), ("display", long_sword_displays())]))
-    write(os.path.join(ASSETS, "items", name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", f"mymod:item/{name}")])})
-    write(os.path.join(ASSETS, "blockstates", block.split(":")[1] + ".json"), {"variants": {"": {"model": "mymod:block/" + metal + "_block"}}})
+        ("parent", "minecraft:item/handheld"), ("textures", OrderedDict(layer0=f"tomyen:item/{name}")), ("display", long_sword_displays())]))
+    write(os.path.join(ASSETS, "items", name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", f"tomyen:item/{name}")])})
+    write(os.path.join(ASSETS, "blockstates", block.split(":")[1] + ".json"), {"variants": {"": {"model": "tomyen:block/" + metal + "_block"}}})
     write(os.path.join(ASSETS, "models", "block", f"{metal}_block.json"), OrderedDict([
-        ("parent", "minecraft:block/cube_all"), ("textures", OrderedDict(all=f"mymod:block/{metal}_block"))]))
-    write(os.path.join(ASSETS, "items", f"{metal}_block.json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", f"mymod:block/{metal}_block")])})
+        ("parent", "minecraft:block/cube_all"), ("textures", OrderedDict(all=f"tomyen:block/{metal}_block"))]))
+    write(os.path.join(ASSETS, "items", f"{metal}_block.json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", f"tomyen:block/{metal}_block")])})
     loot(f"{metal}_block")
     write(os.path.join(ASSETS, "equipment", metal + ".json"), {"layers": OrderedDict([
-        ("humanoid", [{"texture": "mymod:" + metal}]), ("humanoid_leggings", [{"texture": "mymod:" + metal}])])})
+        ("humanoid", [{"texture": "tomyen:" + metal}]), ("humanoid_leggings", [{"texture": "tomyen:" + metal}])])})
 
-    merge_tag(os.path.join(DATA, "mymod", "tags", "item", f"repairs_{metal}.json"), [ingot])
+    merge_tag(os.path.join(DATA, "tomyen", "tags", "item", f"repairs_{metal}.json"), [ingot])
     for kind in TOOLS:
-        merge_tag(os.path.join(TAGS, "item", kind + "s.json"), [f"mymod:{metal}_{kind}"])
+        merge_tag(os.path.join(TAGS, "item", kind + "s.json"), [f"tomyen:{metal}_{kind}"])
     for piece, tag in zip(ARMOR, ["head_armor", "chest_armor", "leg_armor", "foot_armor"]):
-        merge_tag(os.path.join(TAGS, "item", tag + ".json"), [f"mymod:{metal}_{piece}"])
+        merge_tag(os.path.join(TAGS, "item", tag + ".json"), [f"tomyen:{metal}_{piece}"])
     merge_tag(os.path.join(TAGS, "item", "beacon_payment_items.json"), [ingot])
-    merge_tag(os.path.join(TAGS, "block", "mineable", "pickaxe.json"), ["mymod:bloomery", block])
+    merge_tag(os.path.join(TAGS, "block", "mineable", "pickaxe.json"), ["tomyen:bloomery", block])
     merge_tag(os.path.join(TAGS, "block", "needs_stone_tool.json"), [block])
     merge_tag(os.path.join(TAGS, "block", "beacon_base_blocks.json"), [block])
-    merge_tag(os.path.join(DATA, "mymod", "tags", "item", "long_swords.json"), [f"mymod:{metal}_long_sword"])
+    merge_tag(os.path.join(DATA, "tomyen", "tags", "item", "long_swords.json"), [f"tomyen:{metal}_long_sword"])
 
 
 LANG = OrderedDict([
-    ("block.mymod.bloomery", "Bloomery"),
-    ("block.mymod.bloomery.desc", "A crude early Foundry: smelts raw iron into blooms"),
-    ("block.mymod.bloomery.bellows", "Work the bellows in rhythm to raise the heat"),
-    ("container.mymod.bloomery", "Bloomery"),
-    ("container.mymod.bloomery.temperature.cold", "Cold: add raw iron and charcoal (%s°C)"),
-    ("container.mymod.bloomery.temperature.rising", "%s°C: work the bellows to reach a bloom heat"),
-    ("container.mymod.bloomery.temperature.bloom", "%s°C: the bloom is gathering"),
-    ("container.mymod.bloomery.temperature.white", "%s°C: white heat, gathering twice as fast"),
-    ("container.mymod.bloomery.bellows", "Bellows: click (or press Space) when the gauge is green"),
-    ("container.mymod.bloomery.forge", "Forge: strike the bloom into Bloom Steel (needs %s°C)"),
-    ("container.mymod.bloomery.forge.cold", "Too cold to forge: needs %s°C"),
-    ("container.mymod.bloomery.stroke.early", "Too soon!"),
-    ("container.mymod.bloomery.stroke.good", "Good!"),
-    ("container.mymod.bloomery.stroke.combo", "Good! x%s"),
-    ("container.mymod.bloomery.stroke.late", "Late"),
-    ("hud.mymod.bloomery.temperature", "%s°C"),
-    ("hud.mymod.bloomery.blooming", "Bloom %s%%"),
-    ("item.mymod.bloom", "Bloom"),
-    ("item.mymod.bloom.hint", "Hammer it on an anvil, or at the Bloomery, into Bloom Steel"),
-    ("item.mymod.bloom.blows", "Hammered: %s of %s blows"),
-    ("item.mymod.bloom_steel.crude", "A crude steel; the Foundry makes better"),
-    ("item.mymod.bloom_steel_ingot.stands_in", "Stands in for steel in early recipes, at half as much again"),
-    ("item.mymod.bloom_steel_ingot", "Bloom Steel Ingot"),
-    ("item.mymod.bloom_steel_nugget", "Bloom Steel Nugget"),
-    ("block.mymod.bloom_steel_block", "Block of Bloom Steel"),
-    ("item.mymod.bloom_steel_long_sword", "Bloom Steel Long Sword"),
+    ("block.tomyen.bloomery", "Bloomery"),
+    ("block.tomyen.bloomery.desc", "A crude early Foundry: smelts raw iron into blooms"),
+    ("block.tomyen.bloomery.bellows", "Work the bellows in rhythm to raise the heat"),
+    ("container.tomyen.bloomery", "Bloomery"),
+    ("container.tomyen.bloomery.temperature.cold", "Cold: add raw iron and charcoal (%s°C)"),
+    ("container.tomyen.bloomery.temperature.rising", "%s°C: work the bellows to reach a bloom heat"),
+    ("container.tomyen.bloomery.temperature.bloom", "%s°C: the bloom is gathering"),
+    ("container.tomyen.bloomery.temperature.white", "%s°C: white heat, gathering twice as fast"),
+    ("container.tomyen.bloomery.bellows", "Bellows: click (or press Space) when the gauge is green"),
+    ("container.tomyen.bloomery.forge", "Forge: strike the bloom into Bloom Steel (needs %s°C)"),
+    ("container.tomyen.bloomery.forge.cold", "Too cold to forge: needs %s°C"),
+    ("container.tomyen.bloomery.stroke.early", "Too soon!"),
+    ("container.tomyen.bloomery.stroke.good", "Good!"),
+    ("container.tomyen.bloomery.stroke.combo", "Good! x%s"),
+    ("container.tomyen.bloomery.stroke.late", "Late"),
+    ("hud.tomyen.bloomery.temperature", "%s°C"),
+    ("hud.tomyen.bloomery.blooming", "Bloom %s%%"),
+    ("item.tomyen.bloom", "Bloom"),
+    ("item.tomyen.bloom.hint", "Hammer it on an anvil, or at the Bloomery, into Bloom Steel"),
+    ("item.tomyen.bloom.blows", "Hammered: %s of %s blows"),
+    ("item.tomyen.bloom_steel.crude", "A crude steel; the Foundry makes better"),
+    ("item.tomyen.bloom_steel_ingot.stands_in", "Stands in for steel in early recipes, at half as much again"),
+    ("item.tomyen.bloom_steel_ingot", "Bloom Steel Ingot"),
+    ("item.tomyen.bloom_steel_nugget", "Bloom Steel Nugget"),
+    ("block.tomyen.bloom_steel_block", "Block of Bloom Steel"),
+    ("item.tomyen.bloom_steel_long_sword", "Bloom Steel Long Sword"),
 ])
 for part in TOOLS + ARMOR:
-    LANG[f"item.mymod.bloom_steel_{part}"] = f"Bloom Steel {part.capitalize()}"
+    LANG[f"item.tomyen.bloom_steel_{part}"] = f"Bloom Steel {part.capitalize()}"
 
 
 def merge_lang():

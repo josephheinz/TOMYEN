@@ -1,15 +1,15 @@
 {
   "values": [
-    "mymod:magmasteel_helmet",
-    "mymod:soul_steel_helmet",
-    "mymod:holy_silver_helmet",
-    "mymod:hazmat_helmet",
-    "mymod:dragonscale_helmet",
-    "mymod:star_steel_helmet",
-    "mymod:froststeel_helmet",
-    "mymod:voidsteel_helmet",
-    "mymod:scrap_helmet",
-    "mymod:bloom_steel_helmet",
-    "mymod:tv_helmet"
+    "tomyen:magmasteel_helmet",
+    "tomyen:soul_steel_helmet",
+    "tomyen:holy_silver_helmet",
+    "tomyen:hazmat_helmet",
+    "tomyen:dragonscale_helmet",
+    "tomyen:star_steel_helmet",
+    "tomyen:froststeel_helmet",
+    "tomyen:voidsteel_helmet",
+    "tomyen:scrap_helmet",
+    "tomyen:bloom_steel_helmet",
+    "tomyen:tv_helmet"
   ]
 }

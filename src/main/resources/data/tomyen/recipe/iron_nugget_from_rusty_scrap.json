@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": "tomyen:rusty_scrap",
+  "result": {
+    "id": "minecraft:iron_nugget"
+  }
+}

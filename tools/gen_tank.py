@@ -10,11 +10,11 @@ only writes stereo, which the game plays without placing it in the world, so the
 
 The tank used to be painted by gen_bank.py; it lives here now.
 
-Usage: python3 tools/gen_tank.py src/main/resources/assets/mymod"""
+Usage: python3 tools/gen_tank.py src/main/resources/assets/tomyen"""
 import json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave, zlib
 
-ASSETS = sys.argv[1]  # .../assets/mymod
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+ASSETS = sys.argv[1]  # .../assets/tomyen
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 TEX = os.path.join(ASSETS, "textures")
 rnd = random.Random(120)
 CLEAR = (0, 0, 0, 0)
@@ -496,8 +496,8 @@ sprite(SHELL, {"s": 0x4A4E56, "S": 0x9AA0AA, "b": 0x8A6420, "B": 0xD8A848, "d": 
 
 for name in ("tank", "tank_shell", "apfsds_shell", "he_shell"):
     write_json(os.path.join(ASSETS, "models", "item", name + ".json"),
-               {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
-    write_json(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+               {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
+    write_json(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 # --- Recipes and their recipe-book advancements --------------------------------------------------------------------
 RECIPES = os.path.join(DATA, "recipe")
@@ -509,9 +509,9 @@ def advancement(name, category, unlock_item):
         "parent": "minecraft:recipes/root",
         "criteria": {
             "has_item": {"conditions": {"items": [{"items": unlock_item}]}, "trigger": "minecraft:inventory_changed"},
-            "has_the_recipe": {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"}},
+            "has_the_recipe": {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"}},
         "requirements": [["has_item", "has_the_recipe"]],
-        "rewards": {"recipes": ["mymod:" + name]}})
+        "rewards": {"recipes": ["tomyen:" + name]}})
 
 
 def shaped(name, result, pattern, key, unlock, count=1, category="misc", folder="misc"):
@@ -523,16 +523,16 @@ def shaped(name, result, pattern, key, unlock, count=1, category="misc", folder=
 
 # Expensive: armour plate (iron blocks), the engine (a blast furnace), running gear (minecarts), the gun's recoil
 # system (pistons), and the fire control (tech scrap and a computer chip).
-shaped("tank", "mymod:tank", ["BCB", "PFP", "MSM"],
-       {"B": "minecraft:iron_block", "C": "mymod:computer_chip", "P": "minecraft:piston", "F": "minecraft:blast_furnace",
-        "M": "minecraft:minecart", "S": "mymod:tech_scrap"}, "minecraft:iron_block")
+shaped("tank", "tomyen:tank", ["BCB", "PFP", "MSM"],
+       {"B": "minecraft:iron_block", "C": "tomyen:computer_chip", "P": "minecraft:piston", "F": "minecraft:blast_furnace",
+        "M": "minecraft:minecart", "S": "tomyen:tech_scrap"}, "minecraft:iron_block")
 # A diamond-tipped dart in an iron sabot over a gunpowder charge in a copper case; HE swaps the dart for TNT.
-shaped("apfsds_shell", "mymod:apfsds_shell", [" D ", " I ", "GCG"],
+shaped("apfsds_shell", "tomyen:apfsds_shell", [" D ", " I ", "GCG"],
        {"D": "minecraft:diamond", "I": "minecraft:iron_ingot", "G": "minecraft:gunpowder", "C": "minecraft:copper_ingot"},
-       "mymod:tank", 2, "equipment", "combat")
-shaped("he_shell", "mymod:he_shell", [" T ", " I ", "GCG"],
+       "tomyen:tank", 2, "equipment", "combat")
+shaped("he_shell", "tomyen:he_shell", [" T ", " I ", "GCG"],
        {"T": "minecraft:tnt", "I": "minecraft:iron_ingot", "G": "minecraft:gunpowder", "C": "minecraft:copper_ingot"},
-       "mymod:tank", 2, "equipment", "combat")
+       "tomyen:tank", 2, "equipment", "combat")
 
 
 # --- Sounds -------------------------------------------------------------------------------------------------------

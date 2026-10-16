@@ -1,4 +1,4 @@
-"""Builds the fishing system's art and data (see com.jheinz.mymod.fishing):
+"""Builds the fishing system's art and data (see com.jheinz.tomyen.fishing):
 
 * the eleven mod rods (stick pole, copper, bone, fae, froststeel, bamboo, iron, steel, duralumin, magmasteel, star
   steel): a flat 16x16 texture each for the rod at rest, cast, and bent under a fighting fish. They keep vanilla's
@@ -7,7 +7,7 @@
 * the nineteen rod parts (lines, hooks, reels and lures), as plain item/generated sprites;
 * the Tackle Bench: a modeled block (spruce top, dark oak legs, a tackle box on the shelf, a tray of lures, a spool
   and a rod on top), its blockstate, loot table and item, its menu background and the part slots' empty-slot icons;
-* item model definitions (the rods switch on mymod:rod_fighting, then vanilla's fishing_rod/cast), recipes with
+* item model definitions (the rods switch on tomyen:rod_fighting, then vanilla's fishing_rod/cast), recipes with
   their recipe-book advancements, tags, the four vanilla fish's species files, sounds.json entries (vanilla sound
   files, repitched) and the lang entries.
 
@@ -27,7 +27,7 @@ from zfight import check as zfight_check
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES = os.path.join(REPO, "src", "main", "resources")
-ASSETS = os.path.join(RES, "assets", "mymod")
+ASSETS = os.path.join(RES, "assets", "tomyen")
 DATA = os.path.join(RES, "data")
 PREVIEW = sys.argv[sys.argv.index("--preview") + 1] if "--preview" in sys.argv else None
 
@@ -488,10 +488,10 @@ def rod_models():
     for rod in RODS:
         for suffix in ("", "_cast", "_bent"):
             write(os.path.join(ASSETS, "models", "item", rod.name + suffix + ".json"), OrderedDict([
-                ("parent", "minecraft:item/handheld_rod"), ("textures", {"layer0": "mymod:item/" + rod.name + suffix})]))
-        model = lambda s: OrderedDict([("type", "minecraft:model"), ("model", "mymod:item/" + rod.name + s)])
+                ("parent", "minecraft:item/handheld_rod"), ("textures", {"layer0": "tomyen:item/" + rod.name + suffix})]))
+        model = lambda s: OrderedDict([("type", "minecraft:model"), ("model", "tomyen:item/" + rod.name + s)])
         write(os.path.join(ASSETS, "items", rod.name + ".json"), {"model": OrderedDict([
-            ("type", "minecraft:condition"), ("property", "mymod:rod_fighting"),
+            ("type", "minecraft:condition"), ("property", "tomyen:rod_fighting"),
             ("on_true", model("_bent")),
             ("on_false", OrderedDict([("type", "minecraft:condition"), ("property", "minecraft:fishing_rod/cast"),
                                       ("on_true", model("_cast")), ("on_false", model(""))]))])})
@@ -782,9 +782,9 @@ def part_textures():
         img.save(os.path.join(ASSETS, "textures", "item", name + ".png"))
         out[name] = img
         write(os.path.join(ASSETS, "models", "item", name + ".json"), OrderedDict([
-            ("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/" + name})]))
+            ("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/" + name})]))
         write(os.path.join(ASSETS, "items", name + ".json"),
-              {"model": OrderedDict([("type", "minecraft:model"), ("model", "mymod:item/" + name)])})
+              {"model": OrderedDict([("type", "minecraft:model"), ("model", "tomyen:item/" + name)])})
     return out
 
 
@@ -1005,14 +1005,14 @@ def bench_model():
     model = OrderedDict([
         ("parent", "minecraft:block/block"),
         ("textures", OrderedDict([("particle", "minecraft:block/spruce_planks"), ("top", "minecraft:block/spruce_planks"),
-                                  ("leg", "minecraft:block/dark_oak_planks"), ("kit", "mymod:block/tackle_bench_kit")])),
+                                  ("leg", "minecraft:block/dark_oak_planks"), ("kit", "tomyen:block/tackle_bench_kit")])),
         ("elements", elements)])
     write(os.path.join(ASSETS, "models", "block", "tackle_bench.json"), model)
     write(os.path.join(ASSETS, "blockstates", "tackle_bench.json"), {"variants": OrderedDict(
-        (f"facing={facing}", OrderedDict([("model", "mymod:block/tackle_bench")] + ([("y", y)] if y else [])))
+        (f"facing={facing}", OrderedDict([("model", "tomyen:block/tackle_bench")] + ([("y", y)] if y else [])))
         for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)))})
     write(os.path.join(ASSETS, "items", "tackle_bench.json"),
-          {"model": OrderedDict([("type", "minecraft:model"), ("model", "mymod:block/tackle_bench")])})
+          {"model": OrderedDict([("type", "minecraft:model"), ("model", "tomyen:block/tackle_bench")])})
     return elements
 
 
@@ -1024,23 +1024,23 @@ def advancement(name, items, category):
     for i, item in enumerate(items):
         criteria["has_item" if i == 0 else f"has_item_{i}"] = {"conditions": {"items": [{"items": item}]},
                                                                "trigger": "minecraft:inventory_changed"}
-    criteria["has_the_recipe"] = {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"}
-    write(os.path.join(DATA, "mymod", "advancement", "recipes", category, name + ".json"), OrderedDict([
+    criteria["has_the_recipe"] = {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"}
+    write(os.path.join(DATA, "tomyen", "advancement", "recipes", category, name + ".json"), OrderedDict([
         ("parent", "minecraft:recipes/root"), ("criteria", criteria), ("requirements", [list(criteria)]),
-        ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
 def shaped(name, pattern, key, unlock, category="tools"):
-    write(os.path.join(DATA, "mymod", "recipe", name + ".json"), OrderedDict([
+    write(os.path.join(DATA, "tomyen", "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shaped"), ("category", "equipment" if category == "tools" else "misc"), ("key", key),
-        ("pattern", pattern), ("result", OrderedDict([("count", 1), ("id", "mymod:" + name)]))]))
+        ("pattern", pattern), ("result", OrderedDict([("count", 1), ("id", "tomyen:" + name)]))]))
     advancement(name, unlock, category)
 
 
 def shapeless(name, ingredients, unlock, category="tools", count=1):
-    write(os.path.join(DATA, "mymod", "recipe", name + ".json"), OrderedDict([
+    write(os.path.join(DATA, "tomyen", "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shapeless"), ("category", "equipment" if category == "tools" else "misc"),
-        ("ingredients", ingredients), ("result", OrderedDict([("count", count), ("id", "mymod:" + name)]))]))
+        ("ingredients", ingredients), ("result", OrderedDict([("count", count), ("id", "tomyen:" + name)]))]))
     advancement(name, unlock, category)
 
 
@@ -1053,38 +1053,38 @@ def recipes():
     # Each rod is its material in vanilla's rod shape, with a handle that suits it.
     rod("bamboo_rod", "minecraft:bamboo", "minecraft:bamboo")
     rod("iron_rod", "minecraft:iron_ingot", "minecraft:leather")
-    rod("steel_rod", "mymod:steel_ingot", "mymod:rubber")
-    rod("duralumin_rod", "mymod:duralumin_sheet", "mymod:rubber")
-    rod("magmasteel_rod", "mymod:magmasteel_ingot", "minecraft:blaze_rod")
-    rod("star_steel_rod", "mymod:star_steel_ingot", "mymod:star_crystal_shard")
+    rod("steel_rod", "tomyen:steel_ingot", "tomyen:rubber")
+    rod("duralumin_rod", "tomyen:duralumin_sheet", "tomyen:rubber")
+    rod("magmasteel_rod", "tomyen:magmasteel_ingot", "minecraft:blaze_rod")
+    rod("star_steel_rod", "tomyen:star_steel_ingot", "tomyen:star_crystal_shard")
     # The sideways rods. The stick pole is two sticks and a string: the first rod anyone can make.
     shapeless("stick_pole", ["minecraft:stick", "minecraft:stick", "minecraft:string"], ["minecraft:string"])
     rod("copper_rod", "minecraft:copper_ingot", "minecraft:dried_kelp")
     rod("bone_rod", "minecraft:bone", "minecraft:bone")
-    rod("fae_rod", "mymod:fae_silver_ingot", "mymod:fae_dust")
-    rod("froststeel_rod", "mymod:froststeel_ingot", "minecraft:packed_ice")
+    rod("fae_rod", "tomyen:fae_silver_ingot", "tomyen:fae_dust")
+    rod("froststeel_rod", "tomyen:froststeel_ingot", "minecraft:packed_ice")
     # Lines.
-    shapeless("rubber_line", ["mymod:rubber", "mymod:rubber", "minecraft:string"], ["mymod:rubber"])
-    shapeless("nose_hair_line", ["mymod:nose_hair", "mymod:nose_hair", "mymod:nose_hair", "minecraft:slime_ball"], ["mymod:nose_hair"])
-    shapeless("fae_silk_line", ["minecraft:string", "minecraft:string", "mymod:fae_dust", "mymod:fae_dust"], ["mymod:fae_dust"])
+    shapeless("rubber_line", ["tomyen:rubber", "tomyen:rubber", "minecraft:string"], ["tomyen:rubber"])
+    shapeless("nose_hair_line", ["tomyen:nose_hair", "tomyen:nose_hair", "tomyen:nose_hair", "minecraft:slime_ball"], ["tomyen:nose_hair"])
+    shapeless("fae_silk_line", ["minecraft:string", "minecraft:string", "tomyen:fae_dust", "tomyen:fae_dust"], ["tomyen:fae_dust"])
     # Hooks: two nuggets and a flint to grind the point; tungsten's barbs are carbide.
     shapeless("iron_hook", ["minecraft:iron_nugget", "minecraft:iron_nugget", "minecraft:flint"], ["minecraft:iron_nugget"])
-    shapeless("silver_hook", ["mymod:silver_nugget", "mymod:silver_nugget", "minecraft:flint"], ["mymod:silver_nugget"])
-    shapeless("tungsten_hook", ["mymod:tungsten_nugget", "mymod:tungsten_nugget", "mymod:tungsten_carbide"], ["mymod:tungsten_nugget"])
+    shapeless("silver_hook", ["tomyen:silver_nugget", "tomyen:silver_nugget", "minecraft:flint"], ["tomyen:silver_nugget"])
+    shapeless("tungsten_hook", ["tomyen:tungsten_nugget", "tomyen:tungsten_nugget", "tomyen:tungsten_carbide"], ["tomyen:tungsten_nugget"])
     # Reels.
     shaped("copper_reel", [" C ", "CIC", " S "], OrderedDict([("C", "minecraft:copper_ingot"), ("I", "minecraft:iron_nugget"),
                                                              ("S", "minecraft:stick")]), ["minecraft:copper_ingot"])
-    shaped("geared_reel", [" T ", "SGS", " C "], OrderedDict([("T", "mymod:tech_scrap"), ("S", "mymod:steel_ingot"),
-                                                             ("G", "mymod:copper_reel"), ("C", "minecraft:copper_ingot")]),
-           ["mymod:copper_reel", "mymod:tech_scrap"])
-    shaped("servo_reel", [" A ", "SGS", " P "], OrderedDict([("A", "mymod:servo_arm"), ("S", "mymod:steel_ingot"),
-                                                            ("G", "mymod:geared_reel"), ("P", "mymod:computer_chip")]),
-           ["mymod:servo_arm"])
+    shaped("geared_reel", [" T ", "SGS", " C "], OrderedDict([("T", "tomyen:tech_scrap"), ("S", "tomyen:steel_ingot"),
+                                                             ("G", "tomyen:copper_reel"), ("C", "minecraft:copper_ingot")]),
+           ["tomyen:copper_reel", "tomyen:tech_scrap"])
+    shaped("servo_reel", [" A ", "SGS", " P "], OrderedDict([("A", "tomyen:servo_arm"), ("S", "tomyen:steel_ingot"),
+                                                            ("G", "tomyen:geared_reel"), ("P", "tomyen:computer_chip")]),
+           ["tomyen:servo_arm"])
     # Lures.
     shapeless("glow_lure", ["minecraft:glow_ink_sac", "minecraft:iron_nugget", "minecraft:feather"], ["minecraft:glow_ink_sac"])
-    shapeless("fae_dust_lure", ["mymod:fae_dust", "mymod:fae_dust", "minecraft:feather", "minecraft:gold_nugget"], ["mymod:fae_dust"])
-    shaped("fish_finder", ["D", "T", "C"], OrderedDict([("D", "mymod:duralumin_sheet"), ("T", "mymod:cathode_tube"),
-                                                       ("C", "mymod:computer_chip")]), ["mymod:cathode_tube", "mymod:computer_chip"])
+    shapeless("fae_dust_lure", ["tomyen:fae_dust", "tomyen:fae_dust", "minecraft:feather", "minecraft:gold_nugget"], ["tomyen:fae_dust"])
+    shaped("fish_finder", ["D", "T", "C"], OrderedDict([("D", "tomyen:duralumin_sheet"), ("T", "tomyen:cathode_tube"),
+                                                       ("C", "tomyen:computer_chip")]), ["tomyen:cathode_tube", "tomyen:computer_chip"])
     # Early parts: string, nuggets, feathers, bark.
     shapeless("braided_line", ["minecraft:string", "minecraft:string", "minecraft:string"], ["minecraft:string"])
     shapeless("treble_hook", ["minecraft:iron_nugget", "minecraft:iron_nugget", "minecraft:iron_nugget", "minecraft:flint"],
@@ -1109,18 +1109,18 @@ def size(lo, avg, hi):
 
 
 def data():
-    write(os.path.join(DATA, "mymod", "loot_table", "blocks", "tackle_bench.json"), OrderedDict([
+    write(os.path.join(DATA, "tomyen", "loot_table", "blocks", "tackle_bench.json"), OrderedDict([
         ("type", "minecraft:block"),
-        ("pools", [OrderedDict([("rolls", 1), ("entries", [{"type": "minecraft:item", "name": "mymod:tackle_bench"}]),
+        ("pools", [OrderedDict([("rolls", 1), ("entries", [{"type": "minecraft:item", "name": "tomyen:tackle_bench"}]),
                                 ("conditions", [{"condition": "minecraft:survives_explosion"}])])]),
-        ("random_sequence", "mymod:blocks/tackle_bench")]))
-    rods = ["mymod:" + name for name in ROD_NAMES]
+        ("random_sequence", "tomyen:blocks/tackle_bench")]))
+    rods = ["tomyen:" + name for name in ROD_NAMES]
     for tag in ("fishing", "durability", "vanishing"):
         tag_add(os.path.join(DATA, "minecraft", "tags", "item", "enchantable", tag + ".json"), rods)
     tag_add(os.path.join(DATA, "c", "tags", "item", "tools", "fishing_rod.json"), rods)
-    tag_add(os.path.join(DATA, "minecraft", "tags", "block", "mineable", "axe.json"), ["mymod:tackle_bench"])
+    tag_add(os.path.join(DATA, "minecraft", "tags", "block", "mineable", "axe.json"), ["tomyen:tackle_bench"])
     # Cursed and evil catches, which a silver hook makes easier: species items go in here.
-    tag_add(os.path.join(DATA, "mymod", "tags", "item", "cursed_catches.json"), [])
+    tag_add(os.path.join(DATA, "tomyen", "tags", "item", "cursed_catches.json"), [])
     recipes()
     species = [
         # Vanilla's own fish, so the system works with nothing else installed. Vanilla's odds are cod 60, salmon 25,
@@ -1139,7 +1139,7 @@ def data():
                                                size(0.05, 0.3, 2.0)])),  # small reef fish
     ]
     for name, body in species:
-        write(os.path.join(DATA, "mymod", "fishing_species", name + ".json"), body)
+        write(os.path.join(DATA, "tomyen", "fishing_species", name + ".json"), body)
 
 
 # ======================================================================================================= sounds, lang
@@ -1154,7 +1154,7 @@ def sound(name, files, volume=1.0, pitch=1.0):
         if pitch != 1.0:
             e["pitch"] = pitch
         entries.append(e)
-    return name, OrderedDict([("subtitle", "subtitles.mymod." + name), ("sounds", entries)])
+    return name, OrderedDict([("subtitle", "subtitles.tomyen." + name), ("sounds", entries)])
 
 
 SOUNDS = OrderedDict([
@@ -1174,117 +1174,117 @@ SUBTITLES = {"fishing_reel_click": "Reel clicks", "fishing_line_creak": "Line cr
              "fishing_strike_hit": "Strike lands", "fishing_strike_miss": "Strike misses", "fishing_sonar": "Sonar pings"}
 
 LANG = OrderedDict([
-    ("item.mymod.bamboo_rod", "Bamboo Rod"),
-    ("item.mymod.iron_rod", "Iron Rod"),
-    ("item.mymod.steel_rod", "Steel Rod"),
-    ("item.mymod.duralumin_rod", "Duralumin Rod"),
-    ("item.mymod.magmasteel_rod", "Magmasteel Rod"),
-    ("item.mymod.star_steel_rod", "Star Steel Rod"),
-    ("item.mymod.rubber_line", "Rubber Fishing Line"),
-    ("item.mymod.nose_hair_line", "Nose Hair Fishing Line"),
-    ("item.mymod.fae_silk_line", "Fae Silk Fishing Line"),
-    ("item.mymod.iron_hook", "Iron Fish Hook"),
-    ("item.mymod.silver_hook", "Silver Fish Hook"),
-    ("item.mymod.tungsten_hook", "Barbed Tungsten Hook"),
-    ("item.mymod.copper_reel", "Copper Reel"),
-    ("item.mymod.geared_reel", "Geared Reel"),
-    ("item.mymod.servo_reel", "Servo Reel"),
-    ("item.mymod.glow_lure", "Glow Lure"),
-    ("item.mymod.fae_dust_lure", "Fae Dust Lure"),
-    ("item.mymod.fish_finder", "Fish Finder"),
-    ("item.mymod.stick_pole", "Stick & String Pole"),
-    ("item.mymod.copper_rod", "Copper Rod"),
-    ("item.mymod.bone_rod", "Bone Rod"),
-    ("item.mymod.fae_rod", "Fae Rod"),
-    ("item.mymod.froststeel_rod", "Froststeel Rod"),
-    ("item.mymod.braided_line", "Braided Fishing Line"),
-    ("item.mymod.treble_hook", "Treble Hook"),
-    ("item.mymod.drag_reel", "Drag Reel"),
-    ("item.mymod.cork_bobber", "Cork Bobber"),
-    ("item.mymod.feather_lure", "Feather Lure"),
-    ("item.mymod.spinner_lure", "Spinner Lure"),
-    ("item.mymod.rattle_lure", "Rattle Lure"),
-    ("tooltip.mymod.rod.no_reel", "No reel to fit"),
-    ("tooltip.mymod.rod.condition.cold", "In the cold:"),
-    ("tooltip.mymod.rod.condition.feywild", "In the Feywild:"),
-    ("tooltip.mymod.rod_effect.rain_bite", "Bites %ss sooner in rain or murky water"),
-    ("tooltip.mymod.rod_effect.predator", "%s predators drawn in"),
-    ("container.mymod.tackle_bench.tag.rain", "RAIN"),
-    ("container.mymod.tackle_bench.tag.predator", "PREDATOR"),
-    ("container.mymod.tackle_bench.tag.cold", "COLD"),
-    ("container.mymod.tackle_bench.tag.feywild", "FEY"),
-    ("container.mymod.tackle_bench.tag.no_reel", "NO-REEL"),
-    ("block.mymod.tackle_bench", "Tackle Bench"),
-    ("entity.mymod.rod_bobber", "Fishing Bobber"),
-    ("container.mymod.tackle_bench", "Tackle Bench"),
-    ("container.mymod.tackle_bench.empty", "Place a mod rod"),
-    ("container.mymod.tackle_bench.stat.tier", "Tier"),
-    ("container.mymod.tackle_bench.stat.zone", "Green zone"),
-    ("container.mymod.tackle_bench.stat.speed", "Fish speed"),
-    ("container.mymod.tackle_bench.stat.hold", "Hook hold"),
-    ("container.mymod.tackle_bench.stat.line", "Line strength"),
-    ("container.mymod.tackle_bench.stat.reel", "Reel speed"),
-    ("container.mymod.tackle_bench.stat.bite", "Bite wait"),
-    ("container.mymod.tackle_bench.stat.rare", "Rare bias"),
-    ("container.mymod.tackle_bench.tag.lava", "LAVA"),
-    ("container.mymod.tackle_bench.tag.sonar", "SONAR"),
-    ("container.mymod.tackle_bench.tag.servo", "SERVO"),
-    ("container.mymod.tackle_bench.tag.night", "NIGHT"),
-    ("container.mymod.tackle_bench.tag.cursed", "CURSED"),
-    ("key.category.mymod.fishing", "My Mod: Fishing"),
-    ("key.mymod.reel", "Reel In (fishing minigame)"),
-    ("tooltip.mymod.rod.tier", "Tier %s rod"),
-    ("tooltip.mymod.rod.lava", "Fishes in lava"),
-    ("tooltip.mymod.rod.slot", "%s: %s"),
-    ("tooltip.mymod.rod.customize", "Fit lines, hooks, reels and lures at a Tackle Bench"),
-    ("tooltip.mymod.rod_part", "Rod part: %s"),
-    ("tooltip.mymod.rod_part.fit", "Fit it to a mod rod at a Tackle Bench"),
-    ("tooltip.mymod.rod_slot.line", "Line"),
-    ("tooltip.mymod.rod_slot.line.stock", "String"),
-    ("tooltip.mymod.rod_slot.hook", "Hook"),
-    ("tooltip.mymod.rod_slot.hook.stock", "Bent pin"),
-    ("tooltip.mymod.rod_slot.reel", "Reel"),
-    ("tooltip.mymod.rod_slot.reel.stock", "Plain spool"),
-    ("tooltip.mymod.rod_slot.lure", "Lure"),
-    ("tooltip.mymod.rod_slot.lure.stock", "Plain bobber"),
-    ("tooltip.mymod.rod_effect.bite_sooner", "Bites %ss sooner"),
-    ("tooltip.mymod.rod_effect.bite_later", "Bites %ss later"),
-    ("tooltip.mymod.rod_effect.night_bite", "Bites %ss sooner at night"),
-    ("tooltip.mymod.rod_effect.zone", "%s green zone"),
-    ("tooltip.mymod.rod_effect.fish_slower", "Fish move %s slower"),
-    ("tooltip.mymod.rod_effect.fish_faster", "Fish move %s faster"),
-    ("tooltip.mymod.rod_effect.escape", "%s hook hold (fewer escapes)"),
-    ("tooltip.mymod.rod_effect.line", "%s line strength (fewer snaps)"),
-    ("tooltip.mymod.rod_effect.reel", "%s reel speed"),
-    ("tooltip.mymod.rod_effect.assist", "%s servo assist"),
-    ("tooltip.mymod.rod_effect.rarity", "%s rare fish bias"),
-    ("tooltip.mymod.rod_effect.night_rarity", "%s rare fish bias at night"),
-    ("tooltip.mymod.rod_effect.sonar", "Sonar: names a fish before it bites"),
-    ("tooltip.mymod.rod_effect.cursed", "Cursed catches are easier"),
-    ("hud.mymod.fishing.unknown", "Something's on the line!"),
-    ("hud.mymod.fishing.hint.tension", "Hold %s to reel"),
-    ("hud.mymod.fishing.hint.strikes", "Press %s in the zone"),
-    ("hud.mymod.fishing.hint.mash", "Tap %s fast"),
-    ("hud.mymod.fishing.mash.under", "Tap! Tap!"),
-    ("hud.mymod.fishing.mash.hold", "Keep it up!"),
-    ("hud.mymod.fishing.outcome.caught", "Caught!"),
-    ("hud.mymod.fishing.outcome.escaped", "It got away..."),
-    ("hud.mymod.fishing.outcome.snapped", "Line snapped!"),
-    ("hud.mymod.fishing.outcome.cancelled", "Lost it"),
-    ("hud.mymod.fishing.perfect", "Perfect!"),
-    ("hud.mymod.fishing.xp", "+%s xp"),
-    ("hud.mymod.fishing.sonar", "Sonar: %s"),
-    ("hud.mymod.fishing.empty_lava", "Nothing in this lava is biting... yet"),
-    ("hud.mymod.fishing.game.tension", "tension meter"),
-    ("hud.mymod.fishing.game.strikes", "timing strikes"),
-    ("hud.mymod.fishing.game.mash", "mash meter"),
-    ("commands.mymod.fishing.test.started", "Started a %s fight (%s, difficulty %s)"),
-    ("commands.mymod.fishing.test.result", "Test fight: %s in %ss, perfect: %s"),
-    ("commands.mymod.fishing.bad_behavior", "Unknown behavior %s: try steady, darting, sinker, floater or thrasher"),
-    ("commands.mymod.fishing.species.header", "%s of %s species can bite here (rod tier %s, in %s):"),
-    ("commands.mymod.fishing.species.none", "Nothing in the species files can bite here."),
-    ("commands.mymod.fishing.species.line", " %s: %s%% (weight %s, difficulty %s, %s) [%s]"),
-] + [("subtitles.mymod." + k, v) for k, v in SUBTITLES.items()])
+    ("item.tomyen.bamboo_rod", "Bamboo Rod"),
+    ("item.tomyen.iron_rod", "Iron Rod"),
+    ("item.tomyen.steel_rod", "Steel Rod"),
+    ("item.tomyen.duralumin_rod", "Duralumin Rod"),
+    ("item.tomyen.magmasteel_rod", "Magmasteel Rod"),
+    ("item.tomyen.star_steel_rod", "Star Steel Rod"),
+    ("item.tomyen.rubber_line", "Rubber Fishing Line"),
+    ("item.tomyen.nose_hair_line", "Nose Hair Fishing Line"),
+    ("item.tomyen.fae_silk_line", "Fae Silk Fishing Line"),
+    ("item.tomyen.iron_hook", "Iron Fish Hook"),
+    ("item.tomyen.silver_hook", "Silver Fish Hook"),
+    ("item.tomyen.tungsten_hook", "Barbed Tungsten Hook"),
+    ("item.tomyen.copper_reel", "Copper Reel"),
+    ("item.tomyen.geared_reel", "Geared Reel"),
+    ("item.tomyen.servo_reel", "Servo Reel"),
+    ("item.tomyen.glow_lure", "Glow Lure"),
+    ("item.tomyen.fae_dust_lure", "Fae Dust Lure"),
+    ("item.tomyen.fish_finder", "Fish Finder"),
+    ("item.tomyen.stick_pole", "Stick & String Pole"),
+    ("item.tomyen.copper_rod", "Copper Rod"),
+    ("item.tomyen.bone_rod", "Bone Rod"),
+    ("item.tomyen.fae_rod", "Fae Rod"),
+    ("item.tomyen.froststeel_rod", "Froststeel Rod"),
+    ("item.tomyen.braided_line", "Braided Fishing Line"),
+    ("item.tomyen.treble_hook", "Treble Hook"),
+    ("item.tomyen.drag_reel", "Drag Reel"),
+    ("item.tomyen.cork_bobber", "Cork Bobber"),
+    ("item.tomyen.feather_lure", "Feather Lure"),
+    ("item.tomyen.spinner_lure", "Spinner Lure"),
+    ("item.tomyen.rattle_lure", "Rattle Lure"),
+    ("tooltip.tomyen.rod.no_reel", "No reel to fit"),
+    ("tooltip.tomyen.rod.condition.cold", "In the cold:"),
+    ("tooltip.tomyen.rod.condition.feywild", "In the Feywild:"),
+    ("tooltip.tomyen.rod_effect.rain_bite", "Bites %ss sooner in rain or murky water"),
+    ("tooltip.tomyen.rod_effect.predator", "%s predators drawn in"),
+    ("container.tomyen.tackle_bench.tag.rain", "RAIN"),
+    ("container.tomyen.tackle_bench.tag.predator", "PREDATOR"),
+    ("container.tomyen.tackle_bench.tag.cold", "COLD"),
+    ("container.tomyen.tackle_bench.tag.feywild", "FEY"),
+    ("container.tomyen.tackle_bench.tag.no_reel", "NO-REEL"),
+    ("block.tomyen.tackle_bench", "Tackle Bench"),
+    ("entity.tomyen.rod_bobber", "Fishing Bobber"),
+    ("container.tomyen.tackle_bench", "Tackle Bench"),
+    ("container.tomyen.tackle_bench.empty", "Place a mod rod"),
+    ("container.tomyen.tackle_bench.stat.tier", "Tier"),
+    ("container.tomyen.tackle_bench.stat.zone", "Green zone"),
+    ("container.tomyen.tackle_bench.stat.speed", "Fish speed"),
+    ("container.tomyen.tackle_bench.stat.hold", "Hook hold"),
+    ("container.tomyen.tackle_bench.stat.line", "Line strength"),
+    ("container.tomyen.tackle_bench.stat.reel", "Reel speed"),
+    ("container.tomyen.tackle_bench.stat.bite", "Bite wait"),
+    ("container.tomyen.tackle_bench.stat.rare", "Rare bias"),
+    ("container.tomyen.tackle_bench.tag.lava", "LAVA"),
+    ("container.tomyen.tackle_bench.tag.sonar", "SONAR"),
+    ("container.tomyen.tackle_bench.tag.servo", "SERVO"),
+    ("container.tomyen.tackle_bench.tag.night", "NIGHT"),
+    ("container.tomyen.tackle_bench.tag.cursed", "CURSED"),
+    ("key.category.tomyen.fishing", "TOMYEN: Fishing"),
+    ("key.tomyen.reel", "Reel In (fishing minigame)"),
+    ("tooltip.tomyen.rod.tier", "Tier %s rod"),
+    ("tooltip.tomyen.rod.lava", "Fishes in lava"),
+    ("tooltip.tomyen.rod.slot", "%s: %s"),
+    ("tooltip.tomyen.rod.customize", "Fit lines, hooks, reels and lures at a Tackle Bench"),
+    ("tooltip.tomyen.rod_part", "Rod part: %s"),
+    ("tooltip.tomyen.rod_part.fit", "Fit it to a mod rod at a Tackle Bench"),
+    ("tooltip.tomyen.rod_slot.line", "Line"),
+    ("tooltip.tomyen.rod_slot.line.stock", "String"),
+    ("tooltip.tomyen.rod_slot.hook", "Hook"),
+    ("tooltip.tomyen.rod_slot.hook.stock", "Bent pin"),
+    ("tooltip.tomyen.rod_slot.reel", "Reel"),
+    ("tooltip.tomyen.rod_slot.reel.stock", "Plain spool"),
+    ("tooltip.tomyen.rod_slot.lure", "Lure"),
+    ("tooltip.tomyen.rod_slot.lure.stock", "Plain bobber"),
+    ("tooltip.tomyen.rod_effect.bite_sooner", "Bites %ss sooner"),
+    ("tooltip.tomyen.rod_effect.bite_later", "Bites %ss later"),
+    ("tooltip.tomyen.rod_effect.night_bite", "Bites %ss sooner at night"),
+    ("tooltip.tomyen.rod_effect.zone", "%s green zone"),
+    ("tooltip.tomyen.rod_effect.fish_slower", "Fish move %s slower"),
+    ("tooltip.tomyen.rod_effect.fish_faster", "Fish move %s faster"),
+    ("tooltip.tomyen.rod_effect.escape", "%s hook hold (fewer escapes)"),
+    ("tooltip.tomyen.rod_effect.line", "%s line strength (fewer snaps)"),
+    ("tooltip.tomyen.rod_effect.reel", "%s reel speed"),
+    ("tooltip.tomyen.rod_effect.assist", "%s servo assist"),
+    ("tooltip.tomyen.rod_effect.rarity", "%s rare fish bias"),
+    ("tooltip.tomyen.rod_effect.night_rarity", "%s rare fish bias at night"),
+    ("tooltip.tomyen.rod_effect.sonar", "Sonar: names a fish before it bites"),
+    ("tooltip.tomyen.rod_effect.cursed", "Cursed catches are easier"),
+    ("hud.tomyen.fishing.unknown", "Something's on the line!"),
+    ("hud.tomyen.fishing.hint.tension", "Hold %s to reel"),
+    ("hud.tomyen.fishing.hint.strikes", "Press %s in the zone"),
+    ("hud.tomyen.fishing.hint.mash", "Tap %s fast"),
+    ("hud.tomyen.fishing.mash.under", "Tap! Tap!"),
+    ("hud.tomyen.fishing.mash.hold", "Keep it up!"),
+    ("hud.tomyen.fishing.outcome.caught", "Caught!"),
+    ("hud.tomyen.fishing.outcome.escaped", "It got away..."),
+    ("hud.tomyen.fishing.outcome.snapped", "Line snapped!"),
+    ("hud.tomyen.fishing.outcome.cancelled", "Lost it"),
+    ("hud.tomyen.fishing.perfect", "Perfect!"),
+    ("hud.tomyen.fishing.xp", "+%s xp"),
+    ("hud.tomyen.fishing.sonar", "Sonar: %s"),
+    ("hud.tomyen.fishing.empty_lava", "Nothing in this lava is biting... yet"),
+    ("hud.tomyen.fishing.game.tension", "tension meter"),
+    ("hud.tomyen.fishing.game.strikes", "timing strikes"),
+    ("hud.tomyen.fishing.game.mash", "mash meter"),
+    ("commands.tomyen.fishing.test.started", "Started a %s fight (%s, difficulty %s)"),
+    ("commands.tomyen.fishing.test.result", "Test fight: %s in %ss, perfect: %s"),
+    ("commands.tomyen.fishing.bad_behavior", "Unknown behavior %s: try steady, darting, sinker, floater or thrasher"),
+    ("commands.tomyen.fishing.species.header", "%s of %s species can bite here (rod tier %s, in %s):"),
+    ("commands.tomyen.fishing.species.none", "Nothing in the species files can bite here."),
+    ("commands.tomyen.fishing.species.line", " %s: %s%% (weight %s, difficulty %s, %s) [%s]"),
+] + [("subtitles.tomyen." + k, v) for k, v in SUBTITLES.items()])
 
 
 def sounds_and_lang():

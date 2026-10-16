@@ -1,13 +1,13 @@
 {
   "values": [
-    "mymod:magmasteel_hoe",
-    "mymod:soul_steel_hoe",
-    "mymod:holy_silver_hoe",
-    "mymod:fae_silver_hoe",
-    "mymod:star_steel_hoe",
-    "mymod:froststeel_hoe",
-    "mymod:voidsteel_hoe",
-    "mymod:bloom_steel_hoe"
+    "tomyen:magmasteel_hoe",
+    "tomyen:soul_steel_hoe",
+    "tomyen:holy_silver_hoe",
+    "tomyen:fae_silver_hoe",
+    "tomyen:star_steel_hoe",
+    "tomyen:froststeel_hoe",
+    "tomyen:voidsteel_hoe",
+    "tomyen:bloom_steel_hoe"
   ],
   "replace": false
 }

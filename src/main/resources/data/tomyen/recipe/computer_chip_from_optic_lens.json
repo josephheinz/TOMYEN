@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:optic_lens",
+    "tomyen:tech_scrap"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:computer_chip"
+  }
+}

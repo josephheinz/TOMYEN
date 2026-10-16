@@ -8,7 +8,7 @@ import json, os, struct, sys, zlib
 sys.path.insert(0, os.path.dirname(__file__))
 from zfight import check
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
 
 
@@ -286,34 +286,34 @@ if clashes:
 
 MODELS = os.path.join(ASSETS, "models/item")
 write_json(os.path.join(MODELS, "neuralink_worn.json"), {
-    "textures": {"parts": "mymod:item/neuralink_parts", "particle": "mymod:item/neuralink_parts"},
+    "textures": {"parts": "tomyen:item/neuralink_parts", "particle": "tomyen:item/neuralink_parts"},
     "elements": ELEMENTS,
     # 1.6 undoes the custom-head layer's 0.625 so model units are head pixels.
     "display": {"head": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1.6, 1.6, 1.6]}},
 })
 write_json(os.path.join(MODELS, "neuralink_mk2_worn.json"), {
-    "textures": {"parts": "mymod:item/neuralink_mk2_parts", "particle": "mymod:item/neuralink_mk2_parts"},
+    "textures": {"parts": "tomyen:item/neuralink_mk2_parts", "particle": "tomyen:item/neuralink_mk2_parts"},
     "elements": ELEMENTS,
     "display": {"head": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1.6, 1.6, 1.6]}},
 })
 write_json(os.path.join(MODELS, "neuralink.json"),
-           {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/neuralink"}})
+           {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/neuralink"}})
 write_json(os.path.join(MODELS, "neuralink_mk2.json"),
-           {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/neuralink_mk2"}})
+           {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/neuralink_mk2"}})
 write_json(os.path.join(MODELS, "tech_scrap.json"),
-           {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/tech_scrap"}})
+           {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/tech_scrap"}})
 
 for name in [*MODULE_SYMBOLS, "silicon", "computer_chip"]:
     write_json(os.path.join(MODELS, name + ".json"),
-               {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
+               {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
 ITEMS = os.path.join(ASSETS, "items")
 for name in ["tech_scrap", "silicon", "computer_chip", *MODULE_SYMBOLS]:
-    write_json(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+    write_json(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 for name in ["neuralink", "neuralink_mk2"]:
     write_json(os.path.join(ITEMS, name + ".json"), {"model": {
         "type": "minecraft:select",
         "property": "minecraft:display_context",
-        "cases": [{"when": ["head"], "model": {"type": "minecraft:model", "model": "mymod:item/%s_worn" % name}}],
-        "fallback": {"type": "minecraft:model", "model": "mymod:item/" + name},
+        "cases": [{"when": ["head"], "model": {"type": "minecraft:model", "model": "tomyen:item/%s_worn" % name}}],
+        "fallback": {"type": "minecraft:model", "model": "tomyen:item/" + name},
     }})
 print("ok:", len(ELEMENTS), "elements")

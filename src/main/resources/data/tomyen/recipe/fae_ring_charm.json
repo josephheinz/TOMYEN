@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "tomyen:fae_dust",
+    "M": "tomyen:fae_mushroom",
+    "S": "tomyen:fae_silver_ingot"
+  },
+  "pattern": [
+    " D ",
+    "DMD",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:fae_ring_charm"
+  }
+}

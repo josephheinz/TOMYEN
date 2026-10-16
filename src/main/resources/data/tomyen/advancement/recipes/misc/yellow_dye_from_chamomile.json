@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chamomile": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tomyen:chamomile"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "tomyen:yellow_dye_from_chamomile"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_chamomile"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tomyen:yellow_dye_from_chamomile"
+    ]
+  }
+}

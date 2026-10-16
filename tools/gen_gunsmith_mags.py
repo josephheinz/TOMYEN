@@ -2,10 +2,10 @@
 for the MP5. Each is made from the gun's own models, every frame of them (racking 1-6, the magazine leaving the well 7-12,
 and the iron-sight-less copies tools/gen_attachments.py makes from these): the M4's box magazine is swapped for the twin
 drum, riding the same way out of the well, and the MP5's magazine body is lengthened along its own curve. The gun's item model
-then picks the variant by mymod:loaded_magazine_type.
+then picks the variant by tomyen:loaded_magazine_type.
 
 Run after the guns' own models exist and before tools/gen_attachments.py (which wraps the item models again):
-    python3 tools/gen_gunsmith_mags.py src/main/resources/assets/mymod"""
+    python3 tools/gen_gunsmith_mags.py src/main/resources/assets/tomyen"""
 import copy, json, math, os, sys
 from collections import OrderedDict
 
@@ -90,7 +90,7 @@ def drum_variant(gun, name, base):
     drum = gunkit.move(m4_drum(), *offset)
     first = len(model["elements"])
     model["elements"] += drum
-    model["textures"]["drum"] = "mymod:item/gunsmith_mags"
+    model["textures"]["drum"] = "tomyen:item/gunsmith_mags"
     check_overlaps(name + "_drum", model["elements"], only=set(range(first, len(model["elements"]))))
     variant = name.replace(gun, gun + "_drum", 1)
     write(variant, model)
@@ -132,13 +132,13 @@ def inject(gun, magazine, make):
     tree = item["model"]
     if tree.get("type") == "minecraft:composite":
         tree = tree["models"][0]
-    if tree.get("type") == "minecraft:condition" and tree.get("component") == "mymod:optic_attachment":
+    if tree.get("type") == "minecraft:condition" and tree.get("component") == "tomyen:optic_attachment":
         tree = tree["on_false"]
     base = json.load(open(os.path.join(MODELS, gun + ".json")), object_pairs_hook=OrderedDict)
     made = {}
 
     def variant_of(model_ref):
-        name = model_ref[len("mymod:item/"):]
+        name = model_ref[len("tomyen:item/"):]
         if name not in made:
             # A frame with no magazine in it (gone from the well) stays as it is.
             made[name] = make(gun, name, base) or name
@@ -146,7 +146,7 @@ def inject(gun, magazine, make):
 
     def wrap(node):
         if isinstance(node, dict):
-            if node.get("type") == "minecraft:condition" and node.get("component") == "mymod:loaded_magazine":
+            if node.get("type") == "minecraft:condition" and node.get("component") == "tomyen:loaded_magazine":
                 node["on_true"] = choose(node["on_true"])
                 return node
             for k, v in list(node.items()):
@@ -156,7 +156,7 @@ def inject(gun, magazine, make):
         return node
 
     def choose(on_true):
-        if on_true.get("type") == "minecraft:select" and on_true.get("component") == "mymod:loaded_magazine_type":
+        if on_true.get("type") == "minecraft:select" and on_true.get("component") == "tomyen:loaded_magazine_type":
             cases = [c for c in on_true["cases"] if c["when"] != magazine]
             fallback = on_true["fallback"]
         elif on_true.get("type") == "minecraft:model":
@@ -165,9 +165,9 @@ def inject(gun, magazine, make):
             raise SystemExit(f"{gun}: unexpected loaded-magazine model {on_true.get('type')}")
         variant = variant_of(fallback["model"])
         cases.append(OrderedDict([("when", magazine), ("model", OrderedDict([("type", "minecraft:model"),
-                                                                             ("model", "mymod:item/" + variant)]))]))
+                                                                             ("model", "tomyen:item/" + variant)]))]))
         return OrderedDict([("type", "minecraft:select"), ("property", "minecraft:component"),
-                            ("component", "mymod:loaded_magazine_type"), ("cases", cases), ("fallback", fallback)])
+                            ("component", "tomyen:loaded_magazine_type"), ("cases", cases), ("fallback", fallback)])
 
     tree = wrap(tree)
     item["model"] = tree
@@ -177,5 +177,5 @@ def inject(gun, magazine, make):
     print(gun, magazine, len(made), "variants")
 
 
-inject("m4", "mymod:stanag_drum_magazine", drum_variant)
-inject("mp5", "mymod:mp5_extended_magazine", extended_variant)
+inject("m4", "tomyen:stanag_drum_magazine", drum_variant)
+inject("mp5", "tomyen:mp5_extended_magazine", extended_variant)

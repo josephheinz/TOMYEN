@@ -1,10 +1,10 @@
 {
   "values": [
-    "mymod:magmasteel_ingot",
-    "mymod:soul_steel_ingot",
-    "mymod:silver_ingot",
-    "mymod:froststeel_ingot",
-    "mymod:voidsteel_ingot",
-    "mymod:bloom_steel_ingot"
+    "tomyen:magmasteel_ingot",
+    "tomyen:soul_steel_ingot",
+    "tomyen:silver_ingot",
+    "tomyen:froststeel_ingot",
+    "tomyen:voidsteel_ingot",
+    "tomyen:bloom_steel_ingot"
   ]
 }

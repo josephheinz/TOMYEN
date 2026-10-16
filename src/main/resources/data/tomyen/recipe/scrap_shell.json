@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": "minecraft:gunpowder",
+    "N": "minecraft:iron_nugget",
+    "W": [
+      "minecraft:paper",
+      "tomyen:tar"
+    ]
+  },
+  "pattern": [
+    "NNN",
+    " G ",
+    " W "
+  ],
+  "result": {
+    "count": 4,
+    "id": "tomyen:scrap_shell"
+  }
+}

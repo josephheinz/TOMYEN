@@ -1,0 +1,26 @@
+{
+  "item": "tomyen:bluegill",
+  "weight": 32,
+  "difficulty": 1,
+  "behavior": "darting",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "#minecraft:is_river",
+    "minecraft:swamp",
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "#minecraft:is_forest",
+    "minecraft:savanna",
+    "minecraft:meadow"
+  ],
+  "count": [
+    1,
+    2
+  ],
+  "size": {
+    "min_lb": 0.1,
+    "avg_lb": 0.4,
+    "max_lb": 4.75
+  }
+}

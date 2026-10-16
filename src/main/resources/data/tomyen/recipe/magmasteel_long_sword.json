@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "tomyen:magmasteel_sword"
+  },
+  "pattern": [
+    "S  ",
+    " S ",
+    "  S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:magmasteel_long_sword"
+  }
+}

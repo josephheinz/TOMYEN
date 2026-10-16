@@ -222,7 +222,7 @@ def render(path, sprites, lang, vanilla, Canvas):
     font = Font(vanilla)
 
     def fmt(key, *args):
-        s = lang["detector.mymod." + key]
+        s = lang["detector.tomyen." + key]
         return (s % args) if args else s.replace("%%", "%")
 
     # Sprite sheet.

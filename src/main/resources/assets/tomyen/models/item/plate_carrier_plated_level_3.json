@@ -1,0 +1,752 @@
+{
+  "credit": "tomyen plate carrier \u2014 generated",
+  "textures": {
+    "tex": "tomyen:item/plate_carrier",
+    "particle": "tomyen:item/plate_carrier",
+    "plate": "tomyen:item/armor_plate_level_3"
+  },
+  "elements": [
+    {
+      "name": "front_panel",
+      "from": [
+        3.5,
+        2,
+        10
+      ],
+      "to": [
+        12.5,
+        11,
+        11
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "south": {
+          "uv": [
+            4,
+            8,
+            12,
+            14
+          ],
+          "texture": "#tex"
+        },
+        "east": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "west": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "up": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "down": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        }
+      }
+    },
+    {
+      "name": "pocket_flap",
+      "from": [
+        4.5,
+        9,
+        11
+      ],
+      "to": [
+        11.5,
+        11,
+        11.6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "south": {
+          "uv": [
+            4,
+            6,
+            12,
+            8
+          ],
+          "texture": "#tex"
+        },
+        "east": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "west": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "up": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "down": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        }
+      }
+    },
+    {
+      "name": "back_panel",
+      "from": [
+        3.5,
+        2,
+        5
+      ],
+      "to": [
+        12.5,
+        11,
+        6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            8,
+            12,
+            14
+          ],
+          "texture": "#tex"
+        },
+        "south": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "east": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "west": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "up": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "down": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        }
+      }
+    },
+    {
+      "name": "drag_handle",
+      "from": [
+        7,
+        10,
+        4.4
+      ],
+      "to": [
+        9,
+        10.6,
+        5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2,
+            14,
+            3,
+            15
+          ],
+          "texture": "#tex"
+        },
+        "south": {
+          "uv": [
+            2,
+            14,
+            3,
+            15
+          ],
+          "texture": "#tex"
+        },
+        "east": {
+          "uv": [
+            2,
+            14,
+            3,
+            15
+          ],
+          "texture": "#tex"
+        },
+        "west": {
+          "uv": [
+            2,
+            14,
+            3,
+            15
+          ],
+          "texture": "#tex"
+        },
+        "up": {
+          "uv": [
+            2,
+            14,
+            3,
+            15
+          ],
+          "texture": "#tex"
+        },
+        "down": {
+          "uv": [
+            2,
+            14,
+            3,
+            15
+          ],
+          "texture": "#tex"
+        }
+      }
+    },
+    {
+      "name": "cummerbund_left",
+      "from": [
+        3,
+        2,
+        5
+      ],
+      "to": [
+        3.5,
+        7,
+        11
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "south": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "east": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "west": {
+          "uv": [
+            4,
+            8,
+            12,
+            14
+          ],
+          "texture": "#tex"
+        },
+        "up": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "down": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        }
+      }
+    },
+    {
+      "name": "cummerbund_right",
+      "from": [
+        12.5,
+        2,
+        5
+      ],
+      "to": [
+        13,
+        7,
+        11
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "south": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "east": {
+          "uv": [
+            4,
+            8,
+            12,
+            14
+          ],
+          "texture": "#tex"
+        },
+        "west": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "up": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        },
+        "down": {
+          "uv": [
+            4,
+            9,
+            12,
+            10
+          ],
+          "texture": "#tex"
+        }
+      }
+    },
+    {
+      "name": "strap_left",
+      "from": [
+        4.5,
+        11,
+        5
+      ],
+      "to": [
+        6.5,
+        12,
+        11
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        },
+        "south": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        },
+        "east": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        },
+        "west": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        },
+        "up": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        },
+        "down": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        }
+      }
+    },
+    {
+      "name": "strap_right",
+      "from": [
+        9.5,
+        11,
+        5
+      ],
+      "to": [
+        11.5,
+        12,
+        11
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        },
+        "south": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        },
+        "east": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        },
+        "west": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        },
+        "up": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        },
+        "down": {
+          "uv": [
+            3,
+            2,
+            5,
+            4
+          ],
+          "texture": "#tex"
+        }
+      }
+    },
+    {
+      "name": "plate_edge",
+      "from": [
+        5,
+        10.98,
+        10.3
+      ],
+      "to": [
+        11,
+        12.2,
+        11.3
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5,
+            5,
+            11,
+            6
+          ],
+          "texture": "#plate"
+        },
+        "south": {
+          "uv": [
+            5,
+            5,
+            11,
+            6
+          ],
+          "texture": "#plate"
+        },
+        "east": {
+          "uv": [
+            5,
+            5,
+            11,
+            6
+          ],
+          "texture": "#plate"
+        },
+        "west": {
+          "uv": [
+            5,
+            5,
+            11,
+            6
+          ],
+          "texture": "#plate"
+        },
+        "up": {
+          "uv": [
+            5,
+            5,
+            11,
+            6
+          ],
+          "texture": "#plate"
+        },
+        "down": {
+          "uv": [
+            5,
+            5,
+            11,
+            6
+          ],
+          "texture": "#plate"
+        }
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [
+        20,
+        -30,
+        0
+      ],
+      "translation": [
+        0,
+        0.5,
+        0
+      ],
+      "scale": [
+        0.95,
+        0.95,
+        0.95
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.45,
+        0.45,
+        0.45
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.45,
+        0.45,
+        0.45
+      ]
+    }
+  }
+}

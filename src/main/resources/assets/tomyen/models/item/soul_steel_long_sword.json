@@ -1,0 +1,93 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "tomyen:item/soul_steel_long_sword"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        55
+      ],
+      "translation": [
+        0.0,
+        13.471,
+        -1.17
+      ],
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        55
+      ],
+      "translation": [
+        0.0,
+        13.471,
+        -1.17
+      ],
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        -20,
+        -40,
+        40
+      ],
+      "translation": [
+        1.933,
+        10.617,
+        -3.813
+      ],
+      "scale": [
+        1.36,
+        1.36,
+        1.36
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        -20,
+        -40,
+        40
+      ],
+      "translation": [
+        1.933,
+        10.617,
+        -3.813
+      ],
+      "scale": [
+        1.36,
+        1.36,
+        1.36
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        2.0,
+        0.0
+      ],
+      "scale": [
+        0.75,
+        0.75,
+        0.75
+      ]
+    }
+  }
+}

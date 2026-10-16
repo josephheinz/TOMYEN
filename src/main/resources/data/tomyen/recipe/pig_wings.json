@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "tomyen:wing_spar",
+    "K": "tomyen:wing_skin"
+  },
+  "pattern": [
+    "S S",
+    "KSK",
+    "K K"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:pig_wings"
+  }
+}

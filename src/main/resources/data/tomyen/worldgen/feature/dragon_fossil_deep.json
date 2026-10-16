@@ -1,0 +1,14 @@
+{
+  "type": "tomyen:dragon_fossil",
+  "spine_length": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 13,
+    "max_inclusive": 18
+  },
+  "scale_fossils": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 3,
+    "max_inclusive": 5
+  },
+  "integrity": 0.9
+}

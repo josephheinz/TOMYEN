@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,ringing=false": {
+      "model": "tomyen:block/tripwire_alarm"
+    },
+    "facing=north,ringing=true": {
+      "model": "tomyen:block/tripwire_alarm_ringing"
+    },
+    "facing=east,ringing=false": {
+      "model": "tomyen:block/tripwire_alarm",
+      "y": 90
+    },
+    "facing=east,ringing=true": {
+      "model": "tomyen:block/tripwire_alarm_ringing",
+      "y": 90
+    },
+    "facing=south,ringing=false": {
+      "model": "tomyen:block/tripwire_alarm",
+      "y": 180
+    },
+    "facing=south,ringing=true": {
+      "model": "tomyen:block/tripwire_alarm_ringing",
+      "y": 180
+    },
+    "facing=west,ringing=false": {
+      "model": "tomyen:block/tripwire_alarm",
+      "y": 270
+    },
+    "facing=west,ringing=true": {
+      "model": "tomyen:block/tripwire_alarm_ringing",
+      "y": 270
+    }
+  }
+}

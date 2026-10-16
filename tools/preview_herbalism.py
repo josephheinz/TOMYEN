@@ -27,7 +27,7 @@ def jar():
 def resource(assets, ref, kind, ext):
     """Bytes of a model or texture, from our assets or the vanilla jar."""
     ns, path = ref.split(":") if ":" in ref else ("minecraft", ref)
-    if ns == "mymod":
+    if ns == "tomyen":
         with open(os.path.join(assets, kind, path + ext), "rb") as f:
             return f.read()
     return jar().read(f"assets/minecraft/{kind}/{path}{ext}")
@@ -140,7 +140,7 @@ SIDE = camera((-0.95, 0.25, -0.3))          # nearly side on, from the west
 
 def herb_scene(assets, herb, soil, tint=GRASS):
     atlases = {}
-    els = prepare(assets, soil, atlases, tint=tint) + prepare(assets, "mymod:block/" + herb, atlases, (0, 16, 0))
+    els = prepare(assets, soil, atlases, tint=tint) + prepare(assets, "tomyen:block/" + herb, atlases, (0, 16, 0))
     return scene(els, atlases, FRONT_LEFT, 96, 120, (8, 14, 8), 3.4), 96, 120
 
 
@@ -160,27 +160,27 @@ def render_sheet(assets, out):
     row = []
     for stage in range(4):
         atlases = {}
-        els = prepare(assets, "minecraft:block/farmland", atlases) + prepare(assets, f"mymod:block/garlic_stage{stage}", atlases, (0, 15, 0))
+        els = prepare(assets, "minecraft:block/farmland", atlases) + prepare(assets, f"tomyen:block/garlic_stage{stage}", atlases, (0, 15, 0))
         row.append((scene(els, atlases, FRONT_LEFT, 96, 120, (8, 14, 8), 3.4), 96, 120, 1))
     # The wild herbs, close up from the other side.
     for herb in ("wolfsbane", "ginseng", "moonpetal", "radroot"):
         atlases = {}
-        els = prepare(assets, "mymod:block/" + herb, atlases)
+        els = prepare(assets, "tomyen:block/" + herb, atlases)
         row.append((scene(els, atlases, FRONT_RIGHT, 96, 120, (8, 8, 8), 5.0), 96, 120, 1))
     rows.append(row)
 
     row = []
     atlases = {}
-    els = prepare(assets, "minecraft:block/campfire", atlases) + prepare(assets, "mymod:block/kettle_hung", atlases, (0, 16, 0))
+    els = prepare(assets, "minecraft:block/campfire", atlases) + prepare(assets, "tomyen:block/kettle_hung", atlases, (0, 16, 0))
     row.append((scene(els, atlases, FRONT_LEFT, 150, 210, (8, 16, 8), 4.6), 150, 210, 1))
     atlases = {}
-    els = prepare(assets, "minecraft:block/campfire", atlases) + prepare(assets, "mymod:block/kettle_hung", atlases, (0, 16, 0))
+    els = prepare(assets, "minecraft:block/campfire", atlases) + prepare(assets, "tomyen:block/kettle_hung", atlases, (0, 16, 0))
     row.append((scene(els, atlases, FRONT_RIGHT, 150, 210, (8, 16, 8), 4.6), 150, 210, 1))
     atlases = {}
-    els = prepare(assets, "minecraft:block/magma_block", atlases) + prepare(assets, "mymod:block/kettle", atlases, (0, 16, 0))
+    els = prepare(assets, "minecraft:block/magma_block", atlases) + prepare(assets, "tomyen:block/kettle", atlases, (0, 16, 0))
     row.append((scene(els, atlases, FRONT_LEFT, 150, 210, (8, 18, 8), 4.6), 150, 210, 1))
     atlases = {}
-    els = prepare(assets, "minecraft:block/spruce_planks", atlases) + prepare(assets, "mymod:block/mortar_and_pestle", atlases, (0, 16, 0))
+    els = prepare(assets, "minecraft:block/spruce_planks", atlases) + prepare(assets, "tomyen:block/mortar_and_pestle", atlases, (0, 16, 0))
     row.append((scene(els, atlases, FRONT_RIGHT, 150, 210, (8, 18, 8), 4.6), 150, 210, 1))
     rows.append(row)
 
@@ -188,7 +188,7 @@ def render_sheet(assets, out):
     for name in ("garlic_braid", "wolfsbane_ward"):
         for view in (camera((-0.3, 0.2, -1.0)), SIDE):
             atlases = {}
-            els = prepare(assets, "minecraft:block/stone_bricks", atlases, (0, 0, 16)) + prepare(assets, "mymod:block/" + name, atlases)
+            els = prepare(assets, "minecraft:block/stone_bricks", atlases, (0, 0, 16)) + prepare(assets, "tomyen:block/" + name, atlases)
             row.append((scene(els, atlases, view, 150, 170, (8, 8, 12), 7.0), 150, 170, 1))
     rows.append(row)
 
@@ -200,7 +200,7 @@ def render_sheet(assets, out):
         + ["mob_effect/garlic_breath", "mob_effect/radioprotection", "mob_effect/calm"]
     flat = []
     for p in paths:
-        px, w = texture(assets, "mymod:" + p)
+        px, w = texture(assets, "tomyen:" + p)
         flat.append(([c[:3] if c[3] > 0 else None for c in px], w, w, 4))
     for i in range(0, len(flat), 15):
         rows.append(flat[i:i + 15])

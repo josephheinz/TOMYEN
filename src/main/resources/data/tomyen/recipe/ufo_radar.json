@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "tomyen:steel_ingot",
+    "K": "tomyen:copper_coil",
+    "X": "tomyen:computer_chip",
+    "T": "tomyen:cathode_tube",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "SKS",
+    "XTX",
+    "SRS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:ufo_radar"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "tomyen:block/tackle_bench"
+    },
+    "facing=east": {
+      "model": "tomyen:block/tackle_bench",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "tomyen:block/tackle_bench",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tomyen:block/tackle_bench",
+      "y": 270
+    }
+  }
+}

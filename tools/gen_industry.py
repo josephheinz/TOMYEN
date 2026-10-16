@@ -10,16 +10,16 @@ else are drawn here, the materials in vanilla's style but each with a shape of i
 
 Also writes their block states, block/item models and item definitions, and on the data side their loot tables,
 crafting recipes with recipe-book advancements, and tool tags. With ffmpeg on the path it synthesises the Hogfire's
-engine loop (assets/mymod/sounds/hogfire_engine.ogg) too.
+engine loop (assets/tomyen/sounds/hogfire_engine.ogg) too.
 
-Usage: python3 tools/gen_industry.py src/main/resources/assets/mymod [path/to/minecraft-client.jar]"""
+Usage: python3 tools/gen_industry.py src/main/resources/assets/tomyen [path/to/minecraft-client.jar]"""
 import json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave, zipfile, zlib
 
 sys.path.insert(0, os.path.dirname(__file__))
 from gen_longswords import client_jar, read_png
 
-ASSETS = sys.argv[1]  # .../assets/mymod
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+ASSETS = sys.argv[1]  # .../assets/tomyen
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 TEX = os.path.join(ASSETS, "textures")
 BLOCK = os.path.join(TEX, "block")
 ITEM = os.path.join(TEX, "item")
@@ -1116,33 +1116,33 @@ def item_def(name, model):
 
 def cube_all_block(name, texture=None):
     write_json(os.path.join(MODELS_BLOCK, name + ".json"),
-               {"parent": "minecraft:block/cube_all", "textures": {"all": "mymod:block/" + (texture or name)}})
-    write_json(os.path.join(BLOCKSTATES, name + ".json"), {"variants": {"": {"model": "mymod:block/" + name}}})
-    item_def(name, "mymod:block/" + name)
+               {"parent": "minecraft:block/cube_all", "textures": {"all": "tomyen:block/" + (texture or name)}})
+    write_json(os.path.join(BLOCKSTATES, name + ".json"), {"variants": {"": {"model": "tomyen:block/" + name}}})
+    item_def(name, "tomyen:block/" + name)
 
 
 for name in ("bauxite_ore", "oil_shale", "deepslate_oil_shale", "steel_block", "aluminium_block"):
     cube_all_block(name)
 
 write_json(os.path.join(MODELS_BLOCK, "oil_seep.json"), {"parent": "minecraft:block/cube_bottom_top", "textures": {
-    "top": "mymod:block/oil_seep_top", "side": "mymod:block/oil_seep_side", "bottom": "minecraft:block/dirt"}})
-write_json(os.path.join(BLOCKSTATES, "oil_seep.json"), {"variants": {"": {"model": "mymod:block/oil_seep"}}})
-item_def("oil_seep", "mymod:block/oil_seep")
+    "top": "tomyen:block/oil_seep_top", "side": "tomyen:block/oil_seep_side", "bottom": "minecraft:block/dirt"}})
+write_json(os.path.join(BLOCKSTATES, "oil_seep.json"), {"variants": {"": {"model": "tomyen:block/oil_seep"}}})
+item_def("oil_seep", "tomyen:block/oil_seep")
 
 # Crude oil: like water, the block model only gives the particles; the fluid renderer draws the rest.
-write_json(os.path.join(MODELS_BLOCK, "crude_oil.json"), {"textures": {"particle": "mymod:block/crude_oil_still"}})
-write_json(os.path.join(BLOCKSTATES, "crude_oil.json"), {"variants": {"": {"model": "mymod:block/crude_oil"}}})
+write_json(os.path.join(MODELS_BLOCK, "crude_oil.json"), {"textures": {"particle": "tomyen:block/crude_oil_still"}})
+write_json(os.path.join(BLOCKSTATES, "crude_oil.json"), {"variants": {"": {"model": "tomyen:block/crude_oil"}}})
 
 FACINGS = (("north", 0), ("east", 90), ("south", 180), ("west", 270))
 for model, textures in (("refinery", "refinery_front"), ("refinery_on", "refinery_front_on")):
     write_json(os.path.join(MODELS_BLOCK, model + ".json"), {"parent": "minecraft:block/orientable_with_bottom", "textures": {
-        "top": "mymod:block/refinery_top", "bottom": "mymod:block/refinery_bottom", "side": "mymod:block/refinery_side",
-        "front": "mymod:block/" + textures}})
+        "top": "tomyen:block/refinery_top", "bottom": "tomyen:block/refinery_bottom", "side": "tomyen:block/refinery_side",
+        "front": "tomyen:block/" + textures}})
 write_json(os.path.join(BLOCKSTATES, "refinery.json"), {"variants": {
-    "facing=%s,lit=%s" % (facing, lit): dict({"model": "mymod:block/" + ("refinery_on" if lit == "true" else "refinery")},
+    "facing=%s,lit=%s" % (facing, lit): dict({"model": "tomyen:block/" + ("refinery_on" if lit == "true" else "refinery")},
                                               **({"y": rot} if rot else {}))
     for facing, rot in FACINGS for lit in ("false", "true")}})
-item_def("refinery", "mymod:block/refinery")
+item_def("refinery", "tomyen:block/refinery")
 
 
 def face(texture, uv=None, cull=None):
@@ -1166,14 +1166,14 @@ def box(frm, to, texture, uv_side=None, top="#top", cull=None):
 # The Pump Jack's block is just its skid; the rig on top is drawn by PumpJackRenderer.
 write_json(os.path.join(MODELS_BLOCK, "pump_jack.json"), {
     "parent": "minecraft:block/block",
-    "textures": {"particle": "mymod:block/pump_jack_skid_top", "top": "mymod:block/pump_jack_skid_top",
-                 "side": "mymod:block/pump_jack_skid_side", "bottom": "mymod:block/refinery_bottom"},
+    "textures": {"particle": "tomyen:block/pump_jack_skid_top", "top": "tomyen:block/pump_jack_skid_top",
+                 "side": "tomyen:block/pump_jack_skid_side", "bottom": "tomyen:block/refinery_bottom"},
     "elements": [box([0, 0, 0], [16, 4, 16], "#side", [0, 0, 16, 4])]})
 write_json(os.path.join(BLOCKSTATES, "pump_jack.json"), {"variants": {
-    "facing=%s,active=%s" % (facing, active): dict({"model": "mymod:block/pump_jack"}, **({"y": rot} if rot else {}))
+    "facing=%s,active=%s" % (facing, active): dict({"model": "tomyen:block/pump_jack"}, **({"y": rot} if rot else {}))
     for facing, rot in FACINGS for active in ("false", "true")}})
-write_json(os.path.join(MODELS_ITEM, "pump_jack.json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/pump_jack"}})
-item_def("pump_jack", "mymod:item/pump_jack")
+write_json(os.path.join(MODELS_ITEM, "pump_jack.json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/pump_jack"}})
+item_def("pump_jack", "tomyen:item/pump_jack")
 
 # The Metal Press: anvil bed, four pillars, crosshead and the cylinder on top; the ram is MetalPressRenderer's.
 press_elements = [
@@ -1191,19 +1191,19 @@ press_elements.append({"from": [5, 16, 5], "to": [11, 20, 11], "faces": {
     d: face("#cylinder", [5, 0, 11, 4]) for d in ("north", "south", "east", "west")} | {"up": face("#cylinder", [5, 5, 11, 11])}})
 write_json(os.path.join(MODELS_BLOCK, "metal_press.json"), {
     "parent": "minecraft:block/block",
-    "textures": {"particle": "mymod:block/metal_press_top", "top": "mymod:block/metal_press_top",
-                 "side": "mymod:block/metal_press_side", "bed": "mymod:block/metal_press_bed",
-                 "cylinder": "mymod:block/metal_press_cylinder"},
+    "textures": {"particle": "tomyen:block/metal_press_top", "top": "tomyen:block/metal_press_top",
+                 "side": "tomyen:block/metal_press_side", "bed": "tomyen:block/metal_press_bed",
+                 "cylinder": "tomyen:block/metal_press_cylinder"},
     "elements": press_elements})
 write_json(os.path.join(BLOCKSTATES, "metal_press.json"), {"variants": {
-    "powered=false": {"model": "mymod:block/metal_press"}, "powered=true": {"model": "mymod:block/metal_press"}}})
-item_def("metal_press", "mymod:block/metal_press")
+    "powered=false": {"model": "tomyen:block/metal_press"}, "powered=true": {"model": "tomyen:block/metal_press"}}})
+item_def("metal_press", "tomyen:block/metal_press")
 
 for name in ITEMS:
     if name == "pump_jack":
         continue
-    write_json(os.path.join(MODELS_ITEM, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
-    item_def(name, "mymod:item/" + name)
+    write_json(os.path.join(MODELS_ITEM, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
+    item_def(name, "tomyen:item/" + name)
 
 # --- Loot tables ------------------------------------------------------------------------------------------------
 LOOT = os.path.join(DATA, "loot_table", "blocks")
@@ -1212,8 +1212,8 @@ LOOT = os.path.join(DATA, "loot_table", "blocks")
 def self_drop(name):
     write_json(os.path.join(LOOT, name + ".json"), {"type": "minecraft:block", "pools": [{
         "condition": {"type": "minecraft:survives_explosion"},
-        "entries": [{"type": "minecraft:item", "name": "mymod:" + name}], "rolls": 1}],
-        "random_sequence": "mymod:blocks/" + name})
+        "entries": [{"type": "minecraft:item", "name": "tomyen:" + name}], "rolls": 1}],
+        "random_sequence": "tomyen:blocks/" + name})
 
 
 def ore_drop(name, item, count=None):
@@ -1224,22 +1224,22 @@ def ore_drop(name, item, count=None):
                   {"type": "minecraft:explosion_decay"}]
     write_json(os.path.join(LOOT, name + ".json"), {"type": "minecraft:block", "pools": [{
         "entries": [{"type": "minecraft:alternatives", "children": [
-            {"type": "minecraft:item", "condition": "minecraft:tool/can_silk_touch", "name": "mymod:" + name},
+            {"type": "minecraft:item", "condition": "minecraft:tool/can_silk_touch", "name": "tomyen:" + name},
             {"type": "minecraft:item", "modifier": modifiers, "name": item}]}],
-        "rolls": 1}], "random_sequence": "mymod:blocks/" + name})
+        "rolls": 1}], "random_sequence": "tomyen:blocks/" + name})
 
 
 for name in ("steel_block", "aluminium_block", "pump_jack", "refinery", "metal_press"):
     self_drop(name)
-ore_drop("bauxite_ore", "mymod:bauxite", (1, 2))
-ore_drop("oil_shale", "mymod:shale_chunk", (1, 3))
-ore_drop("deepslate_oil_shale", "mymod:shale_chunk", (1, 3))
+ore_drop("bauxite_ore", "tomyen:bauxite", (1, 2))
+ore_drop("oil_shale", "tomyen:shale_chunk", (1, 3))
+ore_drop("deepslate_oil_shale", "tomyen:shale_chunk", (1, 3))
 # Dug up without silk touch, a seep is only so much oily dirt: a lump of tar.
 write_json(os.path.join(LOOT, "oil_seep.json"), {"type": "minecraft:block", "pools": [{
     "entries": [{"type": "minecraft:alternatives", "children": [
-        {"type": "minecraft:item", "condition": "minecraft:tool/can_silk_touch", "name": "mymod:oil_seep"},
-        {"type": "minecraft:item", "modifier": [{"type": "minecraft:explosion_decay"}], "name": "mymod:tar"}]}],
-    "rolls": 1}], "random_sequence": "mymod:blocks/oil_seep"})
+        {"type": "minecraft:item", "condition": "minecraft:tool/can_silk_touch", "name": "tomyen:oil_seep"},
+        {"type": "minecraft:item", "modifier": [{"type": "minecraft:explosion_decay"}], "name": "tomyen:tar"}]}],
+    "rolls": 1}], "random_sequence": "tomyen:blocks/oil_seep"})
 # A Hogfire drops a pig's pork (its gear drops from code).
 write_json(os.path.join(DATA, "loot_table", "entities", "hogfire.json"), {"type": "minecraft:entity", "pools": [{
     "entries": [{"type": "minecraft:item", "functions": [
@@ -1248,7 +1248,7 @@ write_json(os.path.join(DATA, "loot_table", "entities", "hogfire.json"), {"type"
                                                                 "predicate": {"flags": {"is_on_fire": True}}}]},
         {"function": "minecraft:enchanted_count_increase", "count": {"type": "minecraft:uniform", "min": 0.0, "max": 1.0},
          "enchantment": "minecraft:looting"}], "name": "minecraft:porkchop"}], "rolls": 1}],
-    "random_sequence": "mymod:entities/hogfire"})
+    "random_sequence": "tomyen:entities/hogfire"})
 
 # --- Crafting recipes and their recipe-book advancements -------------------------------------------------------
 RECIPES = os.path.join(DATA, "recipe")
@@ -1260,9 +1260,9 @@ def advancement(name, category, unlock_item):
         "parent": "minecraft:recipes/root",
         "criteria": {
             "has_item": {"conditions": {"items": [{"items": unlock_item}]}, "trigger": "minecraft:inventory_changed"},
-            "has_the_recipe": {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"}},
+            "has_the_recipe": {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"}},
         "requirements": [["has_item", "has_the_recipe"]],
-        "rewards": {"recipes": ["mymod:" + name]}})
+        "rewards": {"recipes": ["tomyen:" + name]}})
 
 
 def shaped(name, result, pattern, key, unlock, count=1, category="misc"):
@@ -1278,36 +1278,36 @@ def shapeless(name, result, ingredients, unlock, count=1, category="misc"):
     advancement(name, category, unlock)
 
 
-STEEL_I, ALU_I, DURA_I = "mymod:steel_ingot", "mymod:aluminium_ingot", "mymod:duralumin_ingot"
-PLATE, SHEET = "mymod:steel_plate", "mymod:duralumin_sheet"
-shaped("steel_block", "mymod:steel_block", ["###", "###", "###"], {"#": STEEL_I}, STEEL_I, category="building")
-shapeless("steel_ingot_from_steel_block", STEEL_I, ["mymod:steel_block"], "mymod:steel_block", 9)
-shaped("aluminium_block", "mymod:aluminium_block", ["###", "###", "###"], {"#": ALU_I}, ALU_I, category="building")
-shapeless("aluminium_ingot_from_aluminium_block", ALU_I, ["mymod:aluminium_block"], "mymod:aluminium_block", 9)
-shaped("empty_canister", "mymod:empty_canister", [" N ", "S S", "SSS"], {"N": "minecraft:iron_nugget", "S": STEEL_I}, STEEL_I, 2)
-shapeless("crude_oil_canister_from_bucket", "mymod:crude_oil_canister", ["mymod:empty_canister", "mymod:crude_oil_bucket"],
-          "mymod:crude_oil_bucket")
-shaped("pump_jack", "mymod:pump_jack", ["SSS", "RPR", "SCS"],
-       {"S": STEEL_I, "R": "minecraft:redstone", "P": "minecraft:piston", "C": "mymod:empty_canister"}, STEEL_I)
-shaped("refinery", "mymod:refinery", ["SGS", "CBC", "SKS"],
+STEEL_I, ALU_I, DURA_I = "tomyen:steel_ingot", "tomyen:aluminium_ingot", "tomyen:duralumin_ingot"
+PLATE, SHEET = "tomyen:steel_plate", "tomyen:duralumin_sheet"
+shaped("steel_block", "tomyen:steel_block", ["###", "###", "###"], {"#": STEEL_I}, STEEL_I, category="building")
+shapeless("steel_ingot_from_steel_block", STEEL_I, ["tomyen:steel_block"], "tomyen:steel_block", 9)
+shaped("aluminium_block", "tomyen:aluminium_block", ["###", "###", "###"], {"#": ALU_I}, ALU_I, category="building")
+shapeless("aluminium_ingot_from_aluminium_block", ALU_I, ["tomyen:aluminium_block"], "tomyen:aluminium_block", 9)
+shaped("empty_canister", "tomyen:empty_canister", [" N ", "S S", "SSS"], {"N": "minecraft:iron_nugget", "S": STEEL_I}, STEEL_I, 2)
+shapeless("crude_oil_canister_from_bucket", "tomyen:crude_oil_canister", ["tomyen:empty_canister", "tomyen:crude_oil_bucket"],
+          "tomyen:crude_oil_bucket")
+shaped("pump_jack", "tomyen:pump_jack", ["SSS", "RPR", "SCS"],
+       {"S": STEEL_I, "R": "minecraft:redstone", "P": "minecraft:piston", "C": "tomyen:empty_canister"}, STEEL_I)
+shaped("refinery", "tomyen:refinery", ["SGS", "CBC", "SKS"],
        {"S": STEEL_I, "G": "minecraft:glass", "C": "minecraft:copper_ingot", "B": "minecraft:blast_furnace", "K": "minecraft:bricks"},
        STEEL_I)
-shaped("metal_press", "mymod:metal_press", ["SPS", "S S", "OOO"],
+shaped("metal_press", "tomyen:metal_press", ["SPS", "S S", "OOO"],
        {"S": STEEL_I, "P": "minecraft:piston", "O": "minecraft:obsidian"}, STEEL_I, category="redstone")
-shaped("combustion_chamber", "mymod:combustion_chamber", ["PCP", "PBP", "PPP"],
+shaped("combustion_chamber", "tomyen:combustion_chamber", ["PCP", "PBP", "PPP"],
        {"P": PLATE, "C": "minecraft:copper_ingot", "B": "minecraft:blaze_rod"}, PLATE)
-shaped("rocket_nozzle", "mymod:rocket_nozzle", [" P ", "POP", "P P"], {"P": PLATE, "O": "minecraft:obsidian"}, PLATE)
-shaped("turbopump", "mymod:turbopump", ["PXP", "CRC", "PCP"],
-       {"P": PLATE, "X": "mymod:computer_chip", "C": "minecraft:copper_ingot", "R": "minecraft:redstone"}, "mymod:computer_chip")
-shaped("fuel_tank", "mymod:fuel_tank", ["DTD", "DCD", "DDD"], {"D": SHEET, "T": "mymod:tar", "C": "mymod:empty_canister"}, SHEET)
-shaped("wing_spar", "mymod:wing_spar", ["IPI"], {"I": DURA_I, "P": PLATE}, DURA_I)
-shaped("wing_skin", "mymod:wing_skin", ["DDD", "RRR"], {"D": SHEET, "R": "mymod:rubber"}, SHEET, 2)
-shaped("rocket_engine", "mymod:rocket_engine", ["PFP", "UCP", "PNP"],
-       {"P": PLATE, "F": "mymod:fuel_tank", "U": "mymod:turbopump", "C": "mymod:combustion_chamber", "N": "mymod:rocket_nozzle"},
-       "mymod:combustion_chamber", category="equipment")
-shaped("pig_wings", "mymod:pig_wings", ["S S", "KSK", "K K"], {"S": "mymod:wing_spar", "K": "mymod:wing_skin"}, "mymod:wing_spar",
+shaped("rocket_nozzle", "tomyen:rocket_nozzle", [" P ", "POP", "P P"], {"P": PLATE, "O": "minecraft:obsidian"}, PLATE)
+shaped("turbopump", "tomyen:turbopump", ["PXP", "CRC", "PCP"],
+       {"P": PLATE, "X": "tomyen:computer_chip", "C": "minecraft:copper_ingot", "R": "minecraft:redstone"}, "tomyen:computer_chip")
+shaped("fuel_tank", "tomyen:fuel_tank", ["DTD", "DCD", "DDD"], {"D": SHEET, "T": "tomyen:tar", "C": "tomyen:empty_canister"}, SHEET)
+shaped("wing_spar", "tomyen:wing_spar", ["IPI"], {"I": DURA_I, "P": PLATE}, DURA_I)
+shaped("wing_skin", "tomyen:wing_skin", ["DDD", "RRR"], {"D": SHEET, "R": "tomyen:rubber"}, SHEET, 2)
+shaped("rocket_engine", "tomyen:rocket_engine", ["PFP", "UCP", "PNP"],
+       {"P": PLATE, "F": "tomyen:fuel_tank", "U": "tomyen:turbopump", "C": "tomyen:combustion_chamber", "N": "tomyen:rocket_nozzle"},
+       "tomyen:combustion_chamber", category="equipment")
+shaped("pig_wings", "tomyen:pig_wings", ["S S", "KSK", "K K"], {"S": "tomyen:wing_spar", "K": "tomyen:wing_skin"}, "tomyen:wing_spar",
        category="equipment")
-shaped("pig_flight_harness", "mymod:pig_flight_harness", ["L L", "PSP", "L L"],
+shaped("pig_flight_harness", "tomyen:pig_flight_harness", ["L L", "PSP", "L L"],
        {"L": "minecraft:leather", "P": PLATE, "S": "minecraft:saddle"}, PLATE, category="equipment")
 
 # --- Tags (shared with gen_silver.py, gen_ores_tu.py and hand edits, so entries are added to what's there; the pickaxe tag is by hand) --
@@ -1322,11 +1322,11 @@ def add_to_tag(path, values):
     write_json(path, {"values": existing + [v for v in values if v not in existing]})
 
 
-add_to_tag(os.path.join(TAGS, "block", "mineable", "shovel.json"), ["mymod:oil_seep"])
-add_to_tag(os.path.join(TAGS, "block", "needs_stone_tool.json"), ["mymod:bauxite_ore", "mymod:aluminium_block"])
-add_to_tag(os.path.join(TAGS, "block", "needs_iron_tool.json"), ["mymod:steel_block"])
-add_to_tag(os.path.join(TAGS, "block", "ores.json"), ["mymod:bauxite_ore", "mymod:oil_shale", "mymod:deepslate_oil_shale"])
-add_to_tag(os.path.join(TAGS, "item", "ores.json"), ["mymod:bauxite_ore", "mymod:oil_shale", "mymod:deepslate_oil_shale"])
+add_to_tag(os.path.join(TAGS, "block", "mineable", "shovel.json"), ["tomyen:oil_seep"])
+add_to_tag(os.path.join(TAGS, "block", "needs_stone_tool.json"), ["tomyen:bauxite_ore", "tomyen:aluminium_block"])
+add_to_tag(os.path.join(TAGS, "block", "needs_iron_tool.json"), ["tomyen:steel_block"])
+add_to_tag(os.path.join(TAGS, "block", "ores.json"), ["tomyen:bauxite_ore", "tomyen:oil_shale", "tomyen:deepslate_oil_shale"])
+add_to_tag(os.path.join(TAGS, "item", "ores.json"), ["tomyen:bauxite_ore", "tomyen:oil_shale", "tomyen:deepslate_oil_shale"])
 
 # --- The Hogfire's engine loop ------------------------------------------------------------------------------------
 

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:crafting_table",
+    "I": "minecraft:iron_ingot",
+    "N": "minecraft:iron_nugget",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "NIN",
+    "PCP",
+    "P P"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:scrap_bench"
+  }
+}

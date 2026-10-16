@@ -1,6 +1,6 @@
 """Builds the homemade Scavenger-tier guns (Pipe Pistol, Pipe Rifle, Blunderbuss, Junk Repeater) and their ammo: one
 shared texture atlas, each gun at rest plus six frames of its moving part (the pistol's striker, the rifle's bolt, the
-blunderbuss's ramrod, the repeater's charging lever), chosen by mymod:gun_animation (1-6, see ShotgunAnimation), a muzzle
+blunderbuss's ramrod, the repeater's charging lever), chosen by tomyen:gun_animation (1-6, see ShotgunAnimation), a muzzle
 flash layer, flat inventory sprites for the Crude Round and Scrap Shell, and the small 3D rounds the client draws in
 the hand while loading (and flying out of the port).
 
@@ -18,7 +18,7 @@ Model space is in pixels: the bore runs along z at x = 8 with the muzzle toward 
 GunHands and ShotgunAnimation mirror the display transforms, grip points and part positions printed at the end; the
 redesign kept every one of them, so client/shoddy/ShoddyGunClient.java needs no change.
 
-Usage: python3 tools/gen_shoddy.py src/main/resources/assets/mymod [--preview out.png]"""
+Usage: python3 tools/gen_shoddy.py src/main/resources/assets/tomyen [--preview out.png]"""
 import math, os, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -769,7 +769,7 @@ def write_gun(name, build, travel, grip, support, fp_scale, flash_at, pistol=Fal
         check_overlaps(f"{name}_f{i}", elements)
         write(os.path.join(MODELS, name + (f"_f{i}" if i else "") + ".json"), model(K, elements, displays))
     flashes = flash_models(MODELS, name, flash_at[0], flash_at[1], displays)
-    body = range_dispatch("mymod:gun_animation",
+    body = range_dispatch("tomyen:gun_animation",
                           [(k - 0.5, ref(f"{name}_f{k}")) for k in range(1, FRAMES + 1)] + [(FRAMES + 0.5, ref(name))], ref(name))
     write(os.path.join(ITEMS, name + ".json"), {"model": with_flash(body, flashes)})
     t = displays["firstperson_righthand"]
@@ -876,7 +876,7 @@ def sprites():
     ]
     for name, rows in (("crude_round", crude), ("scrap_shell", shell)):
         sprite(os.path.join(TEX, f"item/{name}.png"), rows, pal)
-        write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
+        write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
         write(os.path.join(ITEMS, name + ".json"), {"model": ref(name)})
 
 

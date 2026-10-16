@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:nose_hair",
+    "tomyen:nose_hair",
+    "tomyen:nose_hair",
+    "minecraft:slime_ball"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:nose_hair_line"
+  }
+}

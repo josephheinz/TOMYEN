@@ -1,4 +1,4 @@
-"""Imports real gun recordings into assets/mymod/sounds/*.ogg and registers them in sounds.json.
+"""Imports real gun recordings into assets/tomyen/sounds/*.ogg and registers them in sounds.json.
 
 Every gunshot and gun-handling sound in the mod comes from these free packs (see CREDITS.md):
   snake1/        "Snake's Authentic Gun Sounds" by SnakeF8 (public domain / free for any use)
@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import vorbis_mono  # noqa: E402  (ffmpeg here has no libvorbis and its own Vorbis encoder is stereo-only)
 
 DEFAULT_SRC = "/private/tmp/claude-501/-Users-josephheinz-Documents-my-mod/e5070e60-66ef-4cbd-b0af-d8b293198473/scratchpad/sound_src"
-ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src", "main", "resources", "assets", "mymod")
+ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src", "main", "resources", "assets", "tomyen")
 RATE = 44100
 CEILING_DB = -1.0
 MAX_LIMIT_DB = 6.5
@@ -420,14 +420,14 @@ def main():
             dur, ch, peak, rms = measure(path)
             source = " + ".join(f"{os.path.basename(l['path'])}@{l['start']:g}" for l in clip["layers"])
             rows.append((event, name, source, dur, ch, peak, rms, os.path.getsize(path)))
-            entry = {"name": "mymod:" + name}
+            entry = {"name": "tomyen:" + name}
             if pitch != 1.0:
                 entry["pitch"] = pitch
             if volume != 1.0:
                 entry["volume"] = volume
-            entries.append(entry if len(entry) > 1 else "mymod:" + name)
+            entries.append(entry if len(entry) > 1 else "tomyen:" + name)
         old = sounds.get(event, {})
-        sounds[event] = {"subtitle": old.get("subtitle", "subtitles.mymod." + event), "sounds": entries}
+        sounds[event] = {"subtitle": old.get("subtitle", "subtitles.tomyen." + event), "sounds": entries}
 
     with open(sounds_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(sounds, indent=2, ensure_ascii=False) + "\n")

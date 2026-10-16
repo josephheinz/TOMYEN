@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "SPS",
+    "PNP"
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "P": "minecraft:dark_oak_planks",
+    "N": "minecraft:gold_nugget"
+  },
+  "result": {
+    "count": 1,
+    "id": "tomyen:dark_oak_fish_mount"
+  }
+}

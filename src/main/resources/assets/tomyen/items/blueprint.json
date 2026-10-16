@@ -1,0 +1,39 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:component",
+    "component": "tomyen:blueprint",
+    "cases": [
+      {
+        "when": [
+          "tomyen:flare_gun",
+          "tomyen:nail_gun",
+          "tomyen:snub_revolver",
+          "tomyen:sawed_off"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/blueprint_workshop"
+        }
+      },
+      {
+        "when": [
+          "tomyen:m1911",
+          "tomyen:revolver_357",
+          "tomyen:red_dot_sight",
+          "tomyen:suppressor",
+          "tomyen:muzzle_brake",
+          "tomyen:vertical_grip"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/blueprint_foundry"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "tomyen:item/blueprint"
+    }
+  }
+}

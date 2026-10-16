@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:fish_oil",
+    "minecraft:string"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:molotov_cocktail"
+  }
+}

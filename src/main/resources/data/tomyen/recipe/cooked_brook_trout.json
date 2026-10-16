@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": "tomyen:brook_trout",
+  "result": {
+    "id": "tomyen:cooked_brook_trout"
+  }
+}

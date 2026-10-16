@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The Fish Mount and the baits (see com.jheinz.mymod.fishing: FishMountBlock, FishMountRenderer, BaitItem).
+"""The Fish Mount and the baits (see com.jheinz.tomyen.fishing: FishMountBlock, FishMountRenderer, BaitItem).
 
 Run from anywhere: python3 tools/gen_fish_mount.py [--preview out.png]
 
@@ -36,7 +36,7 @@ from zfight import check as zfight_check  # noqa: E402
 
 REPO = os.path.dirname(HERE)
 RES = os.path.join(REPO, "src", "main", "resources")
-ASSETS = os.path.join(RES, "assets", "mymod")
+ASSETS = os.path.join(RES, "assets", "tomyen")
 DATA = os.path.join(RES, "data")
 LANG = os.path.join(ASSETS, "lang", "en_us.json")
 PREVIEW = sys.argv[sys.argv.index("--preview") + 1] if "--preview" in sys.argv else None
@@ -337,7 +337,7 @@ def plaque_model(wood):
     name = f"{wood}_fish_mount"
     write(os.path.join(ASSETS, "models", "block", name + ".json"), OrderedDict([
         ("parent", "minecraft:block/block"),
-        ("textures", OrderedDict([("particle", f"minecraft:block/{wood}_planks"), ("plaque", f"mymod:block/{name}")])),
+        ("textures", OrderedDict([("particle", f"minecraft:block/{wood}_planks"), ("plaque", f"tomyen:block/{name}")])),
         # In the inventory it's seen face on, turned a little to show its depth; in an item frame, flat.
         ("display", OrderedDict([
             ("gui", OrderedDict([("rotation", [10, 160, 0]), ("translation", [0, 0, 0]), ("scale", [0.8, 0.8, 0.8])])),
@@ -345,15 +345,15 @@ def plaque_model(wood):
             ("ground", OrderedDict([("rotation", [0, 0, 0]), ("translation", [0, 3, 0]), ("scale", [0.4, 0.4, 0.4])]))])),
         ("elements", elements)]))
     write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": OrderedDict(
-        (f"facing={facing}", OrderedDict([("model", f"mymod:block/{name}")] + ([("y", y)] if y else [])))
+        (f"facing={facing}", OrderedDict([("model", f"tomyen:block/{name}")] + ([("y", y)] if y else [])))
         for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)))})
     write(os.path.join(ASSETS, "items", name + ".json"),
-          {"model": OrderedDict([("type", "minecraft:model"), ("model", f"mymod:block/{name}")])})
-    write(os.path.join(DATA, "mymod", "loot_table", "blocks", name + ".json"), OrderedDict([
+          {"model": OrderedDict([("type", "minecraft:model"), ("model", f"tomyen:block/{name}")])})
+    write(os.path.join(DATA, "tomyen", "loot_table", "blocks", name + ".json"), OrderedDict([
         ("type", "minecraft:block"),
-        ("pools", [OrderedDict([("rolls", 1), ("entries", [{"type": "minecraft:item", "name": "mymod:" + name}]),
+        ("pools", [OrderedDict([("rolls", 1), ("entries", [{"type": "minecraft:item", "name": "tomyen:" + name}]),
                                 ("conditions", [{"condition": "minecraft:survives_explosion"}])])]),
-        ("random_sequence", "mymod:blocks/" + name)]))
+        ("random_sequence", "tomyen:blocks/" + name)]))
     return elements, tex
 
 
@@ -661,9 +661,9 @@ def bait_files():
         img = make()
         img.save(os.path.join(ASSETS, "textures", "item", "bait", name + ".png"))
         write(os.path.join(ASSETS, "models", "item", name + ".json"), OrderedDict([
-            ("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0="mymod:item/bait/" + name))]))
+            ("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0="tomyen:item/bait/" + name))]))
         write(os.path.join(ASSETS, "items", name + ".json"),
-              {"model": OrderedDict([("type", "minecraft:model"), ("model", "mymod:item/" + name)])})
+              {"model": OrderedDict([("type", "minecraft:model"), ("model", "tomyen:item/" + name)])})
         sprites[name] = img
     # The Tackle Bench's empty bait slot: the earthworms' outline in vanilla's slot-icon grey.
     worms = sprites["earthworms"]
@@ -685,135 +685,135 @@ def advancement(name, unlock, category):
     for i, item in enumerate(items):
         criteria[f"has_item_{i}"] = OrderedDict([
             ("conditions", OrderedDict([("items", [OrderedDict([("items", item)])])])), ("trigger", "minecraft:inventory_changed")])
-    criteria["has_the_recipe"] = OrderedDict([("conditions", OrderedDict([("recipes", "mymod:" + name)])),
+    criteria["has_the_recipe"] = OrderedDict([("conditions", OrderedDict([("recipes", "tomyen:" + name)])),
                                               ("trigger", "minecraft:recipe_unlocked")])
-    write(os.path.join(DATA, "mymod", "advancement", "recipes", category, name + ".json"), OrderedDict([
+    write(os.path.join(DATA, "tomyen", "advancement", "recipes", category, name + ".json"), OrderedDict([
         ("parent", "minecraft:recipes/root"), ("criteria", criteria),
         ("requirements", [list(criteria.keys())]),
-        ("rewards", OrderedDict([("recipes", ["mymod:" + name])]))]))
+        ("rewards", OrderedDict([("recipes", ["tomyen:" + name])]))]))
 
 
 def shaped(name, pattern, key, result, count, unlock, category):
-    write(os.path.join(DATA, "mymod", "recipe", name + ".json"), OrderedDict([
+    write(os.path.join(DATA, "tomyen", "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shaped"), ("category", category), ("pattern", pattern), ("key", key),
         ("result", OrderedDict([("count", count), ("id", result)]))]))
     advancement(name, unlock, "decorations" if category == "building" else category)
 
 
 def shapeless(name, ingredients, result, count, unlock, category="misc"):
-    write(os.path.join(DATA, "mymod", "recipe", name + ".json"), OrderedDict([
+    write(os.path.join(DATA, "tomyen", "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shapeless"), ("category", category), ("ingredients", ingredients),
         ("result", OrderedDict([("count", count), ("id", result)]))]))
     advancement(name, unlock, category)
 
 
-RAW_FISH = ["minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish"] + ["mymod:" + n for n in (
+RAW_FISH = ["minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish"] + ["tomyen:" + n for n in (
     "brook_trout", "mud_catfish", "pike", "mackerel", "swordfish", "anglerfish", "glowfin_tetra", "parrotfish", "ice_char",
     "bog_eel", "cave_blindfish", "largemouth_bass", "bluegill", "yellow_perch", "walleye", "crappie", "sturgeon", "red_snapper",
     "flounder", "tuna", "mahi_mahi", "barracuda")]
-PREDATOR_FISH = ["minecraft:cod", "minecraft:salmon"] + ["mymod:" + n for n in (
+PREDATOR_FISH = ["minecraft:cod", "minecraft:salmon"] + ["tomyen:" + n for n in (
     "pike", "swordfish", "anglerfish", "starlit_gar", "magma_eel", "mud_catfish", "bog_eel", "largemouth_bass", "walleye",
     "tuna", "mahi_mahi", "barracuda")]
-NIGHT_FISH = ["mymod:" + n for n in ("anglerfish", "starlit_gar", "abyssal_squidling", "ghoulfish", "glowfin_tetra", "sculk_gulper",
+NIGHT_FISH = ["tomyen:" + n for n in ("anglerfish", "starlit_gar", "abyssal_squidling", "ghoulfish", "glowfin_tetra", "sculk_gulper",
                                      "walleye")]
-MUTANT_FISH = ["mymod:glowing_mutant_carp"]
+MUTANT_FISH = ["tomyen:glowing_mutant_carp"]
 # Small fish of ponds and creeks (crickets), and the bottom feeders (dough balls).
-PANFISH = ["mymod:" + n for n in ("bluegill", "crappie", "yellow_perch", "brook_trout")]
-BOTTOM_FISH = ["minecraft:cod"] + ["mymod:" + n for n in ("mud_catfish", "glowing_mutant_carp", "sturgeon", "flounder")]
+PANFISH = ["tomyen:" + n for n in ("bluegill", "crappie", "yellow_perch", "brook_trout")]
+BOTTOM_FISH = ["minecraft:cod"] + ["tomyen:" + n for n in ("mud_catfish", "glowing_mutant_carp", "sturgeon", "flounder")]
 
 
 def data():
-    item_tags = os.path.join(DATA, "mymod", "tags", "item")
+    item_tags = os.path.join(DATA, "tomyen", "tags", "item")
     tag_add(os.path.join(item_tags, "raw_fish.json"), RAW_FISH)
     tag_add(os.path.join(item_tags, "predator_fish.json"), PREDATOR_FISH)
     tag_add(os.path.join(item_tags, "night_fish.json"), NIGHT_FISH)
     tag_add(os.path.join(item_tags, "mutant_fish.json"), MUTANT_FISH)
     tag_add(os.path.join(item_tags, "panfish.json"), PANFISH)
     tag_add(os.path.join(item_tags, "bottom_fish.json"), BOTTOM_FISH)
-    tag_add(os.path.join(DATA, "minecraft", "tags", "block", "mineable", "axe.json"), ["mymod:%s_fish_mount" % w for w in WOODS])
+    tag_add(os.path.join(DATA, "minecraft", "tags", "block", "mineable", "axe.json"), ["tomyen:%s_fish_mount" % w for w in WOODS])
     for wood in WOODS:
         # A board on two sticks with a gold nugget for the plate; unlocked by catching any fish.
         shaped(f"{wood}_fish_mount", ["SPS", "PNP"], OrderedDict([("S", "minecraft:stick"), ("P", f"minecraft:{wood}_planks"),
                                                                  ("N", "minecraft:gold_nugget")]),
-               f"mymod:{wood}_fish_mount", 1, "#minecraft:fishes", "building")
-    shapeless("earthworms", ["minecraft:dirt", "minecraft:rotten_flesh"], "mymod:earthworms", 4,
-              ["minecraft:rotten_flesh", "mymod:earthworms"])
+               f"tomyen:{wood}_fish_mount", 1, "#minecraft:fishes", "building")
+    shapeless("earthworms", ["minecraft:dirt", "minecraft:rotten_flesh"], "tomyen:earthworms", 4,
+              ["minecraft:rotten_flesh", "tomyen:earthworms"])
     # Worm castings: earthworms back to the soil as bone meal.
-    shapeless("bone_meal_from_earthworms", ["mymod:earthworms"] * 4, "minecraft:bone_meal", 1, "mymod:earthworms")
-    shapeless("cut_bait", ["#mymod:raw_fish"], "mymod:cut_bait", 4, "#mymod:raw_fish")
-    shapeless("chum_bucket", ["minecraft:bucket", "mymod:cut_bait", "mymod:cut_bait", "mymod:cut_bait", "minecraft:bone_meal"],
-              "mymod:chum_bucket", 8, "mymod:cut_bait")
-    shapeless("glowworm", ["minecraft:glow_berries", "mymod:earthworms"], "mymod:glowworm", 2, "minecraft:glow_berries")
-    shapeless("live_minnow_from_pixie_minnow", ["mymod:pixie_minnow", "minecraft:kelp"], "mymod:live_minnow", 2, "mymod:pixie_minnow")
-    shapeless("live_minnow_from_mackerel", ["mymod:mackerel", "minecraft:kelp"], "mymod:live_minnow", 2, "mymod:mackerel")
-    shapeless("live_minnow_from_bluegill", ["mymod:bluegill", "minecraft:kelp"], "mymod:live_minnow", 2, "mymod:bluegill")
-    shapeless("live_minnow_from_mooshroom_minnow", ["mymod:mooshroom_minnow", "minecraft:kelp"], "mymod:live_minnow", 2,
-              "mymod:mooshroom_minnow")
+    shapeless("bone_meal_from_earthworms", ["tomyen:earthworms"] * 4, "minecraft:bone_meal", 1, "tomyen:earthworms")
+    shapeless("cut_bait", ["#tomyen:raw_fish"], "tomyen:cut_bait", 4, "#tomyen:raw_fish")
+    shapeless("chum_bucket", ["minecraft:bucket", "tomyen:cut_bait", "tomyen:cut_bait", "tomyen:cut_bait", "minecraft:bone_meal"],
+              "tomyen:chum_bucket", 8, "tomyen:cut_bait")
+    shapeless("glowworm", ["minecraft:glow_berries", "tomyen:earthworms"], "tomyen:glowworm", 2, "minecraft:glow_berries")
+    shapeless("live_minnow_from_pixie_minnow", ["tomyen:pixie_minnow", "minecraft:kelp"], "tomyen:live_minnow", 2, "tomyen:pixie_minnow")
+    shapeless("live_minnow_from_mackerel", ["tomyen:mackerel", "minecraft:kelp"], "tomyen:live_minnow", 2, "tomyen:mackerel")
+    shapeless("live_minnow_from_bluegill", ["tomyen:bluegill", "minecraft:kelp"], "tomyen:live_minnow", 2, "tomyen:bluegill")
+    shapeless("live_minnow_from_mooshroom_minnow", ["tomyen:mooshroom_minnow", "minecraft:kelp"], "tomyen:live_minnow", 2,
+              "tomyen:mooshroom_minnow")
     # The new early baits: crickets and leeches are found (long grass; swamp dirt and mud), the rest made.
-    shapeless("dough_balls", ["minecraft:bread"], "mymod:dough_balls", 4, "minecraft:bread")
+    shapeless("dough_balls", ["minecraft:bread"], "tomyen:dough_balls", 4, "minecraft:bread")
     shapeless("seed_mash", ["minecraft:wheat_seeds", "minecraft:wheat_seeds", "minecraft:wheat_seeds", "minecraft:bone_meal"],
-              "mymod:seed_mash", 6, "minecraft:wheat_seeds")
-    shapeless("magma_grub", ["minecraft:magma_cream", "mymod:earthworms"], "mymod:magma_grub", 4, "minecraft:magma_cream")
-    shapeless("irradiated_bait", ["mymod:raw_uranium"] + ["mymod:cut_bait"] * 4, "mymod:irradiated_bait", 4, "mymod:raw_uranium")
-    shapeless("irradiated_bait_from_mutant_carp", ["mymod:glowing_mutant_carp"], "mymod:irradiated_bait", 4,
-              "mymod:glowing_mutant_carp")
-    shapeless("star_bait", ["mymod:star_crystal_shard", "mymod:cut_bait", "mymod:cut_bait"], "mymod:star_bait", 2,
-              "mymod:star_crystal_shard")
+              "tomyen:seed_mash", 6, "minecraft:wheat_seeds")
+    shapeless("magma_grub", ["minecraft:magma_cream", "tomyen:earthworms"], "tomyen:magma_grub", 4, "minecraft:magma_cream")
+    shapeless("irradiated_bait", ["tomyen:raw_uranium"] + ["tomyen:cut_bait"] * 4, "tomyen:irradiated_bait", 4, "tomyen:raw_uranium")
+    shapeless("irradiated_bait_from_mutant_carp", ["tomyen:glowing_mutant_carp"], "tomyen:irradiated_bait", 4,
+              "tomyen:glowing_mutant_carp")
+    shapeless("star_bait", ["tomyen:star_crystal_shard", "tomyen:cut_bait", "tomyen:cut_bait"], "tomyen:star_bait", 2,
+              "tomyen:star_crystal_shard")
 
 
 LANG_ENTRIES = OrderedDict([
     # Weights and trophies
-    ("item.mymod.trophy_fish", "Trophy %s"),
-    ("tooltip.mymod.trophy.weight", "Weight: %s"),
-    ("tooltip.mymod.trophy.caught_by", "Caught by %s"),
-    ("tooltip.mymod.trophy.day", "Day %s"),
-    ("hud.mymod.fishing.weighed", "%s, %s"),
-    ("hud.mymod.fishing.trophy", "Trophy! %s"),
-    ("hud.mymod.fishing.personal_best", "New personal best! (was %s)"),
-    ("chat.mymod.fishing.personal_best", "New personal best: %s, %s (was %s)"),
-    ("hud.mymod.fishing.big_one", "Big one!"),
-    ("hud.mymod.fishing.tiring", "The fish is tiring! Reel it in!"),
-    ("hud.mymod.fishing.surge", "It's making a last run!"),
+    ("item.tomyen.trophy_fish", "Trophy %s"),
+    ("tooltip.tomyen.trophy.weight", "Weight: %s"),
+    ("tooltip.tomyen.trophy.caught_by", "Caught by %s"),
+    ("tooltip.tomyen.trophy.day", "Day %s"),
+    ("hud.tomyen.fishing.weighed", "%s, %s"),
+    ("hud.tomyen.fishing.trophy", "Trophy! %s"),
+    ("hud.tomyen.fishing.personal_best", "New personal best! (was %s)"),
+    ("chat.tomyen.fishing.personal_best", "New personal best: %s, %s (was %s)"),
+    ("hud.tomyen.fishing.big_one", "Big one!"),
+    ("hud.tomyen.fishing.tiring", "The fish is tiring! Reel it in!"),
+    ("hud.tomyen.fishing.surge", "It's making a last run!"),
     # The mount
-    ("block.mymod.oak_fish_mount", "Oak Fish Mount"),
-    ("block.mymod.spruce_fish_mount", "Spruce Fish Mount"),
-    ("block.mymod.dark_oak_fish_mount", "Dark Oak Fish Mount"),
-    ("block.mymod.fish_mount.trophy", "%s, %s, caught by %s on day %s"),
-    ("block.mymod.fish_mount.plain", "%s (a typical one, about %s)"),
-    ("block.mymod.fish_mount.caught_by", "Caught by %s"),
+    ("block.tomyen.oak_fish_mount", "Oak Fish Mount"),
+    ("block.tomyen.spruce_fish_mount", "Spruce Fish Mount"),
+    ("block.tomyen.dark_oak_fish_mount", "Dark Oak Fish Mount"),
+    ("block.tomyen.fish_mount.trophy", "%s, %s, caught by %s on day %s"),
+    ("block.tomyen.fish_mount.plain", "%s (a typical one, about %s)"),
+    ("block.tomyen.fish_mount.caught_by", "Caught by %s"),
     # Bait
-    ("tooltip.mymod.bait", "Bait"),
-    ("tooltip.mymod.bait.size", "Bigger fish +%s"),
-    ("tooltip.mymod.bait.attracts.predator_fish", "Draws in predators"),
-    ("tooltip.mymod.bait.attracts.night_fish", "Draws in the fish of the night"),
-    ("tooltip.mymod.bait.attracts.mutant_fish", "Draws in mutants"),
-    ("tooltip.mymod.bait.attracts.panfish", "Draws in panfish (bluegill, crappie, perch, trout)"),
-    ("tooltip.mymod.bait.attracts.bottom_fish", "Draws in bottom feeders (catfish, carp, sturgeon, flounder, cod)"),
-    ("tooltip.mymod.bait.attracted_size.panfish", "Bigger panfish +%s"),
-    ("tooltip.mymod.bait.attracted_size.bottom_fish", "Bigger bottom feeders +%s"),
-    ("tooltip.mymod.bait.smaller", "Smaller fish -%s"),
-    ("tooltip.mymod.bait.attracted_size.predator_fish", "Bigger predators +%s"),
-    ("tooltip.mymod.bait.attracted_size.night_fish", "Bigger night fish +%s"),
-    ("tooltip.mymod.bait.attracted_size.mutant_fish", "Bigger mutants +%s"),
-    ("tooltip.mymod.bait.lava_only", "Only works in lava"),
-    ("tooltip.mymod.bait.radiation", "Irradiates the angler with every catch"),
-    ("tooltip.mymod.bait.fit", "Load it on a rod at a Tackle Bench; one is eaten per fish"),
-    ("tooltip.mymod.rod_slot.bait", "Bait"),
-    ("tooltip.mymod.rod_slot.bait.stock", "None"),
-    ("tooltip.mymod.rod.bait_count", "%s x%s"),
-    ("container.mymod.tackle_bench.stat.size", "Size bias"),
-    ("container.mymod.tackle_bench.tag.radiation", "HOT"),
+    ("tooltip.tomyen.bait", "Bait"),
+    ("tooltip.tomyen.bait.size", "Bigger fish +%s"),
+    ("tooltip.tomyen.bait.attracts.predator_fish", "Draws in predators"),
+    ("tooltip.tomyen.bait.attracts.night_fish", "Draws in the fish of the night"),
+    ("tooltip.tomyen.bait.attracts.mutant_fish", "Draws in mutants"),
+    ("tooltip.tomyen.bait.attracts.panfish", "Draws in panfish (bluegill, crappie, perch, trout)"),
+    ("tooltip.tomyen.bait.attracts.bottom_fish", "Draws in bottom feeders (catfish, carp, sturgeon, flounder, cod)"),
+    ("tooltip.tomyen.bait.attracted_size.panfish", "Bigger panfish +%s"),
+    ("tooltip.tomyen.bait.attracted_size.bottom_fish", "Bigger bottom feeders +%s"),
+    ("tooltip.tomyen.bait.smaller", "Smaller fish -%s"),
+    ("tooltip.tomyen.bait.attracted_size.predator_fish", "Bigger predators +%s"),
+    ("tooltip.tomyen.bait.attracted_size.night_fish", "Bigger night fish +%s"),
+    ("tooltip.tomyen.bait.attracted_size.mutant_fish", "Bigger mutants +%s"),
+    ("tooltip.tomyen.bait.lava_only", "Only works in lava"),
+    ("tooltip.tomyen.bait.radiation", "Irradiates the angler with every catch"),
+    ("tooltip.tomyen.bait.fit", "Load it on a rod at a Tackle Bench; one is eaten per fish"),
+    ("tooltip.tomyen.rod_slot.bait", "Bait"),
+    ("tooltip.tomyen.rod_slot.bait.stock", "None"),
+    ("tooltip.tomyen.rod.bait_count", "%s x%s"),
+    ("container.tomyen.tackle_bench.stat.size", "Size bias"),
+    ("container.tomyen.tackle_bench.tag.radiation", "HOT"),
     # Commands
-    ("commands.mymod.fishing.bad_species", "No weighed fishing species called %s"),
-    ("commands.mymod.fishing.give_trophy", "Gave %s (%s)"),
-    ("commands.mymod.fishing.records.none", "You haven't weighed a fish yet: catch one on a mod rod."),
-    ("commands.mymod.fishing.records.header", "Your personal bests (%s species):"),
-    ("commands.mymod.fishing.records.line", " %s: %s, day %s (world record %s)"),
-    ("commands.mymod.fishing.test.species", "Testing %s: %s (%s), difficulty %s%s"),
-    ("commands.mymod.fishing.test.trophy", ", trophy class"),
-    ("commands.mymod.fishing.test.strength",
+    ("commands.tomyen.fishing.bad_species", "No weighed fishing species called %s"),
+    ("commands.tomyen.fishing.give_trophy", "Gave %s (%s)"),
+    ("commands.tomyen.fishing.records.none", "You haven't weighed a fish yet: catch one on a mod rod."),
+    ("commands.tomyen.fishing.records.header", "Your personal bests (%s species):"),
+    ("commands.tomyen.fishing.records.line", " %s: %s, day %s (world record %s)"),
+    ("commands.tomyen.fishing.test.species", "Testing %s: %s (%s), difficulty %s%s"),
+    ("commands.tomyen.fishing.test.trophy", ", trophy class"),
+    ("commands.tomyen.fishing.test.strength",
      "Fight strength %s (weight percentile %s%%, rarity %s%%, size %s%%): x%s as long, %s to %s s%s"),
-    ("commands.mymod.fishing.test.stamina", ", tires and surges"),
+    ("commands.tomyen.fishing.test.stamina", ", tires and surges"),
 ])
 
 
@@ -1053,7 +1053,7 @@ def main():
     data()
     lang = OrderedDict(LANG_ENTRIES)
     for name, (title, _) in BAITS.items():
-        lang["item.mymod." + name] = title
+        lang["item.tomyen." + name] = title
     merge_lang(lang)
     elements = models["oak"][0]
     print("fish mount: %d elements per wood, %d woods; %d baits" % (len(elements), len(WOODS), len(BAITS)))

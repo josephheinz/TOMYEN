@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": "tomyen:steel_plate",
+    "A": "tomyen:mech_actuator",
+    "T": "tomyen:tungsten_carbide",
+    "B": "tomyen:steel_block"
+  },
+  "pattern": [
+    "BP",
+    "AT",
+    "BP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:mech_arm"
+  }
+}

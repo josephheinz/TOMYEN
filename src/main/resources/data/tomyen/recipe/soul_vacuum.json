@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": "tomyen:steel_plate",
+    "G": "minecraft:glass",
+    "I": "tomyen:steel_ingot",
+    "L": "minecraft:soul_lantern",
+    "C": "tomyen:computer_chip",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "PGP",
+    "ILC",
+    " RI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:soul_vacuum"
+  }
+}

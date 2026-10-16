@@ -1,0 +1,15 @@
+{
+  "parent": "item/amethyst_bud",
+  "textures": {
+    "layer0": "tomyen:block/large_star_crystal_bud"
+  },
+  "display": {
+    "fixed": {
+      "translation": [
+        0,
+        4,
+        0
+      ]
+    }
+  }
+}

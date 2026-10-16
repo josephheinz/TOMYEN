@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "N": "minecraft:netherite_scrap",
+    "S": "#tomyen:dragon_scales"
+  },
+  "pattern": [
+    "SNS",
+    "SSS",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:dragonscale_chestplate"
+  }
+}

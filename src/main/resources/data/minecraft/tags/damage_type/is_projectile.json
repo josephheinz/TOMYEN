@@ -1,12 +1,12 @@
 {
   "values": [
-    "mymod:bullet",
-    "mymod:penetrator_bullet",
-    "mymod:armor_piercing_bullet",
-    "mymod:hollow_point_bullet",
-    "mymod:tungsten_core_bullet",
-    "mymod:depleted_uranium_bullet",
-    "mymod:railgun_slug",
-    "mymod:fish_gun"
+    "tomyen:bullet",
+    "tomyen:penetrator_bullet",
+    "tomyen:armor_piercing_bullet",
+    "tomyen:hollow_point_bullet",
+    "tomyen:tungsten_core_bullet",
+    "tomyen:depleted_uranium_bullet",
+    "tomyen:railgun_slug",
+    "tomyen:fish_gun"
   ]
 }

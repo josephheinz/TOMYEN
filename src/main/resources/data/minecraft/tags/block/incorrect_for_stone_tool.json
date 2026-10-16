@@ -1,6 +1,6 @@
 {
   "values": [
-    "#mymod:needs_drill",
-    "#mymod:needs_powered_drill"
+    "#tomyen:needs_drill",
+    "#tomyen:needs_powered_drill"
   ]
 }

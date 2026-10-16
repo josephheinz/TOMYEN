@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "tomyen:steel_plate",
+    "C": "minecraft:copper_ingot",
+    "B": "minecraft:blaze_rod"
+  },
+  "pattern": [
+    "PCP",
+    "PBP",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:combustion_chamber"
+  }
+}

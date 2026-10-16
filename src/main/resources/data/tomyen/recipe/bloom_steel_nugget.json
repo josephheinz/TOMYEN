@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:bloom_steel_ingot"
+  ],
+  "result": {
+    "count": 9,
+    "id": "tomyen:bloom_steel_nugget"
+  }
+}

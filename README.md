@@ -1,4 +1,4 @@
-# My Mod
+# TOMYEN: The Only Mod You'll Ever Need
 
 Fabric mod for Minecraft 26.3 (Java 25).
 

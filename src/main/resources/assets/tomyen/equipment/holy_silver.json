@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "tomyen:holy_silver"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "tomyen:holy_silver"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "tomyen:holy_silver"
+      }
+    ]
+  }
+}

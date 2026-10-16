@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "minecraft:iron_block",
+    "T": "tomyen:cathode_tube",
+    "I": "minecraft:iron_ingot",
+    "G": "minecraft:glass_pane"
+  },
+  "pattern": [
+    "BTB",
+    "IGI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:power_armor_helmet_mk1"
+  }
+}

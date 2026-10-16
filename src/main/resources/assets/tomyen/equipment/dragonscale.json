@@ -1,0 +1,24 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "tomyen:dragonscale"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "tomyen:dragonscale"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "tomyen:dragonscale"
+      }
+    ],
+    "wings": [
+      {
+        "texture": "tomyen:dragonscale"
+      }
+    ]
+  }
+}

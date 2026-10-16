@@ -2,7 +2,7 @@
 GENERATED markers) and entity texture, its spawn egg, the Banana and the Banana Peel (item sprites, and the flat peel
 block's texture, model and blockstate), and their item models and definitions. On the data side it writes the Big
 Banana's loot table, the peel block's loot table, the earthworms-from-a-peel recipe (with its recipe-book
-advancement), the mymod:makes_big_banana_happy item tag and adds the banana to c:foods/fruit. Its sounds (vanilla
+advancement), the tomyen:makes_big_banana_happy item tag and adds the banana to c:foods/fruit. Its sounds (vanilla
 slime, honey block and note block sounds, pitched) and lang entries are merged into sounds.json and en_us.json.
 
 The texture is painted in smooth ramps: a banana-yellow ramp down each face (brightest along the middle of the face,
@@ -20,14 +20,14 @@ With --preview DIR it also renders, into DIR, preview_banana.png: front, side an
 frames; three slap frames; the happy bounce; and the banana, peel, peel block and spawn egg sprites, using the same
 cubes, pivots and UV layout as the Java model, and a Python twin of its animation.
 
-Usage: python3 tools/gen_banana.py src/main/resources/assets/mymod [--preview DIR]"""
+Usage: python3 tools/gen_banana.py src/main/resources/assets/tomyen [--preview DIR]"""
 import json, math, os, struct, sys, zlib
 from collections import OrderedDict
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
 DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data"))
-MYDATA = os.path.join(DATA, "mymod")
+MYDATA = os.path.join(DATA, "tomyen")
 PREVIEW = sys.argv[sys.argv.index("--preview") + 1] if "--preview" in sys.argv else None
 
 
@@ -548,17 +548,17 @@ def merge(path, entries):
 
 for name in ("banana", "banana_peel", "big_banana_spawn_egg"):
     write(os.path.join(MODELS, "item", name + ".json"),
-          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/" + name})]))
-    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/" + name})]))
+    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 # The peel lying on the ground: one flat, double-sided sheet just off the floor, turned to face the way it was dropped.
 write(os.path.join(MODELS, "block", "banana_peel.json"), OrderedDict([
-    ("textures", OrderedDict([("particle", "mymod:block/banana_peel"), ("peel", "mymod:block/banana_peel")])),
+    ("textures", OrderedDict([("particle", "tomyen:block/banana_peel"), ("peel", "tomyen:block/banana_peel")])),
     ("elements", [OrderedDict([("from", [0, 0.25, 0]), ("to", [16, 0.25, 16]), ("faces", OrderedDict([
         ("up", {"uv": [0, 0, 16, 16], "texture": "#peel"}),
         ("down", {"uv": [0, 16, 16, 0], "texture": "#peel"})]))])])]))
 write(os.path.join(ASSETS, "blockstates", "banana_peel.json"), {"variants": OrderedDict(
-    (f"facing={d}", OrderedDict([("model", "mymod:block/banana_peel")] + ([("y", r)] if r else [])))
+    (f"facing={d}", OrderedDict([("model", "tomyen:block/banana_peel")] + ([("y", r)] if r else [])))
     for d, r in (("north", 0), ("east", 90), ("south", 180), ("west", 270)))})
 
 
@@ -571,20 +571,20 @@ def drop(item, low, high, looting=1.0):
 
 write(os.path.join(MYDATA, "loot_table/entities/big_banana.json"), OrderedDict([
     ("type", "minecraft:entity"),
-    ("pools", [drop("mymod:banana", 2, 4),
+    ("pools", [drop("tomyen:banana", 2, 4),
                OrderedDict([("condition", OrderedDict([
                    ("type", "minecraft:random_chance_with_enchanted_bonus"),
                    ("enchanted_chance", {"type": "minecraft:linear", "base": 0.4, "per_level_above_first": 0.1}),
                    ("enchantment", "minecraft:looting"),
                    ("unenchanted_chance", 0.3)])),
-                   ("entries", [{"type": "minecraft:item", "name": "mymod:banana_peel"}]),
+                   ("entries", [{"type": "minecraft:item", "name": "tomyen:banana_peel"}]),
                    ("rolls", 1)])]),
-    ("random_sequence", "mymod:entities/big_banana")]))
+    ("random_sequence", "tomyen:entities/big_banana")]))
 write(os.path.join(MYDATA, "loot_table/blocks/banana_peel.json"), OrderedDict([
     ("type", "minecraft:block"),
     ("pools", [OrderedDict([("condition", {"type": "minecraft:survives_explosion"}),
-                            ("entries", [{"type": "minecraft:item", "name": "mymod:banana_peel"}]), ("rolls", 1)])]),
-    ("random_sequence", "mymod:blocks/banana_peel")]))
+                            ("entries", [{"type": "minecraft:item", "name": "tomyen:banana_peel"}]), ("rolls", 1)])]),
+    ("random_sequence", "tomyen:blocks/banana_peel")]))
 
 
 def advancement(name, ingredient, category="misc"):
@@ -592,9 +592,9 @@ def advancement(name, ingredient, category="misc"):
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
             ("has_item", {"conditions": {"items": [{"items": ingredient}]}, "trigger": "minecraft:inventory_changed"}),
-            ("has_the_recipe", {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
+            ("has_the_recipe", {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
         ("requirements", [["has_item", "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
 def shapeless(name, ingredients, result, count, category="misc"):
@@ -605,7 +605,7 @@ def shapeless(name, ingredients, result, count, category="misc"):
 
 
 # A peel left to rot in dirt breeds earthworms, the fishing system's basic bait, as rotten flesh does.
-shapeless("earthworms_from_banana_peel", ["mymod:banana_peel", "minecraft:dirt"], "mymod:earthworms", 4)
+shapeless("earthworms_from_banana_peel", ["tomyen:banana_peel", "minecraft:dirt"], "tomyen:earthworms", 4)
 
 
 def tag_add(path, entry):
@@ -617,9 +617,9 @@ def tag_add(path, entry):
 
 
 # What a Big Banana is glad to see in a player's hand.
-for item in ("mymod:banana", "mymod:banana_peel"):
+for item in ("tomyen:banana", "tomyen:banana_peel"):
     tag_add(os.path.join(MYDATA, "tags/item/makes_big_banana_happy.json"), item)
-tag_add(os.path.join(DATA, "c", "tags/item/foods/fruit.json"), "mymod:banana")
+tag_add(os.path.join(DATA, "c", "tags/item/foods/fruit.json"), "tomyen:banana")
 
 
 def vanilla(names, pitch, **extra):
@@ -627,7 +627,7 @@ def vanilla(names, pitch, **extra):
 
 
 def event(name, sounds):
-    return name, OrderedDict([("subtitle", "subtitles.mymod." + name), ("sounds", sounds)])
+    return name, OrderedDict([("subtitle", "subtitles.tomyen." + name), ("sounds", sounds)])
 
 
 # Vanilla sounds, pitched: squishy slime and honey for the banana, a goofy note-block boop for its happy bounce.
@@ -645,28 +645,28 @@ SOUNDS = OrderedDict([
 merge(os.path.join(ASSETS, "sounds.json"), SOUNDS)
 
 LANG = OrderedDict([
-    ("entity.mymod.big_banana", "Big Banana"),
-    ("entity.mymod.thrown_banana_peel", "Banana Peel"),
-    ("item.mymod.big_banana_spawn_egg", "Big Banana Spawn Egg"),
-    ("item.mymod.banana", "Banana"),
-    ("item.mymod.banana_peel", "Banana Peel"),
-    ("item.mymod.banana_peel.use", "Place it on the ground, or throw it: whatever steps on it slips"),
-    ("block.mymod.banana_peel", "Banana Peel"),
-    ("subtitles.mymod.big_banana_ambient", "Big Banana squishes"),
-    ("subtitles.mymod.big_banana_hurt", "Big Banana hurts"),
-    ("subtitles.mymod.big_banana_death", "Big Banana dies"),
-    ("subtitles.mymod.big_banana_step", "Footsteps"),
-    ("subtitles.mymod.big_banana_slap", "Big Banana slaps"),
-    ("subtitles.mymod.big_banana_boop", "Big Banana boops happily"),
-    ("subtitles.mymod.banana_peel_slip", "Something slips on a banana peel"),
-    ("subtitles.mymod.banana_peel_place", "Banana peel placed"),
-    ("tag.item.mymod.makes_big_banana_happy", "Makes Big Bananas Happy"),
+    ("entity.tomyen.big_banana", "Big Banana"),
+    ("entity.tomyen.thrown_banana_peel", "Banana Peel"),
+    ("item.tomyen.big_banana_spawn_egg", "Big Banana Spawn Egg"),
+    ("item.tomyen.banana", "Banana"),
+    ("item.tomyen.banana_peel", "Banana Peel"),
+    ("item.tomyen.banana_peel.use", "Place it on the ground, or throw it: whatever steps on it slips"),
+    ("block.tomyen.banana_peel", "Banana Peel"),
+    ("subtitles.tomyen.big_banana_ambient", "Big Banana squishes"),
+    ("subtitles.tomyen.big_banana_hurt", "Big Banana hurts"),
+    ("subtitles.tomyen.big_banana_death", "Big Banana dies"),
+    ("subtitles.tomyen.big_banana_step", "Footsteps"),
+    ("subtitles.tomyen.big_banana_slap", "Big Banana slaps"),
+    ("subtitles.tomyen.big_banana_boop", "Big Banana boops happily"),
+    ("subtitles.tomyen.banana_peel_slip", "Something slips on a banana peel"),
+    ("subtitles.tomyen.banana_peel_place", "Banana peel placed"),
+    ("tag.item.tomyen.makes_big_banana_happy", "Makes Big Bananas Happy"),
 ])
 merge(os.path.join(ASSETS, "lang", "en_us.json"), LANG)
 
 
 # ---------------------------------------------------------------------------------------------- the Java model
-JAVA = os.path.normpath(os.path.join(ASSETS, "..", "..", "..", "..", "client", "java", "com", "jheinz", "mymod", "client",
+JAVA = os.path.normpath(os.path.join(ASSETS, "..", "..", "..", "..", "client", "java", "com", "jheinz", "tomyen", "client",
                                      "banana", "BigBananaModel.java"))
 
 

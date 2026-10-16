@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "tomyen:hazmat"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "tomyen:hazmat"
+      }
+    ]
+  }
+}

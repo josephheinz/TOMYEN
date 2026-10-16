@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "M": "tomyen:fae_silver_ingot",
+    "S": "minecraft:string",
+    "H": "tomyen:fae_dust"
+  },
+  "pattern": [
+    "  M",
+    " MS",
+    "H S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:fae_rod"
+  }
+}

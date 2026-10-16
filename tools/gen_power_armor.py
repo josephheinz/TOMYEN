@@ -8,10 +8,10 @@ rubber (9) and soot (10), then two tiles split into 32x32 small materials: visor
 core (11), jet flame and emitter lens (12). Every cube unwraps inside its material's tile, so each tile is a
 tileable patch. The glow texture holds only the lamp and the jet flame, drawn again full-bright over the rest.
 
-Usage: python3 tools/gen_power_armor.py src/main/resources/assets/mymod"""
+Usage: python3 tools/gen_power_armor.py src/main/resources/assets/tomyen"""
 import json, math, os, struct, sys, zlib
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
 CLEAR = (0, 0, 0, 0)
 
@@ -359,8 +359,8 @@ MODELS = os.path.join(ASSETS, "models/item")
 ITEMS = os.path.join(ASSETS, "items")
 for name in names:
     write_json(os.path.join(MODELS, name + ".json"),
-               {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
-    write_json(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+               {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
+    write_json(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 
 # --- The Power Armor Station. -------------------------------------------------------------------------------------
@@ -424,11 +424,11 @@ def element(frm, to, texture, faces="nsewud", side_uv=None):
 station = {
     "parent": "minecraft:block/block",
     "textures": {
-        "particle": "mymod:block/power_armor_station_frame",
-        "frame": "mymod:block/power_armor_station_frame",
-        "base": "mymod:block/power_armor_station_base",
-        "hazard": "mymod:block/power_armor_station_hazard",
-        "hydraulic": "mymod:block/power_armor_station_hydraulic",
+        "particle": "tomyen:block/power_armor_station_frame",
+        "frame": "tomyen:block/power_armor_station_frame",
+        "base": "tomyen:block/power_armor_station_base",
+        "hazard": "tomyen:block/power_armor_station_hazard",
+        "hydraulic": "tomyen:block/power_armor_station_hydraulic",
     },
     "elements": [
         element((0, 0, 0), (16, 3, 16), "base", side_uv="hazard"),
@@ -453,11 +453,11 @@ station = {
 }
 write_json(os.path.join(ASSETS, "models/block/power_armor_station.json"), station)
 write_json(os.path.join(ASSETS, "blockstates/power_armor_station.json"), {"variants": {
-    "facing=north": {"model": "mymod:block/power_armor_station"},
-    "facing=east": {"model": "mymod:block/power_armor_station", "y": 90},
-    "facing=south": {"model": "mymod:block/power_armor_station", "y": 180},
-    "facing=west": {"model": "mymod:block/power_armor_station", "y": 270},
+    "facing=north": {"model": "tomyen:block/power_armor_station"},
+    "facing=east": {"model": "tomyen:block/power_armor_station", "y": 90},
+    "facing=south": {"model": "tomyen:block/power_armor_station", "y": 180},
+    "facing=west": {"model": "tomyen:block/power_armor_station", "y": 270},
 }})
 write_json(os.path.join(ITEMS, "power_armor_station.json"),
-           {"model": {"type": "minecraft:model", "model": "mymod:block/power_armor_station"}})
+           {"model": {"type": "minecraft:model", "model": "tomyen:block/power_armor_station"}})
 print("ok")

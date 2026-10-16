@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "minecraft:diamond_sword"
+  },
+  "pattern": [
+    "S  ",
+    " S ",
+    "  S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:diamond_long_sword"
+  }
+}

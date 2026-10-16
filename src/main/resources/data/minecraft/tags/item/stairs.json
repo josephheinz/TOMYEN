@@ -1,7 +1,7 @@
 {
   "values": [
-    "mymod:meteorite_stone_stairs",
-    "mymod:polished_meteorite_stone_stairs",
-    "mymod:meteorite_brick_stairs"
+    "tomyen:meteorite_stone_stairs",
+    "tomyen:polished_meteorite_stone_stairs",
+    "tomyen:meteorite_brick_stairs"
   ]
 }

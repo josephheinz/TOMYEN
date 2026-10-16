@@ -1,0 +1,110 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:condition",
+        "property": "minecraft:has_component",
+        "component": "tomyen:optic_attachment",
+        "on_true": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "tomyen:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/no_iron_sights/revolver_357"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/no_iron_sights/revolver_357_no_mag"
+          }
+        },
+        "on_false": {
+          "type": "minecraft:condition",
+          "property": "minecraft:has_component",
+          "component": "tomyen:loaded_magazine",
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/revolver_357"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/revolver_357_no_mag"
+          }
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "tomyen:laser_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/revolver_357_laser_sight"
+            }
+          },
+          {
+            "when": "tomyen:green_laser_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/revolver_357_green_laser_sight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:optic_attachment",
+        "cases": [
+          {
+            "when": "tomyen:red_dot_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/revolver_357_red_dot_sight"
+            }
+          },
+          {
+            "when": "tomyen:holographic_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/revolver_357_holographic_sight"
+            }
+          },
+          {
+            "when": "tomyen:kobra_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/revolver_357_kobra_sight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "tomyen:flashlight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/revolver_357_flashlight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "N": "minecraft:iron_nugget",
+    "S": "tomyen:star_crystal_shard",
+    "G": "minecraft:glass"
+  },
+  "pattern": [
+    "NSN",
+    "SGS",
+    "NSN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:star_lantern"
+  }
+}

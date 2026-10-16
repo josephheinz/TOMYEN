@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "tomyen:star_crystal_shard",
+    "I": "tomyen:meteoric_iron_ingot"
+  },
+  "pattern": [
+    " S ",
+    " I ",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:starlight_lens"
+  }
+}

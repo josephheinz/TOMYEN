@@ -1,4 +1,4 @@
-"""Builds the Scrap Bench and Blueprints (com.jheinz.mymod.scrapbench, com.jheinz.mymod.blueprint):
+"""Builds the Scrap Bench and Blueprints (com.jheinz.tomyen.scrapbench, com.jheinz.tomyen.blueprint):
 
 - the bench's block model (a cluttered workbench: a vise with a pipe clamped in it, a pegboard of tools with a blueprint
   pinned to it, a hanging lamp, a parts tray, a spring, a screwdriver, an oil can, a rolled-up schematic, and a crate of
@@ -11,7 +11,7 @@
   trade, and the removal of crafting-table recipes that moved to the bench (the homemade guns, the metal detector, the
   tripwire alarm, the bear trap, the pipe bomb and scrap armor) or to the Weapon Station (the flare gun).
 
-Usage: python3 tools/gen_scrap_bench.py src/main/resources/assets/mymod [--preview preview_scrap_bench.png]"""
+Usage: python3 tools/gen_scrap_bench.py src/main/resources/assets/tomyen [--preview preview_scrap_bench.png]"""
 import json, math, os, sys
 from collections import OrderedDict
 
@@ -22,7 +22,7 @@ import gen_fishing_rods as R      # Img, read_png, art, text, the client jar
 from gunkit import png
 import coplanar
 
-ASSETS = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("--") else os.path.join(REPO, "src/main/resources/assets/mymod")
+ASSETS = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("--") else os.path.join(REPO, "src/main/resources/assets/tomyen")
 PREVIEW = os.path.abspath(sys.argv[sys.argv.index("--preview") + 1]) if "--preview" in sys.argv else None
 DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data"))
 TEX = os.path.join(ASSETS, "textures")
@@ -546,7 +546,7 @@ def build_bench():
     atlas = Atlas(ATLAS)
     finish(elements, atlas)
     model = OrderedDict([("parent", "minecraft:block/block"), ("ambientocclusion", False),
-                         ("textures", OrderedDict([("tex", "mymod:block/scrap_bench"), ("particle", "minecraft:block/oak_planks")])),
+                         ("textures", OrderedDict([("tex", "tomyen:block/scrap_bench"), ("particle", "minecraft:block/oak_planks")])),
                          ("display", BENCH_DISPLAY), ("elements", elements)])
     return model, atlas.img
 
@@ -905,7 +905,7 @@ def tag(path, values):
 
 
 def m(name):
-    return "mymod:" + name
+    return "tomyen:" + name
 
 
 # The blueprints, in Blueprints.ALL's order, and their paper.
@@ -916,36 +916,36 @@ BLUEPRINT_TIERS = OrderedDict([
 ])
 
 LANG = OrderedDict([
-    ("block.mymod.scrap_bench", "Scrap Bench"),
-    ("container.mymod.scrap_bench", "Scrap Bench"),
-    ("container.mymod.scrap_bench.assemble", "Assemble"),
-    ("container.mymod.scrap_bench.salvage", "Salvage"),
-    ("container.mymod.scrap_bench.break", "Break one down"),
-    ("container.mymod.scrap_bench.break_all", "Shift-click: the whole stack"),
-    ("container.mymod.scrap_bench.cost", "%s × %s"),
-    ("container.mymod.scrap_bench.result_count", "%s ×%s"),
-    ("container.mymod.scrap_bench.fill_hint", "Click to load the bench (shift: as many as fit)"),
-    ("container.mymod.scrap_bench.breaks_into", "Breaks down into:"),
-    ("container.mymod.scrap_bench.worn", "Worn gear gives back less"),
-    ("container.mymod.scrap_bench.salvage_hint", "Click to load it (shift: all of it)"),
-    ("container.mymod.blueprint.learned", "Blueprint learned"),
-    ("container.mymod.blueprint.locked", "Locked: read the %s"),
-    ("container.mymod.blueprint.where", "Found in chests, crashed UFOs and on machines"),
-    ("container.mymod.weapon_station.blueprints", "Blueprints"),
-    ("container.mymod.weapon_station.blueprint_hint", "Put these in the slots to make it"),
-    ("item.mymod.spring", "Spring"),
-    ("item.mymod.screws", "Screws"),
-    ("item.mymod.blueprint", "Blueprint"),
-    ("item.mymod.blueprint.named", "%s Blueprint"),
-    ("blueprint.mymod.blank", "Blank: teaches nothing"),
-    ("blueprint.mymod.teaches", "Teaches an early recipe at the %s"),
-    ("blueprint.mymod.tier", "Skips ahead to the %s tier"),
-    ("blueprint.mymod.tier.workshop", "Workshop"),
-    ("blueprint.mymod.tier.foundry", "Foundry"),
-    ("blueprint.mymod.use", "Use to learn it"),
-    ("blueprint.mymod.known", "Already learned"),
-    ("blueprint.mymod.learned", "Learned the %s blueprint: make it at the %s."),
-    ("blueprint.mymod.already_known", "You already know the %s"),
+    ("block.tomyen.scrap_bench", "Scrap Bench"),
+    ("container.tomyen.scrap_bench", "Scrap Bench"),
+    ("container.tomyen.scrap_bench.assemble", "Assemble"),
+    ("container.tomyen.scrap_bench.salvage", "Salvage"),
+    ("container.tomyen.scrap_bench.break", "Break one down"),
+    ("container.tomyen.scrap_bench.break_all", "Shift-click: the whole stack"),
+    ("container.tomyen.scrap_bench.cost", "%s × %s"),
+    ("container.tomyen.scrap_bench.result_count", "%s ×%s"),
+    ("container.tomyen.scrap_bench.fill_hint", "Click to load the bench (shift: as many as fit)"),
+    ("container.tomyen.scrap_bench.breaks_into", "Breaks down into:"),
+    ("container.tomyen.scrap_bench.worn", "Worn gear gives back less"),
+    ("container.tomyen.scrap_bench.salvage_hint", "Click to load it (shift: all of it)"),
+    ("container.tomyen.blueprint.learned", "Blueprint learned"),
+    ("container.tomyen.blueprint.locked", "Locked: read the %s"),
+    ("container.tomyen.blueprint.where", "Found in chests, crashed UFOs and on machines"),
+    ("container.tomyen.weapon_station.blueprints", "Blueprints"),
+    ("container.tomyen.weapon_station.blueprint_hint", "Put these in the slots to make it"),
+    ("item.tomyen.spring", "Spring"),
+    ("item.tomyen.screws", "Screws"),
+    ("item.tomyen.blueprint", "Blueprint"),
+    ("item.tomyen.blueprint.named", "%s Blueprint"),
+    ("blueprint.tomyen.blank", "Blank: teaches nothing"),
+    ("blueprint.tomyen.teaches", "Teaches an early recipe at the %s"),
+    ("blueprint.tomyen.tier", "Skips ahead to the %s tier"),
+    ("blueprint.tomyen.tier.workshop", "Workshop"),
+    ("blueprint.tomyen.tier.foundry", "Foundry"),
+    ("blueprint.tomyen.use", "Use to learn it"),
+    ("blueprint.tomyen.known", "Already learned"),
+    ("blueprint.tomyen.learned", "Learned the %s blueprint: make it at the %s."),
+    ("blueprint.tomyen.already_known", "You already know the %s"),
     ("tag.item.minecraft.planks", "Planks"),
     ("tag.item.minecraft.wooden_slabs", "Wooden Slabs"),
 ])
@@ -990,7 +990,7 @@ def write_assets(model, atlas):
 
 
 def write_data():
-    mine = os.path.join(DATA, "mymod")
+    mine = os.path.join(DATA, "tomyen")
     write(os.path.join(mine, "recipe", "scrap_bench.json"), OrderedDict([
         ("type", "minecraft:crafting_shaped"), ("category", "misc"),
         ("key", OrderedDict([("C", "minecraft:crafting_table"), ("I", "minecraft:iron_ingot"), ("N", "minecraft:iron_nugget"),
@@ -1112,7 +1112,7 @@ def resolve_textures(model):
         while ref.startswith("#"):
             ref = textures[ref[1:]]
         ns, path = ref.split(":") if ":" in ref else ("minecraft", ref)
-        if ns == "mymod":
+        if ns == "tomyen":
             out["#" + key] = load_png(os.path.join(TEX, path + ".png"))
         else:
             out["#" + key] = R.read_png(R.JAR.read("assets/minecraft/textures/" + path + ".png"))
@@ -1250,20 +1250,20 @@ def gui_mockup(mode, k):
     blit(tex, 0, 0, GUI_W, GUI_H, 0, 0)
     blit(tex, 176, 0 if mode == 0 else 64, 80, 60, 92, 16)
     out.paste(tab_sel[mode], ox + mode * 27 * k, oy - 28 * k, k)
-    for t, name in ((0, "mymod:pipe_pistol"), (1, "mymod:rusty_scrap")):
+    for t, name in ((0, "tomyen:pipe_pistol"), (1, "tomyen:rusty_scrap")):
         put(out, icon(name), ox + (t * 27 + 5) * k, oy + (-28 + 9) * k, k)
     R.text(out, ox + 8 * k, oy + 6 * k, "SCRAP BENCH", "#404040", k)
     R.text(out, ox + 8 * k, oy + (INVENTORY_Y - 11) * k, "INVENTORY", "#404040", k)
 
     cell, scroller = vsprite("container/stonecutter/recipe"), vsprite("container/stonecutter/scroller")
     if mode == 0:
-        entries = [("mymod:bear_trap", 0), ("mymod:pipe_bomb", 0), ("mymod:scrap_helmet", 0), ("mymod:scrap_chestplate", 1),
-                   ("mymod:scrap_leggings", 0), ("mymod:scrap_boots", 0), ("mymod:flare_gun", 0), ("mymod:nail_gun", 2),
-                   ("mymod:snub_revolver", 2), ("mymod:sawed_off", 2)]
+        entries = [("tomyen:bear_trap", 0), ("tomyen:pipe_bomb", 0), ("tomyen:scrap_helmet", 0), ("tomyen:scrap_chestplate", 1),
+                   ("tomyen:scrap_leggings", 0), ("tomyen:scrap_boots", 0), ("tomyen:flare_gun", 0), ("tomyen:nail_gun", 2),
+                   ("tomyen:snub_revolver", 2), ("tomyen:sawed_off", 2)]
         out.paste(scroller, ox + 76 * k, oy + (16 + 39) * k, k)
     else:
         entries = [(n, 0 if i in (0, 2, 3, 6) else 1) for i, n in enumerate(
-            ["mymod:rusty_scrap", "mymod:old_boot", "mymod:tech_scrap", "mymod:servo_arm", "mymod:optic_lens", "mymod:cathode_tube",
+            ["tomyen:rusty_scrap", "tomyen:old_boot", "tomyen:tech_scrap", "tomyen:servo_arm", "tomyen:optic_lens", "tomyen:cathode_tube",
              "minecraft:rail", "minecraft:iron_chain", "minecraft:bucket", "minecraft:minecart", "minecraft:tripwire_hook",
              "minecraft:shears"])]
         out.paste(scroller, ox + 76 * k, oy + 16 * k, k)
@@ -1272,21 +1272,21 @@ def gui_mockup(mode, k):
         out.paste(cell, ox + x * k, oy + y * k, k)
         item(name, x, y + 1, locked=state == 2, short=state == 1)
     if mode == 0:
-        for i, (name, n) in enumerate((("minecraft:iron_ingot", 2), ("mymod:spring", 1), ("minecraft:flint", 1), ("minecraft:oak_planks", 1))):
+        for i, (name, n) in enumerate((("minecraft:iron_ingot", 2), ("tomyen:spring", 1), ("minecraft:flint", 1), ("minecraft:oak_planks", 1))):
             if name == "minecraft:oak_planks":
                 planks = R.read_png(R.JAR.read("assets/minecraft/textures/block/oak_planks.png"))
                 put(out, planks, ox + (96 + i % 2 * 18) * k, oy + (22 + i // 2 * 18) * k, k)
             else:
                 item(name, 96 + i % 2 * 18, 22 + i // 2 * 18, n)
-        item("mymod:pipe_pistol", 152, 31)
+        item("tomyen:pipe_pistol", 152, 31)
     else:
-        item("mymod:rusty_scrap", 97, 22, 12)
+        item("tomyen:rusty_scrap", 97, 22, 12)
         blit(tex, 176, 128, 18, 18, 96, 42)
         item("minecraft:iron_nugget", 134, 22, 6)
-        item("mymod:screws", 152, 22, 3)
-    for i, (name, n) in enumerate((("minecraft:iron_ingot", 14), ("mymod:rusty_scrap", 30), ("minecraft:iron_nugget", 9),
-                                   ("mymod:spring", 4), ("mymod:screws", 16), ("minecraft:flint", 5), ("minecraft:copper_ingot", 7),
-                                   ("mymod:tech_scrap", 6), ("minecraft:leather", 3))):
+        item("tomyen:screws", 152, 22, 3)
+    for i, (name, n) in enumerate((("minecraft:iron_ingot", 14), ("tomyen:rusty_scrap", 30), ("minecraft:iron_nugget", 9),
+                                   ("tomyen:spring", 4), ("tomyen:screws", 16), ("minecraft:flint", 5), ("minecraft:copper_ingot", 7),
+                                   ("tomyen:tech_scrap", 6), ("minecraft:leather", 3))):
         item(name, 8 + i * 18, INVENTORY_Y + 58, n)
     return out
 
@@ -1311,7 +1311,7 @@ def station_mockup(k):
     panel.fill(w - 3, 2, w - 1, h - 1, SHADOW)
     out.paste(panel, x0 * k, y0 * k, k)
     R.text(out, (x0 + 6) * k, (y0 + 6) * k, "BLUEPRINTS", "#404040", k)
-    names = ["mymod:m1911", "mymod:revolver_357", "mymod:red_dot_sight", "mymod:suppressor", "mymod:muzzle_brake", "mymod:vertical_grip"]
+    names = ["tomyen:m1911", "tomyen:revolver_357", "tomyen:red_dot_sight", "tomyen:suppressor", "tomyen:muzzle_brake", "tomyen:vertical_grip"]
     for i, name in enumerate(names):
         cx, cy = x0 + 7 + i % 3 * 18, y0 + 17 + i // 3 * 18
         frame = Img(18, 18)
@@ -1326,10 +1326,10 @@ def station_mockup(k):
                     if ch != ".":
                         lock.set(dx, dy, {"K": hexc("2a2116"), "S": hexc("8a8f96"), "A": BRASS[3], "B": BRASS[2]}[ch])
             out.paste(lock, (cx + 9) * k, (cy + 8) * k, k)
-    for i, (name, n) in enumerate((("minecraft:iron_ingot", 6), ("mymod:spring", 2), ("mymod:screws", 4))):
+    for i, (name, n) in enumerate((("minecraft:iron_ingot", 6), ("tomyen:spring", 2), ("tomyen:screws", 4))):
         out.paste(icon(name), (17 + i * 18) * k, 47 * k, k)
         R.text(out, (17 + i * 18 + 17 - 4) * k, (47 + 11) * k, str(n), "#ffffff", k, shadow="#3f3f3f")
-    out.paste(icon("mymod:m1911"), 129 * k, 47 * k, k)
+    out.paste(icon("tomyen:m1911"), 129 * k, 47 * k, k)
     return out
 
 
@@ -1368,7 +1368,7 @@ def preview(path, model, atlas):
         sheet.paste(img, x + 2, 446)
         R.text(sheet, x + 26, 450, "BLANK" if name == "BLUEPRINT" else name, "#e9eff5", 1)
     label(990, 478, "BENCH ITEM ICON (GUI DISPLAY, 4X AND 1X)")
-    bench_icon = model_icon(dict(model, textures={"tex": "mymod:block/scrap_bench"}))
+    bench_icon = model_icon(dict(model, textures={"tex": "tomyen:block/scrap_bench"}))
     sheet.fill(990, 494, 1058, 562, hexc("8b8b8b"))
     sheet.paste(bench_icon, 992, 496, 4)
     sheet.fill(1066, 494, 1086, 514, hexc("8b8b8b"))

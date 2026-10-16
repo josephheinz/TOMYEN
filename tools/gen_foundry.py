@@ -3,7 +3,7 @@ glows when lit) and its GUI background in vanilla's container style. Slot and ar
 FoundryMenu and FoundryScreen."""
 import os, random, struct, sys, zlib
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
 rnd = random.Random(7)
 

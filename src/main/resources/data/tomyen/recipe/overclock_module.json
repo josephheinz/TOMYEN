@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:computer_chip",
+    "minecraft:glass_pane",
+    "minecraft:clock",
+    "minecraft:sugar"
+  ],
+  "result": {
+    "id": "tomyen:overclock_module"
+  }
+}

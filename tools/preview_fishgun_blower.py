@@ -3,7 +3,7 @@ side, three-quarters front and rear, in first person (with the hand holds marked
 Gun round in flight (the tuna's own entity model, tumbling along an arc, at the size a trophy is drawn) and mock-ups of
 the ammo HUD for both items, drawn with Minecraft's own font.
 
-Usage: python3 tools/preview_fishgun_blower.py src/main/resources/assets/mymod out.png"""
+Usage: python3 tools/preview_fishgun_blower.py src/main/resources/assets/tomyen out.png"""
 import json, math, os, sys, zipfile
 
 sys.path.insert(0, os.path.dirname(__file__))

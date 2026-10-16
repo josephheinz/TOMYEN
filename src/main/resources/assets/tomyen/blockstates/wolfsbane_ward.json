@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "tomyen:block/wolfsbane_ward"
+    },
+    "facing=east": {
+      "model": "tomyen:block/wolfsbane_ward",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "tomyen:block/wolfsbane_ward",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tomyen:block/wolfsbane_ward",
+      "y": 270
+    }
+  }
+}

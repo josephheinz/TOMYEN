@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "M": "tomyen:magmasteel_ingot",
+    "S": "minecraft:string",
+    "H": "minecraft:blaze_rod"
+  },
+  "pattern": [
+    "  M",
+    " MS",
+    "H S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:magmasteel_rod"
+  }
+}

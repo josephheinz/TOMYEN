@@ -1,0 +1,415 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:range_dispatch",
+        "property": "tomyen:muzzle_flash",
+        "entries": [
+          {
+            "threshold": 0.5,
+            "model": {
+              "type": "minecraft:composite",
+              "models": [
+                {
+                  "type": "minecraft:range_dispatch",
+                  "property": "tomyen:gun_animation",
+                  "entries": [
+                    {
+                      "threshold": 0.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f1"
+                      }
+                    },
+                    {
+                      "threshold": 1.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f2"
+                      }
+                    },
+                    {
+                      "threshold": 2.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f3"
+                      }
+                    },
+                    {
+                      "threshold": 3.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f4"
+                      }
+                    },
+                    {
+                      "threshold": 4.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f5"
+                      }
+                    },
+                    {
+                      "threshold": 5.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f6"
+                      }
+                    },
+                    {
+                      "threshold": 6.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/remington_870"
+                  }
+                },
+                {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/remington_870_flash_0"
+                }
+              ]
+            }
+          },
+          {
+            "threshold": 1.5,
+            "model": {
+              "type": "minecraft:composite",
+              "models": [
+                {
+                  "type": "minecraft:range_dispatch",
+                  "property": "tomyen:gun_animation",
+                  "entries": [
+                    {
+                      "threshold": 0.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f1"
+                      }
+                    },
+                    {
+                      "threshold": 1.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f2"
+                      }
+                    },
+                    {
+                      "threshold": 2.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f3"
+                      }
+                    },
+                    {
+                      "threshold": 3.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f4"
+                      }
+                    },
+                    {
+                      "threshold": 4.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f5"
+                      }
+                    },
+                    {
+                      "threshold": 5.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f6"
+                      }
+                    },
+                    {
+                      "threshold": 6.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/remington_870"
+                  }
+                },
+                {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/remington_870_flash_1"
+                }
+              ]
+            }
+          },
+          {
+            "threshold": 2.5,
+            "model": {
+              "type": "minecraft:composite",
+              "models": [
+                {
+                  "type": "minecraft:range_dispatch",
+                  "property": "tomyen:gun_animation",
+                  "entries": [
+                    {
+                      "threshold": 0.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f1"
+                      }
+                    },
+                    {
+                      "threshold": 1.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f2"
+                      }
+                    },
+                    {
+                      "threshold": 2.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f3"
+                      }
+                    },
+                    {
+                      "threshold": 3.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f4"
+                      }
+                    },
+                    {
+                      "threshold": 4.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f5"
+                      }
+                    },
+                    {
+                      "threshold": 5.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870_f6"
+                      }
+                    },
+                    {
+                      "threshold": 6.5,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "tomyen:item/remington_870"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/remington_870"
+                  }
+                },
+                {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/remington_870_flash_2"
+                }
+              ]
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:range_dispatch",
+          "property": "tomyen:gun_animation",
+          "entries": [
+            {
+              "threshold": 0.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/remington_870_f1"
+              }
+            },
+            {
+              "threshold": 1.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/remington_870_f2"
+              }
+            },
+            {
+              "threshold": 2.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/remington_870_f3"
+              }
+            },
+            {
+              "threshold": 3.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/remington_870_f4"
+              }
+            },
+            {
+              "threshold": 4.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/remington_870_f5"
+              }
+            },
+            {
+              "threshold": 5.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/remington_870_f6"
+              }
+            },
+            {
+              "threshold": 6.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/remington_870"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/remington_870"
+          }
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "tomyen:laser_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/remington_870_laser_sight"
+            }
+          },
+          {
+            "when": "tomyen:green_laser_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/remington_870_green_laser_sight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:optic_attachment",
+        "cases": [
+          {
+            "when": "tomyen:red_dot_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/remington_870_red_dot_sight"
+            }
+          },
+          {
+            "when": "tomyen:holographic_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/remington_870_holographic_sight"
+            }
+          },
+          {
+            "when": "tomyen:kobra_sight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/remington_870_kobra_sight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:muzzle_attachment",
+        "cases": [
+          {
+            "when": "tomyen:bayonet",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/remington_870_bayonet"
+            }
+          },
+          {
+            "when": "tomyen:shotgun_choke",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/remington_870_shotgun_choke"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "tomyen:flashlight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/remington_870_flashlight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:grip_attachment",
+        "cases": [
+          {
+            "when": "tomyen:rifle_sling",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/remington_870_rifle_sling"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:optic_attachment",
+        "cases": [
+          {
+            "when": "tomyen:hunting_scope_2x",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/remington_870_hunting_scope_2x"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      }
+    ]
+  }
+}

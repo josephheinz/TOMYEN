@@ -28,7 +28,7 @@ and cluster drops are copied from iron ore and amethyst). Also writes recipes wi
 and stonecutting), tags (merged into the shared vanilla tag files), the worn armour's equipment asset, sounds.json
 entries (vanilla sounds, re-pitched) and language entries (merged into en_us.json).
 
-Usage: python3 tools/gen_meteorites.py src/main/resources/assets/mymod [path/to/minecraft-client.jar] [--preview out.png]
+Usage: python3 tools/gen_meteorites.py src/main/resources/assets/tomyen [path/to/minecraft-client.jar] [--preview out.png]
 The preview sets each new texture beside the vanilla one it's closest to, eight times size."""
 import json, math, os, sys, zipfile
 from collections import OrderedDict
@@ -43,7 +43,7 @@ from gen_longswords import client_jar, read_png
 from gunkit import png, write
 
 ASSETS = sys.argv[1] if len(sys.argv) > 1 else None
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod")) if ASSETS else None
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen")) if ASSETS else None
 CLEAR = (0, 0, 0, 0)
 
 # ======================================================================================================== colour
@@ -518,7 +518,7 @@ def main():
 
 # ========================================================================================== models and block states
 
-M = "mymod:"
+M = "tomyen:"
 FAMILIES = [  # (base block, stairs, slab, wall or None)
     ("meteorite_stone", "meteorite_stone_stairs", "meteorite_stone_slab", "meteorite_stone_wall"),
     ("polished_meteorite_stone", "polished_meteorite_stone_stairs", "polished_meteorite_stone_slab", None),
@@ -739,7 +739,7 @@ def tags():
     stones = [n for family in FAMILIES for n in family if n] + ["meteoric_iron_ore"]
     crystals = ["star_crystal_block", "budding_star_crystal"] + [c for c, _ in CRYSTALS]
     merge_tag("minecraft/tags/block/mineable/pickaxe", [M + n for n in stones + crystals + ["star_lantern", "star_steel_block"]])
-    # Meteorite stone and meteoric iron ore need drills (mymod:needs_drill, needs_powered_drill): see tools/gen_drills.py.
+    # Meteorite stone and meteoric iron ore need drills (tomyen:needs_drill, needs_powered_drill): see tools/gen_drills.py.
     merge_tag("minecraft/tags/block/needs_diamond_tool", [M + "star_steel_block"])
     merge_tag("minecraft/tags/block/beacon_base_blocks", [M + "star_steel_block"])
     merge_tag("minecraft/tags/block/crystal_sound_blocks", [M + "star_crystal_block", M + "budding_star_crystal"])
@@ -772,10 +772,10 @@ def merge_json(path, entries):
 def sounds():
     merge_json(os.path.join(ASSETS, "sounds.json"), OrderedDict([
         # The rush of air past a falling meteor: the elytra's wind, high and thin.
-        ("meteor_whistle", OrderedDict([("subtitle", "subtitles.mymod.meteor_whistle"), ("sounds", [
+        ("meteor_whistle", OrderedDict([("subtitle", "subtitles.tomyen.meteor_whistle"), ("sounds", [
             OrderedDict([("name", "minecraft:item/elytra/elytra_loop"), ("pitch", 1.7)])])])),
         # A deep, slowed explosion.
-        ("meteor_impact", OrderedDict([("subtitle", "subtitles.mymod.meteor_impact"), ("sounds", [
+        ("meteor_impact", OrderedDict([("subtitle", "subtitles.tomyen.meteor_impact"), ("sounds", [
             OrderedDict([("name", f"minecraft:random/explode{i}"), ("pitch", 0.55)]) for i in range(1, 5)])])),
     ]))
 
@@ -801,18 +801,18 @@ ITEM_NAMES = OrderedDict([
 def lang():
     entries = OrderedDict()
     for name, text in BLOCK_NAMES.items():
-        entries["block.mymod." + name] = text
+        entries["block.tomyen." + name] = text
     for name, text in ITEM_NAMES.items():
-        entries["item.mymod." + name] = text
+        entries["item.tomyen." + name] = text
     entries.update([
-        ("entity.mymod.meteor", "Meteor"),
-        ("subtitles.mymod.meteor_whistle", "Meteor whistles"),
-        ("subtitles.mymod.meteor_impact", "Meteor crashes"),
-        ("message.mymod.meteor_falling", "A meteor is falling!"),
-        ("gamerule.mymod.meteor_showers", "Meteor showers"),
-        ("gamerule.mymod.meteor_showers.description", "Whether meteors fall near players on clear nights."),
-        ("gamerule.mymod.meteor_chance", "Meteor chance"),
-        ("gamerule.mymod.meteor_chance.description", "The chance, in percent, of a meteor falling near each player in a night."),
+        ("entity.tomyen.meteor", "Meteor"),
+        ("subtitles.tomyen.meteor_whistle", "Meteor whistles"),
+        ("subtitles.tomyen.meteor_impact", "Meteor crashes"),
+        ("message.tomyen.meteor_falling", "A meteor is falling!"),
+        ("gamerule.tomyen.meteor_showers", "Meteor showers"),
+        ("gamerule.tomyen.meteor_showers.description", "Whether meteors fall near players on clear nights."),
+        ("gamerule.tomyen.meteor_chance", "Meteor chance"),
+        ("gamerule.tomyen.meteor_chance.description", "The chance, in percent, of a meteor falling near each player in a night."),
     ])
     merge_json(os.path.join(ASSETS, "lang", "en_us.json"), entries)
 

@@ -1,0 +1,65 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gunpowder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:gunpowder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_pipe_pistol": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tomyen:pipe_pistol"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_pipe_rifle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tomyen:pipe_rifle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_junk_repeater": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tomyen:junk_repeater"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "tomyen:crude_round"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_gunpowder",
+      "has_pipe_pistol",
+      "has_pipe_rifle",
+      "has_junk_repeater",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tomyen:crude_round"
+    ]
+  }
+}

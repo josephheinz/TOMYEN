@@ -1,11 +1,11 @@
 {
   "values": [
-    "mymod:magmasteel_axe",
-    "mymod:soul_steel_axe",
-    "mymod:holy_silver_axe",
-    "mymod:star_steel_axe",
-    "mymod:froststeel_axe",
-    "mymod:voidsteel_axe",
-    "mymod:bloom_steel_axe"
+    "tomyen:magmasteel_axe",
+    "tomyen:soul_steel_axe",
+    "tomyen:holy_silver_axe",
+    "tomyen:star_steel_axe",
+    "tomyen:froststeel_axe",
+    "tomyen:voidsteel_axe",
+    "tomyen:bloom_steel_axe"
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:computer_chip",
+    "minecraft:glass_pane",
+    "minecraft:blaze_powder",
+    "minecraft:redstone"
+  ],
+  "result": {
+    "id": "tomyen:optic_lasers_module"
+  }
+}

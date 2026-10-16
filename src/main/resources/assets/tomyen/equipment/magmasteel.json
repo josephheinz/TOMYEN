@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "tomyen:magmasteel"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "tomyen:magmasteel"
+      }
+    ]
+  }
+}

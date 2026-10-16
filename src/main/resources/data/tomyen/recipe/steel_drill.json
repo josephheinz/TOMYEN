@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "tomyen:steel_drill_bit",
+    "P": "tomyen:steel_plate",
+    "A": "tomyen:servo_arm",
+    "E": "tomyen:empty_canister",
+    "C": "tomyen:computer_chip",
+    "R": "tomyen:rubber"
+  },
+  "pattern": [
+    "PAB",
+    "ECP",
+    "R  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:steel_drill"
+  }
+}

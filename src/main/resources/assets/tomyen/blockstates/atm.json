@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "tomyen:block/atm"
+    },
+    "facing=east": {
+      "model": "tomyen:block/atm",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "tomyen:block/atm",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tomyen:block/atm",
+      "y": 270
+    }
+  }
+}

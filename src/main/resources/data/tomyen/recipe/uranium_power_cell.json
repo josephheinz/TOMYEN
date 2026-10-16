@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "tomyen:steel_plate",
+    "C": "tomyen:computer_chip",
+    "I": "minecraft:copper_ingot",
+    "U": "tomyen:enriched_uranium"
+  },
+  "pattern": [
+    "SCS",
+    "IUI",
+    "SIS"
+  ],
+  "result": {
+    "count": 2,
+    "id": "tomyen:uranium_power_cell"
+  }
+}

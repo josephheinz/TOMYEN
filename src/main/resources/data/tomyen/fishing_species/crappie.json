@@ -1,0 +1,26 @@
+{
+  "item": "tomyen:crappie",
+  "weight": 22,
+  "difficulty": 2,
+  "behavior": "darting",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "#minecraft:is_river",
+    "minecraft:swamp",
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "#minecraft:is_forest",
+    "minecraft:savanna",
+    "minecraft:meadow"
+  ],
+  "count": [
+    1,
+    2
+  ],
+  "size": {
+    "min_lb": 0.2,
+    "avg_lb": 0.8,
+    "max_lb": 5.2
+  }
+}

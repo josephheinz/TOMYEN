@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": "minecraft:leather",
+    "P": "tomyen:steel_plate",
+    "S": "minecraft:saddle"
+  },
+  "pattern": [
+    "L L",
+    "PSP",
+    "L L"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:pig_flight_harness"
+  }
+}

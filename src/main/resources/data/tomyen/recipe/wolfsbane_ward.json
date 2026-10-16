@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "T": "minecraft:stick",
+    "W": "tomyen:wolfsbane"
+  },
+  "pattern": [
+    "TWT",
+    "W W",
+    "TWT"
+  ],
+  "result": {
+    "id": "tomyen:wolfsbane_ward"
+  }
+}

@@ -1,4 +1,4 @@
-"""Builds the Herbalism set's art and data (see com.jheinz.mymod.herbalism.Herbalism):
+"""Builds the Herbalism set's art and data (see com.jheinz.tomyen.herbalism.Herbalism):
 
   * textures: the eight wild herbs and four garlic crop stages, the item sprites, the effect icons, and the smooth
     materials of the placed blocks' models (drawn in tools/herbalism_art.py);
@@ -27,9 +27,9 @@ from gunkit import png, write, rz, rx, ry, mul, apply, rotate, copy
 from gunsmith_kit import find_overlaps
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ASSETS = os.path.join(REPO, "src", "main", "resources", "assets", "mymod")
+ASSETS = os.path.join(REPO, "src", "main", "resources", "assets", "tomyen")
 DATA = os.path.join(REPO, "src", "main", "resources", "data")
-MOD = os.path.join(DATA, "mymod")
+MOD = os.path.join(DATA, "tomyen")
 
 
 def tex(path, grid):
@@ -38,7 +38,7 @@ def tex(path, grid):
 
 def item_def(name, model=None):
     write(os.path.join(ASSETS, "items", name + ".json"),
-          {"model": {"type": "minecraft:model", "model": model or "mymod:item/" + name}})
+          {"model": {"type": "minecraft:model", "model": model or "tomyen:item/" + name}})
 
 
 def flat_item(name, texture):
@@ -153,7 +153,7 @@ def block_model(name, elements, textures, parent="minecraft:block/block", ambien
     m["parent"] = parent
     if not ambient:
         m["ambientocclusion"] = False
-    m["textures"] = OrderedDict((k, "mymod:block/herbalism/" + v) for k, v in textures.items())
+    m["textures"] = OrderedDict((k, "tomyen:block/herbalism/" + v) for k, v in textures.items())
     m["elements"] = elements
     write(os.path.join(ASSETS, "models", "block", name + ".json"), m)
     return m
@@ -343,14 +343,14 @@ block_model("wolfsbane_ward", ward_elements(),
 
 for name in HERBS:
     write(os.path.join(ASSETS, "models", "block", name + ".json"),
-          OrderedDict([("parent", "minecraft:block/cross"), ("textures", {"cross": "mymod:block/" + name})]))
-    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "mymod:block/" + name}}})
-    flat_item(name, "mymod:block/" + name)
+          OrderedDict([("parent", "minecraft:block/cross"), ("textures", {"cross": "tomyen:block/" + name})]))
+    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "tomyen:block/" + name}}})
+    flat_item(name, "tomyen:block/" + name)
 for stage in range(4):
     write(os.path.join(ASSETS, "models", "block", f"garlic_stage{stage}.json"),
-          OrderedDict([("parent", "minecraft:block/crop"), ("textures", {"crop": f"mymod:block/garlic_stage{stage}"})]))
+          OrderedDict([("parent", "minecraft:block/crop"), ("textures", {"crop": f"tomyen:block/garlic_stage{stage}"})]))
 write(os.path.join(ASSETS, "blockstates", "garlic_crop.json"),
-      {"variants": {f"age={a}": {"model": f"mymod:block/garlic_stage{a}"} for a in range(4)}})
+      {"variants": {f"age={a}": {"model": f"tomyen:block/garlic_stage{a}"} for a in range(4)}})
 
 # --- block states, items ---------------------------------------------------------------------------------------------
 Y = {"north": 0, "east": 90, "south": 180, "west": 270}
@@ -371,20 +371,20 @@ for hung in ("false", "true"):
     for f, y in Y.items():
         for tea in ("none", "steeping", "ready"):
             for water in range(4):
-                v = OrderedDict([("model", "mymod:block/kettle" + ("_hung" if hung == "true" else ""))])
+                v = OrderedDict([("model", "tomyen:block/kettle" + ("_hung" if hung == "true" else ""))])
                 if y:
                     v["y"] = y
                 kettle_states[f"facing={f},hung={hung},tea={tea},water={water}"] = v
 write(os.path.join(ASSETS, "blockstates", "kettle.json"), {"variants": kettle_states})
 for name in ("mortar_and_pestle", "garlic_braid", "wolfsbane_ward"):
-    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": facing_variants("mymod:block/" + name)})
+    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": facing_variants("tomyen:block/" + name)})
 
 for name in ("kettle", "mortar_and_pestle"):
-    item_def(name, "mymod:block/" + name)
-flat_item("garlic_braid", "mymod:item/garlic_braid")
-flat_item("wolfsbane_ward", "mymod:item/wolfsbane_ward")
+    item_def(name, "tomyen:block/" + name)
+flat_item("garlic_braid", "tomyen:item/garlic_braid")
+flat_item("wolfsbane_ward", "tomyen:item/wolfsbane_ward")
 for name in ITEMS:
-    flat_item(name, "mymod:item/" + name)
+    flat_item(name, "tomyen:item/" + name)
 
 # ================================================================================================== data
 
@@ -394,9 +394,9 @@ def drop_self(name):
         ("type", "minecraft:block"),
         ("pools", [OrderedDict([
             ("condition", {"type": "minecraft:survives_explosion"}),
-            ("entries", [OrderedDict([("type", "minecraft:item"), ("name", "mymod:" + name)])]),
+            ("entries", [OrderedDict([("type", "minecraft:item"), ("name", "tomyen:" + name)])]),
             ("rolls", 1)])]),
-        ("random_sequence", "mymod:blocks/" + name)])
+        ("random_sequence", "tomyen:blocks/" + name)])
 
 
 for name in HERBS[1:] + ["kettle", "mortar_and_pestle", "garlic_braid", "wolfsbane_ward"]:
@@ -413,33 +413,33 @@ write(os.path.join(MOD, "loot_table", "blocks", "wild_garlic.json"), OrderedDict
                 OrderedDict([
                     ("type", "minecraft:item"),
                     ("condition", {"type": "minecraft:any_of", "terms": ["minecraft:tool/can_shear", "minecraft:tool/can_silk_touch"]}),
-                    ("name", "mymod:wild_garlic")]),
+                    ("name", "tomyen:wild_garlic")]),
                 OrderedDict([
                     ("type", "minecraft:item"),
                     ("modifier", [
                         {"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}},
                         {"type": "minecraft:apply_bonus", "enchantment": "minecraft:fortune",
                          "formula": "minecraft:uniform_bonus_count", "parameters": {"bonusMultiplier": 1}}]),
-                    ("name", "mymod:garlic")])])])]),
+                    ("name", "tomyen:garlic")])])])]),
         ("rolls", 1)])]),
-    ("random_sequence", "mymod:blocks/wild_garlic")]))
+    ("random_sequence", "tomyen:blocks/wild_garlic")]))
 
 # The crop: a bulb always, and two to four more when ripe (as carrots).
 write(os.path.join(MOD, "loot_table", "blocks", "garlic_crop.json"), OrderedDict([
     ("type", "minecraft:block"),
     ("modifier", {"type": "minecraft:explosion_decay"}),
     ("pools", [
-        OrderedDict([("entries", [{"type": "minecraft:item", "name": "mymod:garlic"}]), ("rolls", 1)]),
+        OrderedDict([("entries", [{"type": "minecraft:item", "name": "tomyen:garlic"}]), ("rolls", 1)]),
         OrderedDict([
-            ("condition", {"type": "minecraft:match_block", "blocks": "mymod:garlic_crop", "state": {"age": "3"}}),
+            ("condition", {"type": "minecraft:match_block", "blocks": "tomyen:garlic_crop", "state": {"age": "3"}}),
             ("entries", [OrderedDict([
                 ("type", "minecraft:item"),
                 ("modifier", {"type": "minecraft:apply_bonus", "enchantment": "minecraft:fortune",
                               "formula": "minecraft:binomial_with_bonus_count",
                               "parameters": {"extra": 3, "probability": 0.5714286}}),
-                ("name", "mymod:garlic")])]),
+                ("name", "tomyen:garlic")])]),
             ("rolls", 1)])]),
-    ("random_sequence", "mymod:blocks/garlic_crop")]))
+    ("random_sequence", "tomyen:blocks/garlic_crop")]))
 
 # --- recipes and their recipe-book advancements --------------------------------------------------------------------
 BOOK = {"misc": "misc", "equipment": "combat", "building": "building_blocks", "redstone": "redstone", "food": "food",
@@ -454,12 +454,12 @@ def recipe(name, body, unlocked_by, book=None):
         criteria[f"has_{item.split(':')[1]}"] = OrderedDict([
             ("conditions", {"items": [{"items": item}]}), ("trigger", "minecraft:inventory_changed")])
     criteria["has_the_recipe"] = OrderedDict([
-        ("conditions", {"recipes": "mymod:" + name}), ("trigger", "minecraft:recipe_unlocked")])
+        ("conditions", {"recipes": "tomyen:" + name}), ("trigger", "minecraft:recipe_unlocked")])
     write(os.path.join(MOD, "advancement", "recipes", folder, name + ".json"), OrderedDict([
         ("parent", "minecraft:recipes/root"),
         ("criteria", criteria),
         ("requirements", [["has_the_recipe"] + [k for k in criteria if k != "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
 def shaped(category, pattern, key, result, count=1):
@@ -484,50 +484,50 @@ def cooking(kind, ingredient, result, time, xp=0.35):
 
 
 recipe("kettle", shaped("misc", [" N ", "C C", "CCC"], [("N", "minecraft:iron_nugget"), ("C", "minecraft:copper_ingot")],
-                        "mymod:kettle"), ["minecraft:copper_ingot"], book="decorations")
+                        "tomyen:kettle"), ["minecraft:copper_ingot"], book="decorations")
 recipe("mortar_and_pestle", shaped("misc", ["  S", "B B", " B "], [("S", "minecraft:stick"), ("B", "#minecraft:stone_tool_materials")],
-                                   "mymod:mortar_and_pestle"), ["minecraft:cobblestone"], book="decorations")
-recipe("garlic_braid", shaped("misc", [" S ", "GGG", "GGG"], [("S", "minecraft:string"), ("G", "mymod:garlic")], "mymod:garlic_braid"),
-       ["mymod:garlic"], book="decorations")
-recipe("wolfsbane_ward", shaped("misc", ["TWT", "W W", "TWT"], [("T", "minecraft:stick"), ("W", "mymod:wolfsbane")],
-                                "mymod:wolfsbane_ward"), ["mymod:wolfsbane"], book="decorations")
-recipe("wolfsbane_arrow", shaped("equipment", ["AAA", "APA", "AAA"], [("A", "minecraft:arrow"), ("P", "mymod:wolfsbane_paste")],
-                                 "mymod:wolfsbane_arrow", 8), ["mymod:wolfsbane_paste"])
-recipe("garlic_bread", shapeless("misc", ["minecraft:bread", "mymod:garlic"], "mymod:garlic_bread"), ["mymod:garlic"], book="food")
-recipe("herb_stew", shapeless("misc", ["minecraft:bowl", "mymod:garlic", "mymod:yarrow", "minecraft:carrot", "minecraft:potato"],
-                              "mymod:herb_stew"), ["mymod:garlic"], book="food")
-recipe("roasted_garlic", cooking("smelting", "mymod:garlic", "mymod:roasted_garlic", 200), ["mymod:garlic"])
-recipe("roasted_garlic_from_smoking", cooking("smoking", "mymod:garlic", "mymod:roasted_garlic", 100), ["mymod:garlic"])
-recipe("roasted_garlic_from_campfire_cooking", cooking("campfire_cooking", "mymod:garlic", "mymod:roasted_garlic", 600),
-       ["mymod:garlic"])
+                                   "tomyen:mortar_and_pestle"), ["minecraft:cobblestone"], book="decorations")
+recipe("garlic_braid", shaped("misc", [" S ", "GGG", "GGG"], [("S", "minecraft:string"), ("G", "tomyen:garlic")], "tomyen:garlic_braid"),
+       ["tomyen:garlic"], book="decorations")
+recipe("wolfsbane_ward", shaped("misc", ["TWT", "W W", "TWT"], [("T", "minecraft:stick"), ("W", "tomyen:wolfsbane")],
+                                "tomyen:wolfsbane_ward"), ["tomyen:wolfsbane"], book="decorations")
+recipe("wolfsbane_arrow", shaped("equipment", ["AAA", "APA", "AAA"], [("A", "minecraft:arrow"), ("P", "tomyen:wolfsbane_paste")],
+                                 "tomyen:wolfsbane_arrow", 8), ["tomyen:wolfsbane_paste"])
+recipe("garlic_bread", shapeless("misc", ["minecraft:bread", "tomyen:garlic"], "tomyen:garlic_bread"), ["tomyen:garlic"], book="food")
+recipe("herb_stew", shapeless("misc", ["minecraft:bowl", "tomyen:garlic", "tomyen:yarrow", "minecraft:carrot", "minecraft:potato"],
+                              "tomyen:herb_stew"), ["tomyen:garlic"], book="food")
+recipe("roasted_garlic", cooking("smelting", "tomyen:garlic", "tomyen:roasted_garlic", 200), ["tomyen:garlic"])
+recipe("roasted_garlic_from_smoking", cooking("smoking", "tomyen:garlic", "tomyen:roasted_garlic", 100), ["tomyen:garlic"])
+recipe("roasted_garlic_from_campfire_cooking", cooking("campfire_cooking", "tomyen:garlic", "tomyen:roasted_garlic", 600),
+       ["tomyen:garlic"])
 # Yarrow in the survival kit: alternative bandage and first aid kit recipes.
-recipe("bandage_with_yarrow", shapeless("misc", ["minecraft:paper", "minecraft:paper", "minecraft:string", "mymod:yarrow"],
-                                        "mymod:bandage", 3), ["mymod:yarrow"])
+recipe("bandage_with_yarrow", shapeless("misc", ["minecraft:paper", "minecraft:paper", "minecraft:string", "tomyen:yarrow"],
+                                        "tomyen:bandage", 3), ["tomyen:yarrow"])
 recipe("first_aid_kit_with_yarrow", shaped("misc", ["LFL", "BPB"], [
-    ("L", "minecraft:leather"), ("F", "#minecraft:small_flowers"), ("B", "mymod:bandage"), ("P", "mymod:yarrow_poultice")],
-    "mymod:first_aid_kit"), ["mymod:yarrow_poultice"])
+    ("L", "minecraft:leather"), ("F", "#minecraft:small_flowers"), ("B", "tomyen:bandage"), ("P", "tomyen:yarrow_poultice")],
+    "tomyen:first_aid_kit"), ["tomyen:yarrow_poultice"])
 for herb, dye in (("wolfsbane", "purple_dye"), ("yarrow", "white_dye"), ("chamomile", "yellow_dye"),
                   ("moonpetal", "light_blue_dye"), ("water_mint", "magenta_dye")):
-    recipe(f"{dye}_from_{herb}", shapeless("misc", ["mymod:" + herb], "minecraft:" + dye, group=dye), ["mymod:" + herb])
+    recipe(f"{dye}_from_{herb}", shapeless("misc", ["tomyen:" + herb], "minecraft:" + dye, group=dye), ["tomyen:" + herb])
 
 # --- tags ------------------------------------------------------------------------------------------------------------
-FLOWERS = ["mymod:wolfsbane", "mymod:yarrow", "mymod:chamomile", "mymod:moonpetal", "mymod:water_mint"]
+FLOWERS = ["tomyen:wolfsbane", "tomyen:yarrow", "tomyen:chamomile", "tomyen:moonpetal", "tomyen:water_mint"]
 merge_tag("block", "minecraft:small_flowers", FLOWERS)
 merge_tag("item", "minecraft:small_flowers", FLOWERS)
-merge_tag("block", "minecraft:crops", ["mymod:garlic_crop"])
-merge_tag("block", "minecraft:maintains_farmland", ["mymod:garlic_crop"])
-merge_tag("block", "minecraft:mineable/pickaxe", ["mymod:kettle", "mymod:mortar_and_pestle"])
-merge_tag("block", "minecraft:enderman_holdable", ["mymod:" + h for h in HERBS])
-merge_tag("item", "minecraft:villager_plantable_seeds", ["mymod:garlic"])
-merge_tag("item", "minecraft:villager_picks_up", ["mymod:garlic"])
-merge_tag("item", "minecraft:arrows", ["mymod:wolfsbane_arrow"])
-merge_tag("item", "c:crops/garlic", ["mymod:garlic"])
+merge_tag("block", "minecraft:crops", ["tomyen:garlic_crop"])
+merge_tag("block", "minecraft:maintains_farmland", ["tomyen:garlic_crop"])
+merge_tag("block", "minecraft:mineable/pickaxe", ["tomyen:kettle", "tomyen:mortar_and_pestle"])
+merge_tag("block", "minecraft:enderman_holdable", ["tomyen:" + h for h in HERBS])
+merge_tag("item", "minecraft:villager_plantable_seeds", ["tomyen:garlic"])
+merge_tag("item", "minecraft:villager_picks_up", ["tomyen:garlic"])
+merge_tag("item", "minecraft:arrows", ["tomyen:wolfsbane_arrow"])
+merge_tag("item", "c:crops/garlic", ["tomyen:garlic"])
 merge_tag("item", "c:crops", ["#c:crops/garlic"])
-merge_tag("item", "c:foods/vegetable", ["mymod:garlic"])
-merge_tag("item", "c:foods/bread", ["mymod:garlic_bread"])
-merge_tag("item", "c:foods/soup", ["mymod:herb_stew"])
-merge_tag("item", "c:foods/cooked_vegetable", ["mymod:roasted_garlic"])
-merge_tag("item", "c:drinks", ["mymod:anti_radiation_tea", "mymod:calming_tea", "mymod:vigor_tonic", "mymod:moonpetal_tea"])
+merge_tag("item", "c:foods/vegetable", ["tomyen:garlic"])
+merge_tag("item", "c:foods/bread", ["tomyen:garlic_bread"])
+merge_tag("item", "c:foods/soup", ["tomyen:herb_stew"])
+merge_tag("item", "c:foods/cooked_vegetable", ["tomyen:roasted_garlic"])
+merge_tag("item", "c:drinks", ["tomyen:anti_radiation_tea", "tomyen:calming_tea", "tomyen:vigor_tonic", "tomyen:moonpetal_tea"])
 
 # --- worldgen: each herb as a patch scattered round a point, like vanilla flowers ------------------------------------
 PATCHES = {
@@ -549,9 +549,9 @@ def trapezoid(n):
 
 for herb, (rarity, count, spread) in PATCHES.items():
     write(os.path.join(MOD, "worldgen", "feature", herb + ".json"),
-          OrderedDict([("type", "minecraft:simple_block"), ("to_place", {"id": "mymod:" + herb})]))
+          OrderedDict([("type", "minecraft:simple_block"), ("to_place", {"id": "tomyen:" + herb})]))
     write(os.path.join(MOD, "worldgen", "placed_feature", herb + "_patch.json"), OrderedDict([
-        ("feature", "mymod:" + herb),
+        ("feature", "tomyen:" + herb),
         ("placement", [
             {"type": "minecraft:rarity_filter", "chance": rarity},
             {"type": "minecraft:in_square"},
@@ -565,64 +565,64 @@ for herb, (rarity, count, spread) in PATCHES.items():
 
 # --- lang ------------------------------------------------------------------------------------------------------------
 LANG = OrderedDict([
-    ("block.mymod.wild_garlic", "Wild Garlic"),
-    ("block.mymod.wild_garlic.desc", "Plains and forests. Drops garlic bulbs to plant on farmland"),
-    ("block.mymod.wolfsbane", "Wolfsbane"),
-    ("block.mymod.wolfsbane.desc", "Rare, in taigas. Grind into paste against werewolves, or weave a ward"),
-    ("block.mymod.yarrow", "Yarrow"),
-    ("block.mymod.yarrow.desc", "Meadows and plains. Grind into a poultice that stops bleeding"),
-    ("block.mymod.radroot", "Radroot"),
-    ("block.mymod.radroot.desc", "Badlands. Brew in a kettle for Anti-Radiation Tea"),
-    ("block.mymod.chamomile", "Chamomile"),
-    ("block.mymod.chamomile.desc", "Flower forests and meadows. Brew in a kettle for Calming Tea"),
-    ("block.mymod.ginseng", "Ginseng"),
-    ("block.mymod.ginseng.desc", "Rare, in dark forests. Brew in a kettle for a Vigor Tonic"),
-    ("block.mymod.moonpetal", "Moonpetal"),
-    ("block.mymod.moonpetal.desc", "The Feywild. Brew for Moonpetal Tea, or grind into bait"),
-    ("block.mymod.water_mint", "Water Mint"),
-    ("block.mymod.water_mint.desc", "Swamps. Grind into Mint Bait for bottom feeders"),
-    ("block.mymod.garlic_crop", "Garlic"),
-    ("block.mymod.kettle", "Kettle"),
-    ("block.mymod.kettle.desc", "Hang over a campfire, fill with water and drop in a tea herb. Pour with glass bottles"),
-    ("block.mymod.mortar_and_pestle", "Mortar & Pestle"),
-    ("block.mymod.mortar_and_pestle.desc", "Use yarrow, wolfsbane, water mint or moonpetal on it to grind them"),
-    ("block.mymod.garlic_braid", "Garlic Braid"),
-    ("block.mymod.garlic_braid.desc", "Hang on a wall: vampires won't come within 8 blocks"),
-    ("block.mymod.wolfsbane_ward", "Wolfsbane Ward"),
-    ("block.mymod.wolfsbane_ward.desc", "Hang on a wall: cursed villagers within 16 blocks won't change on a full moon"),
-    ("item.mymod.garlic", "Garlic"),
-    ("item.mymod.garlic.desc", "Plant on farmland, or eat raw for a brief Garlic Breath that vampires won't bite through"),
-    ("item.mymod.roasted_garlic", "Roasted Garlic"),
-    ("item.mymod.roasted_garlic.desc", "Soft and sweet: all the flavour, none of the breath"),
-    ("item.mymod.garlic_bread", "Garlic Bread"),
-    ("item.mymod.garlic_bread.desc", "Filling, with a little Garlic Breath"),
-    ("item.mymod.herb_stew", "Herb Stew"),
-    ("item.mymod.herb_stew.desc", "Hearty, and heals a little"),
-    ("item.mymod.yarrow_poultice", "Yarrow Poultice"),
-    ("item.mymod.yarrow_poultice.desc", "Press onto a wound to stop bleeding"),
-    ("item.mymod.wolfsbane_paste", "Wolfsbane Paste"),
-    ("item.mymod.wolfsbane_paste.desc", "Use with a blade in your other hand to coat it: coated hits bite werewolves through their hide"),
-    ("item.mymod.wolfsbane_arrow", "Wolfsbane Arrow"),
-    ("item.mymod.mint_bait", "Mint Bait"),
-    ("item.mymod.moonpetal_bait", "Moonpetal Bait"),
-    ("item.mymod.anti_radiation_tea", "Anti-Radiation Tea"),
-    ("item.mymod.anti_radiation_tea.desc", "Draws off radiation sickness, and halves new doses for two minutes"),
-    ("item.mymod.calming_tea", "Calming Tea"),
-    ("item.mymod.calming_tea.desc", "Settles nausea and steadies you against a Cathode Walker's static"),
-    ("item.mymod.vigor_tonic", "Vigor Tonic"),
-    ("item.mymod.vigor_tonic.desc", "Haste and Speed for three minutes"),
-    ("item.mymod.moonpetal_tea", "Moonpetal Tea"),
-    ("item.mymod.moonpetal_tea.desc", "Night vision for five minutes"),
-    ("effect.mymod.garlic_breath", "Garlic Breath"),
-    ("effect.mymod.radioprotection", "Radioprotection"),
-    ("effect.mymod.calm", "Calm"),
-    ("tooltip.mymod.wolfsbane_coating", "Wolfsbane-coated (%s hits)"),
-    ("message.mymod.wolfsbane_paste.no_blade", "Hold a blade in your other hand to coat it"),
-    ("message.mymod.kettle.empty", "The kettle is empty: fill it with water"),
-    ("message.mymod.kettle.water", "%s cups of water: drop in a tea herb"),
-    ("message.mymod.kettle.cold", "Steeping, but it needs heat: hang it over a lit campfire"),
-    ("message.mymod.kettle.steeping", "Steeping: %s%%"),
-    ("message.mymod.kettle.ready", "Tea's ready: %s cups left"),
+    ("block.tomyen.wild_garlic", "Wild Garlic"),
+    ("block.tomyen.wild_garlic.desc", "Plains and forests. Drops garlic bulbs to plant on farmland"),
+    ("block.tomyen.wolfsbane", "Wolfsbane"),
+    ("block.tomyen.wolfsbane.desc", "Rare, in taigas. Grind into paste against werewolves, or weave a ward"),
+    ("block.tomyen.yarrow", "Yarrow"),
+    ("block.tomyen.yarrow.desc", "Meadows and plains. Grind into a poultice that stops bleeding"),
+    ("block.tomyen.radroot", "Radroot"),
+    ("block.tomyen.radroot.desc", "Badlands. Brew in a kettle for Anti-Radiation Tea"),
+    ("block.tomyen.chamomile", "Chamomile"),
+    ("block.tomyen.chamomile.desc", "Flower forests and meadows. Brew in a kettle for Calming Tea"),
+    ("block.tomyen.ginseng", "Ginseng"),
+    ("block.tomyen.ginseng.desc", "Rare, in dark forests. Brew in a kettle for a Vigor Tonic"),
+    ("block.tomyen.moonpetal", "Moonpetal"),
+    ("block.tomyen.moonpetal.desc", "The Feywild. Brew for Moonpetal Tea, or grind into bait"),
+    ("block.tomyen.water_mint", "Water Mint"),
+    ("block.tomyen.water_mint.desc", "Swamps. Grind into Mint Bait for bottom feeders"),
+    ("block.tomyen.garlic_crop", "Garlic"),
+    ("block.tomyen.kettle", "Kettle"),
+    ("block.tomyen.kettle.desc", "Hang over a campfire, fill with water and drop in a tea herb. Pour with glass bottles"),
+    ("block.tomyen.mortar_and_pestle", "Mortar & Pestle"),
+    ("block.tomyen.mortar_and_pestle.desc", "Use yarrow, wolfsbane, water mint or moonpetal on it to grind them"),
+    ("block.tomyen.garlic_braid", "Garlic Braid"),
+    ("block.tomyen.garlic_braid.desc", "Hang on a wall: vampires won't come within 8 blocks"),
+    ("block.tomyen.wolfsbane_ward", "Wolfsbane Ward"),
+    ("block.tomyen.wolfsbane_ward.desc", "Hang on a wall: cursed villagers within 16 blocks won't change on a full moon"),
+    ("item.tomyen.garlic", "Garlic"),
+    ("item.tomyen.garlic.desc", "Plant on farmland, or eat raw for a brief Garlic Breath that vampires won't bite through"),
+    ("item.tomyen.roasted_garlic", "Roasted Garlic"),
+    ("item.tomyen.roasted_garlic.desc", "Soft and sweet: all the flavour, none of the breath"),
+    ("item.tomyen.garlic_bread", "Garlic Bread"),
+    ("item.tomyen.garlic_bread.desc", "Filling, with a little Garlic Breath"),
+    ("item.tomyen.herb_stew", "Herb Stew"),
+    ("item.tomyen.herb_stew.desc", "Hearty, and heals a little"),
+    ("item.tomyen.yarrow_poultice", "Yarrow Poultice"),
+    ("item.tomyen.yarrow_poultice.desc", "Press onto a wound to stop bleeding"),
+    ("item.tomyen.wolfsbane_paste", "Wolfsbane Paste"),
+    ("item.tomyen.wolfsbane_paste.desc", "Use with a blade in your other hand to coat it: coated hits bite werewolves through their hide"),
+    ("item.tomyen.wolfsbane_arrow", "Wolfsbane Arrow"),
+    ("item.tomyen.mint_bait", "Mint Bait"),
+    ("item.tomyen.moonpetal_bait", "Moonpetal Bait"),
+    ("item.tomyen.anti_radiation_tea", "Anti-Radiation Tea"),
+    ("item.tomyen.anti_radiation_tea.desc", "Draws off radiation sickness, and halves new doses for two minutes"),
+    ("item.tomyen.calming_tea", "Calming Tea"),
+    ("item.tomyen.calming_tea.desc", "Settles nausea and steadies you against a Cathode Walker's static"),
+    ("item.tomyen.vigor_tonic", "Vigor Tonic"),
+    ("item.tomyen.vigor_tonic.desc", "Haste and Speed for three minutes"),
+    ("item.tomyen.moonpetal_tea", "Moonpetal Tea"),
+    ("item.tomyen.moonpetal_tea.desc", "Night vision for five minutes"),
+    ("effect.tomyen.garlic_breath", "Garlic Breath"),
+    ("effect.tomyen.radioprotection", "Radioprotection"),
+    ("effect.tomyen.calm", "Calm"),
+    ("tooltip.tomyen.wolfsbane_coating", "Wolfsbane-coated (%s hits)"),
+    ("message.tomyen.wolfsbane_paste.no_blade", "Hold a blade in your other hand to coat it"),
+    ("message.tomyen.kettle.empty", "The kettle is empty: fill it with water"),
+    ("message.tomyen.kettle.water", "%s cups of water: drop in a tea herb"),
+    ("message.tomyen.kettle.cold", "Steeping, but it needs heat: hang it over a lit campfire"),
+    ("message.tomyen.kettle.steeping", "Steeping: %s%%"),
+    ("message.tomyen.kettle.ready", "Tea's ready: %s cups left"),
 ])
 merge_lang(LANG)
 

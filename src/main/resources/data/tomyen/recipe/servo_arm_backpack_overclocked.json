@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:servo_arm_backpack",
+    "tomyen:leader_core"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:servo_arm_backpack",
+    "components": {
+      "minecraft:custom_data": {
+        "overclocked": true
+      },
+      "minecraft:enchantment_glint_override": true,
+      "minecraft:lore": [
+        {
+          "translate": "item.tomyen.servo_arm_backpack.pickup",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "translate": "item.tomyen.servo_arm_backpack.overclocked",
+          "color": "gold",
+          "italic": false
+        },
+        {
+          "translate": "item.tomyen.servo_gear.socket",
+          "color": "gray",
+          "italic": false
+        }
+      ]
+    }
+  }
+}

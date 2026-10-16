@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    "tomyen:bear_trap",
+    "tomyen:silver_ingot"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:silver_bear_trap"
+  }
+}

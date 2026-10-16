@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "mymod:block/meteorite_stone",
-    "side": "mymod:block/meteorite_stone",
-    "top": "mymod:block/meteorite_stone"
-  }
-}

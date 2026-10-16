@@ -1,6 +1,6 @@
 {
   "values": [
-    "mymod:napalm",
-    "mymod:napalm_burn"
+    "tomyen:napalm",
+    "tomyen:napalm_burn"
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "D": "tomyen:duralumin_sheet",
+    "T": "tomyen:cathode_tube",
+    "C": "tomyen:computer_chip"
+  },
+  "pattern": [
+    "D",
+    "T",
+    "C"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:fish_finder"
+  }
+}

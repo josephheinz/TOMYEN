@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "tomyen:duralumin_sheet",
+    "C": "minecraft:chest",
+    "R": "tomyen:rubber"
+  },
+  "pattern": [
+    "DDD",
+    "DCD",
+    "RRR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:mech_cargo_pod"
+  }
+}

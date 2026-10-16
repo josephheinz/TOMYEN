@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bread",
+    "tomyen:garlic"
+  ],
+  "result": {
+    "id": "tomyen:garlic_bread"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "tomyen:fossilized_dragon_bone",
+    "S": "#tomyen:dragon_scales"
+  },
+  "pattern": [
+    " SB",
+    "SBS",
+    "BS "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:dragonbone_long_sword"
+  }
+}

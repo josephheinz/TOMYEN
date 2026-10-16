@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_water_mint": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tomyen:water_mint"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "tomyen:magenta_dye_from_water_mint"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_water_mint"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tomyen:magenta_dye_from_water_mint"
+    ]
+  }
+}

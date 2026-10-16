@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "tomyen:duralumin_sheet",
+    "R": "tomyen:rubber"
+  },
+  "pattern": [
+    "DDD",
+    "RRR"
+  ],
+  "result": {
+    "count": 2,
+    "id": "tomyen:wing_skin"
+  }
+}

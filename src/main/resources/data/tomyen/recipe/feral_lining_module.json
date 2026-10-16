@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:werewolf_pelt",
+    "tomyen:werewolf_pelt",
+    "minecraft:leather",
+    "tomyen:computer_chip",
+    "tomyen:tech_scrap"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:feral_lining_module"
+  }
+}

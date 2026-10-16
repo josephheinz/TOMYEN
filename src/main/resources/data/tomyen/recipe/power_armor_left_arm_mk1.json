@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "minecraft:iron_block",
+    "P": "minecraft:piston",
+    "S": "tomyen:tech_scrap",
+    "I": "minecraft:iron_ingot"
+  },
+  "pattern": [
+    "PB",
+    "IS",
+    "I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:power_armor_left_arm_mk1"
+  }
+}

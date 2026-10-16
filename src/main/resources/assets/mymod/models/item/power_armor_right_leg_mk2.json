@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "mymod:item/power_armor_right_leg_mk2"
-  }
-}

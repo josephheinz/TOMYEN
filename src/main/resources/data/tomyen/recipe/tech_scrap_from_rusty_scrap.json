@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:rusty_scrap",
+    "tomyen:rusty_scrap"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:tech_scrap"
+  }
+}

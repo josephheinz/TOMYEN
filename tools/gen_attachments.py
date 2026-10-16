@@ -5,7 +5,7 @@ from collections import OrderedDict
 sys.path.insert(0, os.path.dirname(__file__))
 import gunkit
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 MODELS = os.path.join(ASSETS, "models/item")
 ITEMS = os.path.join(ASSETS, "items")
 TEX = os.path.join(ASSETS, "textures")
@@ -83,11 +83,11 @@ GUNSMITH = {
 }
 
 # Pistols whose optic (and switch) sit on the slide: how far back the slide is in each racking frame
-# (the mymod:gun_animation frames 1-6), so those parts ride along with it.
+# (the tomyen:gun_animation frames 1-6), so those parts ride along with it.
 SLIDE_TRAVEL = {"glock": [0.417, 0.833, 1.25, 1.667, 2.083, 2.5], "m1911": [0.417, 0.833, 1.25, 1.667, 2.083, 2.5]}
 
 # Guns whose optic rail is on a hinged cover: the hinge (y, z) and how far the cover is turned about x (degrees) in each
-# mymod:gun_animation frame, so a fitted optic swings up with it (the M249's feed cover, hinged at its front, its back end
+# tomyen:gun_animation frame, so a fitted optic swings up with it (the M249's feed cover, hinged at its front, its back end
 # rising, frames 7-16).
 COVER_HINGE = {"m249": dict(hinge=(10.6, 7.3), angles={**{f: -12.5 * (f - 6) for f in range(7, 13)}, **{f: -75.0 for f in range(13, 17)}})}
 
@@ -359,13 +359,13 @@ def write_model(gun, name, elements, display):
     zmin = min(e["from"][2] for e in elements)
     dz = 16.0 if zmin < -16 else 0.0
     shift_z(elements, dz)
-    model = OrderedDict([("textures", OrderedDict([("parts", "mymod:item/attachment_parts"), ("particle", "mymod:item/attachment_parts")])),
+    model = OrderedDict([("textures", OrderedDict([("parts", "tomyen:item/attachment_parts"), ("particle", "tomyen:item/attachment_parts")])),
                          ("elements", elements), ("display", shifted_display(display, dz))])
     os.makedirs(os.path.join(MODELS, "attachment"), exist_ok=True)
     with open(os.path.join(MODELS, "attachment", f"{gun}_{name}.json"), "w") as f:
         json.dump(model, f, indent=2)
         f.write("\n")
-    return f"mymod:item/attachment/{gun}_{name}"
+    return f"tomyen:item/attachment/{gun}_{name}"
 
 
 def select(component, cases):
@@ -382,10 +382,10 @@ def without_iron_sights(gun, tree):
     tree = json.loads(json.dumps(tree), object_pairs_hook=OrderedDict)
     def walk(node):
         if isinstance(node, dict):
-            if node.get("type") == "minecraft:model" and node["model"].startswith("mymod:item/"):
-                name = node["model"][len("mymod:item/"):]
+            if node.get("type") == "minecraft:model" and node["model"].startswith("tomyen:item/"):
+                name = node["model"][len("tomyen:item/"):]
                 write_without_iron_sights(gun, name)
-                node["model"] = f"mymod:item/no_iron_sights/{name}"
+                node["model"] = f"tomyen:item/no_iron_sights/{name}"
             for v in node.values():
                 walk(v)
         elif isinstance(node, list):
@@ -580,29 +580,29 @@ def gunsmith_layers(gun, spec, fits, case, on_slide):
     if fits.get("choke"):
         muzzle.append(case("shotgun_choke", choke(*fits["choke"])))
     if muzzle:
-        layers.append(select("mymod:muzzle_attachment", muzzle))
+        layers.append(select("tomyen:muzzle_attachment", muzzle))
     under = []
     if fits.get("flashlight"):
         under.append(case("flashlight", flashlight(*spec["laser"])))
     if fits.get("bipod"):
         folded = case("bipod", bipod(*fits["bipod"], False))
         deployed = case("bipod_deployed", bipod(*fits["bipod"], True))
-        # Swung down while the holder is braced on it (mymod:bipod, the M249's, eases 0-3 as they crouch and stand).
-        under.append((folded[0], OrderedDict([("type", "minecraft:range_dispatch"), ("property", "mymod:bipod"),
+        # Swung down while the holder is braced on it (tomyen:bipod, the M249's, eases 0-3 as they crouch and stand).
+        under.append((folded[0], OrderedDict([("type", "minecraft:range_dispatch"), ("property", "tomyen:bipod"),
                                               ("entries", [OrderedDict([("threshold", 1.5), ("model", OrderedDict(
                                                   [("type", "minecraft:model"), ("model", deployed[1])]))])]),
                                               ("fallback", OrderedDict([("type", "minecraft:model"), ("model", folded[1])]))])))
     if under:
-        layers.append(select("mymod:underbarrel_attachment", under))
+        layers.append(select("tomyen:underbarrel_attachment", under))
     if fits.get("sling"):
-        layers.append(select("mymod:grip_attachment", [case("rifle_sling", sling(*fits["sling"]))]))
+        layers.append(select("tomyen:grip_attachment", [case("rifle_sling", sling(*fits["sling"]))]))
     optics = []
     if fits.get("scope2") and spec.get("optic"):
         optics.append(("hunting_scope_2x", lambda: hunting_scope(*spec["optic"], 2)))
     if fits.get("scope4") and spec.get("optic"):
         optics.append(("hunting_scope_4x", lambda: hunting_scope(*spec["optic"], 4)))
     if optics:
-        layers.append(on_slide("mymod:optic_attachment", optics))
+        layers.append(on_slide("tomyen:optic_attachment", optics))
     return layers
 
 
@@ -611,7 +611,7 @@ for gun, spec in GUNS.items():
     display = base["display"]
     layers = []
     def case(name, elements):
-        return (f"mymod:{name}", write_model(gun, name, elements, display))
+        return (f"tomyen:{name}", write_model(gun, name, elements, display))
 
     def on_slide(component, parts):
         """parts: (attachment name, element builder). On a slide-mounted pistol the layer follows the racking frames."""
@@ -621,11 +621,11 @@ for gun, spec in GUNS.items():
             hy, hz = cover["hinge"]
             entries = []
             for frame, angle in sorted(cover["angles"].items()):
-                cases = [(f"mymod:{name}", write_model(gun, f"{name}_o{frame}", gunkit.rotate(build(), gunkit.rx(angle), (8.0, hy, hz)),
+                cases = [(f"tomyen:{name}", write_model(gun, f"{name}_o{frame}", gunkit.rotate(build(), gunkit.rx(angle), (8.0, hy, hz)),
                                                        display)) for name, build in parts]
                 entries.append(OrderedDict([("threshold", frame - 0.5), ("model", select(component, cases))]))
             entries.append(OrderedDict([("threshold", max(cover["angles"]) + 0.5), ("model", resting)]))
-            return OrderedDict([("type", "minecraft:range_dispatch"), ("property", "mymod:gun_animation"), ("entries", entries),
+            return OrderedDict([("type", "minecraft:range_dispatch"), ("property", "tomyen:gun_animation"), ("entries", entries),
                                 ("fallback", resting)])
         travel = SLIDE_TRAVEL.get(gun)
         if not travel:
@@ -636,32 +636,32 @@ for gun, spec in GUNS.items():
             for name, build in parts:
                 elements = build()
                 shift_z(elements, dz)
-                cases.append((f"mymod:{name}", write_model(gun, f"{name}_f{frame}", elements, display)))
+                cases.append((f"tomyen:{name}", write_model(gun, f"{name}_f{frame}", elements, display)))
             entries.append(OrderedDict([("threshold", frame - 0.5), ("model", select(component, cases))]))
         # Frames past 6 are the magazine coming out, with the slide forward.
         entries.append(OrderedDict([("threshold", len(travel) + 0.5), ("model", resting)]))
-        return OrderedDict([("type", "minecraft:range_dispatch"), ("property", "mymod:gun_animation"), ("entries", entries),
+        return OrderedDict([("type", "minecraft:range_dispatch"), ("property", "tomyen:gun_animation"), ("entries", entries),
                             ("fallback", resting)])
     own = spec.get("own", False)
     if spec.get("muzzle"):
         z, y = spec["muzzle"]
-        layers.append(select("mymod:muzzle_attachment", [
+        layers.append(select("tomyen:muzzle_attachment", [
             case("suppressor", suppressor(z, y, spec["sup"])), case("oil_can_suppressor", oil_can(z, y)),
             case("muzzle_brake", muzzle_brake(z, y)), case("flash_hider", flash_hider(z, y))]))
     if not own:
-        layers.append(select("mymod:underbarrel_attachment", [
+        layers.append(select("tomyen:underbarrel_attachment", [
             case("laser_sight", laser(*spec["laser"])), case("green_laser_sight", green_laser(*spec["laser"]))]))
     if spec.get("grip"):
         gz, gy = spec["grip"]
-        layers.append(select("mymod:grip_attachment", [
+        layers.append(select("tomyen:grip_attachment", [
             case("vertical_grip", vertical_grip(gz, gy)), case("angled_grip", angled_grip(gz, gy)),
             case("stubby_grip", stubby_grip(gz, gy)), case("handstop", handstop(gz, gy))]))
     if spec.get("optic") and not own:
         o = spec["optic"]
-        layers.append(on_slide("mymod:optic_attachment", [
+        layers.append(on_slide("tomyen:optic_attachment", [
             ("red_dot_sight", lambda: red_dot(*o)), ("holographic_sight", lambda: holographic(*o)), ("kobra_sight", lambda: kobra(*o))]))
     if spec.get("switch"):
-        layers.append(on_slide("mymod:fire_control_attachment", [("glock_switch", glock_switch)]))
+        layers.append(on_slide("tomyen:fire_control_attachment", [("glock_switch", glock_switch)]))
     layers += gunsmith_layers(gun, spec, GUNSMITH.get(gun, {}), case, on_slide)
 
     path = os.path.join(ITEMS, f"{gun}.json")
@@ -669,11 +669,11 @@ for gun, spec in GUNS.items():
     gun_model = item["model"]
     if gun_model.get("type") == "minecraft:composite":
         gun_model = gun_model["models"][0]  # already wrapped: rebuild the attachment layers
-    if gun_model.get("type") == "minecraft:condition" and gun_model.get("component") == "mymod:optic_attachment":
+    if gun_model.get("type") == "minecraft:condition" and gun_model.get("component") == "tomyen:optic_attachment":
         gun_model = gun_model["on_false"]  # and the iron-sight switch
     if gun in IRON_SIGHTS:
         gun_model = OrderedDict([("type", "minecraft:condition"), ("property", "minecraft:has_component"),
-                                 ("component", "mymod:optic_attachment"),
+                                 ("component", "tomyen:optic_attachment"),
                                  ("on_true", without_iron_sights(gun, gun_model)), ("on_false", gun_model)])
     item["model"] = OrderedDict([("type", "minecraft:composite"), ("models", [gun_model] + layers)])
     with open(path, "w") as f:
@@ -975,15 +975,15 @@ for name in ["hunting_scope_2x", "hunting_scope_4x", "flashlight", "bipod", "rif
              "suppressor", "laser_sight", "red_dot_sight", "glock_switch", "oil_can_suppressor", "muzzle_brake", "flash_hider",
              "green_laser_sight", "holographic_sight", "kobra_sight", "vertical_grip", "angled_grip", "stubby_grip", "handstop"]:
     with open(os.path.join(MODELS, f"{name}.json"), "w") as f:
-        json.dump(OrderedDict([("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0=f"mymod:item/{name}"))]), f, indent=2)
+        json.dump(OrderedDict([("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0=f"tomyen:item/{name}"))]), f, indent=2)
         f.write("\n")
     with open(os.path.join(ITEMS, f"{name}.json"), "w") as f:
-        json.dump(OrderedDict(model=OrderedDict([("type", "minecraft:model"), ("model", f"mymod:item/{name}")])), f, indent=2)
+        json.dump(OrderedDict(model=OrderedDict([("type", "minecraft:model"), ("model", f"tomyen:item/{name}")])), f, indent=2)
         f.write("\n")
 
 os.makedirs(os.path.join(ASSETS, "particles"), exist_ok=True)
 for name in ["laser_dot", "green_laser_dot"]:
     with open(os.path.join(ASSETS, f"particles/{name}.json"), "w") as f:
-        json.dump({"textures": [f"mymod:{name}"]}, f, indent=2)
+        json.dump({"textures": [f"tomyen:{name}"]}, f, indent=2)
         f.write("\n")
 print("done")

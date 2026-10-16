@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "#tomyen:scarecrow_heads",
+    "S": "minecraft:stick",
+    "H": "minecraft:hay_block",
+    "C": "#tomyen:scarecrow_cloth"
+  },
+  "pattern": [
+    "SPS",
+    "CHC",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:scarecrow"
+  }
+}

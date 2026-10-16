@@ -1,11 +1,11 @@
 {
   "values": [
-    "mymod:crt_television",
-    "mymod:tackle_bench",
-    "mymod:oak_fish_mount",
-    "mymod:spruce_fish_mount",
-    "mymod:dark_oak_fish_mount",
-    "mymod:tripwire_alarm",
-    "mymod:scrap_bench"
+    "tomyen:crt_television",
+    "tomyen:tackle_bench",
+    "tomyen:oak_fish_mount",
+    "tomyen:spruce_fish_mount",
+    "tomyen:dark_oak_fish_mount",
+    "tomyen:tripwire_alarm",
+    "tomyen:scrap_bench"
   ]
 }

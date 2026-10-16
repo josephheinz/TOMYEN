@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:pixie_minnow"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:fae_dust"
+  }
+}

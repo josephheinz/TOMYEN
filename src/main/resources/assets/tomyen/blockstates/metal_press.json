@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "tomyen:block/metal_press"
+    },
+    "powered=true": {
+      "model": "tomyen:block/metal_press"
+    }
+  }
+}

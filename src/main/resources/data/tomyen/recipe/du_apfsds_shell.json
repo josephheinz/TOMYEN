@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "D": "tomyen:depleted_uranium",
+    "S": "tomyen:steel_ingot",
+    "G": "minecraft:gunpowder",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    " D ",
+    " S ",
+    "GCG"
+  ],
+  "result": {
+    "count": 2,
+    "id": "tomyen:du_apfsds_shell"
+  }
+}

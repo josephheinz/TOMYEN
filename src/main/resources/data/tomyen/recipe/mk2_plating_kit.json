@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "tomyen:computer_chip",
+    "D": "minecraft:diamond",
+    "B": "minecraft:iron_block"
+  },
+  "pattern": [
+    "ICI",
+    "DBD",
+    "ICI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:mk2_plating_kit"
+  }
+}

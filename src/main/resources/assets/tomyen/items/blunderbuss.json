@@ -1,0 +1,280 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "tomyen:muzzle_flash",
+    "entries": [
+      {
+        "threshold": 0.5,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:range_dispatch",
+              "property": "tomyen:gun_animation",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f1"
+                  }
+                },
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f2"
+                  }
+                },
+                {
+                  "threshold": 2.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f3"
+                  }
+                },
+                {
+                  "threshold": 3.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f4"
+                  }
+                },
+                {
+                  "threshold": 4.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f5"
+                  }
+                },
+                {
+                  "threshold": 5.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f6"
+                  }
+                },
+                {
+                  "threshold": 6.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/blunderbuss"
+              }
+            },
+            {
+              "type": "minecraft:model",
+              "model": "tomyen:item/blunderbuss_flash_0"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 1.5,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:range_dispatch",
+              "property": "tomyen:gun_animation",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f1"
+                  }
+                },
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f2"
+                  }
+                },
+                {
+                  "threshold": 2.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f3"
+                  }
+                },
+                {
+                  "threshold": 3.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f4"
+                  }
+                },
+                {
+                  "threshold": 4.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f5"
+                  }
+                },
+                {
+                  "threshold": 5.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f6"
+                  }
+                },
+                {
+                  "threshold": 6.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/blunderbuss"
+              }
+            },
+            {
+              "type": "minecraft:model",
+              "model": "tomyen:item/blunderbuss_flash_1"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 2.5,
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:range_dispatch",
+              "property": "tomyen:gun_animation",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f1"
+                  }
+                },
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f2"
+                  }
+                },
+                {
+                  "threshold": 2.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f3"
+                  }
+                },
+                {
+                  "threshold": 3.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f4"
+                  }
+                },
+                {
+                  "threshold": 4.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f5"
+                  }
+                },
+                {
+                  "threshold": 5.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss_f6"
+                  }
+                },
+                {
+                  "threshold": 6.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/blunderbuss"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/blunderbuss"
+              }
+            },
+            {
+              "type": "minecraft:model",
+              "model": "tomyen:item/blunderbuss_flash_2"
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:range_dispatch",
+      "property": "tomyen:gun_animation",
+      "entries": [
+        {
+          "threshold": 0.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/blunderbuss_f1"
+          }
+        },
+        {
+          "threshold": 1.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/blunderbuss_f2"
+          }
+        },
+        {
+          "threshold": 2.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/blunderbuss_f3"
+          }
+        },
+        {
+          "threshold": 3.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/blunderbuss_f4"
+          }
+        },
+        {
+          "threshold": 4.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/blunderbuss_f5"
+          }
+        },
+        {
+          "threshold": 5.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/blunderbuss_f6"
+          }
+        },
+        {
+          "threshold": 6.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/blunderbuss"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "tomyen:item/blunderbuss"
+      }
+    }
+  }
+}

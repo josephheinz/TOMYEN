@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": "minecraft:leather",
+    "P": "tomyen:steel_plate",
+    "M": "tomyen:minigun"
+  },
+  "pattern": [
+    "L L",
+    "PMP",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:hogfire_gun_mount"
+  }
+}

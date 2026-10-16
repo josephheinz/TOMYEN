@@ -1,0 +1,82 @@
+{
+  "attributes": {
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "ambient": [
+            {
+              "type": "tomyen:fairy",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 2
+              },
+              "weight": 10
+            }
+          ],
+          "creature": [
+            {
+              "type": "minecraft:rabbit",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 2,
+                "max_inclusive": 3
+              },
+              "weight": 4
+            }
+          ]
+        }
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "tomyen:fae_sparkle"
+          },
+          "probability": 0.006
+        },
+        {
+          "particle": {
+            "type": "minecraft:spore_blossom_air"
+          },
+          "probability": 0.008
+        }
+      ],
+      "modifier": "append"
+    }
+  },
+  "carvers": [],
+  "downfall": 0.8,
+  "effects": {
+    "foliage_color": "#5fd0b4",
+    "grass_color": "#6fcf9a",
+    "water_color": "#7a5cff"
+  },
+  "features": [
+    [],
+    [
+      "tomyen:fae_pond"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [
+      "tomyen:ore_fae_silver"
+    ],
+    [],
+    [],
+    [
+      "tomyen:feywild_huge_mushrooms",
+      "tomyen:glimmerwood_trees_wilds",
+      "tomyen:fae_mushroom_patch",
+      "tomyen:feywild_grass"
+    ],
+    []
+  ],
+  "has_precipitation": false,
+  "temperature": 0.7
+}

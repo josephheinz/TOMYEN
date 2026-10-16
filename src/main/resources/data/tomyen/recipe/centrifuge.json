@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "tomyen:steel_ingot",
+    "X": "tomyen:computer_chip",
+    "G": "minecraft:glass",
+    "P": "minecraft:piston"
+  },
+  "pattern": [
+    "SXS",
+    "GPG",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:centrifuge"
+  }
+}

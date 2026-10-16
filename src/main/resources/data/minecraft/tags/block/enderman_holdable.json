@@ -1,12 +1,12 @@
 {
   "values": [
-    "mymod:wild_garlic",
-    "mymod:wolfsbane",
-    "mymod:yarrow",
-    "mymod:radroot",
-    "mymod:chamomile",
-    "mymod:ginseng",
-    "mymod:moonpetal",
-    "mymod:water_mint"
+    "tomyen:wild_garlic",
+    "tomyen:wolfsbane",
+    "tomyen:yarrow",
+    "tomyen:radroot",
+    "tomyen:chamomile",
+    "tomyen:ginseng",
+    "tomyen:moonpetal",
+    "tomyen:water_mint"
   ]
 }

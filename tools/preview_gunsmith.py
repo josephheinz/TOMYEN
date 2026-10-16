@@ -2,7 +2,7 @@
 part worked, in first person and as its inventory icon; attachments fitted to guns (as the item models combine them); and
 the inventory sprites of the attachments and ammo.
 
-Usage: python3 tools/preview_gunsmith.py src/main/resources/assets/mymod out.png"""
+Usage: python3 tools/preview_gunsmith.py src/main/resources/assets/tomyen out.png"""
 import json, math, os, struct, sys, zlib
 
 sys.path.insert(0, os.path.dirname(__file__))

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/spyglass_in_hand",
+  "textures": {
+    "spyglass": "tomyen:item/starlight_lens_model"
+  }
+}

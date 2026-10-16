@@ -3,7 +3,7 @@ out), its inventory icon, first person with the slide in and fully out (with the
 a player holding it in third person (head-anchored, arms aimed as HumanoidTrombonePoseMixin aims them, slide in and out), and a
 mockup of the HUD staff as TromboneHud lays it out, in vanilla's font.
 
-Usage: python3 tools/preview_trombone.py src/main/resources/assets/mymod out.png"""
+Usage: python3 tools/preview_trombone.py src/main/resources/assets/tomyen out.png"""
 import json, math, os, sys, zipfile
 
 sys.path.insert(0, os.path.dirname(__file__))

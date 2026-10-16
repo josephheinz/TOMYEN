@@ -1,0 +1,14 @@
+{
+  "type": "tomyen:fae_ring",
+  "radius": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 3,
+    "max_inclusive": 4
+  },
+  "mushrooms": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 8,
+    "max_inclusive": 12
+  },
+  "fae_chance": 0.3
+}

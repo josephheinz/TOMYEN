@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": "tomyen:steel_plate",
+    "F": "tomyen:fuel_tank",
+    "U": "tomyen:turbopump",
+    "C": "tomyen:combustion_chamber",
+    "N": "tomyen:rocket_nozzle"
+  },
+  "pattern": [
+    "PFP",
+    "UCP",
+    "PNP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:rocket_engine"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "minecraft:iron_block",
+    "C": "tomyen:computer_chip",
+    "P": "minecraft:piston",
+    "D": "minecraft:diamond",
+    "S": "tomyen:tech_scrap"
+  },
+  "pattern": [
+    "BCB",
+    "PCP",
+    "DSD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:exoskeleton"
+  }
+}

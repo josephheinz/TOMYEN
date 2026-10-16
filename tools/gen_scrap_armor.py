@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scrap armor, worn (see com.jheinz.mymod.client.survival.ScrapArmorModel): the 3D model of all four pieces, its
+"""Scrap armor, worn (see com.jheinz.tomyen.client.survival.ScrapArmorModel): the 3D model of all four pieces, its
 texture, and the z-fighting check. The items, sprites, recipes and the rest of the kit come from gen_survival.py.
 
 Run from anywhere: python3 tools/gen_scrap_armor.py [--preview out.png]
@@ -31,8 +31,8 @@ from gunkit import png  # noqa: E402
 from coplanar import Face, fights  # noqa: E402
 
 REPO = os.path.dirname(HERE)
-ASSETS = os.path.join(REPO, "src", "main", "resources", "assets", "mymod")
-JAVA = os.path.join(REPO, "src", "client", "java", "com", "jheinz", "mymod", "client", "survival", "ScrapArmorModel.java")
+ASSETS = os.path.join(REPO, "src", "main", "resources", "assets", "tomyen")
+JAVA = os.path.join(REPO, "src", "client", "java", "com", "jheinz", "tomyen", "client", "survival", "ScrapArmorModel.java")
 TEXTURE_PATH = os.path.join(ASSETS, "textures", "entity", "scrap_armor.png")
 PREVIEW = os.path.abspath(sys.argv[sys.argv.index("--preview") + 1]) if "--preview" in sys.argv else None
 

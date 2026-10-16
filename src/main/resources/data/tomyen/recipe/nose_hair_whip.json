@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "tomyen:giant_booger",
+    "H": "tomyen:nose_hair",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    "HHH",
+    "HBH",
+    "SH "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:nose_hair_whip"
+  }
+}

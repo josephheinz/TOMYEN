@@ -1,9 +1,9 @@
 {
   "values": [
-    "mymod:bullet",
-    "mymod:penetrator_bullet",
-    "mymod:armor_piercing_bullet",
-    "mymod:hollow_point_bullet",
-    "mymod:napalm_burn"
+    "tomyen:bullet",
+    "tomyen:penetrator_bullet",
+    "tomyen:armor_piercing_bullet",
+    "tomyen:hollow_point_bullet",
+    "tomyen:napalm_burn"
   ]
 }

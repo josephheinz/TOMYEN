@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Living fish: the entity models, entity textures, bucket and spawn egg sprites, loot tables, tags and lang for the
-swimming fish of mymod's fishing catch (the item sprites, species data and recipes are tools/gen_fish.py's).
+swimming fish of tomyen's fishing catch (the item sprites, species data and recipes are tools/gen_fish.py's).
 
 Run from anywhere: python3 tools/gen_fish_entities.py [preview.png]
 
@@ -49,14 +49,14 @@ from coplanar import Face, fights  # noqa: E402
 
 REPO = os.path.dirname(HERE)
 RES = os.path.join(REPO, "src", "main", "resources")
-ASSETS = os.path.join(RES, "assets", "mymod")
-DATA = os.path.join(RES, "data", "mymod")
+ASSETS = os.path.join(RES, "assets", "tomyen")
+DATA = os.path.join(RES, "data", "tomyen")
 ENTITY_TEXTURES = os.path.join(ASSETS, "textures", "entity", "fish")
 ITEM_TEXTURES = os.path.join(ASSETS, "textures", "item", "fish")
 MODELS = os.path.join(ASSETS, "models", "item")
 ITEMS = os.path.join(ASSETS, "items")
 LANG = os.path.join(ASSETS, "lang", "en_us.json")
-JAVA = os.path.join(REPO, "src", "client", "java", "com", "jheinz", "mymod", "client", "fishing", "fish", "FishModelLayers.java")
+JAVA = os.path.join(REPO, "src", "client", "java", "com", "jheinz", "tomyen", "client", "fishing", "fish", "FishModelLayers.java")
 
 D = 2              # texels per old model pixel (and entity model units per old pixel)
 FACES = ["north", "east", "south", "west", "up", "down"]
@@ -1856,7 +1856,7 @@ def java_file(rigs):
         shapes.append(f"\t\t\tnew Shape(\"{r.f.name}\", FishModelLayers::{camel(r.f.name)}, {str(r.glows).lower()}, "
                       f"{jf(r.height)}, {jf(r.half_width)}, {jf(max(0.15, min(0.8, 0.3 * r.length)))}, "
                       f"{str(RIG[r.f.name].get('flat', False)).lower()})")
-    return f"""package com.jheinz.mymod.client.fishing.fish;
+    return f"""package com.jheinz.tomyen.client.fishing.fish;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -1965,18 +1965,18 @@ def loot_table(name):
     return OrderedDict([
         ("type", "minecraft:entity"),
         ("pools", [
-            OrderedDict([("entries", [OrderedDict([("type", "minecraft:item"), ("modifier", smelt), ("name", "mymod:" + name)])]),
+            OrderedDict([("entries", [OrderedDict([("type", "minecraft:item"), ("modifier", smelt), ("name", "tomyen:" + name)])]),
                          ("rolls", 1)]),
             OrderedDict([("condition", OrderedDict([("type", "minecraft:random_chance"), ("chance", 0.05)])),
                          ("entries", [OrderedDict([("type", "minecraft:item"), ("name", "minecraft:bone_meal")])]),
                          ("rolls", 1)])]),
-        ("random_sequence", "mymod:entities/" + name)])
+        ("random_sequence", "tomyen:entities/" + name)])
 
 
 def item_files(name, texture):
     write(os.path.join(MODELS, name + ".json"),
-          OrderedDict([("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0="mymod:item/fish/" + texture))]))
-    write(os.path.join(ITEMS, name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "mymod:item/" + name)])})
+          OrderedDict([("parent", "minecraft:item/generated"), ("textures", OrderedDict(layer0="tomyen:item/fish/" + texture))]))
+    write(os.path.join(ITEMS, name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "tomyen:item/" + name)])})
 
 
 def tag_add(path, values):
@@ -2196,9 +2196,9 @@ def main():
         item_files(f.name + "_bucket", f.name + "_bucket")
         item_files(f.name + "_spawn_egg", f.name + "_spawn_egg")
         write(os.path.join(DATA, "loot_table", "entities", f.name + ".json"), loot_table(f.name))
-        lang["entity.mymod." + f.name] = f.title
-        lang["item.mymod.%s_bucket" % f.name] = "Bucket of " + f.title
-        lang["item.mymod.%s_spawn_egg" % f.name] = f.title + " Spawn Egg"
+        lang["entity.tomyen." + f.name] = f.title
+        lang["item.tomyen.%s_bucket" % f.name] = "Bucket of " + f.title
+        lang["item.tomyen.%s_spawn_egg" % f.name] = f.title + " Spawn Egg"
         cubes = len(rig.cubes)
         print(f"{f.name}: {cubes} cubes, texture {n}, scale {rig.scale}, {rig.length:.2f} x {rig.height:.2f} blocks "
               f"(half width {rig.half_width:.2f}){', glows' if rig.glows else ''}")
@@ -2206,13 +2206,13 @@ def main():
     os.makedirs(os.path.dirname(JAVA), exist_ok=True)
     with open(JAVA, "w") as fh:
         fh.write(java_file(rigs))
-    water = ["mymod:" + r.f.name for r in rigs if r.f.name not in LAVA]
+    water = ["tomyen:" + r.f.name for r in rigs if r.f.name not in LAVA]
     tags = os.path.join(RES, "data", "minecraft", "tags", "entity_type")
     # Vanilla's fish tags: aquatic (Impaling, among others), axolotl prey, not frightening a pufferfish, breathing
     # water, and (all of them, lava fish too) not being scooped into boats.
     for tag in ("aquatic", "axolotl_hunt_targets", "not_scary_for_pufferfish", "can_breathe_under_water"):
         tag_add(os.path.join(tags, tag + ".json"), water)
-    tag_add(os.path.join(tags, "cannot_be_pushed_onto_boats.json"), ["mymod:" + r.f.name for r in rigs])
+    tag_add(os.path.join(tags, "cannot_be_pushed_onto_boats.json"), ["tomyen:" + r.f.name for r in rigs])
     if preview_path:
         preview(preview_path, rigs, vanilla_entity)
 

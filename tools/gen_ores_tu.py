@@ -18,7 +18,7 @@ the ore features; and with ffmpeg on the path the Geiger counter's clicks and th
 The vanilla textures are read from the Minecraft client jar Loom has downloaded (see gen_longswords.client_jar).
 With --preview PATH it also writes a sheet of the new textures beside their closest vanilla ones, scaled up.
 
-Usage: python3 tools/gen_ores_tu.py src/main/resources/assets/mymod [--preview path.png]"""
+Usage: python3 tools/gen_ores_tu.py src/main/resources/assets/tomyen [--preview path.png]"""
 import json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave, zipfile
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -33,7 +33,7 @@ from gunkit import png
 
 ASSETS = ARGS[0] if ARGS else sys.exit(__doc__.rsplit("Usage: ", 1)[1])
 DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data"))
-MYDATA = os.path.join(DATA, "mymod")
+MYDATA = os.path.join(DATA, "tomyen")
 TEX = os.path.join(ASSETS, "textures")
 CLEAR = (0, 0, 0, 0)
 JAR = zipfile.ZipFile(client_jar())
@@ -686,7 +686,7 @@ hazmat_equipment("humanoid_leggings").save(os.path.join(TEX, "entity", "equipmen
 centrifuge_rotor().save(os.path.join(TEX, "entity", "uranium", "centrifuge_rotor.png"))
 centrifuge_gui().save(os.path.join(TEX, "gui", "container", "centrifuge.png"))
 write_json(os.path.join(ASSETS, "equipment", "hazmat.json"), {"layers": {
-    "humanoid": [{"texture": "mymod:hazmat"}], "humanoid_leggings": [{"texture": "mymod:hazmat"}]}})
+    "humanoid": [{"texture": "tomyen:hazmat"}], "humanoid_leggings": [{"texture": "tomyen:hazmat"}]}})
 
 # ================================================================================================= preview
 if PREVIEW:
@@ -755,13 +755,13 @@ def item_def(name, model):
 
 
 for name in ("tungsten_ore", "uranium_ore", "deepslate_uranium_ore", "raw_tungsten_block", "raw_uranium_block", "tungsten_block"):
-    write_json(os.path.join(MODELS_BLOCK, name + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "mymod:block/" + name}})
-    write_json(os.path.join(BLOCKSTATES, name + ".json"), {"variants": {"": {"model": "mymod:block/" + name}}})
-    item_def(name, "mymod:block/" + name)
+    write_json(os.path.join(MODELS_BLOCK, name + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "tomyen:block/" + name}})
+    write_json(os.path.join(BLOCKSTATES, name + ".json"), {"variants": {"": {"model": "tomyen:block/" + name}}})
+    item_def(name, "tomyen:block/" + name)
 
 for name in ITEM_TEXTURES:
-    write_json(os.path.join(MODELS_ITEM, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
-    item_def(name, "mymod:item/" + name)
+    write_json(os.path.join(MODELS_ITEM, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
+    item_def(name, "tomyen:item/" + name)
 
 
 def face(texture, uv, cull=None):
@@ -774,8 +774,8 @@ def face(texture, uv, cull=None):
 def centrifuge_model(front):
     """One box, the housing (12 high); the rotor in its open top is CentrifugeRenderer's."""
     return {"parent": "minecraft:block/block", "textures": {
-        "particle": "mymod:block/centrifuge_housing", "side": "mymod:block/centrifuge_housing", "front": "mymod:block/" + front,
-        "top": "mymod:block/centrifuge_top", "bottom": "minecraft:block/iron_block"},
+        "particle": "tomyen:block/centrifuge_housing", "side": "tomyen:block/centrifuge_housing", "front": "tomyen:block/" + front,
+        "top": "tomyen:block/centrifuge_top", "bottom": "minecraft:block/iron_block"},
         "elements": [{"from": [0, 0, 0], "to": [16, 12, 16], "faces": {
             "north": face("#front", [0, 4, 16, 16], "north"), "south": face("#side", [0, 4, 16, 16], "south"),
             "east": face("#side", [0, 4, 16, 16], "east"), "west": face("#side", [0, 4, 16, 16], "west"),
@@ -786,10 +786,10 @@ write_json(os.path.join(MODELS_BLOCK, "centrifuge.json"), centrifuge_model("cent
 write_json(os.path.join(MODELS_BLOCK, "centrifuge_on.json"), centrifuge_model("centrifuge_front_on"))
 FACINGS = (("north", 0), ("east", 90), ("south", 180), ("west", 270))
 write_json(os.path.join(BLOCKSTATES, "centrifuge.json"), {"variants": {
-    "facing=%s,lit=%s" % (facing, lit): dict({"model": "mymod:block/" + ("centrifuge_on" if lit == "true" else "centrifuge")},
+    "facing=%s,lit=%s" % (facing, lit): dict({"model": "tomyen:block/" + ("centrifuge_on" if lit == "true" else "centrifuge")},
                                               **({"y": rot} if rot else {}))
     for facing, rot in FACINGS for lit in ("false", "true")}})
-item_def("centrifuge", "mymod:block/centrifuge")
+item_def("centrifuge", "tomyen:block/centrifuge")
 
 # ================================================================================================= loot tables
 LOOT = os.path.join(MYDATA, "loot_table", "blocks")
@@ -798,25 +798,25 @@ LOOT = os.path.join(MYDATA, "loot_table", "blocks")
 def self_drop(name):
     write_json(os.path.join(LOOT, name + ".json"), {"type": "minecraft:block", "pools": [{
         "condition": {"type": "minecraft:survives_explosion"},
-        "entries": [{"type": "minecraft:item", "name": "mymod:" + name}], "rolls": 1}],
-        "random_sequence": "mymod:blocks/" + name})
+        "entries": [{"type": "minecraft:item", "name": "tomyen:" + name}], "rolls": 1}],
+        "random_sequence": "tomyen:blocks/" + name})
 
 
 def ore_drop(name, item):
     write_json(os.path.join(LOOT, name + ".json"), {"type": "minecraft:block", "pools": [{
         "entries": [{"type": "minecraft:alternatives", "children": [
-            {"type": "minecraft:item", "condition": "minecraft:tool/can_silk_touch", "name": "mymod:" + name},
+            {"type": "minecraft:item", "condition": "minecraft:tool/can_silk_touch", "name": "tomyen:" + name},
             {"type": "minecraft:item", "modifier": [
                 {"type": "minecraft:apply_bonus", "enchantment": "minecraft:fortune", "formula": "minecraft:ore_drops"},
                 {"type": "minecraft:explosion_decay"}], "name": item}]}],
-        "rolls": 1}], "random_sequence": "mymod:blocks/" + name})
+        "rolls": 1}], "random_sequence": "tomyen:blocks/" + name})
 
 
 for name in ("raw_tungsten_block", "raw_uranium_block", "tungsten_block", "centrifuge"):
     self_drop(name)
-ore_drop("tungsten_ore", "mymod:raw_tungsten")
-ore_drop("uranium_ore", "mymod:raw_uranium")
-ore_drop("deepslate_uranium_ore", "mymod:raw_uranium")
+ore_drop("tungsten_ore", "tomyen:raw_tungsten")
+ore_drop("uranium_ore", "tomyen:raw_uranium")
+ore_drop("deepslate_uranium_ore", "tomyen:raw_uranium")
 
 # ================================================================================================= recipes
 RECIPES = os.path.join(MYDATA, "recipe")
@@ -828,9 +828,9 @@ def advancement(name, category, unlock_item):
         "parent": "minecraft:recipes/root",
         "criteria": {
             "has_item": {"conditions": {"items": [{"items": unlock_item}]}, "trigger": "minecraft:inventory_changed"},
-            "has_the_recipe": {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"}},
+            "has_the_recipe": {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"}},
         "requirements": [["has_item", "has_the_recipe"]],
-        "rewards": {"recipes": ["mymod:" + name]}})
+        "rewards": {"recipes": ["tomyen:" + name]}})
 
 
 def shaped(name, result, pattern, key, unlock, count=1, category="misc"):
@@ -850,68 +850,68 @@ def storage(block, item, unlock_category="building"):
     shapeless(item.split(":")[1] + "_from_" + block.split(":")[1], item, [block], block, 9)
 
 
-storage("mymod:raw_tungsten_block", "mymod:raw_tungsten")
-storage("mymod:raw_uranium_block", "mymod:raw_uranium")
-storage("mymod:tungsten_block", "mymod:tungsten_ingot")
-shaped("tungsten_ingot_from_nuggets", "mymod:tungsten_ingot", ["###", "###", "###"], {"#": "mymod:tungsten_nugget"}, "mymod:tungsten_nugget")
-shapeless("tungsten_nugget", "mymod:tungsten_nugget", ["mymod:tungsten_ingot"], "mymod:tungsten_ingot", 9)
-STEEL_I, CARBIDE = "mymod:steel_ingot", "mymod:tungsten_carbide"
-shaped("tungsten_apfsds_shell", "mymod:tungsten_apfsds_shell", [" W ", " S ", "GCG"],
-       {"W": "mymod:tungsten_ingot", "S": STEEL_I, "G": "minecraft:gunpowder", "C": "minecraft:copper_ingot"}, "mymod:tungsten_ingot", 2,
+storage("tomyen:raw_tungsten_block", "tomyen:raw_tungsten")
+storage("tomyen:raw_uranium_block", "tomyen:raw_uranium")
+storage("tomyen:tungsten_block", "tomyen:tungsten_ingot")
+shaped("tungsten_ingot_from_nuggets", "tomyen:tungsten_ingot", ["###", "###", "###"], {"#": "tomyen:tungsten_nugget"}, "tomyen:tungsten_nugget")
+shapeless("tungsten_nugget", "tomyen:tungsten_nugget", ["tomyen:tungsten_ingot"], "tomyen:tungsten_ingot", 9)
+STEEL_I, CARBIDE = "tomyen:steel_ingot", "tomyen:tungsten_carbide"
+shaped("tungsten_apfsds_shell", "tomyen:tungsten_apfsds_shell", [" W ", " S ", "GCG"],
+       {"W": "tomyen:tungsten_ingot", "S": STEEL_I, "G": "minecraft:gunpowder", "C": "minecraft:copper_ingot"}, "tomyen:tungsten_ingot", 2,
        category="equipment")
-shaped("du_apfsds_shell", "mymod:du_apfsds_shell", [" D ", " S ", "GCG"],
-       {"D": "mymod:depleted_uranium", "S": STEEL_I, "G": "minecraft:gunpowder", "C": "minecraft:copper_ingot"}, "mymod:depleted_uranium",
+shaped("du_apfsds_shell", "tomyen:du_apfsds_shell", [" D ", " S ", "GCG"],
+       {"D": "tomyen:depleted_uranium", "S": STEEL_I, "G": "minecraft:gunpowder", "C": "minecraft:copper_ingot"}, "tomyen:depleted_uranium",
        2, category="equipment")
-shaped("uranium_fuel_rod", "mymod:uranium_fuel_rod", ["S", "E", "S"], {"S": STEEL_I, "E": "mymod:enriched_uranium"},
-       "mymod:enriched_uranium")
-shaped("fusion_core_from_fuel_rods", "mymod:fusion_core", ["CFC", "GBG", "CFC"],
-       {"C": "mymod:computer_chip", "F": "mymod:uranium_fuel_rod", "G": "minecraft:glowstone", "B": "minecraft:blaze_rod"},
-       "mymod:uranium_fuel_rod")
-shaped("geiger_counter", "mymod:geiger_counter", ["IGI", "CXC", "IRI"],
-       {"I": "minecraft:iron_ingot", "G": "minecraft:glass_pane", "C": "minecraft:copper_ingot", "X": "mymod:computer_chip",
-        "R": "minecraft:redstone"}, "mymod:computer_chip", category="equipment")
-RUBBER, LEATHER = "mymod:rubber", "minecraft:leather"
-shaped("hazmat_helmet", "mymod:hazmat_helmet", ["RRR", "RGR"], {"R": RUBBER, "G": "minecraft:glass_pane"}, RUBBER, category="equipment")
-shaped("hazmat_suit", "mymod:hazmat_suit", ["R R", "RLR", "RRR"], {"R": RUBBER, "L": LEATHER}, RUBBER, category="equipment")
-shaped("hazmat_leggings", "mymod:hazmat_leggings", ["RRR", "L L", "R R"], {"R": RUBBER, "L": LEATHER}, RUBBER, category="equipment")
-shaped("hazmat_boots", "mymod:hazmat_boots", ["R R", "L L"], {"R": RUBBER, "L": LEATHER}, RUBBER, category="equipment")
-shaped("centrifuge", "mymod:centrifuge", ["SXS", "GPG", "SSS"],
-       {"S": STEEL_I, "X": "mymod:computer_chip", "G": "minecraft:glass", "P": "minecraft:piston"}, STEEL_I)
+shaped("uranium_fuel_rod", "tomyen:uranium_fuel_rod", ["S", "E", "S"], {"S": STEEL_I, "E": "tomyen:enriched_uranium"},
+       "tomyen:enriched_uranium")
+shaped("fusion_core_from_fuel_rods", "tomyen:fusion_core", ["CFC", "GBG", "CFC"],
+       {"C": "tomyen:computer_chip", "F": "tomyen:uranium_fuel_rod", "G": "minecraft:glowstone", "B": "minecraft:blaze_rod"},
+       "tomyen:uranium_fuel_rod")
+shaped("geiger_counter", "tomyen:geiger_counter", ["IGI", "CXC", "IRI"],
+       {"I": "minecraft:iron_ingot", "G": "minecraft:glass_pane", "C": "minecraft:copper_ingot", "X": "tomyen:computer_chip",
+        "R": "minecraft:redstone"}, "tomyen:computer_chip", category="equipment")
+RUBBER, LEATHER = "tomyen:rubber", "minecraft:leather"
+shaped("hazmat_helmet", "tomyen:hazmat_helmet", ["RRR", "RGR"], {"R": RUBBER, "G": "minecraft:glass_pane"}, RUBBER, category="equipment")
+shaped("hazmat_suit", "tomyen:hazmat_suit", ["R R", "RLR", "RRR"], {"R": RUBBER, "L": LEATHER}, RUBBER, category="equipment")
+shaped("hazmat_leggings", "tomyen:hazmat_leggings", ["RRR", "L L", "R R"], {"R": RUBBER, "L": LEATHER}, RUBBER, category="equipment")
+shaped("hazmat_boots", "tomyen:hazmat_boots", ["R R", "L L"], {"R": RUBBER, "L": LEATHER}, RUBBER, category="equipment")
+shaped("centrifuge", "tomyen:centrifuge", ["SXS", "GPG", "SSS"],
+       {"S": STEEL_I, "X": "tomyen:computer_chip", "G": "minecraft:glass", "P": "minecraft:piston"}, STEEL_I)
 
 # ================================================================================================= tags
 MC_TAGS, C_TAGS, MY_TAGS = os.path.join(DATA, "minecraft", "tags"), os.path.join(DATA, "c", "tags"), os.path.join(MYDATA, "tags")
-ORES = ["mymod:tungsten_ore", "mymod:uranium_ore", "mymod:deepslate_uranium_ore"]
-URANIUM_ORES = ["mymod:uranium_ore", "mymod:deepslate_uranium_ore"]
+ORES = ["tomyen:tungsten_ore", "tomyen:uranium_ore", "tomyen:deepslate_uranium_ore"]
+URANIUM_ORES = ["tomyen:uranium_ore", "tomyen:deepslate_uranium_ore"]
 merge_tag(os.path.join(MC_TAGS, "block", "mineable", "pickaxe.json"),
-          ORES + ["mymod:raw_tungsten_block", "mymod:raw_uranium_block", "mymod:tungsten_block", "mymod:centrifuge"])
-# Tungsten ore needs a drill (mymod:needs_drill): tools/gen_drills.py writes that tag, the drill and its recipe.
+          ORES + ["tomyen:raw_tungsten_block", "tomyen:raw_uranium_block", "tomyen:tungsten_block", "tomyen:centrifuge"])
+# Tungsten ore needs a drill (tomyen:needs_drill): tools/gen_drills.py writes that tag, the drill and its recipe.
 merge_tag(os.path.join(MC_TAGS, "block", "needs_iron_tool.json"),
-          URANIUM_ORES + ["mymod:raw_uranium_block", "mymod:raw_tungsten_block", "mymod:tungsten_block"])
+          URANIUM_ORES + ["tomyen:raw_uranium_block", "tomyen:raw_tungsten_block", "tomyen:tungsten_block"])
 for kind in ("block", "item"):
     merge_tag(os.path.join(MC_TAGS, kind, "ores.json"), ORES)
     merge_tag(os.path.join(C_TAGS, kind, "ores.json"), ["#c:ores/tungsten", "#c:ores/uranium"])
-    merge_tag(os.path.join(C_TAGS, kind, "ores", "tungsten.json"), ["mymod:tungsten_ore"])
+    merge_tag(os.path.join(C_TAGS, kind, "ores", "tungsten.json"), ["tomyen:tungsten_ore"])
     merge_tag(os.path.join(C_TAGS, kind, "ores", "uranium.json"), URANIUM_ORES)
-    merge_tag(os.path.join(C_TAGS, kind, "ores_in_ground", "stone.json"), ["mymod:uranium_ore"])
-    merge_tag(os.path.join(C_TAGS, kind, "ores_in_ground", "deepslate.json"), ["mymod:tungsten_ore", "mymod:deepslate_uranium_ore"])
+    merge_tag(os.path.join(C_TAGS, kind, "ores_in_ground", "stone.json"), ["tomyen:uranium_ore"])
+    merge_tag(os.path.join(C_TAGS, kind, "ores_in_ground", "deepslate.json"), ["tomyen:tungsten_ore", "tomyen:deepslate_uranium_ore"])
     merge_tag(os.path.join(C_TAGS, kind, "storage_blocks.json"),
               ["#c:storage_blocks/tungsten", "#c:storage_blocks/raw_tungsten", "#c:storage_blocks/raw_uranium"])
-    merge_tag(os.path.join(C_TAGS, kind, "storage_blocks", "tungsten.json"), ["mymod:tungsten_block"])
-    merge_tag(os.path.join(C_TAGS, kind, "storage_blocks", "raw_tungsten.json"), ["mymod:raw_tungsten_block"])
-    merge_tag(os.path.join(C_TAGS, kind, "storage_blocks", "raw_uranium.json"), ["mymod:raw_uranium_block"])
+    merge_tag(os.path.join(C_TAGS, kind, "storage_blocks", "tungsten.json"), ["tomyen:tungsten_block"])
+    merge_tag(os.path.join(C_TAGS, kind, "storage_blocks", "raw_tungsten.json"), ["tomyen:raw_tungsten_block"])
+    merge_tag(os.path.join(C_TAGS, kind, "storage_blocks", "raw_uranium.json"), ["tomyen:raw_uranium_block"])
 merge_tag(os.path.join(MY_TAGS, "block", "uranium_ores.json"), URANIUM_ORES)
 merge_tag(os.path.join(C_TAGS, "item", "raw_materials.json"), ["#c:raw_materials/tungsten", "#c:raw_materials/uranium"])
-merge_tag(os.path.join(C_TAGS, "item", "raw_materials", "tungsten.json"), ["mymod:raw_tungsten"])
-merge_tag(os.path.join(C_TAGS, "item", "raw_materials", "uranium.json"), ["mymod:raw_uranium"])
+merge_tag(os.path.join(C_TAGS, "item", "raw_materials", "tungsten.json"), ["tomyen:raw_tungsten"])
+merge_tag(os.path.join(C_TAGS, "item", "raw_materials", "uranium.json"), ["tomyen:raw_uranium"])
 merge_tag(os.path.join(C_TAGS, "item", "ingots.json"), ["#c:ingots/tungsten"])
-merge_tag(os.path.join(C_TAGS, "item", "ingots", "tungsten.json"), ["mymod:tungsten_ingot"])
+merge_tag(os.path.join(C_TAGS, "item", "ingots", "tungsten.json"), ["tomyen:tungsten_ingot"])
 merge_tag(os.path.join(C_TAGS, "item", "nuggets.json"), ["#c:nuggets/tungsten"])
-merge_tag(os.path.join(C_TAGS, "item", "nuggets", "tungsten.json"), ["mymod:tungsten_nugget"])
-merge_tag(os.path.join(MY_TAGS, "item", "tungsten_tool_materials.json"), ["mymod:tungsten_carbide"])
-merge_tag(os.path.join(MY_TAGS, "item", "repairs_hazmat_suit.json"), ["mymod:rubber"])
+merge_tag(os.path.join(C_TAGS, "item", "nuggets", "tungsten.json"), ["tomyen:tungsten_nugget"])
+merge_tag(os.path.join(MY_TAGS, "item", "tungsten_tool_materials.json"), ["tomyen:tungsten_carbide"])
+merge_tag(os.path.join(MY_TAGS, "item", "repairs_hazmat_suit.json"), ["tomyen:rubber"])
 for tag, item in (("head_armor", "hazmat_helmet"), ("chest_armor", "hazmat_suit"), ("leg_armor", "hazmat_leggings"),
                   ("foot_armor", "hazmat_boots")):
-    merge_tag(os.path.join(MC_TAGS, "item", tag + ".json"), ["mymod:" + item])
+    merge_tag(os.path.join(MC_TAGS, "item", tag + ".json"), ["tomyen:" + item])
 
 # ================================================================================================= worldgen
 
@@ -923,7 +923,7 @@ def ore_feature(name, size, targets):
 
 
 def ore_placement(name, count, low, high):
-    write_json(os.path.join(MYDATA, "worldgen", "placed_feature", name + ".json"), {"feature": "mymod:" + name, "placement": [
+    write_json(os.path.join(MYDATA, "worldgen", "placed_feature", name + ".json"), {"feature": "tomyen:" + name, "placement": [
         {"type": "minecraft:count", "count": count}, {"type": "minecraft:in_square"},
         {"type": "minecraft:height_range", "height": {"type": "minecraft:uniform", "min_inclusive": {"absolute": low},
                                                       "max_inclusive": {"absolute": high}}},
@@ -932,10 +932,10 @@ def ore_placement(name, count, low, high):
 
 # Tungsten: deepslate only, three small veins a chunk from y -64 to -16. Uranium: two smaller ones a chunk from -48
 # to 0, in stone or deepslate: several times rarer than diamond.
-ore_feature("ore_tungsten", 5, [("mymod:tungsten_ore", "minecraft:deepslate_ore_replaceables")])
+ore_feature("ore_tungsten", 5, [("tomyen:tungsten_ore", "minecraft:deepslate_ore_replaceables")])
 ore_placement("ore_tungsten", 3, -64, -16)
-ore_feature("ore_uranium", 5, [("mymod:uranium_ore", "minecraft:stone_ore_replaceables"),
-                               ("mymod:deepslate_uranium_ore", "minecraft:deepslate_ore_replaceables")])
+ore_feature("ore_uranium", 5, [("tomyen:uranium_ore", "minecraft:stone_ore_replaceables"),
+                               ("tomyen:deepslate_uranium_ore", "minecraft:deepslate_ore_replaceables")])
 ore_placement("ore_uranium", 2, -48, 0)
 
 # ================================================================================================= sounds

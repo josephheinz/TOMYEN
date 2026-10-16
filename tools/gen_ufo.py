@@ -1,19 +1,19 @@
 """Paints the UFO invasion's assets and writes its data: the alien's entity texture (UVs matching
 client/alien/AlienModel), the saucer's plain white texture (UfoRenderer colours it vertex by vertex), the UFO and alien
 spawn eggs, the Alien Alloy and Alien Reactor items, the Probed effect icon; the UFO's and the alien's loot tables, the
-Alien Alloy Mk III plating kit recipe (with its recipe-book advancement), the mymod:abductable entity tag, the alien ray
+Alien Alloy Mk III plating kit recipe (with its recipe-book advancement), the tomyen:abductable entity tag, the alien ray
 damage type; and the sounds: the saucer's hum (a wobbling theremin over a drone), the abduction sting and the aliens'
 chirps are synthesised (with ffmpeg on the path), the rest are vanilla sounds re-pitched in sounds.json. Language
 entries are merged into en_us.json. Everything is flat-shaded from fixed palettes, so a rerun gives the same files.
 
-Usage: python3 tools/gen_ufo.py src/main/resources/assets/mymod"""
+Usage: python3 tools/gen_ufo.py src/main/resources/assets/tomyen"""
 import json, math, os, random, shutil, struct, subprocess, sys, tempfile, wave, zlib
 from collections import OrderedDict
 
 ASSETS = sys.argv[1]
 TEX = os.path.join(ASSETS, "textures")
 MODELS, ITEMS = os.path.join(ASSETS, "models/item"), os.path.join(ASSETS, "items")
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 
 
 def png(path, w, h, px):
@@ -188,8 +188,8 @@ def sprite(name, rows, palette):
         px += [CLEAR if ch == "." else rgba(palette[ch]) for ch in row]
     assert len(px) == 256, name
     png(os.path.join(TEX, "item", name + ".png"), 16, 16, px)
-    write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
-    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+    write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
+    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 
 # A torn-off scrap of hull plate: dark violet-grey metal with a pearly sheen across it.
@@ -256,8 +256,8 @@ def egg(name, base, spots):
                 c = base[0] if t < 0.25 else base[1] if t < 0.7 else base[2]
             px.append(rgba(c))
     png(os.path.join(TEX, "item", name + ".png"), 16, 16, px)
-    write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "mymod:item/" + name}})
-    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+    write(os.path.join(MODELS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "tomyen:item/" + name}})
+    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 
 # A silver egg with a dark saucer across its middle and three lights along its rim.
@@ -347,34 +347,34 @@ def drop(item, low, high, looting=0.0, chance=None, by_player=False):
 # A downed saucer: always its reactor, and a pile of hull scrap.
 write(os.path.join(DATA, "loot_table/entities/ufo.json"), OrderedDict([
     ("type", "minecraft:entity"),
-    ("pools", [drop("mymod:alien_reactor", 1, 1), drop("mymod:alien_alloy", 3, 6, 2.0)]),
-    ("random_sequence", "mymod:entities/ufo")]))
+    ("pools", [drop("tomyen:alien_reactor", 1, 1), drop("tomyen:alien_alloy", 3, 6, 2.0)]),
+    ("random_sequence", "tomyen:entities/ufo")]))
 # An alien: now and then a scrap of alloy, and rarely its ray gun.
 write(os.path.join(DATA, "loot_table/entities/alien.json"), OrderedDict([
     ("type", "minecraft:entity"),
-    ("pools", [drop("mymod:alien_alloy", 1, 1, chance=(0.35, 0.1)), drop("mymod:ray_gun", 1, 1, chance=(0.04, 0.02), by_player=True)]),
-    ("random_sequence", "mymod:entities/alien")]))
+    ("pools", [drop("tomyen:alien_alloy", 1, 1, chance=(0.35, 0.1)), drop("tomyen:ray_gun", 1, 1, chance=(0.04, 0.02), by_player=True)]),
+    ("random_sequence", "tomyen:entities/alien")]))
 
 # Alien Alloy stands in for the netherite in Mk III power armor plating.
 write(os.path.join(DATA, "recipe", "mk3_plating_kit_from_alien_alloy.json"), OrderedDict([
     ("type", "minecraft:crafting_shaped"), ("category", "equipment"),
-    ("key", OrderedDict([("C", "mymod:computer_chip"), ("A", "mymod:alien_alloy"), ("G", "minecraft:gold_ingot")])),
+    ("key", OrderedDict([("C", "tomyen:computer_chip"), ("A", "tomyen:alien_alloy"), ("G", "minecraft:gold_ingot")])),
     ("pattern", ["CAC", "GAG", "CAC"]),
-    ("result", OrderedDict([("count", 1), ("id", "mymod:mk3_plating_kit")]))]))
+    ("result", OrderedDict([("count", 1), ("id", "tomyen:mk3_plating_kit")]))]))
 write(os.path.join(DATA, "advancement/recipes/equipment/mk3_plating_kit_from_alien_alloy.json"), OrderedDict([
     ("parent", "minecraft:recipes/root"),
     ("criteria", OrderedDict([
-        ("has_alien_alloy", {"conditions": {"items": [{"items": "mymod:alien_alloy"}]}, "trigger": "minecraft:inventory_changed"}),
-        ("has_the_recipe", {"conditions": {"recipes": "mymod:mk3_plating_kit_from_alien_alloy"}, "trigger": "minecraft:recipe_unlocked"})])),
+        ("has_alien_alloy", {"conditions": {"items": [{"items": "tomyen:alien_alloy"}]}, "trigger": "minecraft:inventory_changed"}),
+        ("has_the_recipe", {"conditions": {"recipes": "tomyen:mk3_plating_kit_from_alien_alloy"}, "trigger": "minecraft:recipe_unlocked"})])),
     ("requirements", [["has_alien_alloy", "has_the_recipe"]]),
-    ("rewards", {"recipes": ["mymod:mk3_plating_kit_from_alien_alloy"]})]))
+    ("rewards", {"recipes": ["tomyen:mk3_plating_kit_from_alien_alloy"]})]))
 
 for animal in ("minecraft:cow", "minecraft:mooshroom", "minecraft:sheep", "minecraft:pig"):
     tag_add(os.path.join(DATA, "tags/entity_type/abductable.json"), animal)
 # Far too big for a Soul Vacuum.
-tag_add(os.path.join(DATA, "tags/entity_type/soul_vacuum_immune.json"), "mymod:ufo")
+tag_add(os.path.join(DATA, "tags/entity_type/soul_vacuum_immune.json"), "tomyen:ufo")
 write(os.path.join(DATA, "damage_type/alien_ray.json"), OrderedDict([
-    ("exhaustion", 0.1), ("message_id", "mymod.alien_ray"), ("scaling", "when_caused_by_living_non_player")]))
+    ("exhaustion", 0.1), ("message_id", "tomyen.alien_ray"), ("scaling", "when_caused_by_living_non_player")]))
 
 # ======================================================================================================= sounds
 RATE = 44100
@@ -478,62 +478,62 @@ else:
 def vanilla(*sounds, subtitle=None):
     entry = OrderedDict()
     if subtitle:
-        entry["subtitle"] = "subtitles.mymod." + subtitle
+        entry["subtitle"] = "subtitles.tomyen." + subtitle
     entry["sounds"] = [OrderedDict([("name", "minecraft:" + name), ("pitch", pitch)] + ([("volume", volume)] if volume != 1.0 else []))
                        for name, pitch, volume in sounds]
     return entry
 
 
 merge_json(os.path.join(ASSETS, "sounds.json"), OrderedDict([
-    ("ufo_hum", OrderedDict([("sounds", [OrderedDict([("name", "mymod:ufo_hum"), ("stream", True)])])])),
+    ("ufo_hum", OrderedDict([("sounds", [OrderedDict([("name", "tomyen:ufo_hum"), ("stream", True)])])])),
     ("ufo_beam", vanilla(("block/beacon/ambient", 1.6, 1.0), subtitle="ufo_beam")),
     ("ufo_take", vanilla(("block/beacon/power1", 1.8, 1.0), ("block/beacon/power2", 1.8, 1.0), subtitle="ufo_take")),
     ("ufo_land", vanilla(("tile/piston/out", 0.55, 1.0), subtitle="ufo_land")),
     ("ufo_door", vanilla(("block/iron_door/open1", 0.6, 1.0), ("block/iron_door/open2", 0.6, 1.0), subtitle="ufo_door")),
     ("ufo_hurt", vanilla(("random/anvil_land", 1.6, 0.5), subtitle="ufo_hurt")),
     ("ufo_death", vanilla(("block/beacon/deactivate", 0.5, 1.0), subtitle="ufo_death")),
-    ("alien_ambient", OrderedDict([("subtitle", "subtitles.mymod.alien_ambient"),
-                                   ("sounds", ["mymod:alien_chirp1", "mymod:alien_chirp2", "mymod:alien_chirp3"])])),
+    ("alien_ambient", OrderedDict([("subtitle", "subtitles.tomyen.alien_ambient"),
+                                   ("sounds", ["tomyen:alien_chirp1", "tomyen:alien_chirp2", "tomyen:alien_chirp3"])])),
     ("alien_hurt", vanilla(("mob/villager/hit1", 2.0, 1.0), ("mob/villager/hit2", 2.0, 1.0), ("mob/villager/hit3", 2.0, 1.0),
                            subtitle="alien_hurt")),
     ("alien_death", vanilla(("mob/villager/death", 2.0, 1.0), subtitle="alien_death")),
-    ("abduction", OrderedDict([("subtitle", "subtitles.mymod.abduction"), ("sounds", ["mymod:abduction"])])),
+    ("abduction", OrderedDict([("subtitle", "subtitles.tomyen.abduction"), ("sounds", ["tomyen:abduction"])])),
 ]))
 
 # ========================================================================================================= lang
 merge_json(os.path.join(ASSETS, "lang", "en_us.json"), OrderedDict([
-    ("entity.mymod.ufo", "UFO"),
-    ("entity.mymod.alien", "Alien"),
-    ("entity.mymod.tractor_beam", "Tractor Beam"),
-    ("entity.mymod.ufo.abducted", "A blinding light... you can't move!"),
-    ("entity.mymod.ufo.returned", "You wake up somewhere else, feeling... probed."),
-    ("entity.mymod.ufo.souvenir", "The aliens kept your %s as a souvenir."),
-    ("message.mymod.ufo_sighted", "Strange lights in the sky..."),
-    ("item.mymod.ufo_spawn_egg", "UFO Spawn Egg"),
-    ("item.mymod.alien_spawn_egg", "Alien Spawn Egg"),
-    ("item.mymod.alien_alloy", "Alien Alloy"),
-    ("item.mymod.alien_reactor", "Alien Reactor"),
-    ("effect.mymod.probed", "Probed"),
-    ("death.attack.mymod.alien_ray", "%1$s was zapped"),
-    ("death.attack.mymod.alien_ray.player", "%1$s was zapped by %2$s"),
-    ("death.attack.mymod.alien_ray.item", "%1$s was zapped by %2$s using %3$s"),
-    ("subtitles.mymod.ufo_beam", "Tractor beam hums"),
-    ("subtitles.mymod.ufo_take", "Something is beamed aboard"),
-    ("subtitles.mymod.ufo_land", "UFO legs extend"),
-    ("subtitles.mymod.ufo_door", "UFO ramp moves"),
-    ("subtitles.mymod.ufo_hurt", "UFO clangs"),
-    ("subtitles.mymod.ufo_death", "UFO powers down"),
-    ("subtitles.mymod.alien_ambient", "Alien chitters"),
-    ("subtitles.mymod.alien_hurt", "Alien squeaks"),
-    ("subtitles.mymod.alien_death", "Alien dies"),
-    ("subtitles.mymod.abduction", "Eerie wailing rises"),
-    ("gamerule.mymod.ufo_sightings", "UFO sightings"),
-    ("gamerule.mymod.ufo_sightings.description", "Whether UFOs visit players, roam the sky and land."),
-    ("gamerule.mymod.ufo_chance", "UFO chance"),
-    ("gamerule.mymod.ufo_chance.description", "The chance, in percent, of a UFO visiting each player in a night (a fifth of that by day)."),
-    ("gamerule.mymod.ufo_landing_chance", "UFO landing chance"),
-    ("gamerule.mymod.ufo_landing_chance.description", "The chance, in percent, of a UFO landing with its crew near each player in a night."),
-    ("gamerule.mymod.alien_abductions", "Alien abductions"),
-    ("gamerule.mymod.alien_abductions.description", "Whether landed aliens carry off players who sleep nearby."),
+    ("entity.tomyen.ufo", "UFO"),
+    ("entity.tomyen.alien", "Alien"),
+    ("entity.tomyen.tractor_beam", "Tractor Beam"),
+    ("entity.tomyen.ufo.abducted", "A blinding light... you can't move!"),
+    ("entity.tomyen.ufo.returned", "You wake up somewhere else, feeling... probed."),
+    ("entity.tomyen.ufo.souvenir", "The aliens kept your %s as a souvenir."),
+    ("message.tomyen.ufo_sighted", "Strange lights in the sky..."),
+    ("item.tomyen.ufo_spawn_egg", "UFO Spawn Egg"),
+    ("item.tomyen.alien_spawn_egg", "Alien Spawn Egg"),
+    ("item.tomyen.alien_alloy", "Alien Alloy"),
+    ("item.tomyen.alien_reactor", "Alien Reactor"),
+    ("effect.tomyen.probed", "Probed"),
+    ("death.attack.tomyen.alien_ray", "%1$s was zapped"),
+    ("death.attack.tomyen.alien_ray.player", "%1$s was zapped by %2$s"),
+    ("death.attack.tomyen.alien_ray.item", "%1$s was zapped by %2$s using %3$s"),
+    ("subtitles.tomyen.ufo_beam", "Tractor beam hums"),
+    ("subtitles.tomyen.ufo_take", "Something is beamed aboard"),
+    ("subtitles.tomyen.ufo_land", "UFO legs extend"),
+    ("subtitles.tomyen.ufo_door", "UFO ramp moves"),
+    ("subtitles.tomyen.ufo_hurt", "UFO clangs"),
+    ("subtitles.tomyen.ufo_death", "UFO powers down"),
+    ("subtitles.tomyen.alien_ambient", "Alien chitters"),
+    ("subtitles.tomyen.alien_hurt", "Alien squeaks"),
+    ("subtitles.tomyen.alien_death", "Alien dies"),
+    ("subtitles.tomyen.abduction", "Eerie wailing rises"),
+    ("gamerule.tomyen.ufo_sightings", "UFO sightings"),
+    ("gamerule.tomyen.ufo_sightings.description", "Whether UFOs visit players, roam the sky and land."),
+    ("gamerule.tomyen.ufo_chance", "UFO chance"),
+    ("gamerule.tomyen.ufo_chance.description", "The chance, in percent, of a UFO visiting each player in a night (a fifth of that by day)."),
+    ("gamerule.tomyen.ufo_landing_chance", "UFO landing chance"),
+    ("gamerule.tomyen.ufo_landing_chance.description", "The chance, in percent, of a UFO landing with its crew near each player in a night."),
+    ("gamerule.tomyen.alien_abductions", "Alien abductions"),
+    ("gamerule.tomyen.alien_abductions.description", "Whether landed aliens carry off players who sleep nearby."),
 ]))
 print("ufo assets written")

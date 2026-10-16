@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": "minecraft:gunpowder",
+    "I": "minecraft:iron_ingot",
+    "N": "tomyen:napalm_canister",
+    "T": "minecraft:tripwire_hook"
+  },
+  "pattern": [
+    " T ",
+    "INI",
+    " G "
+  ],
+  "result": {
+    "count": 3,
+    "id": "tomyen:napalm_grenade"
+  }
+}

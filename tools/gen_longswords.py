@@ -18,7 +18,7 @@ every display context. The 32x32 texture covers the same 16 model pixels a 16x16
 are vanilla's at twice the scale: the hilt comes out the size of a vanilla sword's, in the same place in the hand,
 and the blade three times as long.
 
-Usage: python3 tools/gen_longswords.py src/main/resources/assets/mymod [path/to/minecraft-client.jar]"""
+Usage: python3 tools/gen_longswords.py src/main/resources/assets/tomyen [path/to/minecraft-client.jar]"""
 import glob, os, struct, sys, zipfile, zlib
 from collections import OrderedDict
 
@@ -244,10 +244,10 @@ def main():
             png(os.path.join(ASSETS, "textures", "item", name + ".png"), SIZE, SIZE, long_sword(px, accents=tier in MOD_TIERS))
             write(os.path.join(ASSETS, "models", "item", name + ".json"), OrderedDict([
                 ("parent", "minecraft:item/handheld"),
-                ("textures", OrderedDict(layer0=f"mymod:item/{name}")),
+                ("textures", OrderedDict(layer0=f"tomyen:item/{name}")),
                 ("display", ds)]))
             write(os.path.join(ASSETS, "items", name + ".json"), {"model": OrderedDict([
-                ("type", "minecraft:model"), ("model", f"mymod:item/{name}")])})
+                ("type", "minecraft:model"), ("model", f"tomyen:item/{name}")])})
     for context, t in ds.items():
         print(f"{context}: rotation {t['rotation']} translation {t['translation']} scale {t['scale'][0]}")
     print("long swords done")

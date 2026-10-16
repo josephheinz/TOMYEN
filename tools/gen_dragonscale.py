@@ -16,7 +16,7 @@ rusty scale imprint pressed into the scale fossil. Shading is flat ramps, no noi
 With --preview PATH it also writes a board comparing each texture with the vanilla one it started from, and the
 icons with vanilla's other red things (red-dyed leather, redstone).
 
-Usage: python3 tools/gen_dragonscale.py src/main/resources/assets/mymod [--preview out.png] [path/to/client.jar]"""
+Usage: python3 tools/gen_dragonscale.py src/main/resources/assets/tomyen [--preview out.png] [path/to/client.jar]"""
 import os, sys, zipfile
 from collections import OrderedDict
 
@@ -33,7 +33,7 @@ if "--preview" in ARGS:
     del ARGS[i:i + 2]
 ASSETS = ARGS[0] if ARGS else None
 sys.argv = [sys.argv[0]] + ARGS  # client_jar() reads an explicit jar from argv[2]
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod")) if ASSETS else None
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen")) if ASSETS else None
 CLEAR = (0, 0, 0, 0)
 
 # ======================================================================================================= palette
@@ -455,32 +455,32 @@ def scale_fossil():
 def block_models():
     write(os.path.join(ASSETS, "models", "block", "fossilized_dragon_bone.json"), OrderedDict([
         ("parent", "minecraft:block/cube_column"),
-        ("textures", OrderedDict([("end", "mymod:block/fossilized_dragon_bone_top"), ("side", "mymod:block/fossilized_dragon_bone_side")]))]))
+        ("textures", OrderedDict([("end", "tomyen:block/fossilized_dragon_bone_top"), ("side", "tomyen:block/fossilized_dragon_bone_side")]))]))
     write(os.path.join(ASSETS, "blockstates", "fossilized_dragon_bone.json"), {"variants": OrderedDict([
-        ("axis=x", OrderedDict([("model", "mymod:block/fossilized_dragon_bone"), ("x", 90), ("y", 90)])),
-        ("axis=y", {"model": "mymod:block/fossilized_dragon_bone"}),
-        ("axis=z", OrderedDict([("model", "mymod:block/fossilized_dragon_bone"), ("x", 90)]))])})
+        ("axis=x", OrderedDict([("model", "tomyen:block/fossilized_dragon_bone"), ("x", 90), ("y", 90)])),
+        ("axis=y", {"model": "tomyen:block/fossilized_dragon_bone"}),
+        ("axis=z", OrderedDict([("model", "tomyen:block/fossilized_dragon_bone"), ("x", 90)]))])})
     write(os.path.join(ASSETS, "models", "block", "dragon_scale_fossil.json"), OrderedDict([
-        ("parent", "minecraft:block/cube_all"), ("textures", {"all": "mymod:block/dragon_scale_fossil"})]))
-    write(os.path.join(ASSETS, "blockstates", "dragon_scale_fossil.json"), {"variants": {"": {"model": "mymod:block/dragon_scale_fossil"}}})
+        ("parent", "minecraft:block/cube_all"), ("textures", {"all": "tomyen:block/dragon_scale_fossil"})]))
+    write(os.path.join(ASSETS, "blockstates", "dragon_scale_fossil.json"), {"variants": {"": {"model": "tomyen:block/dragon_scale_fossil"}}})
     for name in ("fossilized_dragon_bone", "dragon_scale_fossil"):
-        write(os.path.join(ASSETS, "items", name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "mymod:block/" + name)])})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "tomyen:block/" + name)])})
 
 
 def item_model(name, parent="minecraft:item/generated", display=None):
-    model = OrderedDict([("parent", parent), ("textures", {"layer0": "mymod:item/" + name})])
+    model = OrderedDict([("parent", parent), ("textures", {"layer0": "tomyen:item/" + name})])
     if display:
         model["display"] = display
     write(os.path.join(ASSETS, "models", "item", name + ".json"), model)
-    write(os.path.join(ASSETS, "items", name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "mymod:item/" + name)])})
+    write(os.path.join(ASSETS, "items", name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "tomyen:item/" + name)])})
 
 
 def equipment_asset():
     write(os.path.join(ASSETS, "equipment", "dragonscale.json"), {"layers": OrderedDict([
-        ("humanoid", [{"texture": "mymod:dragonscale"}]),
-        ("humanoid_baby", [{"texture": "mymod:dragonscale"}]),
-        ("humanoid_leggings", [{"texture": "mymod:dragonscale"}]),
-        ("wings", [{"texture": "mymod:dragonscale"}])])})
+        ("humanoid", [{"texture": "tomyen:dragonscale"}]),
+        ("humanoid_baby", [{"texture": "tomyen:dragonscale"}]),
+        ("humanoid_leggings", [{"texture": "tomyen:dragonscale"}]),
+        ("wings", [{"texture": "tomyen:dragonscale"}])])})
 
 
 def advancement(path, recipe, item, criterion):
@@ -488,60 +488,60 @@ def advancement(path, recipe, item, criterion):
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
             (criterion, OrderedDict([("conditions", {"items": [{"items": item}]}), ("trigger", "minecraft:inventory_changed")])),
-            ("has_the_recipe", OrderedDict([("conditions", {"recipes": "mymod:" + recipe}), ("trigger", "minecraft:recipe_unlocked")]))])),
+            ("has_the_recipe", OrderedDict([("conditions", {"recipes": "tomyen:" + recipe}), ("trigger", "minecraft:recipe_unlocked")]))])),
         ("requirements", [[criterion, "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:" + recipe]})]))
+        ("rewards", {"recipes": ["tomyen:" + recipe]})]))
 
 
 def shaped(name, pattern, key, category="equipment"):
     write(os.path.join(DATA, "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shaped"), ("category", category), ("key", key), ("pattern", pattern),
-        ("result", OrderedDict([("count", 1), ("id", "mymod:" + name)]))]))
+        ("result", OrderedDict([("count", 1), ("id", "tomyen:" + name)]))]))
 
 
 def data():
-    scales = "#mymod:dragon_scales"
+    scales = "#tomyen:dragon_scales"
     for piece, pattern in (("helmet", ["SSS", "SNS"]), ("chestplate", ["SNS", "SSS", "SSS"]),
                            ("leggings", ["SSS", "SNS", "S S"]), ("boots", ["SNS", "S S"])):
         name = "dragonscale_" + piece
         shaped(name, pattern, OrderedDict([("N", "minecraft:netherite_scrap"), ("S", scales)]))
         advancement("combat", name, scales, "has_dragon_scale")
-    shaped("dragonbone_long_sword", [" SB", "SBS", "BS "], OrderedDict([("B", "mymod:fossilized_dragon_bone"), ("S", scales)]))
-    advancement("combat", "dragonbone_long_sword", "mymod:fossilized_dragon_bone", "has_fossilized_dragon_bone")
+    shaped("dragonbone_long_sword", [" SB", "SBS", "BS "], OrderedDict([("B", "tomyen:fossilized_dragon_bone"), ("S", scales)]))
+    advancement("combat", "dragonbone_long_sword", "tomyen:fossilized_dragon_bone", "has_fossilized_dragon_bone")
 
     def table(kind, name, pools):
         write(os.path.join(DATA, "loot_table", name + ".json"), OrderedDict([
-            ("type", "minecraft:" + kind), ("pools", pools), ("random_sequence", "mymod:" + name)]))
+            ("type", "minecraft:" + kind), ("pools", pools), ("random_sequence", "tomyen:" + name)]))
 
     table("block", "blocks/fossilized_dragon_bone", [OrderedDict([
         ("condition", {"type": "minecraft:survives_explosion"}),
-        ("entries", [OrderedDict([("type", "minecraft:item"), ("name", "mymod:fossilized_dragon_bone")])]),
+        ("entries", [OrderedDict([("type", "minecraft:item"), ("name", "tomyen:fossilized_dragon_bone")])]),
         ("rolls", 1)])])
     table("block", "blocks/dragon_scale_fossil", [OrderedDict([
         ("entries", [OrderedDict([("type", "minecraft:alternatives"), ("children", [
-            OrderedDict([("type", "minecraft:item"), ("condition", "minecraft:tool/can_silk_touch"), ("name", "mymod:dragon_scale_fossil")]),
+            OrderedDict([("type", "minecraft:item"), ("condition", "minecraft:tool/can_silk_touch"), ("name", "tomyen:dragon_scale_fossil")]),
             OrderedDict([("type", "minecraft:item"), ("modifier", [
                 OrderedDict([("type", "minecraft:set_count"), ("count", OrderedDict([("type", "minecraft:uniform"), ("min", 1), ("max", 2)]))]),
                 OrderedDict([("type", "minecraft:apply_bonus"), ("enchantment", "minecraft:fortune"), ("formula", "minecraft:ore_drops")]),
-                {"type": "minecraft:explosion_decay"}]), ("name", "mymod:ancient_dragon_scale")])])])]),
+                {"type": "minecraft:explosion_decay"}]), ("name", "tomyen:ancient_dragon_scale")])])])]),
         ("rolls", 1)])])
     table("entity", "entities/ender_dragon_scales", [OrderedDict([
         ("rolls", 1),
-        ("entries", [OrderedDict([("type", "minecraft:item"), ("name", "mymod:ender_dragon_scale"), ("modifier", [
+        ("entries", [OrderedDict([("type", "minecraft:item"), ("name", "tomyen:ender_dragon_scale"), ("modifier", [
             OrderedDict([("type", "minecraft:set_count"), ("count", OrderedDict([("type", "minecraft:uniform"), ("min", 12), ("max", 16)]))])])])])])])
 
     write(os.path.join(DATA, "worldgen", "feature", "dragon_fossil.json"), OrderedDict([
-        ("type", "mymod:dragon_fossil"),
+        ("type", "tomyen:dragon_fossil"),
         ("spine_length", OrderedDict([("type", "minecraft:uniform"), ("min_inclusive", 10), ("max_inclusive", 15)])),
         ("scale_fossils", OrderedDict([("type", "minecraft:uniform"), ("min_inclusive", 2), ("max_inclusive", 4)])),
         ("integrity", 0.85)]))
     write(os.path.join(DATA, "worldgen", "feature", "dragon_fossil_deep.json"), OrderedDict([
-        ("type", "mymod:dragon_fossil"),
+        ("type", "tomyen:dragon_fossil"),
         ("spine_length", OrderedDict([("type", "minecraft:uniform"), ("min_inclusive", 13), ("max_inclusive", 18)])),
         ("scale_fossils", OrderedDict([("type", "minecraft:uniform"), ("min_inclusive", 3), ("max_inclusive", 5)])),
         ("integrity", 0.9)]))
     write(os.path.join(DATA, "worldgen", "placed_feature", "dragon_fossil_buried.json"), OrderedDict([
-        ("feature", "mymod:dragon_fossil"),
+        ("feature", "tomyen:dragon_fossil"),
         ("placement", [
             OrderedDict([("type", "minecraft:rarity_filter"), ("chance", 48)]),
             {"type": "minecraft:in_square"},
@@ -550,7 +550,7 @@ def data():
                 ("type", "minecraft:uniform"), ("min_inclusive", -15), ("max_inclusive", -10)])), ("z", 0)]),
             {"type": "minecraft:biome"}])]))
     write(os.path.join(DATA, "worldgen", "placed_feature", "dragon_fossil_deep.json"), OrderedDict([
-        ("feature", "mymod:dragon_fossil_deep"),
+        ("feature", "tomyen:dragon_fossil_deep"),
         ("placement", [
             OrderedDict([("type", "minecraft:rarity_filter"), ("chance", 64)]),
             {"type": "minecraft:in_square"},

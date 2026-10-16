@@ -22,7 +22,7 @@ from coplanar import check_elements  # noqa: E402
 
 REPO = os.path.dirname(HERE)
 RES = os.path.join(REPO, "src", "main", "resources")
-ASSETS = os.path.join(RES, "assets", "mymod")
+ASSETS = os.path.join(RES, "assets", "tomyen")
 DATA = os.path.join(RES, "data")
 PREVIEW = sys.argv[sys.argv.index("--preview") + 1] if "--preview" in sys.argv else None
 ATLAS = 128  # texels; one model pixel = one texel, so a uv unit is ATLAS / 16 texels
@@ -424,8 +424,8 @@ def model(elements, lit):
         out.append(e2)
     return OrderedDict([
         ("parent", "minecraft:block/block"),
-        ("textures", OrderedDict([("particle", "mymod:block/polished_meteorite_stone"), ("base", "mymod:block/star_forge"),
-                                  ("glow", "mymod:block/star_forge_glow" if lit else "mymod:block/star_forge_glow_dormant")])),
+        ("textures", OrderedDict([("particle", "tomyen:block/polished_meteorite_stone"), ("base", "tomyen:block/star_forge"),
+                                  ("glow", "tomyen:block/star_forge_glow" if lit else "tomyen:block/star_forge_glow_dormant")])),
         ("elements", out),
     ])
 
@@ -562,91 +562,91 @@ def gui():
 
 # ===================================================================================================== data
 LANG = OrderedDict([
-    ("block.mymod.star_forge", "Star Forge"),
-    ("block.mymod.star_forge.desc", "Infuses gear with starlight and a catalyst"),
-    ("block.mymod.star_forge.rule", "Works only under an open night sky"),
-    ("block.mymod.star_forge.shift", "Hold Shift for the catalysts"),
-    ("block.mymod.star_forge.guide", "Catalysts:"),
-    ("block.mymod.star_forge.guide.line", "%s → %s (%s)"),
-    ("block.mymod.star_forge.guide.or", " or "),
-    ("container.mymod.star_forge", "Star Forge"),
-    ("container.mymod.star_forge.place_gear", "Place gear to infuse"),
-    ("container.mymod.star_forge.not_gear", "Can't infuse that"),
-    ("container.mymod.star_forge.add_catalyst", "Add a catalyst"),
-    ("container.mymod.star_forge.not_a_catalyst", "Not a catalyst"),
-    ("container.mymod.star_forge.wont_take", "%s won't take on this"),
-    ("container.mymod.star_forge.already", "Already %s"),
-    ("container.mymod.star_forge.replaces", "Replaces %s!"),
-    ("container.mymod.star_forge.replaces_warning", "This replaces its %s infusion"),
-    ("container.mymod.star_forge.dormant", "Dormant"),
-    ("container.mymod.star_forge.needs_starlight", "Add shards"),
-    ("container.mymod.star_forge.output_full", "Output full"),
-    ("container.mymod.star_forge.starlight", "Starlight: %s%%"),
-    ("container.mymod.star_forge.starlight.hint", "Star crystal shards burn as starlight"),
-    ("container.mymod.star_forge.cost", "Uses one catalyst and %s shards"),
-    ("container.mymod.star_forge.takes", "Takes: %s"),
-    ("container.mymod.star_forge.sky.day", "Dormant: it's day"),
-    ("container.mymod.star_forge.sky.roofed", "Dormant: no open sky above"),
-    ("container.mymod.star_forge.sky.no_sky", "Dormant: no stars here"),
-    ("container.mymod.star_forge.sky.clear", "Starlit: drawing starlight"),
-    ("container.mymod.star_forge.sky.clouded", "Starlit, but clouded: half speed"),
-    ("container.mymod.star_forge.sky.rule", "Needs night and open sky above it (glass is fine)"),
-    ("infusion.mymod.title", "✦ %s"),
-    ("infusion.mymod.takes.all", "any gear"),
-    ("infusion.mymod.takes.melee", "weapons"),
-    ("infusion.mymod.takes.gun", "guns"),
-    ("infusion.mymod.takes.tool", "tools"),
-    ("infusion.mymod.takes.drill", "drills"),
-    ("infusion.mymod.takes.armor", "armor"),
-    ("infusion.mymod.takes.rod", "rods"),
-    ("infusion.mymod.starlit", "Starlit"),
-    ("infusion.mymod.starlit.melee", "+15% damage at night"),
-    ("infusion.mymod.starlit.gun", "+15% damage at night"),
-    ("infusion.mymod.starlit.tool", "+25% digging speed at night"),
-    ("infusion.mymod.starlit.armor", "-4% damage taken at night"),
-    ("infusion.mymod.starlit.rod", "Sooner bites and rarer fish at night"),
-    ("infusion.mymod.featherweight", "Featherweight"),
-    ("infusion.mymod.featherweight.melee", "+5% speed while held"),
-    ("infusion.mymod.featherweight.gun", "+5% speed held, 15% faster reloads"),
-    ("infusion.mymod.featherweight.tool", "+5% speed while held"),
-    ("infusion.mymod.featherweight.armor", "+2.5% speed"),
-    ("infusion.mymod.featherweight.rod", "+5% speed held, reels 10% faster"),
-    ("infusion.mymod.voidtouched", "Voidtouched"),
-    ("infusion.mymod.voidtouched.melee", "30% of each hit ignores armor"),
-    ("infusion.mymod.voidtouched.gun", "30% of each round ignores armor"),
-    ("infusion.mymod.voidtouched.tool", "30% chance to keep durability"),
-    ("infusion.mymod.voidtouched.armor", "30% chance to keep durability"),
-    ("infusion.mymod.voidtouched.rod", "30% chance to keep durability"),
-    ("infusion.mymod.soulbound", "Soulbound"),
-    ("infusion.mymod.soulbound.melee", "Heals you 10% of the damage dealt"),
-    ("infusion.mymod.soulbound.gun", "Heals you 5% of a hit, twice a second"),
-    ("infusion.mymod.soulbound.tool", "Kept on death"),
-    ("infusion.mymod.soulbound.armor", "Kept on death"),
-    ("infusion.mymod.soulbound.rod", "Kept on death"),
-    ("infusion.mymod.fae_kissed", "Fae-Kissed"),
-    ("infusion.mymod.fae_kissed.melee", "25% chance of an extra drop from kills"),
-    ("infusion.mymod.fae_kissed.gun", "25% chance of an extra drop from kills"),
-    ("infusion.mymod.fae_kissed.tool", "20% chance of extra ore drops"),
-    ("infusion.mymod.fae_kissed.armor", "+0.5 luck"),
-    ("infusion.mymod.fae_kissed.rod", "Bites lean toward rare fish"),
-    ("infusion.mymod.rimed", "Rimed"),
-    ("infusion.mymod.rimed.melee", "Slows targets for 2s"),
-    ("infusion.mymod.rimed.gun", "Slows targets for 1.5s"),
-    ("infusion.mymod.rimed.armor", "-25% freezing damage"),
-    ("infusion.mymod.molten", "Molten"),
-    ("infusion.mymod.molten.melee", "Sets targets alight for 3s"),
-    ("infusion.mymod.molten.gun", "Sets targets alight for 2s"),
-    ("infusion.mymod.molten.tool", "Smelts what it mines"),
-    ("infusion.mymod.molten.armor", "15% chance to set attackers alight"),
-    ("infusion.mymod.consecrated", "Consecrated"),
-    ("infusion.mymod.consecrated.melee", "×1.3 damage to the evil, holy fire"),
-    ("infusion.mymod.consecrated.gun", "×1.3 damage to the evil, holy fire"),
-    ("infusion.mymod.consecrated.armor", "-5% damage from the evil"),
-    ("infusion.mymod.drakehide", "Drakehide"),
-    ("infusion.mymod.drakehide.armor", "-10% fire and explosion damage"),
-    ("infusion.mymod.irradiated", "Irradiated"),
-    ("infusion.mymod.irradiated.melee", "Weakens and irradiates; doses you unless shielded"),
-    ("infusion.mymod.irradiated.gun", "Weakens and irradiates; doses you unless shielded"),
+    ("block.tomyen.star_forge", "Star Forge"),
+    ("block.tomyen.star_forge.desc", "Infuses gear with starlight and a catalyst"),
+    ("block.tomyen.star_forge.rule", "Works only under an open night sky"),
+    ("block.tomyen.star_forge.shift", "Hold Shift for the catalysts"),
+    ("block.tomyen.star_forge.guide", "Catalysts:"),
+    ("block.tomyen.star_forge.guide.line", "%s → %s (%s)"),
+    ("block.tomyen.star_forge.guide.or", " or "),
+    ("container.tomyen.star_forge", "Star Forge"),
+    ("container.tomyen.star_forge.place_gear", "Place gear to infuse"),
+    ("container.tomyen.star_forge.not_gear", "Can't infuse that"),
+    ("container.tomyen.star_forge.add_catalyst", "Add a catalyst"),
+    ("container.tomyen.star_forge.not_a_catalyst", "Not a catalyst"),
+    ("container.tomyen.star_forge.wont_take", "%s won't take on this"),
+    ("container.tomyen.star_forge.already", "Already %s"),
+    ("container.tomyen.star_forge.replaces", "Replaces %s!"),
+    ("container.tomyen.star_forge.replaces_warning", "This replaces its %s infusion"),
+    ("container.tomyen.star_forge.dormant", "Dormant"),
+    ("container.tomyen.star_forge.needs_starlight", "Add shards"),
+    ("container.tomyen.star_forge.output_full", "Output full"),
+    ("container.tomyen.star_forge.starlight", "Starlight: %s%%"),
+    ("container.tomyen.star_forge.starlight.hint", "Star crystal shards burn as starlight"),
+    ("container.tomyen.star_forge.cost", "Uses one catalyst and %s shards"),
+    ("container.tomyen.star_forge.takes", "Takes: %s"),
+    ("container.tomyen.star_forge.sky.day", "Dormant: it's day"),
+    ("container.tomyen.star_forge.sky.roofed", "Dormant: no open sky above"),
+    ("container.tomyen.star_forge.sky.no_sky", "Dormant: no stars here"),
+    ("container.tomyen.star_forge.sky.clear", "Starlit: drawing starlight"),
+    ("container.tomyen.star_forge.sky.clouded", "Starlit, but clouded: half speed"),
+    ("container.tomyen.star_forge.sky.rule", "Needs night and open sky above it (glass is fine)"),
+    ("infusion.tomyen.title", "✦ %s"),
+    ("infusion.tomyen.takes.all", "any gear"),
+    ("infusion.tomyen.takes.melee", "weapons"),
+    ("infusion.tomyen.takes.gun", "guns"),
+    ("infusion.tomyen.takes.tool", "tools"),
+    ("infusion.tomyen.takes.drill", "drills"),
+    ("infusion.tomyen.takes.armor", "armor"),
+    ("infusion.tomyen.takes.rod", "rods"),
+    ("infusion.tomyen.starlit", "Starlit"),
+    ("infusion.tomyen.starlit.melee", "+15% damage at night"),
+    ("infusion.tomyen.starlit.gun", "+15% damage at night"),
+    ("infusion.tomyen.starlit.tool", "+25% digging speed at night"),
+    ("infusion.tomyen.starlit.armor", "-4% damage taken at night"),
+    ("infusion.tomyen.starlit.rod", "Sooner bites and rarer fish at night"),
+    ("infusion.tomyen.featherweight", "Featherweight"),
+    ("infusion.tomyen.featherweight.melee", "+5% speed while held"),
+    ("infusion.tomyen.featherweight.gun", "+5% speed held, 15% faster reloads"),
+    ("infusion.tomyen.featherweight.tool", "+5% speed while held"),
+    ("infusion.tomyen.featherweight.armor", "+2.5% speed"),
+    ("infusion.tomyen.featherweight.rod", "+5% speed held, reels 10% faster"),
+    ("infusion.tomyen.voidtouched", "Voidtouched"),
+    ("infusion.tomyen.voidtouched.melee", "30% of each hit ignores armor"),
+    ("infusion.tomyen.voidtouched.gun", "30% of each round ignores armor"),
+    ("infusion.tomyen.voidtouched.tool", "30% chance to keep durability"),
+    ("infusion.tomyen.voidtouched.armor", "30% chance to keep durability"),
+    ("infusion.tomyen.voidtouched.rod", "30% chance to keep durability"),
+    ("infusion.tomyen.soulbound", "Soulbound"),
+    ("infusion.tomyen.soulbound.melee", "Heals you 10% of the damage dealt"),
+    ("infusion.tomyen.soulbound.gun", "Heals you 5% of a hit, twice a second"),
+    ("infusion.tomyen.soulbound.tool", "Kept on death"),
+    ("infusion.tomyen.soulbound.armor", "Kept on death"),
+    ("infusion.tomyen.soulbound.rod", "Kept on death"),
+    ("infusion.tomyen.fae_kissed", "Fae-Kissed"),
+    ("infusion.tomyen.fae_kissed.melee", "25% chance of an extra drop from kills"),
+    ("infusion.tomyen.fae_kissed.gun", "25% chance of an extra drop from kills"),
+    ("infusion.tomyen.fae_kissed.tool", "20% chance of extra ore drops"),
+    ("infusion.tomyen.fae_kissed.armor", "+0.5 luck"),
+    ("infusion.tomyen.fae_kissed.rod", "Bites lean toward rare fish"),
+    ("infusion.tomyen.rimed", "Rimed"),
+    ("infusion.tomyen.rimed.melee", "Slows targets for 2s"),
+    ("infusion.tomyen.rimed.gun", "Slows targets for 1.5s"),
+    ("infusion.tomyen.rimed.armor", "-25% freezing damage"),
+    ("infusion.tomyen.molten", "Molten"),
+    ("infusion.tomyen.molten.melee", "Sets targets alight for 3s"),
+    ("infusion.tomyen.molten.gun", "Sets targets alight for 2s"),
+    ("infusion.tomyen.molten.tool", "Smelts what it mines"),
+    ("infusion.tomyen.molten.armor", "15% chance to set attackers alight"),
+    ("infusion.tomyen.consecrated", "Consecrated"),
+    ("infusion.tomyen.consecrated.melee", "×1.3 damage to the evil, holy fire"),
+    ("infusion.tomyen.consecrated.gun", "×1.3 damage to the evil, holy fire"),
+    ("infusion.tomyen.consecrated.armor", "-5% damage from the evil"),
+    ("infusion.tomyen.drakehide", "Drakehide"),
+    ("infusion.tomyen.drakehide.armor", "-10% fire and explosion damage"),
+    ("infusion.tomyen.irradiated", "Irradiated"),
+    ("infusion.tomyen.irradiated.melee", "Weakens and irradiates; doses you unless shielded"),
+    ("infusion.tomyen.irradiated.gun", "Weakens and irradiates; doses you unless shielded"),
 ])
 
 
@@ -666,40 +666,40 @@ def data():
     for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
         for starlit in ("false", "true"):
             for forging in ("false", "true"):
-                v = OrderedDict([("model", "mymod:block/star_forge_lit" if starlit == "true" else "mymod:block/star_forge")])
+                v = OrderedDict([("model", "tomyen:block/star_forge_lit" if starlit == "true" else "tomyen:block/star_forge")])
                 if y:
                     v["y"] = y
                 variants[f"facing={facing},forging={forging},starlit={starlit}"] = v
     write(os.path.join(ASSETS, "blockstates", "star_forge.json"), {"variants": variants})
-    write(os.path.join(ASSETS, "items", "star_forge.json"), {"model": {"type": "minecraft:model", "model": "mymod:block/star_forge_lit"}})
-    write(os.path.join(DATA, "mymod", "recipe", "star_forge.json"), OrderedDict([
+    write(os.path.join(ASSETS, "items", "star_forge.json"), {"model": {"type": "minecraft:model", "model": "tomyen:block/star_forge_lit"}})
+    write(os.path.join(DATA, "tomyen", "recipe", "star_forge.json"), OrderedDict([
         ("type", "minecraft:crafting_shaped"), ("category", "misc"),
-        ("key", OrderedDict([("S", "mymod:star_steel_ingot"), ("C", "mymod:star_crystal_block"), ("T", "mymod:tungsten_carbide"),
-                             ("F", "mymod:foundry"), ("M", "mymod:meteorite_bricks")])),
+        ("key", OrderedDict([("S", "tomyen:star_steel_ingot"), ("C", "tomyen:star_crystal_block"), ("T", "tomyen:tungsten_carbide"),
+                             ("F", "tomyen:foundry"), ("M", "tomyen:meteorite_bricks")])),
         ("pattern", ["SCS", "TFT", "MMM"]),
-        ("result", OrderedDict([("count", 1), ("id", "mymod:star_forge")])),
+        ("result", OrderedDict([("count", 1), ("id", "tomyen:star_forge")])),
     ]))
-    write(os.path.join(DATA, "mymod", "advancement", "recipes", "misc", "star_forge.json"), OrderedDict([
+    write(os.path.join(DATA, "tomyen", "advancement", "recipes", "misc", "star_forge.json"), OrderedDict([
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
-            ("has_star_steel", {"conditions": {"items": [{"items": "mymod:star_steel_ingot"}]}, "trigger": "minecraft:inventory_changed"}),
-            ("has_star_crystal", {"conditions": {"items": [{"items": "mymod:star_crystal_shard"}]}, "trigger": "minecraft:inventory_changed"}),
-            ("has_the_recipe", {"conditions": {"recipes": "mymod:star_forge"}, "trigger": "minecraft:recipe_unlocked"}),
+            ("has_star_steel", {"conditions": {"items": [{"items": "tomyen:star_steel_ingot"}]}, "trigger": "minecraft:inventory_changed"}),
+            ("has_star_crystal", {"conditions": {"items": [{"items": "tomyen:star_crystal_shard"}]}, "trigger": "minecraft:inventory_changed"}),
+            ("has_the_recipe", {"conditions": {"recipes": "tomyen:star_forge"}, "trigger": "minecraft:recipe_unlocked"}),
         ])),
         ("requirements", [["has_star_steel", "has_star_crystal", "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:star_forge"]}),
+        ("rewards", {"recipes": ["tomyen:star_forge"]}),
     ]))
-    write(os.path.join(DATA, "mymod", "loot_table", "blocks", "star_forge.json"), OrderedDict([
+    write(os.path.join(DATA, "tomyen", "loot_table", "blocks", "star_forge.json"), OrderedDict([
         ("type", "minecraft:block"),
         ("pools", [OrderedDict([("condition", {"type": "minecraft:survives_explosion"}),
-                                ("entries", [{"type": "minecraft:item", "name": "mymod:star_forge"}]), ("rolls", 1)])]),
-        ("random_sequence", "mymod:blocks/star_forge"),
+                                ("entries", [{"type": "minecraft:item", "name": "tomyen:star_forge"}]), ("rolls", 1)])]),
+        ("random_sequence", "tomyen:blocks/star_forge"),
     ]))
     tag = os.path.join(DATA, "minecraft", "tags", "block", "mineable", "pickaxe.json")
     with open(tag) as f:
         t = json.load(f, object_pairs_hook=OrderedDict)
-    if "mymod:star_forge" not in t["values"]:
-        t["values"].append("mymod:star_forge")
+    if "tomyen:star_forge" not in t["values"]:
+        t["values"].append("tomyen:star_forge")
         write(tag, t)
 
 

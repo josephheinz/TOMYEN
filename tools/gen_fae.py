@@ -20,7 +20,7 @@ recipe-book advancements, and tags are written too. The door, stairs and slab bl
 oak's, renamed. Writes build/fae_preview.png (or the path given with --preview): every texture beside the vanilla
 one it came from, eight times size.
 
-Usage: python3 tools/gen_fae.py src/main/resources/assets/mymod [--preview path.png]"""
+Usage: python3 tools/gen_fae.py src/main/resources/assets/tomyen [--preview path.png]"""
 import colorsys, glob, json, math, os, struct, sys, zipfile
 from collections import OrderedDict
 
@@ -488,8 +488,8 @@ def renamed(obj, names):
 
 def item_model(name, texture=None, parent="minecraft:item/generated"):
     write(os.path.join(ASSETS, "models", "item", name + ".json"),
-          OrderedDict([("parent", parent), ("textures", {"layer0": texture or f"mymod:item/{name}"})]))
-    item_def(name, f"mymod:item/{name}")
+          OrderedDict([("parent", parent), ("textures", {"layer0": texture or f"tomyen:item/{name}"})]))
+    item_def(name, f"tomyen:item/{name}")
 
 
 def item_def(name, model, tints=None):
@@ -504,30 +504,30 @@ def block_model(name, parent, textures):
 
 
 def simple_state(name, model=None):
-    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": model or f"mymod:block/{name}"}}})
+    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": model or f"tomyen:block/{name}"}}})
 
 
 def loot(name, table):
     table = OrderedDict(table)
-    table["random_sequence"] = f"mymod:blocks/{name}"
-    write(os.path.join(DATA, "mymod", "loot_table", "blocks", name + ".json"), table)
+    table["random_sequence"] = f"tomyen:blocks/{name}"
+    write(os.path.join(DATA, "tomyen", "loot_table", "blocks", name + ".json"), table)
 
 
 def drops_self(name):
     loot(name, {"type": "minecraft:block", "pools": [{"bonus_rolls": 0.0, "conditions": [{"condition": "minecraft:survives_explosion"}],
-                                                      "entries": [{"type": "minecraft:item", "name": f"mymod:{name}"}], "rolls": 1.0}]})
+                                                      "entries": [{"type": "minecraft:item", "name": f"tomyen:{name}"}], "rolls": 1.0}]})
 
 
 def recipe(name, body, category, unlock):
     """A recipe and its recipe-book advancement, unlocked by having any of the items (or tags) in unlock."""
-    write(os.path.join(DATA, "mymod", "recipe", name + ".json"), body)
+    write(os.path.join(DATA, "tomyen", "recipe", name + ".json"), body)
     criteria = OrderedDict()
     for i, item in enumerate(unlock):
         criteria[f"has_{i}"] = {"conditions": {"items": [{"items": item}]}, "trigger": "minecraft:inventory_changed"}
-    criteria["has_the_recipe"] = {"conditions": {"recipes": f"mymod:{name}"}, "trigger": "minecraft:recipe_unlocked"}
-    write(os.path.join(DATA, "mymod", "advancement", "recipes", category, name + ".json"), OrderedDict([
+    criteria["has_the_recipe"] = {"conditions": {"recipes": f"tomyen:{name}"}, "trigger": "minecraft:recipe_unlocked"}
+    write(os.path.join(DATA, "tomyen", "advancement", "recipes", category, name + ".json"), OrderedDict([
         ("parent", "minecraft:recipes/root"), ("criteria", criteria), ("requirements", [list(criteria)]),
-        ("rewards", {"recipes": [f"mymod:{name}"]})]))
+        ("rewards", {"recipes": [f"tomyen:{name}"]})]))
 
 
 def shaped(result, pattern, key, category, count=1, group=None):
@@ -536,7 +536,7 @@ def shaped(result, pattern, key, category, count=1, group=None):
         body["group"] = group
     body["key"] = key
     body["pattern"] = pattern
-    body["result"] = OrderedDict([("count", count), ("id", f"mymod:{result}")])
+    body["result"] = OrderedDict([("count", count), ("id", f"tomyen:{result}")])
     return body
 
 
@@ -545,7 +545,7 @@ def shapeless(result, ingredients, category, count=1, group=None):
     if group:
         body["group"] = group
     body["ingredients"] = ingredients
-    body["result"] = OrderedDict([("count", count), ("id", result if ":" in result else f"mymod:{result}")])
+    body["result"] = OrderedDict([("count", count), ("id", result if ":" in result else f"tomyen:{result}")])
     return body
 
 
@@ -560,13 +560,13 @@ def tag(kind, namespace, name, values):
     write(path, body)
 
 
-WOOD = {"minecraft:oak_planks": "mymod:glimmerwood_planks", "minecraft:block/oak_planks": "mymod:block/glimmerwood_planks",
-        "minecraft:block/oak_door": "mymod:block/glimmerwood_door", "minecraft:oak_door": "mymod:glimmerwood_door",
-        "minecraft:block/oak_stairs": "mymod:block/glimmerwood_stairs", "minecraft:block/oak_slab": "mymod:block/glimmerwood_slab",
-        "minecraft:oak_slab": "mymod:glimmerwood_slab", "minecraft:oak_stairs": "mymod:glimmerwood_stairs",
-        "minecraft:item/oak_door": "mymod:item/glimmerwood_door", "minecraft:blocks/oak": "mymod:blocks/glimmerwood",
-        "minecraft:oak_leaves": "mymod:glimmerwood_leaves", "minecraft:oak_sapling": "mymod:glimmerwood_sapling",
-        "minecraft:blocks/grass_block": "mymod:blocks/fae_grass_block", "minecraft:grass_block": "mymod:fae_grass_block"}
+WOOD = {"minecraft:oak_planks": "tomyen:glimmerwood_planks", "minecraft:block/oak_planks": "tomyen:block/glimmerwood_planks",
+        "minecraft:block/oak_door": "tomyen:block/glimmerwood_door", "minecraft:oak_door": "tomyen:glimmerwood_door",
+        "minecraft:block/oak_stairs": "tomyen:block/glimmerwood_stairs", "minecraft:block/oak_slab": "tomyen:block/glimmerwood_slab",
+        "minecraft:oak_slab": "tomyen:glimmerwood_slab", "minecraft:oak_stairs": "tomyen:glimmerwood_stairs",
+        "minecraft:item/oak_door": "tomyen:item/glimmerwood_door", "minecraft:blocks/oak": "tomyen:blocks/glimmerwood",
+        "minecraft:oak_leaves": "tomyen:glimmerwood_leaves", "minecraft:oak_sapling": "tomyen:glimmerwood_sapling",
+        "minecraft:blocks/grass_block": "tomyen:blocks/fae_grass_block", "minecraft:grass_block": "tomyen:fae_grass_block"}
 
 
 def write_data(client, common):
@@ -578,20 +578,20 @@ def write_data(client, common):
 
     # --- Block states and models ----------------------------------------------------------------------------
     for name in ["fae_mushroom", "fae_bloom", "glimmerwood_sapling"]:
-        block_model(name, "minecraft:block/cross", {"cross": f"mymod:block/{name}"})
+        block_model(name, "minecraft:block/cross", {"cross": f"tomyen:block/{name}"})
         simple_state(name)
-        item_model(name, f"mymod:block/{name}")
+        item_model(name, f"tomyen:block/{name}")
     for name in ["glimmerwood_planks", "glimmerwood_leaves", "fae_silver_ore"]:
-        block_model(name, "minecraft:block/cube_all", {"all": f"mymod:block/{name}"})
+        block_model(name, "minecraft:block/cube_all", {"all": f"tomyen:block/{name}"})
         simple_state(name)
-        item_def(name, f"mymod:block/{name}")
+        item_def(name, f"tomyen:block/{name}")
     block_model("glimmerwood_log", "minecraft:block/cube_column",
-                {"end": "mymod:block/glimmerwood_log_top", "side": "mymod:block/glimmerwood_log"})
+                {"end": "tomyen:block/glimmerwood_log_top", "side": "tomyen:block/glimmerwood_log"})
     block_model("glimmerwood_log_horizontal", "minecraft:block/cube_column_horizontal",
-                {"end": "mymod:block/glimmerwood_log_top", "side": "mymod:block/glimmerwood_log"})
+                {"end": "tomyen:block/glimmerwood_log_top", "side": "tomyen:block/glimmerwood_log"})
     write(os.path.join(ASSETS, "blockstates", "glimmerwood_log.json"), renamed(vanilla("assets/minecraft/blockstates/oak_log.json"),
-                                                                             {"minecraft:block/oak_log": "mymod:block/glimmerwood_log"}))
-    item_def("glimmerwood_log", "mymod:block/glimmerwood_log")
+                                                                             {"minecraft:block/oak_log": "tomyen:block/glimmerwood_log"}))
+    item_def("glimmerwood_log", "tomyen:block/glimmerwood_log")
     # The Fae Grass Block is drawn with vanilla's own grass block models; only its tint differs (see FaeClient).
     write(os.path.join(ASSETS, "blockstates", "fae_grass_block.json"), vanilla("assets/minecraft/blockstates/grass_block.json"))
     item_def("fae_grass_block", "minecraft:block/grass_block",
@@ -604,14 +604,14 @@ def write_data(client, common):
         base = os.path.basename(path)
         if path.startswith("assets/minecraft/models/block/oak_") and any(base.startswith(f"oak_{k}") for k in ["door", "stairs", "slab"]):
             write(os.path.join(ASSETS, "models", "block", "glimmerwood_" + base[4:]), renamed(vanilla(path), WOOD))
-    item_def("glimmerwood_stairs", "mymod:block/glimmerwood_stairs")
-    item_def("glimmerwood_slab", "mymod:block/glimmerwood_slab")
+    item_def("glimmerwood_stairs", "tomyen:block/glimmerwood_stairs")
+    item_def("glimmerwood_slab", "tomyen:block/glimmerwood_slab")
     item_model("glimmerwood_door")
     # The Fairy in a Bottle: hung or stood like a lantern.
-    block_model("fairy_in_a_bottle", "minecraft:block/template_lantern", {"lantern": "mymod:block/fairy_in_a_bottle"})
-    block_model("fairy_in_a_bottle_hanging", "minecraft:block/template_hanging_lantern", {"lantern": "mymod:block/fairy_in_a_bottle"})
+    block_model("fairy_in_a_bottle", "minecraft:block/template_lantern", {"lantern": "tomyen:block/fairy_in_a_bottle"})
+    block_model("fairy_in_a_bottle_hanging", "minecraft:block/template_hanging_lantern", {"lantern": "tomyen:block/fairy_in_a_bottle"})
     write(os.path.join(ASSETS, "blockstates", "fairy_in_a_bottle.json"), {"variants": OrderedDict([
-        ("hanging=false", {"model": "mymod:block/fairy_in_a_bottle"}), ("hanging=true", {"model": "mymod:block/fairy_in_a_bottle_hanging"})])})
+        ("hanging=false", {"model": "tomyen:block/fairy_in_a_bottle"}), ("hanging=true", {"model": "tomyen:block/fairy_in_a_bottle_hanging"})])})
     item_model("fairy_in_a_bottle")
     # Items.
     for name in ["fae_dust", "raw_fae_silver", "fae_silver_ingot", "fae_ring_charm", "fairy_spawn_egg"]:
@@ -630,58 +630,58 @@ def write_data(client, common):
     loot("glimmerwood_leaves", leaves)
     loot("fae_grass_block", renamed(vanilla_data("data/minecraft/loot_table/blocks/grass_block.json"), WOOD))
     ore = renamed(vanilla_data("data/minecraft/loot_table/blocks/iron_ore.json"),
-                  {"minecraft:raw_iron": "mymod:raw_fae_silver", "minecraft:iron_ore": "mymod:fae_silver_ore"})
+                  {"minecraft:raw_iron": "tomyen:raw_fae_silver", "minecraft:iron_ore": "tomyen:fae_silver_ore"})
     loot("fae_silver_ore", ore)
 
     # --- Recipes ----------------------------------------------------------------------------------------------
-    recipe("glimmerwood_planks", shapeless("glimmerwood_planks", ["mymod:glimmerwood_log"], "building", 4, "planks"), "building",
-           ["mymod:glimmerwood_log"])
+    recipe("glimmerwood_planks", shapeless("glimmerwood_planks", ["tomyen:glimmerwood_log"], "building", 4, "planks"), "building",
+           ["tomyen:glimmerwood_log"])
     for kind, cat, folder in [("stairs", "building", "building"), ("slab", "building", "building"), ("door", "redstone", "redstone")]:
         body = renamed(vanilla_data(f"data/minecraft/recipe/oak_{kind}.json"), WOOD)
-        recipe(f"glimmerwood_{kind}", body, folder, ["mymod:glimmerwood_planks"])
+        recipe(f"glimmerwood_{kind}", body, folder, ["tomyen:glimmerwood_planks"])
     for method, kind in [("smelting", "minecraft:smelting"), ("blasting", "minecraft:blasting")]:
         for source in ["raw_fae_silver", "fae_silver_ore"]:
             recipe(f"fae_silver_ingot_from_{method}_{source}", OrderedDict([
                 ("type", kind), ("category", "misc"), ("cookingtime", 200 if method == "smelting" else 100), ("experience", 0.8),
-                ("group", "fae_silver_ingot"), ("ingredient", f"mymod:{source}"), ("result", {"id": "mymod:fae_silver_ingot"})]),
-                "misc", [f"mymod:{source}"])
+                ("group", "fae_silver_ingot"), ("ingredient", f"tomyen:{source}"), ("result", {"id": "tomyen:fae_silver_ingot"})]),
+                "misc", [f"tomyen:{source}"])
     for tool, pattern in TOOLS.items():
-        body = shaped(f"fae_silver_{tool}", pattern, OrderedDict([("#", "minecraft:stick"), ("X", "mymod:fae_silver_ingot")]),
+        body = shaped(f"fae_silver_{tool}", pattern, OrderedDict([("#", "minecraft:stick"), ("X", "tomyen:fae_silver_ingot")]),
                       "equipment")
-        recipe(f"fae_silver_{tool}", body, "combat" if tool == "sword" else "equipment", ["mymod:fae_silver_ingot"])
+        recipe(f"fae_silver_{tool}", body, "combat" if tool == "sword" else "equipment", ["tomyen:fae_silver_ingot"])
     recipe("fae_ring_charm", shaped("fae_ring_charm", [" D ", "DMD", " S "], OrderedDict([
-        ("D", "mymod:fae_dust"), ("M", "mymod:fae_mushroom"), ("S", "mymod:fae_silver_ingot")]), "misc"), "misc", ["mymod:fae_dust"])
-    recipe("fae_dust_from_fae_bloom", shapeless("fae_dust", ["mymod:fae_bloom"], "misc", 2), "misc", ["mymod:fae_bloom"])
-    recipe("glow_ink_sac_from_fae_dust", shapeless("minecraft:glow_ink_sac", ["minecraft:ink_sac", "mymod:fae_dust"], "misc"), "misc",
-           ["mymod:fae_dust"])
-    for potion, reagent in [("slow_falling", "mymod:fae_dust"), ("night_vision", "mymod:fae_mushroom")]:
-        write(os.path.join(DATA, "mymod", "recipe", f"potion_{potion}_from_{reagent.split(':')[1]}.json"), OrderedDict([
+        ("D", "tomyen:fae_dust"), ("M", "tomyen:fae_mushroom"), ("S", "tomyen:fae_silver_ingot")]), "misc"), "misc", ["tomyen:fae_dust"])
+    recipe("fae_dust_from_fae_bloom", shapeless("fae_dust", ["tomyen:fae_bloom"], "misc", 2), "misc", ["tomyen:fae_bloom"])
+    recipe("glow_ink_sac_from_fae_dust", shapeless("minecraft:glow_ink_sac", ["minecraft:ink_sac", "tomyen:fae_dust"], "misc"), "misc",
+           ["tomyen:fae_dust"])
+    for potion, reagent in [("slow_falling", "tomyen:fae_dust"), ("night_vision", "tomyen:fae_mushroom")]:
+        write(os.path.join(DATA, "tomyen", "recipe", f"potion_{potion}_from_{reagent.split(':')[1]}.json"), OrderedDict([
             ("type", "minecraft:brewing"),
             ("input", {"item": "minecraft:potion", "potion_contents": {"potions": "minecraft:awkward"}}),
             ("output", {"components": {"minecraft:potion_contents": {"potion": f"minecraft:{potion}"}}, "id": "minecraft:potion"}),
             ("reagent", {"item": reagent})]))
 
     # --- Tags -------------------------------------------------------------------------------------------------
-    tag("block", "minecraft", "logs_that_burn", ["mymod:glimmerwood_log"])
-    tag("item", "minecraft", "logs_that_burn", ["mymod:glimmerwood_log"])
+    tag("block", "minecraft", "logs_that_burn", ["tomyen:glimmerwood_log"])
+    tag("item", "minecraft", "logs_that_burn", ["tomyen:glimmerwood_log"])
     for kind, name in [("planks", "planks"), ("leaves", "leaves"), ("sapling", "saplings"), ("stairs", "wooden_stairs"),
                        ("slab", "wooden_slabs"), ("door", "wooden_doors")]:
-        tag("block", "minecraft", name, [f"mymod:glimmerwood_{kind}"])
-        tag("item", "minecraft", name, [f"mymod:glimmerwood_{kind}"])
-    tag("block", "minecraft", "small_flowers", ["mymod:fae_bloom"])
-    tag("item", "minecraft", "small_flowers", ["mymod:fae_bloom"])
-    tag("block", "minecraft", "grass_blocks", ["mymod:fae_grass_block"])
-    tag("block", "minecraft", "animals_spawnable_on", ["mymod:fae_grass_block"])
-    tag("block", "minecraft", "mineable/shovel", ["mymod:fae_grass_block"])
-    tag("block", "minecraft", "mineable/pickaxe", ["mymod:fae_silver_ore", "mymod:fairy_in_a_bottle"])
-    tag("block", "minecraft", "needs_iron_tool", ["mymod:fae_silver_ore"])
-    tag("block", "minecraft", "ores", ["mymod:fae_silver_ore"])
-    tag("item", "minecraft", "ores", ["mymod:fae_silver_ore"])
-    tag("item", "mymod", "fae_silver_tool_materials", ["mymod:fae_silver_ingot"])
-    tag("block", "mymod", "fae_ring_mushrooms", ["minecraft:red_mushroom", "minecraft:brown_mushroom", "mymod:fae_mushroom"])
-    tag("block", "mymod", "feywild_ore_replaceables", ["minecraft:stone", "minecraft:andesite", "minecraft:calcite"])
+        tag("block", "minecraft", name, [f"tomyen:glimmerwood_{kind}"])
+        tag("item", "minecraft", name, [f"tomyen:glimmerwood_{kind}"])
+    tag("block", "minecraft", "small_flowers", ["tomyen:fae_bloom"])
+    tag("item", "minecraft", "small_flowers", ["tomyen:fae_bloom"])
+    tag("block", "minecraft", "grass_blocks", ["tomyen:fae_grass_block"])
+    tag("block", "minecraft", "animals_spawnable_on", ["tomyen:fae_grass_block"])
+    tag("block", "minecraft", "mineable/shovel", ["tomyen:fae_grass_block"])
+    tag("block", "minecraft", "mineable/pickaxe", ["tomyen:fae_silver_ore", "tomyen:fairy_in_a_bottle"])
+    tag("block", "minecraft", "needs_iron_tool", ["tomyen:fae_silver_ore"])
+    tag("block", "minecraft", "ores", ["tomyen:fae_silver_ore"])
+    tag("item", "minecraft", "ores", ["tomyen:fae_silver_ore"])
+    tag("item", "tomyen", "fae_silver_tool_materials", ["tomyen:fae_silver_ingot"])
+    tag("block", "tomyen", "fae_ring_mushrooms", ["minecraft:red_mushroom", "minecraft:brown_mushroom", "tomyen:fae_mushroom"])
+    tag("block", "tomyen", "feywild_ore_replaceables", ["minecraft:stone", "minecraft:andesite", "minecraft:calcite"])
     for tool in TOOLS:
-        tag("item", "minecraft", tool + ("s" if tool != "axe" else "es"), [f"mymod:fae_silver_{tool}"])
+        tag("item", "minecraft", tool + ("s" if tool != "axe" else "es"), [f"tomyen:fae_silver_{tool}"])
 
 
 TOOLS = OrderedDict([("sword", ["X", "X", "#"]), ("pickaxe", ["XXX", " # ", " # "]), ("axe", ["XX", "X#", " #"]),

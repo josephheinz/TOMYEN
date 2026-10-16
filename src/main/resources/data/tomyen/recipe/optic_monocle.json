@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": "tomyen:optic_lens",
+    "S": "minecraft:string",
+    "G": "minecraft:gold_nugget"
+  },
+  "pattern": [
+    " S ",
+    "GLG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:optic_monocle"
+  }
+}

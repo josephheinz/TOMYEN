@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "tomyen:star_drill_bit",
+    "X": "tomyen:star_crystal_shard",
+    "S": "tomyen:star_steel_ingot",
+    "D": "tomyen:tungsten_carbide_drill"
+  },
+  "pattern": [
+    " XB",
+    "SDX",
+    "S  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:star_drill"
+  }
+}

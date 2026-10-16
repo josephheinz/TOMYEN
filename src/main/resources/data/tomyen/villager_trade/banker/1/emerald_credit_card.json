@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "tomyen:credit_card"
+  },
+  "max_uses": 3,
+  "reputation_discount": 0.05,
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 5
+  },
+  "xp": 5
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_transmute",
+  "category": "equipment",
+  "input": "tomyen:leaf_blower",
+  "material": "tomyen:vacuum_kit",
+  "result": {
+    "id": "tomyen:leaf_vacuum"
+  }
+}

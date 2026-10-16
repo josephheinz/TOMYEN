@@ -1,38 +1,38 @@
 {
 	"schemaVersion": 1,
-	"id": "mymod",
+	"id": "tomyen",
 	"version": "${version}",
-	"name": "My Mod",
-	"description": "TODO: describe the mod.",
+	"name": "TOMYEN",
+	"description": "The Only Mod You'll Ever Need. An invasion of meteors, fae, werewolves, rogue machines and UFOs, and the guns, gear, vehicles and gadgets to fight back.",
 	"authors": [
 		"jheinz"
 	],
 	"license": "CC0-1.0",
-	"icon": "assets/mymod/icon.png",
+	"icon": "assets/tomyen/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.jheinz.mymod.MyMod"
+			"com.jheinz.tomyen.MyMod"
 		],
 		"client": [
-			"com.jheinz.mymod.client.MyModClient"
+			"com.jheinz.tomyen.client.MyModClient"
 		]
 	},
 	"mixins": [
-		"mymod.mixins.json",
+		"tomyen.mixins.json",
 		{
-			"config": "mymod.client.mixins.json",
+			"config": "tomyen.client.mixins.json",
 			"environment": "client"
 		},
-		"mymod.fishing.mixins.json",
-		"mymod.survival.mixins.json",
-		"mymod.scarecrow.mixins.json",
+		"tomyen.fishing.mixins.json",
+		"tomyen.survival.mixins.json",
+		"tomyen.scarecrow.mixins.json",
 		{
-			"config": "mymod.fishing.client.mixins.json",
+			"config": "tomyen.fishing.client.mixins.json",
 			"environment": "client"
 		},
 		{
-			"config": "mymod.trombone.client.mixins.json",
+			"config": "tomyen.trombone.client.mixins.json",
 			"environment": "client"
 		}
 	],

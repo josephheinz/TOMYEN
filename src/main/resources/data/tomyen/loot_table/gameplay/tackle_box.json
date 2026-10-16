@@ -1,0 +1,159 @@
+{
+  "type": "minecraft:gift",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:iron_hook",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:treble_hook",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:braided_line",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:cork_bobber",
+          "weight": 6,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 2,
+              "min": 1
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:feather_lure",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:spinner_lure",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:rattle_lure",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:copper_reel",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:drag_reel",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:earthworms",
+          "weight": 8,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 8,
+              "min": 4
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:crickets",
+          "weight": 6,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 6,
+              "min": 3
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:dough_balls",
+          "weight": 6,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 6,
+              "min": 3
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:leeches",
+          "weight": 4,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 4,
+              "min": 2
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:cut_bait",
+          "weight": 4,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 4,
+              "min": 2
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:string",
+          "weight": 5,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 5,
+              "min": 2
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_nugget",
+          "weight": 4,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 6,
+              "min": 2
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "random_sequence": "tomyen:gameplay/tackle_box"
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:string",
+    "minecraft:string",
+    "tomyen:fae_dust",
+    "tomyen:fae_dust"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:fae_silk_line"
+  }
+}

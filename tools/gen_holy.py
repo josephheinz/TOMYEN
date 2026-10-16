@@ -3,7 +3,7 @@ spawn egg, and writes the egg item model. The crucifix is tools/gen_crucifix.py.
 import json, math, os, random, struct, sys, zlib
 from collections import OrderedDict
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
 rnd = random.Random(11)
 
@@ -280,6 +280,6 @@ def write(path, obj):
         f.write("\n")
 
 
-write(os.path.join(MODELS, "vampire_spawn_egg.json"), OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/vampire_spawn_egg"})]))
-write(os.path.join(ITEMS, "vampire_spawn_egg.json"), {"model": {"type": "minecraft:model", "model": "mymod:item/vampire_spawn_egg"}})
+write(os.path.join(MODELS, "vampire_spawn_egg.json"), OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/vampire_spawn_egg"})]))
+write(os.path.join(ITEMS, "vampire_spawn_egg.json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/vampire_spawn_egg"}})
 print("done")

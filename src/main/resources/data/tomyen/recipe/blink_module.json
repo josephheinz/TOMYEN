@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:computer_chip",
+    "minecraft:glass_pane",
+    "minecraft:ender_eye"
+  ],
+  "result": {
+    "id": "tomyen:blink_module"
+  }
+}

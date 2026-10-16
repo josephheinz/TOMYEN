@@ -1,14 +1,14 @@
 """Paints the Schnozzle (its entity texture, UVs matching client/schnozzle/SchnozzleModel), its spawn egg, the Giant
 Booger and Nose Hair items, and writes their item models and definitions. On the data side it writes the Schnozzle's
-loot table, the booger and nose hair recipes (with recipe-book advancements) and the mymod:holy_vulnerable entity tag.
+loot table, the booger and nose hair recipes (with recipe-book advancements) and the tomyen:holy_vulnerable entity tag.
 
-Usage: python3 tools/gen_schnozzle.py src/main/resources/assets/mymod"""
+Usage: python3 tools/gen_schnozzle.py src/main/resources/assets/tomyen"""
 import json, math, os, random, struct, sys, zlib
 from collections import OrderedDict
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 rnd = random.Random(23)
 
 
@@ -361,8 +361,8 @@ def write(path, obj):
 
 for name in ("schnozzle_spawn_egg", "giant_booger", "nose_hair"):
     write(os.path.join(MODELS, name + ".json"),
-          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/" + name})]))
-    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/" + name})]))
+    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 
 def drop(item, low, high, looting=1.0):
@@ -374,8 +374,8 @@ def drop(item, low, high, looting=1.0):
 
 write(os.path.join(DATA, "loot_table/entities/schnozzle.json"), OrderedDict([
     ("type", "minecraft:entity"),
-    ("pools", [drop("mymod:giant_booger", 1, 3), drop("mymod:nose_hair", 2, 5, 2.0), drop("minecraft:slime_ball", 0, 2)]),
-    ("random_sequence", "mymod:entities/schnozzle")]))
+    ("pools", [drop("tomyen:giant_booger", 1, 3), drop("tomyen:nose_hair", 2, 5, 2.0), drop("minecraft:slime_ball", 0, 2)]),
+    ("random_sequence", "tomyen:entities/schnozzle")]))
 
 
 def shapeless(name, ingredient, result, count, category="misc"):
@@ -386,13 +386,13 @@ def shapeless(name, ingredient, result, count, category="misc"):
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
             ("has_item", {"conditions": {"items": [{"items": ingredient}]}, "trigger": "minecraft:inventory_changed"}),
-            ("has_the_recipe", {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
+            ("has_the_recipe", {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
         ("requirements", [["has_item", "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
-shapeless("string_from_nose_hair", "mymod:nose_hair", "minecraft:string", 2)
-shapeless("slime_ball_from_giant_booger", "mymod:giant_booger", "minecraft:slime_ball", 2)
+shapeless("string_from_nose_hair", "tomyen:nose_hair", "minecraft:string", 2)
+shapeless("slime_ball_from_giant_booger", "tomyen:giant_booger", "minecraft:slime_ball", 2)
 
-write(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), {"values": ["mymod:vampire", "mymod:schnozzle", "mymod:skullcrane"]})
+write(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), {"values": ["tomyen:vampire", "tomyen:schnozzle", "tomyen:skullcrane"]})
 print("done")

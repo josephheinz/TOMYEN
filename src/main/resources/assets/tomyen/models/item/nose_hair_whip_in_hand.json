@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "tomyen:item/nose_hair_whip_in_hand"
+  }
+}

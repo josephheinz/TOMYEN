@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "tomyen:block/polished_meteorite_stone",
+    "side": "tomyen:block/polished_meteorite_stone",
+    "top": "tomyen:block/polished_meteorite_stone"
+  }
+}

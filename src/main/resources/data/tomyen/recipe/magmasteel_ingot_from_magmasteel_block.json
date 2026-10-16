@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:magmasteel_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "tomyen:magmasteel_ingot"
+  }
+}

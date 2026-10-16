@@ -1,0 +1,30 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cod",
+    "minecraft:salmon",
+    "minecraft:tropical_fish",
+    "tomyen:brook_trout",
+    "tomyen:mud_catfish",
+    "tomyen:pike",
+    "tomyen:mackerel",
+    "tomyen:swordfish",
+    "tomyen:anglerfish",
+    "tomyen:glowfin_tetra",
+    "tomyen:parrotfish",
+    "tomyen:ice_char",
+    "tomyen:bog_eel",
+    "tomyen:cave_blindfish",
+    "tomyen:largemouth_bass",
+    "tomyen:bluegill",
+    "tomyen:yellow_perch",
+    "tomyen:walleye",
+    "tomyen:crappie",
+    "tomyen:sturgeon",
+    "tomyen:red_snapper",
+    "tomyen:flounder",
+    "tomyen:tuna",
+    "tomyen:mahi_mahi",
+    "tomyen:barracuda"
+  ]
+}

@@ -21,7 +21,7 @@ Holy silver is warm white rather than cool, with a few deliberate lines of gold:
 its hallmark, gilded hilts, and on the worn armor a brow band, a chest cross, a belt and boot cuffs. Its ingot,
 nugget, armor and rounds carry a small golden sparkle in the corner.
 
-Usage: python3 tools/gen_silver.py src/main/resources/assets/mymod [--preview out.png]"""
+Usage: python3 tools/gen_silver.py src/main/resources/assets/tomyen [--preview out.png]"""
 import json, os, struct, sys, zipfile
 from collections import OrderedDict
 
@@ -583,7 +583,7 @@ def tag(path, values):
 
 
 def m(name):
-    return "mymod:" + name
+    return "tomyen:" + name
 
 
 BLOCKS = ["silver_ore", "deepslate_silver_ore", "raw_silver_block", "silver_block", "holy_silver_block"]
@@ -596,42 +596,42 @@ ARMOR = ["holy_silver_helmet", "holy_silver_chestplate", "holy_silver_leggings",
 TOOLS = ["holy_silver_shovel", "holy_silver_pickaxe", "holy_silver_axe", "holy_silver_hoe"]
 
 LANG = OrderedDict([
-    ("block.mymod.silver_ore", "Silver Ore"),
-    ("block.mymod.deepslate_silver_ore", "Deepslate Silver Ore"),
-    ("block.mymod.raw_silver_block", "Block of Raw Silver"),
-    ("block.mymod.silver_block", "Block of Silver"),
-    ("block.mymod.holy_silver_block", "Block of Holy Silver"),
-    ("item.mymod.raw_silver", "Raw Silver"),
-    ("item.mymod.silver_ingot", "Silver Ingot"),
-    ("item.mymod.silver_nugget", "Silver Nugget"),
-    ("item.mymod.holy_silver_ingot", "Holy Silver Ingot"),
-    ("item.mymod.holy_silver_nugget", "Holy Silver Nugget"),
-    ("item.mymod.silver_sword", "Silver Sword"),
-    ("item.mymod.silver_long_sword", "Silver Long Sword"),
-    ("item.mymod.holy_silver_sword", "Holy Silver Sword"),
-    ("item.mymod.holy_silver_long_sword", "Holy Silver Long Sword"),
-    ("item.mymod.holy_silver_shovel", "Holy Silver Shovel"),
-    ("item.mymod.holy_silver_pickaxe", "Holy Silver Pickaxe"),
-    ("item.mymod.holy_silver_axe", "Holy Silver Axe"),
-    ("item.mymod.holy_silver_hoe", "Holy Silver Hoe"),
-    ("item.mymod.holy_silver_helmet", "Holy Silver Helmet"),
-    ("item.mymod.holy_silver_chestplate", "Holy Silver Chestplate"),
-    ("item.mymod.holy_silver_leggings", "Holy Silver Leggings"),
-    ("item.mymod.holy_silver_boots", "Holy Silver Boots"),
-    ("item.mymod.holy_silver_crucifix", "Holy Silver Crucifix"),
-    ("item.mymod.bullet_556_silver", "5.56mm Silver"),
-    ("item.mymod.bullet_556_holy_silver", "5.56mm Holy Silver"),
-    ("item.mymod.shell_12g_silver_buckshot", "12 Gauge Silver Buckshot"),
-    ("item.mymod.shell_12g_holy_silver_buckshot", "12 Gauge Holy Silver Buckshot"),
-    ("item.mymod.evil_bane", "\u00d7%s damage to the undead and the unholy"),
-    ("item.mymod.evil_bane.holy_fire", "Sets them alight with holy fire"),
-    ("item.mymod.holy_silver_armor.piece", "Each piece wards off %s%% of evil damage"),
-    ("item.mymod.holy_silver_armor.full_set",
+    ("block.tomyen.silver_ore", "Silver Ore"),
+    ("block.tomyen.deepslate_silver_ore", "Deepslate Silver Ore"),
+    ("block.tomyen.raw_silver_block", "Block of Raw Silver"),
+    ("block.tomyen.silver_block", "Block of Silver"),
+    ("block.tomyen.holy_silver_block", "Block of Holy Silver"),
+    ("item.tomyen.raw_silver", "Raw Silver"),
+    ("item.tomyen.silver_ingot", "Silver Ingot"),
+    ("item.tomyen.silver_nugget", "Silver Nugget"),
+    ("item.tomyen.holy_silver_ingot", "Holy Silver Ingot"),
+    ("item.tomyen.holy_silver_nugget", "Holy Silver Nugget"),
+    ("item.tomyen.silver_sword", "Silver Sword"),
+    ("item.tomyen.silver_long_sword", "Silver Long Sword"),
+    ("item.tomyen.holy_silver_sword", "Holy Silver Sword"),
+    ("item.tomyen.holy_silver_long_sword", "Holy Silver Long Sword"),
+    ("item.tomyen.holy_silver_shovel", "Holy Silver Shovel"),
+    ("item.tomyen.holy_silver_pickaxe", "Holy Silver Pickaxe"),
+    ("item.tomyen.holy_silver_axe", "Holy Silver Axe"),
+    ("item.tomyen.holy_silver_hoe", "Holy Silver Hoe"),
+    ("item.tomyen.holy_silver_helmet", "Holy Silver Helmet"),
+    ("item.tomyen.holy_silver_chestplate", "Holy Silver Chestplate"),
+    ("item.tomyen.holy_silver_leggings", "Holy Silver Leggings"),
+    ("item.tomyen.holy_silver_boots", "Holy Silver Boots"),
+    ("item.tomyen.holy_silver_crucifix", "Holy Silver Crucifix"),
+    ("item.tomyen.bullet_556_silver", "5.56mm Silver"),
+    ("item.tomyen.bullet_556_holy_silver", "5.56mm Holy Silver"),
+    ("item.tomyen.shell_12g_silver_buckshot", "12 Gauge Silver Buckshot"),
+    ("item.tomyen.shell_12g_holy_silver_buckshot", "12 Gauge Holy Silver Buckshot"),
+    ("item.tomyen.evil_bane", "\u00d7%s damage to the undead and the unholy"),
+    ("item.tomyen.evil_bane.holy_fire", "Sets them alight with holy fire"),
+    ("item.tomyen.holy_silver_armor.piece", "Each piece wards off %s%% of evil damage"),
+    ("item.tomyen.holy_silver_armor.full_set",
      "Full set: immune to evil, smites evil attackers and cures Bleeding"),
-    ("item.mymod.silver.consecrate", "Drop it in crucifix light to consecrate it"),
-    ("subtitles.mymod.holy_silver_consecrate", "Silver is consecrated"),
-    ("subtitles.mymod.holy_silver_ward", "Holy silver wards off evil"),
-    ("subtitles.mymod.item.armor.equip_holy_silver", "Holy silver armor clinks"),
+    ("item.tomyen.silver.consecrate", "Drop it in crucifix light to consecrate it"),
+    ("subtitles.tomyen.holy_silver_consecrate", "Silver is consecrated"),
+    ("subtitles.tomyen.holy_silver_ward", "Holy silver wards off evil"),
+    ("subtitles.tomyen.item.armor.equip_holy_silver", "Holy silver armor clinks"),
 ])
 
 
@@ -641,13 +641,13 @@ def sound(name, file, pitch, volume=1.0):
 
 SOUNDS = OrderedDict([
     # A rising swell, like a choir drawing breath, and a bell's ring under it.
-    ("holy_silver_consecrate", OrderedDict([("subtitle", "subtitles.mymod.holy_silver_consecrate"), ("sounds", [
+    ("holy_silver_consecrate", OrderedDict([("subtitle", "subtitles.tomyen.holy_silver_consecrate"), ("sounds", [
         sound("holy_silver_consecrate", "block/conduit/activate", 1.35, 0.9),
         sound("holy_silver_consecrate", "block/beacon/activate", 1.7, 0.8)])])),
     # A high crystal ring as the blow glances off.
-    ("holy_silver_ward", OrderedDict([("subtitle", "subtitles.mymod.holy_silver_ward"), ("sounds", [
+    ("holy_silver_ward", OrderedDict([("subtitle", "subtitles.tomyen.holy_silver_ward"), ("sounds", [
         sound("holy_silver_ward", f"block/amethyst/resonate{i}", 1.7, 0.9) for i in range(1, 5)])])),
-    ("item.armor.equip_holy_silver", OrderedDict([("subtitle", "subtitles.mymod.item.armor.equip_holy_silver"), ("sounds", [
+    ("item.armor.equip_holy_silver", OrderedDict([("subtitle", "subtitles.tomyen.item.armor.equip_holy_silver"), ("sounds", [
         sound("equip", f"item/armor/equip_gold{i}", 1.25) for i in range(1, 7)])])),
 ])
 
@@ -683,7 +683,7 @@ def write_assets():
     with open(os.path.join(ASSETS, "items", "crucifix.json")) as f:
         crucifix = f.read()
     with open(os.path.join(ASSETS, "items", "holy_silver_crucifix.json"), "w") as f:
-        f.write(crucifix.replace("mymod:item/crucifix", "mymod:item/holy_silver_crucifix"))
+        f.write(crucifix.replace("tomyen:item/crucifix", "tomyen:item/holy_silver_crucifix"))
 
     write(os.path.join(ASSETS, "equipment", "holy_silver.json"), {"layers": OrderedDict(
         (layer, [{"texture": m("holy_silver")}]) for layer in ("humanoid", "humanoid_baby", "humanoid_leggings"))})
@@ -693,7 +693,7 @@ def write_assets():
 
 def write_data():
     data = os.path.normpath(os.path.join(ASSETS, "..", "..", "data"))
-    mine, vanilla_tags, c_tags = os.path.join(data, "mymod"), os.path.join(data, "minecraft", "tags"), os.path.join(data, "c", "tags")
+    mine, vanilla_tags, c_tags = os.path.join(data, "tomyen"), os.path.join(data, "minecraft", "tags"), os.path.join(data, "c", "tags")
 
     # --- Loot: the ores drop raw silver (more with Fortune), the blocks themselves ---------------------------------------
     for ore_name in ("silver_ore", "deepslate_silver_ore"):
@@ -770,14 +770,14 @@ def write_data():
             shaped(f"{metal}_from_nuggets", m(metal), nine, {"#": m(small)}, m(small), group=metal)
 
     stick = "minecraft:stick"
-    shaped("silver_sword", m("silver_sword"), ["X", "X", "#"], {"#": stick, "X": "#mymod:silver_tool_materials"}, ingot,
+    shaped("silver_sword", m("silver_sword"), ["X", "X", "#"], {"#": stick, "X": "#tomyen:silver_tool_materials"}, ingot,
            category="equipment")
-    shaped("holy_silver_sword", m("holy_silver_sword"), ["X", "X", "#"], {"#": stick, "X": "#mymod:holy_silver_tool_materials"},
+    shaped("holy_silver_sword", m("holy_silver_sword"), ["X", "X", "#"], {"#": stick, "X": "#tomyen:holy_silver_tool_materials"},
            holy, category="equipment")
     for sword in ("silver", "holy_silver"):
         shaped(f"{sword}_long_sword", m(f"{sword}_long_sword"), ["S  ", " S ", "  S"], {"S": m(f"{sword}_sword")},
                m(f"{sword}_sword"), category="equipment")
-    tool_x = "#mymod:holy_silver_tool_materials"
+    tool_x = "#tomyen:holy_silver_tool_materials"
     for tool, pattern in (("shovel", ["X", "#", "#"]), ("pickaxe", ["XXX", " # ", " # "]), ("axe", ["XX", "X#", " #"]),
                           ("hoe", ["XX", " #", " #"])):
         shaped(f"holy_silver_{tool}", m(f"holy_silver_{tool}"), pattern, {"#": stick, "X": tool_x}, holy, category="equipment")
@@ -810,7 +810,7 @@ def write_data():
 
     # --- Tags ------------------------------------------------------------------------------------------------------
     t = os.path.join(mine, "tags")
-    write(os.path.join(t, "entity_type", "evil.json"), {"values": ["#mymod:holy_vulnerable", "#minecraft:undead"]})
+    write(os.path.join(t, "entity_type", "evil.json"), {"values": ["#tomyen:holy_vulnerable", "#minecraft:undead"]})
     write(os.path.join(t, "damage_type", "evil.json"), {"values": [m("bleeding")]})
     write(os.path.join(t, "item", "silver_ores.json"), {"values": [m("silver_ore"), m("deepslate_silver_ore")]})
     write(os.path.join(t, "item", "silver_tool_materials.json"), {"values": [ingot]})

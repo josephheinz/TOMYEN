@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tomyen:block/meteorite_stone_slab"
+    },
+    "type=double": {
+      "model": "tomyen:block/meteorite_stone"
+    },
+    "type=top": {
+      "model": "tomyen:block/meteorite_stone_slab_top"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "amount": 2,
+  "random_sequence": "tomyen:trade_set/banker/level_2",
+  "trades": [
+    "tomyen:banker/2/emerald_writable_book",
+    "tomyen:banker/2/copper_ingot_emerald",
+    "tomyen:banker/2/tuna_emerald"
+  ]
+}

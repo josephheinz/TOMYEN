@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "tomyen:steel_ingot",
+    "G": "minecraft:glass",
+    "C": "minecraft:copper_ingot",
+    "B": "minecraft:blast_furnace",
+    "K": "minecraft:bricks"
+  },
+  "pattern": [
+    "SGS",
+    "CBC",
+    "SKS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:refinery"
+  }
+}

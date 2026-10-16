@@ -1,0 +1,17 @@
+{
+  "item": "tomyen:cometfish",
+  "weight": 20,
+  "difficulty": 4,
+  "behavior": "thrasher",
+  "min_rod_tier": 1,
+  "dimension": "minecraft:overworld",
+  "near_block": {
+    "block": "#tomyen:meteorite_blocks",
+    "radius": 12
+  },
+  "size": {
+    "min_lb": 1.0,
+    "avg_lb": 6.0,
+    "max_lb": 48.0
+  }
+}

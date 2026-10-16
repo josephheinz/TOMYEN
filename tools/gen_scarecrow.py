@@ -17,13 +17,13 @@ and the side at rest; a gusty sway frame; the Jack-o'-Scarecrow at night and the
 tractor beam; the head up close; and the three item sprites, enlarged. The render uses the same cubes, pivots and UV
 layout as the Java model, a Python twin of ScarecrowModel.pose and of the renderer's sway.
 
-Usage: python3 tools/gen_scarecrow.py src/main/resources/assets/mymod [--preview DIR]"""
+Usage: python3 tools/gen_scarecrow.py src/main/resources/assets/tomyen [--preview DIR]"""
 import json, math, os, struct, sys, zlib
 from collections import OrderedDict
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 PREVIEW = sys.argv[sys.argv.index("--preview") + 1] if "--preview" in sys.argv else None
 
 
@@ -658,8 +658,8 @@ def merge(path, entries):
 
 for name in ("scarecrow", "pumpkin_scarecrow", "scrap_scarecrow"):
     write(os.path.join(MODELS, name + ".json"),
-          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/" + name})]))
-    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/" + name})]))
+    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 
 def advancement(name, ingredient, category):
@@ -667,9 +667,9 @@ def advancement(name, ingredient, category):
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
             ("has_item", {"conditions": {"items": [{"items": ingredient}]}, "trigger": "minecraft:inventory_changed"}),
-            ("has_the_recipe", {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
+            ("has_the_recipe", {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
         ("requirements", [["has_item", "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
 CATEGORY = "decorations"
@@ -677,24 +677,24 @@ CATEGORY = "decorations"
 # and sticks for the post and crossbar. Unlocked by picking up hay.
 write(os.path.join(DATA, "recipe/scarecrow.json"), OrderedDict([
     ("type", "minecraft:crafting_shaped"), ("category", "misc"),
-    ("key", OrderedDict([("P", "#mymod:scarecrow_heads"), ("S", "minecraft:stick"), ("H", "minecraft:hay_block"),
-                         ("C", "#mymod:scarecrow_cloth")])),
+    ("key", OrderedDict([("P", "#tomyen:scarecrow_heads"), ("S", "minecraft:stick"), ("H", "minecraft:hay_block"),
+                         ("C", "#tomyen:scarecrow_cloth")])),
     ("pattern", ["SPS", "CHC", " S "]),
-    ("result", OrderedDict([("count", 1), ("id", "mymod:scarecrow")]))]))
+    ("result", OrderedDict([("count", 1), ("id", "tomyen:scarecrow")]))]))
 advancement("scarecrow", "minecraft:hay_block", CATEGORY)
 # The variants are made from a scarecrow: a jack-o'-lantern for a head, or rebuilt with tech scrap and redstone.
-for name, ingredients in (("pumpkin_scarecrow", ["mymod:scarecrow", "minecraft:jack_o_lantern"]),
-                          ("scrap_scarecrow", ["mymod:scarecrow", "mymod:tech_scrap", "mymod:tech_scrap", "minecraft:redstone"])):
+for name, ingredients in (("pumpkin_scarecrow", ["tomyen:scarecrow", "minecraft:jack_o_lantern"]),
+                          ("scrap_scarecrow", ["tomyen:scarecrow", "tomyen:tech_scrap", "tomyen:tech_scrap", "minecraft:redstone"])):
     write(os.path.join(DATA, "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shapeless"), ("category", "misc"), ("ingredients", ingredients),
-        ("result", OrderedDict([("count", 1), ("id", "mymod:" + name)]))]))
-    advancement(name, "mymod:scarecrow", CATEGORY)
+        ("result", OrderedDict([("count", 1), ("id", "tomyen:" + name)]))]))
+    advancement(name, "tomyen:scarecrow", CATEGORY)
 
 write(os.path.join(DATA, "tags/item/scarecrow_heads.json"), {"values": ["minecraft:pumpkin", "minecraft:carved_pumpkin"]})
 write(os.path.join(DATA, "tags/item/scarecrow_cloth.json"), {"values": ["minecraft:leather", "#minecraft:wool"]})
-write(os.path.join(DATA, "tags/entity_type/scarecrow_haters.json"), {"values": ["#minecraft:undead", "mymod:werewolf"]})
+write(os.path.join(DATA, "tags/entity_type/scarecrow_haters.json"), {"values": ["#minecraft:undead", "tomyen:werewolf"]})
 write(os.path.join(DATA, "tags/entity_type/ignores_scarecrows.json"), {"values": [
-    "minecraft:wither", "minecraft:ender_dragon", "minecraft:elder_guardian", "minecraft:warden", "mymod:ufo"]})
+    "minecraft:wither", "minecraft:ender_dragon", "minecraft:elder_guardian", "minecraft:warden", "tomyen:ufo"]})
 
 
 def vanilla(names, pitch, **extra):
@@ -702,31 +702,31 @@ def vanilla(names, pitch, **extra):
 
 
 merge(os.path.join(ASSETS, "sounds.json"), OrderedDict([
-    ("ufo_disappointed", OrderedDict([("subtitle", "subtitles.mymod.ufo_disappointed"),
+    ("ufo_disappointed", OrderedDict([("subtitle", "subtitles.tomyen.ufo_disappointed"),
                                       ("sounds", vanilla(["mob/villager/no1", "mob/villager/no2", "mob/villager/no3"], 1.7,
                                                          attenuation_distance=48))]))]))
 
 merge(os.path.join(ASSETS, "lang", "en_us.json"), OrderedDict([
-    ("entity.mymod.scarecrow", "Scarecrow"),
-    ("item.mymod.scarecrow", "Scarecrow"),
-    ("item.mymod.pumpkin_scarecrow", "Jack-o'-Scarecrow"),
-    ("item.mymod.scrap_scarecrow", "Scrap Scarecrow"),
-    ("item.mymod.scarecrow.tooltip.ufo", "UFOs go for it before your livestock"),
-    ("item.mymod.scarecrow.tooltip.mobs", "Hostile mobs nearby attack it for a few seconds"),
-    ("item.mymod.scrap_scarecrow.tooltip.mobs", "Hostile mobs and rogue machines nearby attack it for a few seconds"),
-    ("item.mymod.scarecrow.tooltip.crops", "Mobs don't trample farmland and rabbits leave crops alone nearby"),
-    ("item.mymod.scarecrow.tooltip.repair", "Mend with hay bales or wheat; dress it in armor"),
-    ("entity.mymod.scarecrow.rejected", "The UFO throws the scarecrow back in disgust"),
-    ("entity.mymod.scarecrow.probed.0", "Rejected Specimen #%s"),
-    ("entity.mymod.scarecrow.probed.1", "Sample %s: Just Hay"),
-    ("entity.mymod.scarecrow.probed.2", "Probed (Inconclusive) #%s"),
-    ("entity.mymod.scarecrow.probed.3", "Return to Sender #%s"),
-    ("subtitles.mymod.ufo_disappointed", "UFO grumbles in disappointment"),
+    ("entity.tomyen.scarecrow", "Scarecrow"),
+    ("item.tomyen.scarecrow", "Scarecrow"),
+    ("item.tomyen.pumpkin_scarecrow", "Jack-o'-Scarecrow"),
+    ("item.tomyen.scrap_scarecrow", "Scrap Scarecrow"),
+    ("item.tomyen.scarecrow.tooltip.ufo", "UFOs go for it before your livestock"),
+    ("item.tomyen.scarecrow.tooltip.mobs", "Hostile mobs nearby attack it for a few seconds"),
+    ("item.tomyen.scrap_scarecrow.tooltip.mobs", "Hostile mobs and rogue machines nearby attack it for a few seconds"),
+    ("item.tomyen.scarecrow.tooltip.crops", "Mobs don't trample farmland and rabbits leave crops alone nearby"),
+    ("item.tomyen.scarecrow.tooltip.repair", "Mend with hay bales or wheat; dress it in armor"),
+    ("entity.tomyen.scarecrow.rejected", "The UFO throws the scarecrow back in disgust"),
+    ("entity.tomyen.scarecrow.probed.0", "Rejected Specimen #%s"),
+    ("entity.tomyen.scarecrow.probed.1", "Sample %s: Just Hay"),
+    ("entity.tomyen.scarecrow.probed.2", "Probed (Inconclusive) #%s"),
+    ("entity.tomyen.scarecrow.probed.3", "Return to Sender #%s"),
+    ("subtitles.tomyen.ufo_disappointed", "UFO grumbles in disappointment"),
 ]))
 
 
 # ---------------------------------------------------------------------------------------------- the Java model
-JAVA = os.path.normpath(os.path.join(ASSETS, "..", "..", "..", "..", "client", "java", "com", "jheinz", "mymod", "client",
+JAVA = os.path.normpath(os.path.join(ASSETS, "..", "..", "..", "..", "client", "java", "com", "jheinz", "tomyen", "client",
                                      "scarecrow", "ScarecrowModel.java"))
 
 

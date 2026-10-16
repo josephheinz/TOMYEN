@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:fairy_in_a_bottle"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "tomyen:blocks/fairy_in_a_bottle"
+}

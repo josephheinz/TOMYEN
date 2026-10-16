@@ -1,14 +1,14 @@
 {
   "values": [
-    "#mymod:long_swords",
-    "mymod:magmasteel_sword",
-    "mymod:soul_steel_sword",
-    "mymod:silver_sword",
-    "mymod:holy_silver_sword",
-    "mymod:fae_silver_sword",
-    "mymod:star_steel_sword",
-    "mymod:froststeel_sword",
-    "mymod:voidsteel_sword",
-    "mymod:bloom_steel_sword"
+    "#tomyen:long_swords",
+    "tomyen:magmasteel_sword",
+    "tomyen:soul_steel_sword",
+    "tomyen:silver_sword",
+    "tomyen:holy_silver_sword",
+    "tomyen:fae_silver_sword",
+    "tomyen:star_steel_sword",
+    "tomyen:froststeel_sword",
+    "tomyen:voidsteel_sword",
+    "tomyen:bloom_steel_sword"
   ]
 }

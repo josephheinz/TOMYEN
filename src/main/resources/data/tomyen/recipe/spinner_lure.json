@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:gold_nugget",
+    "minecraft:iron_nugget",
+    "minecraft:iron_nugget",
+    "minecraft:string"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:spinner_lure"
+  }
+}

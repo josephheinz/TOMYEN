@@ -1,0 +1,7 @@
+{
+  "parent": "tomyen:item/crucifix_raised",
+  "textures": {
+    "parts": "tomyen:item/holy_silver_crucifix_parts",
+    "particle": "tomyen:item/holy_silver_crucifix_parts"
+  }
+}

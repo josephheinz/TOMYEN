@@ -1,0 +1,77 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": [
+          "gui",
+          "ground",
+          "fixed"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "tomyen:item/flamethrower_icon"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:range_dispatch",
+      "property": "tomyen:muzzle_flash",
+      "entries": [
+        {
+          "threshold": 0.5,
+          "model": {
+            "type": "minecraft:composite",
+            "models": [
+              {
+                "type": "minecraft:model",
+                "model": "tomyen:item/flamethrower"
+              },
+              {
+                "type": "minecraft:model",
+                "model": "tomyen:item/flamethrower_flame_0"
+              }
+            ]
+          }
+        },
+        {
+          "threshold": 1.5,
+          "model": {
+            "type": "minecraft:composite",
+            "models": [
+              {
+                "type": "minecraft:model",
+                "model": "tomyen:item/flamethrower"
+              },
+              {
+                "type": "minecraft:model",
+                "model": "tomyen:item/flamethrower_flame_1"
+              }
+            ]
+          }
+        },
+        {
+          "threshold": 2.5,
+          "model": {
+            "type": "minecraft:composite",
+            "models": [
+              {
+                "type": "minecraft:model",
+                "model": "tomyen:item/flamethrower"
+              },
+              {
+                "type": "minecraft:model",
+                "model": "tomyen:item/flamethrower_flame_2"
+              }
+            ]
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "tomyen:item/flamethrower"
+      }
+    }
+  }
+}

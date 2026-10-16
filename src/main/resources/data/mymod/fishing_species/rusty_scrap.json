@@ -1,8 +1,0 @@
-{
-  "item": "mymod:rusty_scrap",
-  "weight": 5,
-  "difficulty": 1,
-  "behavior": "sinker",
-  "min_rod_tier": 0,
-  "dimension": "minecraft:overworld"
-}

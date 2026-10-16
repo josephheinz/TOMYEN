@@ -4,16 +4,16 @@ brass-and-green repaint of it, the worn monocle and backpack (client/skullcrane/
 the Servo Arm, Optic Lens and Leader Core items and the Grapple Claw, Optic Monocle, Servo Arm Backpack and Servo Drone
 made from them, and writes their item models and definitions. Everything is
 flat-shaded from fixed palettes, so a rerun gives the same files. On the data side it writes the Skullcrane's loot
-table, the recipes that use its drops (with recipe-book advancements), and adds both to the mymod:holy_vulnerable and
+table, the recipes that use its drops (with recipe-book advancements), and adds both to the tomyen:holy_vulnerable and
 minecraft:undead entity tags.
 
-Usage: python3 tools/gen_skullcrane.py src/main/resources/assets/mymod"""
+Usage: python3 tools/gen_skullcrane.py src/main/resources/assets/tomyen"""
 import json, math, os, struct, sys, zlib
 from collections import OrderedDict
 
-ASSETS = sys.argv[1]  # .../assets/mymod
+ASSETS = sys.argv[1]  # .../assets/tomyen
 TEX = os.path.join(ASSETS, "textures")
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 MC_DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "minecraft"))
 
 
@@ -497,8 +497,8 @@ def write(path, obj):
 for name in ("skullcrane_spawn_egg", "skullcrane_leader_spawn_egg", "servo_arm", "optic_lens", "leader_core", "grapple_claw",
              "optic_monocle", "servo_arm_backpack", "servo_drone"):
     write(os.path.join(MODELS, name + ".json"),
-          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/" + name})]))
-    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+          OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/" + name})]))
+    write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
 
 def drop(item, low, high, looting=1.0):
@@ -510,24 +510,24 @@ def drop(item, low, high, looting=1.0):
 
 write(os.path.join(DATA, "loot_table/entities/skullcrane.json"), OrderedDict([
     ("type", "minecraft:entity"),
-    ("pools", [drop("mymod:servo_arm", 0, 2), drop("mymod:optic_lens", 0, 1), drop("minecraft:bone", 0, 2),
-               drop("mymod:tech_scrap", 0, 1, 0.5)]),
-    ("random_sequence", "mymod:entities/skullcrane")]))
+    ("pools", [drop("tomyen:servo_arm", 0, 2), drop("tomyen:optic_lens", 0, 1), drop("minecraft:bone", 0, 2),
+               drop("tomyen:tech_scrap", 0, 1, 0.5)]),
+    ("random_sequence", "tomyen:entities/skullcrane")]))
 
 # The leader: more of everything, and now and then (killed by a player) its Leader Core.
 write(os.path.join(DATA, "loot_table/entities/skullcrane_leader.json"), OrderedDict([
     ("type", "minecraft:entity"),
-    ("pools", [drop("mymod:servo_arm", 2, 4), drop("mymod:optic_lens", 1, 3), drop("minecraft:bone", 1, 4),
-               drop("mymod:tech_scrap", 1, 2, 1.0),
+    ("pools", [drop("tomyen:servo_arm", 2, 4), drop("tomyen:optic_lens", 1, 3), drop("minecraft:bone", 1, 4),
+               drop("tomyen:tech_scrap", 1, 2, 1.0),
                OrderedDict([
                    ("condition", {"type": "minecraft:all_of", "terms": [
                        {"type": "minecraft:killed_by_player"},
                        OrderedDict([("type", "minecraft:random_chance_with_enchanted_bonus"),
                                     ("enchanted_chance", {"type": "minecraft:linear", "base": 0.45, "per_level_above_first": 0.1}),
                                     ("enchantment", "minecraft:looting"), ("unenchanted_chance", 0.35)])]}),
-                   ("entries", [{"type": "minecraft:item", "name": "mymod:leader_core"}]),
+                   ("entries", [{"type": "minecraft:item", "name": "tomyen:leader_core"}]),
                    ("rolls", 1)])]),
-    ("random_sequence", "mymod:entities/skullcrane_leader")]))
+    ("random_sequence", "tomyen:entities/skullcrane_leader")]))
 
 
 def advancement(name, ingredient, category="misc"):
@@ -535,9 +535,9 @@ def advancement(name, ingredient, category="misc"):
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
             ("has_item", {"conditions": {"items": [{"items": ingredient}]}, "trigger": "minecraft:inventory_changed"}),
-            ("has_the_recipe", {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
+            ("has_the_recipe", {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
         ("requirements", [["has_item", "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
 def shapeless(name, ingredients, result, count, category="misc"):
@@ -554,19 +554,19 @@ def shaped(name, pattern, key, result, count, category="misc"):
     advancement(name, next(iter(key.values())), category)
 
 
-shapeless("tech_scrap_from_servo_arm", ["mymod:servo_arm"], "mymod:tech_scrap", 2)
-shapeless("computer_chip_from_optic_lens", ["mymod:optic_lens", "mymod:tech_scrap"], "mymod:computer_chip", 1)
-shaped("spyglass_from_optic_lens", ["L", "C", "C"], OrderedDict([("L", "mymod:optic_lens"), ("C", "minecraft:copper_ingot")]),
+shapeless("tech_scrap_from_servo_arm", ["tomyen:servo_arm"], "tomyen:tech_scrap", 2)
+shapeless("computer_chip_from_optic_lens", ["tomyen:optic_lens", "tomyen:tech_scrap"], "tomyen:computer_chip", 1)
+shaped("spyglass_from_optic_lens", ["L", "C", "C"], OrderedDict([("L", "tomyen:optic_lens"), ("C", "minecraft:copper_ingot")]),
        "minecraft:spyglass", 1, "equipment")
 
-shaped("grapple_claw", ["A", "L", "T"], OrderedDict([("A", "mymod:servo_arm"), ("L", "minecraft:lead"), ("T", "minecraft:tripwire_hook")]),
-       "mymod:grapple_claw", 1, "equipment")
-shaped("optic_monocle", [" S ", "GLG"], OrderedDict([("L", "mymod:optic_lens"), ("S", "minecraft:string"), ("G", "minecraft:gold_nugget")]),
-       "mymod:optic_monocle", 1, "equipment")
-shaped("servo_arm_backpack", ["A A", "ILI", " C "], OrderedDict([("A", "mymod:servo_arm"), ("I", "minecraft:iron_ingot"),
-       ("L", "minecraft:leather"), ("C", "mymod:computer_chip")]), "mymod:servo_arm_backpack", 1, "equipment")
-shaped("servo_drone", [" L ", "BCB", "A A"], OrderedDict([("L", "mymod:optic_lens"), ("B", "minecraft:bone"), ("C", "mymod:computer_chip"),
-       ("A", "mymod:servo_arm")]), "mymod:servo_drone", 1, "misc")
+shaped("grapple_claw", ["A", "L", "T"], OrderedDict([("A", "tomyen:servo_arm"), ("L", "minecraft:lead"), ("T", "minecraft:tripwire_hook")]),
+       "tomyen:grapple_claw", 1, "equipment")
+shaped("optic_monocle", [" S ", "GLG"], OrderedDict([("L", "tomyen:optic_lens"), ("S", "minecraft:string"), ("G", "minecraft:gold_nugget")]),
+       "tomyen:optic_monocle", 1, "equipment")
+shaped("servo_arm_backpack", ["A A", "ILI", " C "], OrderedDict([("A", "tomyen:servo_arm"), ("I", "minecraft:iron_ingot"),
+       ("L", "minecraft:leather"), ("C", "tomyen:computer_chip")]), "tomyen:servo_arm_backpack", 1, "equipment")
+shaped("servo_drone", [" L ", "BCB", "A A"], OrderedDict([("L", "tomyen:optic_lens"), ("B", "minecraft:bone"), ("C", "tomyen:computer_chip"),
+       ("A", "tomyen:servo_arm")]), "tomyen:servo_drone", 1, "misc")
 
 
 def tag_add(path, entry):
@@ -579,17 +579,17 @@ def tag_add(path, entry):
 
 # A Leader Core overclocks a Servo Arm Backpack: it fetches items from further off (see ServoGear).
 OVERCLOCKED_LORE = [OrderedDict([("translate", key), ("color", color), ("italic", False)]) for key, color in (
-    ("item.mymod.servo_arm_backpack.pickup", "gray"), ("item.mymod.servo_arm_backpack.overclocked", "gold"),
-    ("item.mymod.servo_gear.socket", "gray"))]
+    ("item.tomyen.servo_arm_backpack.pickup", "gray"), ("item.tomyen.servo_arm_backpack.overclocked", "gold"),
+    ("item.tomyen.servo_gear.socket", "gray"))]
 write(os.path.join(DATA, "recipe", "servo_arm_backpack_overclocked.json"), OrderedDict([
     ("type", "minecraft:crafting_shapeless"), ("category", "equipment"),
-    ("ingredients", ["mymod:servo_arm_backpack", "mymod:leader_core"]),
-    ("result", OrderedDict([("count", 1), ("id", "mymod:servo_arm_backpack"), ("components", OrderedDict([
+    ("ingredients", ["tomyen:servo_arm_backpack", "tomyen:leader_core"]),
+    ("result", OrderedDict([("count", 1), ("id", "tomyen:servo_arm_backpack"), ("components", OrderedDict([
         ("minecraft:custom_data", {"overclocked": True}), ("minecraft:enchantment_glint_override", True),
         ("minecraft:lore", OVERCLOCKED_LORE)]))]))]))
-advancement("servo_arm_backpack_overclocked", "mymod:leader_core", "equipment")
+advancement("servo_arm_backpack_overclocked", "tomyen:leader_core", "equipment")
 
-for entity in ("mymod:skullcrane", "mymod:skullcrane_leader"):
+for entity in ("tomyen:skullcrane", "tomyen:skullcrane_leader"):
     tag_add(os.path.join(DATA, "tags/entity_type/holy_vulnerable.json"), entity)
     tag_add(os.path.join(MC_DATA, "tags/entity_type/undead.json"), entity)
 print("done")

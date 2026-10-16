@@ -1,0 +1,39 @@
+{
+  "parent": "tomyen:item/crucifix",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        -70,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        4,
+        3
+      ],
+      "scale": [
+        0.55,
+        0.55,
+        0.55
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        -4.5,
+        5.5,
+        -5.5
+      ],
+      "scale": [
+        0.62,
+        0.62,
+        0.62
+      ]
+    }
+  }
+}

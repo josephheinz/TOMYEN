@@ -1,0 +1,663 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:condition",
+        "property": "minecraft:has_component",
+        "component": "tomyen:optic_attachment",
+        "on_true": {
+          "type": "minecraft:range_dispatch",
+          "property": "tomyen:muzzle_flash",
+          "entries": [
+            {
+              "threshold": 0.5,
+              "model": {
+                "type": "minecraft:composite",
+                "models": [
+                  {
+                    "type": "minecraft:range_dispatch",
+                    "property": "tomyen:gun_animation",
+                    "entries": [
+                      {
+                        "threshold": 0.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f1"
+                        }
+                      },
+                      {
+                        "threshold": 1.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f2"
+                        }
+                      },
+                      {
+                        "threshold": 2.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f3"
+                        }
+                      },
+                      {
+                        "threshold": 3.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f4"
+                        }
+                      },
+                      {
+                        "threshold": 4.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f5"
+                        }
+                      },
+                      {
+                        "threshold": 5.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f6"
+                        }
+                      },
+                      {
+                        "threshold": 6.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action"
+                        }
+                      }
+                    ],
+                    "fallback": {
+                      "type": "minecraft:model",
+                      "model": "tomyen:item/no_iron_sights/lever_action"
+                    }
+                  },
+                  {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/no_iron_sights/lever_action_flash_0"
+                  }
+                ]
+              }
+            },
+            {
+              "threshold": 1.5,
+              "model": {
+                "type": "minecraft:composite",
+                "models": [
+                  {
+                    "type": "minecraft:range_dispatch",
+                    "property": "tomyen:gun_animation",
+                    "entries": [
+                      {
+                        "threshold": 0.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f1"
+                        }
+                      },
+                      {
+                        "threshold": 1.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f2"
+                        }
+                      },
+                      {
+                        "threshold": 2.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f3"
+                        }
+                      },
+                      {
+                        "threshold": 3.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f4"
+                        }
+                      },
+                      {
+                        "threshold": 4.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f5"
+                        }
+                      },
+                      {
+                        "threshold": 5.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f6"
+                        }
+                      },
+                      {
+                        "threshold": 6.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action"
+                        }
+                      }
+                    ],
+                    "fallback": {
+                      "type": "minecraft:model",
+                      "model": "tomyen:item/no_iron_sights/lever_action"
+                    }
+                  },
+                  {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/no_iron_sights/lever_action_flash_1"
+                  }
+                ]
+              }
+            },
+            {
+              "threshold": 2.5,
+              "model": {
+                "type": "minecraft:composite",
+                "models": [
+                  {
+                    "type": "minecraft:range_dispatch",
+                    "property": "tomyen:gun_animation",
+                    "entries": [
+                      {
+                        "threshold": 0.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f1"
+                        }
+                      },
+                      {
+                        "threshold": 1.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f2"
+                        }
+                      },
+                      {
+                        "threshold": 2.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f3"
+                        }
+                      },
+                      {
+                        "threshold": 3.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f4"
+                        }
+                      },
+                      {
+                        "threshold": 4.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f5"
+                        }
+                      },
+                      {
+                        "threshold": 5.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action_f6"
+                        }
+                      },
+                      {
+                        "threshold": 6.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/no_iron_sights/lever_action"
+                        }
+                      }
+                    ],
+                    "fallback": {
+                      "type": "minecraft:model",
+                      "model": "tomyen:item/no_iron_sights/lever_action"
+                    }
+                  },
+                  {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/no_iron_sights/lever_action_flash_2"
+                  }
+                ]
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:range_dispatch",
+            "property": "tomyen:gun_animation",
+            "entries": [
+              {
+                "threshold": 0.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/no_iron_sights/lever_action_f1"
+                }
+              },
+              {
+                "threshold": 1.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/no_iron_sights/lever_action_f2"
+                }
+              },
+              {
+                "threshold": 2.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/no_iron_sights/lever_action_f3"
+                }
+              },
+              {
+                "threshold": 3.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/no_iron_sights/lever_action_f4"
+                }
+              },
+              {
+                "threshold": 4.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/no_iron_sights/lever_action_f5"
+                }
+              },
+              {
+                "threshold": 5.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/no_iron_sights/lever_action_f6"
+                }
+              },
+              {
+                "threshold": 6.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/no_iron_sights/lever_action"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/no_iron_sights/lever_action"
+            }
+          }
+        },
+        "on_false": {
+          "type": "minecraft:range_dispatch",
+          "property": "tomyen:muzzle_flash",
+          "entries": [
+            {
+              "threshold": 0.5,
+              "model": {
+                "type": "minecraft:composite",
+                "models": [
+                  {
+                    "type": "minecraft:range_dispatch",
+                    "property": "tomyen:gun_animation",
+                    "entries": [
+                      {
+                        "threshold": 0.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f1"
+                        }
+                      },
+                      {
+                        "threshold": 1.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f2"
+                        }
+                      },
+                      {
+                        "threshold": 2.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f3"
+                        }
+                      },
+                      {
+                        "threshold": 3.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f4"
+                        }
+                      },
+                      {
+                        "threshold": 4.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f5"
+                        }
+                      },
+                      {
+                        "threshold": 5.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f6"
+                        }
+                      },
+                      {
+                        "threshold": 6.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action"
+                        }
+                      }
+                    ],
+                    "fallback": {
+                      "type": "minecraft:model",
+                      "model": "tomyen:item/lever_action"
+                    }
+                  },
+                  {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/lever_action_flash_0"
+                  }
+                ]
+              }
+            },
+            {
+              "threshold": 1.5,
+              "model": {
+                "type": "minecraft:composite",
+                "models": [
+                  {
+                    "type": "minecraft:range_dispatch",
+                    "property": "tomyen:gun_animation",
+                    "entries": [
+                      {
+                        "threshold": 0.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f1"
+                        }
+                      },
+                      {
+                        "threshold": 1.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f2"
+                        }
+                      },
+                      {
+                        "threshold": 2.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f3"
+                        }
+                      },
+                      {
+                        "threshold": 3.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f4"
+                        }
+                      },
+                      {
+                        "threshold": 4.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f5"
+                        }
+                      },
+                      {
+                        "threshold": 5.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f6"
+                        }
+                      },
+                      {
+                        "threshold": 6.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action"
+                        }
+                      }
+                    ],
+                    "fallback": {
+                      "type": "minecraft:model",
+                      "model": "tomyen:item/lever_action"
+                    }
+                  },
+                  {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/lever_action_flash_1"
+                  }
+                ]
+              }
+            },
+            {
+              "threshold": 2.5,
+              "model": {
+                "type": "minecraft:composite",
+                "models": [
+                  {
+                    "type": "minecraft:range_dispatch",
+                    "property": "tomyen:gun_animation",
+                    "entries": [
+                      {
+                        "threshold": 0.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f1"
+                        }
+                      },
+                      {
+                        "threshold": 1.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f2"
+                        }
+                      },
+                      {
+                        "threshold": 2.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f3"
+                        }
+                      },
+                      {
+                        "threshold": 3.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f4"
+                        }
+                      },
+                      {
+                        "threshold": 4.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f5"
+                        }
+                      },
+                      {
+                        "threshold": 5.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action_f6"
+                        }
+                      },
+                      {
+                        "threshold": 6.5,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "tomyen:item/lever_action"
+                        }
+                      }
+                    ],
+                    "fallback": {
+                      "type": "minecraft:model",
+                      "model": "tomyen:item/lever_action"
+                    }
+                  },
+                  {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/lever_action_flash_2"
+                  }
+                ]
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:range_dispatch",
+            "property": "tomyen:gun_animation",
+            "entries": [
+              {
+                "threshold": 0.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/lever_action_f1"
+                }
+              },
+              {
+                "threshold": 1.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/lever_action_f2"
+                }
+              },
+              {
+                "threshold": 2.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/lever_action_f3"
+                }
+              },
+              {
+                "threshold": 3.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/lever_action_f4"
+                }
+              },
+              {
+                "threshold": 4.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/lever_action_f5"
+                }
+              },
+              {
+                "threshold": 5.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/lever_action_f6"
+                }
+              },
+              {
+                "threshold": 6.5,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "tomyen:item/lever_action"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/lever_action"
+            }
+          }
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:muzzle_attachment",
+        "cases": [
+          {
+            "when": "tomyen:bayonet",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/lever_action_bayonet"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "tomyen:flashlight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/lever_action_flashlight"
+            }
+          },
+          {
+            "when": "tomyen:bipod",
+            "model": {
+              "type": "minecraft:range_dispatch",
+              "property": "tomyen:bipod",
+              "entries": [
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/attachment/lever_action_bipod_deployed"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/attachment/lever_action_bipod"
+              }
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:grip_attachment",
+        "cases": [
+          {
+            "when": "tomyen:rifle_sling",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/lever_action_rifle_sling"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:optic_attachment",
+        "cases": [
+          {
+            "when": "tomyen:hunting_scope_2x",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/lever_action_hunting_scope_2x"
+            }
+          },
+          {
+            "when": "tomyen:hunting_scope_4x",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/lever_action_hunting_scope_4x"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      }
+    ]
+  }
+}

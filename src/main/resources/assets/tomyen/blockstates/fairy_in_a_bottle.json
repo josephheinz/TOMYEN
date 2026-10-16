@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "tomyen:block/fairy_in_a_bottle"
+    },
+    "hanging=true": {
+      "model": "tomyen:block/fairy_in_a_bottle_hanging"
+    }
+  }
+}

@@ -1,16 +1,16 @@
 {
   "values": [
-    "mymod:plate_carrier",
-    "mymod:bamboo_rod",
-    "mymod:iron_rod",
-    "mymod:steel_rod",
-    "mymod:duralumin_rod",
-    "mymod:magmasteel_rod",
-    "mymod:star_steel_rod",
-    "mymod:stick_pole",
-    "mymod:copper_rod",
-    "mymod:bone_rod",
-    "mymod:fae_rod",
-    "mymod:froststeel_rod"
+    "tomyen:plate_carrier",
+    "tomyen:bamboo_rod",
+    "tomyen:iron_rod",
+    "tomyen:steel_rod",
+    "tomyen:duralumin_rod",
+    "tomyen:magmasteel_rod",
+    "tomyen:star_steel_rod",
+    "tomyen:stick_pole",
+    "tomyen:copper_rod",
+    "tomyen:bone_rod",
+    "tomyen:fae_rod",
+    "tomyen:froststeel_rod"
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:iron_block",
+    "C": "tomyen:computer_chip",
+    "P": "minecraft:piston",
+    "F": "minecraft:blast_furnace",
+    "M": "minecraft:minecart",
+    "S": "tomyen:tech_scrap"
+  },
+  "pattern": [
+    "BCB",
+    "PFP",
+    "MSM"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:tank"
+  }
+}

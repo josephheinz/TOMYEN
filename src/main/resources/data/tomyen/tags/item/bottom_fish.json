@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cod",
+    "tomyen:mud_catfish",
+    "tomyen:glowing_mutant_carp",
+    "tomyen:sturgeon",
+    "tomyen:flounder"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:iron_nugget",
+    "minecraft:iron_nugget",
+    "minecraft:flint"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:iron_hook"
+  }
+}

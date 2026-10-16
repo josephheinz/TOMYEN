@@ -1,13 +1,13 @@
 {
   "values": [
-    "mymod:magmasteel_shovel",
-    "mymod:soul_steel_shovel",
-    "mymod:holy_silver_shovel",
-    "mymod:fae_silver_shovel",
-    "mymod:star_steel_shovel",
-    "mymod:froststeel_shovel",
-    "mymod:voidsteel_shovel",
-    "mymod:bloom_steel_shovel"
+    "tomyen:magmasteel_shovel",
+    "tomyen:soul_steel_shovel",
+    "tomyen:holy_silver_shovel",
+    "tomyen:fae_silver_shovel",
+    "tomyen:star_steel_shovel",
+    "tomyen:froststeel_shovel",
+    "tomyen:voidsteel_shovel",
+    "tomyen:bloom_steel_shovel"
   ],
   "replace": false
 }

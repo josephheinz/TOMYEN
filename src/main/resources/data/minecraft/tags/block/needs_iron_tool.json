@@ -1,20 +1,20 @@
 {
   "values": [
-    "mymod:steel_block",
-    "mymod:magmasteel_block",
-    "mymod:soul_steel_block",
-    "mymod:silver_ore",
-    "mymod:deepslate_silver_ore",
-    "mymod:raw_silver_block",
-    "mymod:silver_block",
-    "mymod:holy_silver_block",
-    "mymod:uranium_ore",
-    "mymod:deepslate_uranium_ore",
-    "mymod:raw_uranium_block",
-    "mymod:raw_tungsten_block",
-    "mymod:tungsten_block",
-    "mymod:fae_silver_ore",
-    "mymod:dragon_scale_fossil",
-    "mymod:froststeel_block"
+    "tomyen:steel_block",
+    "tomyen:magmasteel_block",
+    "tomyen:soul_steel_block",
+    "tomyen:silver_ore",
+    "tomyen:deepslate_silver_ore",
+    "tomyen:raw_silver_block",
+    "tomyen:silver_block",
+    "tomyen:holy_silver_block",
+    "tomyen:uranium_ore",
+    "tomyen:deepslate_uranium_ore",
+    "tomyen:raw_uranium_block",
+    "tomyen:raw_tungsten_block",
+    "tomyen:tungsten_block",
+    "tomyen:fae_silver_ore",
+    "tomyen:dragon_scale_fossil",
+    "tomyen:froststeel_block"
   ]
 }

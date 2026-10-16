@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "R": "tomyen:rubber",
+    "L": "minecraft:leather"
+  },
+  "pattern": [
+    "R R",
+    "L L"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:hazmat_boots"
+  }
+}

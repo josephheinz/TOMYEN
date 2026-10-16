@@ -19,16 +19,16 @@ On the data side: shaped recipes in vanilla's patterns (and long swords' three s
 recipe-book advancements, block loot tables, and entries in the tool, armor, mining, beacon, repair and long sword
 tags (merged into existing tag files). Lang entries are merged into en_us. The sounds are vanilla's.
 
-Usage: python3 tools/gen_frost_void_metals.py src/main/resources/assets/mymod
-       python3 tools/gen_longswords.py src/main/resources/assets/mymod"""
+Usage: python3 tools/gen_frost_void_metals.py src/main/resources/assets/tomyen
+       python3 tools/gen_longswords.py src/main/resources/assets/tomyen"""
 import glob, json, os, struct, sys, zipfile, zlib
 from collections import OrderedDict
 
 sys.path.insert(0, os.path.dirname(__file__))
 from gunkit import png, ref, write
 
-ASSETS = sys.argv[1]  # .../assets/mymod
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+ASSETS = sys.argv[1]  # .../assets/tomyen
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 TAGS = os.path.normpath(os.path.join(DATA, "..", "minecraft", "tags"))
 TEX = os.path.join(ASSETS, "textures")
 MODELS, ITEMS = os.path.join(ASSETS, "models"), os.path.join(ASSETS, "items")
@@ -348,20 +348,20 @@ ARMOR = ["helmet", "chestplate", "leggings", "boots"]
 
 def item_model(name, parent):
     write(os.path.join(MODELS, "item", name + ".json"), OrderedDict([
-        ("parent", parent), ("textures", OrderedDict(layer0="mymod:item/" + name))]))
+        ("parent", parent), ("textures", OrderedDict(layer0="tomyen:item/" + name))]))
     write(os.path.join(ITEMS, name + ".json"), {"model": ref(name)})
 
 
 def block_files(name):
-    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "mymod:block/" + name}}})
+    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "tomyen:block/" + name}}})
     write(os.path.join(MODELS, "block", name + ".json"), OrderedDict([
-        ("parent", "minecraft:block/cube_all"), ("textures", OrderedDict(all="mymod:block/" + name))]))
-    write(os.path.join(ITEMS, name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "mymod:block/" + name)])})
+        ("parent", "minecraft:block/cube_all"), ("textures", OrderedDict(all="tomyen:block/" + name))]))
+    write(os.path.join(ITEMS, name + ".json"), {"model": OrderedDict([("type", "minecraft:model"), ("model", "tomyen:block/" + name)])})
     write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), OrderedDict([
         ("type", "minecraft:block"),
         ("pools", [OrderedDict([("condition", {"type": "minecraft:survives_explosion"}),
-                                ("entries", [{"type": "minecraft:item", "name": "mymod:" + name}]), ("rolls", 1)])]),
-        ("random_sequence", "mymod:blocks/" + name)]))
+                                ("entries", [{"type": "minecraft:item", "name": "tomyen:" + name}]), ("rolls", 1)])]),
+        ("random_sequence", "tomyen:blocks/" + name)]))
 
 
 for metal, (base, fn, ingot_base, ingot_fn) in METALS.items():
@@ -389,7 +389,7 @@ for metal, (base, fn, ingot_base, ingot_fn) in METALS.items():
         item_model(f"{metal}_{tool}", "minecraft:item/handheld")
     block_files(f"{metal}_block")
     write(os.path.join(ASSETS, "equipment", metal + ".json"), {"layers": OrderedDict([
-        ("humanoid", [{"texture": "mymod:" + metal}]), ("humanoid_leggings", [{"texture": "mymod:" + metal}])])})
+        ("humanoid", [{"texture": "tomyen:" + metal}]), ("humanoid_leggings", [{"texture": "tomyen:" + metal}])])})
 
 # ======================================================================================================= void flux
 
@@ -413,9 +413,9 @@ def advancement(name, category, unlock_item, criterion="has_item"):
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
             (criterion, {"conditions": {"items": [{"items": unlock_item}]}, "trigger": "minecraft:inventory_changed"}),
-            ("has_the_recipe", {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
+            ("has_the_recipe", {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
         ("requirements", [[criterion, "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
 def shaped(name, result, pattern, key, unlock, count=1, category="misc", book=None, criterion="has_item"):
@@ -437,24 +437,24 @@ TOOL_PATTERNS = {"sword": ["X", "X", "#"], "pickaxe": ["XXX", " # ", " # "], "ax
 ARMOR_PATTERNS = {"helmet": ["XXX", "X X"], "chestplate": ["X X", "XXX", "XXX"], "leggings": ["XXX", "X X", "X X"],
                   "boots": ["X X", "X X"]}
 for metal in METALS:
-    ingot, nugget, block = f"mymod:{metal}_ingot", f"mymod:{metal}_nugget", f"mymod:{metal}_block"
+    ingot, nugget, block = f"tomyen:{metal}_ingot", f"tomyen:{metal}_nugget", f"tomyen:{metal}_block"
     shaped(f"{metal}_block", block, ["###", "###", "###"], {"#": ingot}, ingot, category="building")
     shapeless(f"{metal}_ingot_from_{metal}_block", ingot, [block], block, 9)
     shaped(f"{metal}_ingot_from_nuggets", ingot, ["###", "###", "###"], {"#": nugget}, nugget)
     shapeless(f"{metal}_nugget", nugget, [ingot], ingot, 9)
     for tool, pattern in TOOL_PATTERNS.items():
         # Weapons file under combat in the recipe book, the rest under tools (equipment); both are equipment recipes.
-        shaped(f"{metal}_{tool}", f"mymod:{metal}_{tool}", pattern, {"X": ingot, "#": "minecraft:stick"}, ingot,
+        shaped(f"{metal}_{tool}", f"tomyen:{metal}_{tool}", pattern, {"X": ingot, "#": "minecraft:stick"}, ingot,
                category="equipment", book="combat" if tool == "sword" else "equipment")
     for piece, pattern in ARMOR_PATTERNS.items():
-        shaped(f"{metal}_{piece}", f"mymod:{metal}_{piece}", pattern, {"X": ingot}, ingot, category="equipment", book="combat")
-shapeless("void_flux", "mymod:void_flux", ["minecraft:ender_pearl", "minecraft:end_stone"], "minecraft:ender_pearl")
+        shaped(f"{metal}_{piece}", f"tomyen:{metal}_{piece}", pattern, {"X": ingot}, ingot, category="equipment", book="combat")
+shapeless("void_flux", "tomyen:void_flux", ["minecraft:ender_pearl", "minecraft:end_stone"], "minecraft:ender_pearl")
 
-# Long swords: three of the metal's swords on the diagonal, as vanilla tiers' are (data/mymod/recipe/iron_long_sword.json).
+# Long swords: three of the metal's swords on the diagonal, as vanilla tiers' are (data/tomyen/recipe/iron_long_sword.json).
 LONG_SWORD_METALS = ["magmasteel", "soul_steel", "froststeel", "voidsteel"]
 for metal in LONG_SWORD_METALS:
-    sword = f"mymod:{metal}_sword"
-    shaped(f"{metal}_long_sword", f"mymod:{metal}_long_sword", ["S  ", " S ", "  S"], {"S": sword}, sword,
+    sword = f"tomyen:{metal}_sword"
+    shaped(f"{metal}_long_sword", f"tomyen:{metal}_long_sword", ["S  ", " S ", "  S"], {"S": sword}, sword,
            category="equipment", book="combat", criterion=f"has_{metal}_sword")
 
 # ============================================================================================================= tags
@@ -474,46 +474,46 @@ def merge_tag(path, values):
 
 
 for metal in METALS:
-    merge_tag(os.path.join(DATA, "tags", "item", f"repairs_{metal}.json"), [f"mymod:{metal}_ingot"])
+    merge_tag(os.path.join(DATA, "tags", "item", f"repairs_{metal}.json"), [f"tomyen:{metal}_ingot"])
 for kind in TOOLS:
-    merge_tag(os.path.join(TAGS, "item", kind + "s.json"), [f"mymod:{m}_{kind}" for m in METALS])
+    merge_tag(os.path.join(TAGS, "item", kind + "s.json"), [f"tomyen:{m}_{kind}" for m in METALS])
 for piece, tag in zip(ARMOR, ["head_armor", "chest_armor", "leg_armor", "foot_armor"]):
-    merge_tag(os.path.join(TAGS, "item", tag + ".json"), [f"mymod:{m}_{piece}" for m in METALS])
-merge_tag(os.path.join(TAGS, "item", "beacon_payment_items.json"), [f"mymod:{m}_ingot" for m in METALS])
-blocks = [f"mymod:{m}_block" for m in METALS]
+    merge_tag(os.path.join(TAGS, "item", tag + ".json"), [f"tomyen:{m}_{piece}" for m in METALS])
+merge_tag(os.path.join(TAGS, "item", "beacon_payment_items.json"), [f"tomyen:{m}_ingot" for m in METALS])
+blocks = [f"tomyen:{m}_block" for m in METALS]
 merge_tag(os.path.join(TAGS, "block", "mineable", "pickaxe.json"), blocks)
-merge_tag(os.path.join(TAGS, "block", "needs_iron_tool.json"), ["mymod:froststeel_block"])
+merge_tag(os.path.join(TAGS, "block", "needs_iron_tool.json"), ["tomyen:froststeel_block"])
 # Voidsteel's block takes a diamond pickaxe, as netherite's does.
-merge_tag(os.path.join(TAGS, "block", "needs_diamond_tool.json"), ["mymod:voidsteel_block"])
+merge_tag(os.path.join(TAGS, "block", "needs_diamond_tool.json"), ["tomyen:voidsteel_block"])
 merge_tag(os.path.join(TAGS, "block", "beacon_base_blocks.json"), blocks)
-# Long swords are swords (sweeping, cobwebs, every sword enchantment) through mymod:long_swords.
-merge_tag(os.path.join(DATA, "tags", "item", "long_swords.json"), [f"mymod:{m}_long_sword" for m in LONG_SWORD_METALS])
+# Long swords are swords (sweeping, cobwebs, every sword enchantment) through tomyen:long_swords.
+merge_tag(os.path.join(DATA, "tags", "item", "long_swords.json"), [f"tomyen:{m}_long_sword" for m in LONG_SWORD_METALS])
 
 # ============================================================================================================= lang
 
 LANG = OrderedDict()
 NAMES = {"froststeel": "Froststeel", "voidsteel": "Voidsteel"}
 for metal, title in NAMES.items():
-    LANG[f"item.mymod.{metal}_ingot"] = f"{title} Ingot"
-    LANG[f"item.mymod.{metal}_nugget"] = f"{title} Nugget"
-    LANG[f"block.mymod.{metal}_block"] = f"Block of {title}"
+    LANG[f"item.tomyen.{metal}_ingot"] = f"{title} Ingot"
+    LANG[f"item.tomyen.{metal}_nugget"] = f"{title} Nugget"
+    LANG[f"block.tomyen.{metal}_block"] = f"Block of {title}"
     for part in TOOLS + ARMOR:
-        LANG[f"item.mymod.{metal}_{part}"] = f"{title} {part.capitalize()}"
+        LANG[f"item.tomyen.{metal}_{part}"] = f"{title} {part.capitalize()}"
 for metal, title in (("magmasteel", "Magmasteel"), ("soul_steel", "Soul Steel"), ("froststeel", "Froststeel"),
                      ("voidsteel", "Voidsteel")):
-    LANG[f"item.mymod.{metal}_long_sword"] = f"{title} Long Sword"
+    LANG[f"item.tomyen.{metal}_long_sword"] = f"{title} Long Sword"
 LANG.update({
-    "item.mymod.froststeel.chills": "Hits slow and freeze",
-    "item.mymod.froststeel.shatters": "Shatters frozen targets: +2 hearts",
-    "item.mymod.froststeel.armor_piece": "Each piece: -20% freeze damage",
-    "item.mymod.froststeel.armor_set": "Full set: can't freeze, walk on powder snow and freeze water underfoot",
-    "item.mymod.voidsteel.vault": "Sends what it mines to your bank vault",
-    "item.mymod.voidsteel.blink": "Sneak-use to blink ahead",
-    "item.mymod.voidsteel.armor_piece": "Each piece: 5% chance projectiles pass through you",
-    "item.mymod.voidsteel.armor_set": "Full set: the void returns you to solid ground (every 5 minutes)",
-    "item.mymod.void_flux": "Void Flux",
-    "message.mymod.voidsteel.rescued": "The void spits you back out",
-    "container.mymod.foundry.temperature_max": "Temperature: %s°C (no hotter than %s°C)",
+    "item.tomyen.froststeel.chills": "Hits slow and freeze",
+    "item.tomyen.froststeel.shatters": "Shatters frozen targets: +2 hearts",
+    "item.tomyen.froststeel.armor_piece": "Each piece: -20% freeze damage",
+    "item.tomyen.froststeel.armor_set": "Full set: can't freeze, walk on powder snow and freeze water underfoot",
+    "item.tomyen.voidsteel.vault": "Sends what it mines to your bank vault",
+    "item.tomyen.voidsteel.blink": "Sneak-use to blink ahead",
+    "item.tomyen.voidsteel.armor_piece": "Each piece: 5% chance projectiles pass through you",
+    "item.tomyen.voidsteel.armor_set": "Full set: the void returns you to solid ground (every 5 minutes)",
+    "item.tomyen.void_flux": "Void Flux",
+    "message.tomyen.voidsteel.rescued": "The void spits you back out",
+    "container.tomyen.foundry.temperature_max": "Temperature: %s°C (no hotter than %s°C)",
 })
 lang_path = os.path.join(ASSETS, "lang", "en_us.json")
 with open(lang_path) as f:

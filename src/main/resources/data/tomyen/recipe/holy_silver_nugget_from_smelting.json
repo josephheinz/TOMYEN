@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": [
+    "tomyen:holy_silver_sword",
+    "tomyen:holy_silver_long_sword",
+    "tomyen:holy_silver_shovel",
+    "tomyen:holy_silver_pickaxe",
+    "tomyen:holy_silver_axe",
+    "tomyen:holy_silver_hoe",
+    "tomyen:holy_silver_helmet",
+    "tomyen:holy_silver_chestplate",
+    "tomyen:holy_silver_leggings",
+    "tomyen:holy_silver_boots"
+  ],
+  "result": {
+    "id": "tomyen:holy_silver_nugget"
+  }
+}

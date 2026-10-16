@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#tomyen:raw_fish"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tomyen:cut_bait"
+  }
+}

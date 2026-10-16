@@ -1,4 +1,4 @@
-"""Builds the Scavenger's survival kit (com.jheinz.mymod.survival): every item sprite, the bear trap and tripwire
+"""Builds the Scavenger's survival kit (com.jheinz.tomyen.survival): every item sprite, the bear trap and tripwire
 alarm block models and textures, the Trapped and Stunned effect icons, block states, item definitions, sounds, lang,
 and on the data side the recipes (with recipe-book advancements), block loot, the damage type and the tags the kit
 owns. The Scrap armor is worn as a 3D model, built by tools/gen_scrap_armor.py.
@@ -7,7 +7,7 @@ Sprites are hand-placed pixel grids over short material ramps (outline darkest, 
 vanilla's item style; the Scrap armor's show the same junk its worn model is made of. The trap and alarm are detailed
 block models built cube by cube here, checked for z-fighting (tools/zfight.py) before they're written.
 
-Usage: python3 tools/gen_survival.py src/main/resources/assets/mymod [--preview preview_survival.png]"""
+Usage: python3 tools/gen_survival.py src/main/resources/assets/tomyen [--preview preview_survival.png]"""
 import glob, json, math, os, struct, sys, zipfile
 from collections import OrderedDict
 
@@ -18,7 +18,7 @@ import gen_fishing_rods as R      # Img, read_png, the preview font
 from gunkit import png
 import zfight
 
-ASSETS = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("--") else os.path.join(REPO, "src/main/resources/assets/mymod")
+ASSETS = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("--") else os.path.join(REPO, "src/main/resources/assets/tomyen")
 PREVIEW = sys.argv[sys.argv.index("--preview") + 1] if "--preview" in sys.argv else None
 DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data"))
 TEX = os.path.join(ASSETS, "textures")
@@ -788,52 +788,52 @@ def tag(path, values):
 
 
 def m(name):
-    return "mymod:" + name
+    return "tomyen:" + name
 
 
 LANG = OrderedDict([
-    ("item.mymod.crowbar", "Crowbar"),
-    ("item.mymod.scrap_helmet", "Scrap Helmet"),
-    ("item.mymod.scrap_chestplate", "Scrap Chestplate"),
-    ("item.mymod.scrap_leggings", "Scrap Leggings"),
-    ("item.mymod.scrap_boots", "Scrap Boots"),
-    ("item.mymod.bandage", "Bandage"),
-    ("item.mymod.bandage.desc", "Stops bleeding and heals over a few seconds"),
-    ("item.mymod.first_aid_kit", "First Aid Kit"),
-    ("item.mymod.first_aid_kit.desc", "Heals, stops bleeding and poison, eases radiation sickness"),
-    ("item.mymod.molotov_cocktail", "Molotov Cocktail"),
-    ("item.mymod.molotov_cocktail.desc", "Shatters into burning oil"),
-    ("item.mymod.pipe_bomb", "Pipe Bomb"),
-    ("item.mymod.pipe_bomb.desc", "Short fuse; spares blocks, stuns machines"),
-    ("item.mymod.canteen", "Canteen"),
-    ("item.mymod.canteen.empty", "Empty: fill it at water, or click a potion onto it"),
-    ("item.mymod.canteen.sips", "%s: %s/%s"),
-    ("item.mymod.scavengers_satchel", "Scavenger's Satchel"),
-    ("item.mymod.scavengers_satchel.slots", "%s/%s slots used"),
-    ("block.mymod.bear_trap", "Bear Trap"),
-    ("block.mymod.silver_bear_trap", "Silver-Toothed Bear Trap"),
-    ("block.mymod.tripwire_alarm", "Tripwire Alarm"),
-    ("block.mymod.tripwire_alarm.alert", "Alarm at %2$s, %3$s, %4$s: %1$s!"),
-    ("block.mymod.tripwire_alarm.tripwire", "tripwire crossed"),
-    ("entity.mymod.molotov_cocktail", "Molotov Cocktail"),
-    ("entity.mymod.pipe_bomb", "Pipe Bomb"),
-    ("effect.mymod.trapped", "Trapped"),
-    ("effect.mymod.stunned", "Stunned"),
-    ("death.attack.mymod.bear_trap", "%1$s was caught in a bear trap"),
-    ("death.attack.mymod.bear_trap.player", "%1$s was caught in a bear trap whilst fleeing %2$s"),
-    ("subtitles.mymod.crowbar_pry", "Crowbar pries"),
-    ("subtitles.mymod.bear_trap_snap", "Bear trap snaps"),
-    ("subtitles.mymod.bear_trap_set", "Bear trap set"),
-    ("subtitles.mymod.tripwire_alarm_ring", "Alarm rings"),
-    ("subtitles.mymod.pipe_bomb_fuse", "Fuse fizzes"),
-    ("subtitles.mymod.pipe_bomb_blast", "Pipe bomb explodes"),
-    ("subtitles.mymod.molotov_shatter", "Molotov shatters"),
-    ("subtitles.mymod.bandage_wrap", "Bandage wraps"),
-    ("subtitles.mymod.canteen_sip", "Canteen sipped"),
-    ("subtitles.mymod.canteen_fill", "Canteen fills"),
-    ("subtitles.mymod.satchel_open", "Satchel opens"),
-    ("subtitles.mymod.scrap_armor_deflect", "Scrap armor clangs"),
-    ("subtitles.mymod.item.armor.equip_scrap", "Scrap armor rattles"),
+    ("item.tomyen.crowbar", "Crowbar"),
+    ("item.tomyen.scrap_helmet", "Scrap Helmet"),
+    ("item.tomyen.scrap_chestplate", "Scrap Chestplate"),
+    ("item.tomyen.scrap_leggings", "Scrap Leggings"),
+    ("item.tomyen.scrap_boots", "Scrap Boots"),
+    ("item.tomyen.bandage", "Bandage"),
+    ("item.tomyen.bandage.desc", "Stops bleeding and heals over a few seconds"),
+    ("item.tomyen.first_aid_kit", "First Aid Kit"),
+    ("item.tomyen.first_aid_kit.desc", "Heals, stops bleeding and poison, eases radiation sickness"),
+    ("item.tomyen.molotov_cocktail", "Molotov Cocktail"),
+    ("item.tomyen.molotov_cocktail.desc", "Shatters into burning oil"),
+    ("item.tomyen.pipe_bomb", "Pipe Bomb"),
+    ("item.tomyen.pipe_bomb.desc", "Short fuse; spares blocks, stuns machines"),
+    ("item.tomyen.canteen", "Canteen"),
+    ("item.tomyen.canteen.empty", "Empty: fill it at water, or click a potion onto it"),
+    ("item.tomyen.canteen.sips", "%s: %s/%s"),
+    ("item.tomyen.scavengers_satchel", "Scavenger's Satchel"),
+    ("item.tomyen.scavengers_satchel.slots", "%s/%s slots used"),
+    ("block.tomyen.bear_trap", "Bear Trap"),
+    ("block.tomyen.silver_bear_trap", "Silver-Toothed Bear Trap"),
+    ("block.tomyen.tripwire_alarm", "Tripwire Alarm"),
+    ("block.tomyen.tripwire_alarm.alert", "Alarm at %2$s, %3$s, %4$s: %1$s!"),
+    ("block.tomyen.tripwire_alarm.tripwire", "tripwire crossed"),
+    ("entity.tomyen.molotov_cocktail", "Molotov Cocktail"),
+    ("entity.tomyen.pipe_bomb", "Pipe Bomb"),
+    ("effect.tomyen.trapped", "Trapped"),
+    ("effect.tomyen.stunned", "Stunned"),
+    ("death.attack.tomyen.bear_trap", "%1$s was caught in a bear trap"),
+    ("death.attack.tomyen.bear_trap.player", "%1$s was caught in a bear trap whilst fleeing %2$s"),
+    ("subtitles.tomyen.crowbar_pry", "Crowbar pries"),
+    ("subtitles.tomyen.bear_trap_snap", "Bear trap snaps"),
+    ("subtitles.tomyen.bear_trap_set", "Bear trap set"),
+    ("subtitles.tomyen.tripwire_alarm_ring", "Alarm rings"),
+    ("subtitles.tomyen.pipe_bomb_fuse", "Fuse fizzes"),
+    ("subtitles.tomyen.pipe_bomb_blast", "Pipe bomb explodes"),
+    ("subtitles.tomyen.molotov_shatter", "Molotov shatters"),
+    ("subtitles.tomyen.bandage_wrap", "Bandage wraps"),
+    ("subtitles.tomyen.canteen_sip", "Canteen sipped"),
+    ("subtitles.tomyen.canteen_fill", "Canteen fills"),
+    ("subtitles.tomyen.satchel_open", "Satchel opens"),
+    ("subtitles.tomyen.scrap_armor_deflect", "Scrap armor clangs"),
+    ("subtitles.tomyen.item.armor.equip_scrap", "Scrap armor rattles"),
 ])
 
 
@@ -844,7 +844,7 @@ def sound(name, files, pitch, volume=1.0):
         if volume != 1.0:
             e["volume"] = volume
         entries.append(e)
-    return name, OrderedDict([("subtitle", "subtitles.mymod." + name), ("sounds", entries)])
+    return name, OrderedDict([("subtitle", "subtitles.tomyen." + name), ("sounds", entries)])
 
 
 SOUNDS = OrderedDict([
@@ -920,7 +920,7 @@ def write_assets():
 
 
 def write_data():
-    mine = os.path.join(DATA, "mymod")
+    mine = os.path.join(DATA, "tomyen")
     vanilla_tags = os.path.join(DATA, "minecraft", "tags")
     recipes, advancements = os.path.join(mine, "recipe"), os.path.join(mine, "advancement", "recipes")
 
@@ -969,7 +969,7 @@ def write_data():
             ("random_sequence", m("blocks/" + block))]))
 
     write(os.path.join(mine, "damage_type", "bear_trap.json"),
-          OrderedDict([("exhaustion", 0.1), ("message_id", "mymod.bear_trap"), ("scaling", "never")]))
+          OrderedDict([("exhaustion", 0.1), ("message_id", "tomyen.bear_trap"), ("scaling", "never")]))
 
     tag(os.path.join(mine, "tags", "entity_type", "machines.json"),
         [m("skullcrane"), m("skullcrane_leader"), m("cathode_walker"), m("ufo")])

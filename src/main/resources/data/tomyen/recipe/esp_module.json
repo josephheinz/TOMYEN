@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:tech_scrap",
+    "tomyen:tech_scrap",
+    "minecraft:glass_pane",
+    "minecraft:spider_eye"
+  ],
+  "result": {
+    "id": "tomyen:esp_module"
+  }
+}

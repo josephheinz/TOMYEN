@@ -21,7 +21,7 @@ the screen in each state) to DIR/preview_cathode_walker*.png, and a sheet of the
 and back, the feet close up, the strut cycle and the kick) to DIR/preview_cathode_legs.png. Before writing anything
 it checks the model for faces that would z-fight and texture rects that overlap, and stops if it finds any.
 
-Usage: python3 tools/gen_cathode_walker.py src/main/resources/assets/mymod [--preview DIR]"""
+Usage: python3 tools/gen_cathode_walker.py src/main/resources/assets/tomyen [--preview DIR]"""
 import json, math, os, random, sys, zipfile
 from collections import OrderedDict
 
@@ -39,7 +39,7 @@ from gen_longswords import client_jar, read_png
 from gunkit import png, write
 
 TEX = os.path.join(ASSETS, "textures")
-DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "mymod"))
+DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "tomyen"))
 MC_DATA = os.path.normpath(os.path.join(ASSETS, "..", "..", "data", "minecraft"))
 CLEAR = (0, 0, 0, 0)
 
@@ -627,23 +627,23 @@ def advancement(name, ingredient, category="misc"):
         ("parent", "minecraft:recipes/root"),
         ("criteria", OrderedDict([
             ("has_item", {"conditions": {"items": [{"items": ingredient}]}, "trigger": "minecraft:inventory_changed"}),
-            ("has_the_recipe", {"conditions": {"recipes": "mymod:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
+            ("has_the_recipe", {"conditions": {"recipes": "tomyen:" + name}, "trigger": "minecraft:recipe_unlocked"})])),
         ("requirements", [["has_item", "has_the_recipe"]]),
-        ("rewards", {"recipes": ["mymod:" + name]})]))
+        ("rewards", {"recipes": ["tomyen:" + name]})]))
 
 
 def shapeless(name, ingredients, result, count=1, category="misc"):
     write(os.path.join(DATA, "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shapeless"), ("category", category), ("ingredients", ingredients),
         ("result", OrderedDict([("count", count), ("id", result)]))]))
-    advancement(name, "mymod:cathode_tube", category)
+    advancement(name, "tomyen:cathode_tube", category)
 
 
 def shaped(name, pattern, key, result, count=1, category="misc"):
     write(os.path.join(DATA, "recipe", name + ".json"), OrderedDict([
         ("type", "minecraft:crafting_shaped"), ("category", category), ("key", key), ("pattern", pattern),
         ("result", OrderedDict([("count", count), ("id", result)]))]))
-    advancement(name, "mymod:cathode_tube", category)
+    advancement(name, "tomyen:cathode_tube", category)
 
 
 def drop(item, low, high, looting=1.0, chance=None):
@@ -998,52 +998,52 @@ def main():
     for state, front_tex in (("", "crt_television_front"), ("_on", "crt_television_front_on")):
         write(os.path.join(MODELS, "block/crt_television%s.json" % state), OrderedDict([
             ("parent", "minecraft:block/orientable"),
-            ("textures", OrderedDict([("front", "mymod:block/" + front_tex), ("side", "mymod:block/crt_television_side"),
-                                      ("top", "mymod:block/crt_television_top")]))]))
+            ("textures", OrderedDict([("front", "tomyen:block/" + front_tex), ("side", "tomyen:block/crt_television_side"),
+                                      ("top", "tomyen:block/crt_television_top")]))]))
     variants = OrderedDict()
     for lit in ("false", "true"):
         for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
-            v = OrderedDict([("model", "mymod:block/crt_television" + ("_on" if lit == "true" else ""))])
+            v = OrderedDict([("model", "tomyen:block/crt_television" + ("_on" if lit == "true" else ""))])
             if y:
                 v["y"] = y
             variants["facing=%s,lit=%s" % (facing, lit)] = v
     write(os.path.join(ASSETS, "blockstates/crt_television.json"), {"variants": variants})
-    write(os.path.join(ITEMS, "crt_television.json"), {"model": {"type": "minecraft:model", "model": "mymod:block/crt_television_on"}})
+    write(os.path.join(ITEMS, "crt_television.json"), {"model": {"type": "minecraft:model", "model": "tomyen:block/crt_television_on"}})
     for name in ("cathode_tube", "cathode_walker_spawn_egg"):
         write(os.path.join(MODELS, "item", name + ".json"),
-              OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "mymod:item/" + name})]))
-        write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "mymod:item/" + name}})
+              OrderedDict([("parent", "minecraft:item/generated"), ("textures", {"layer0": "tomyen:item/" + name})]))
+        write(os.path.join(ITEMS, name + ".json"), {"model": {"type": "minecraft:model", "model": "tomyen:item/" + name}})
 
     # ------------------------------------------------------------------------------------------ data
     write(os.path.join(DATA, "loot_table/entities/cathode_walker.json"), OrderedDict([
         ("type", "minecraft:entity"),
-        ("pools", [drop("mymod:cathode_tube", 1, 1, 0.0, chance=0.5), drop("minecraft:glass_pane", 0, 2),
+        ("pools", [drop("tomyen:cathode_tube", 1, 1, 0.0, chance=0.5), drop("minecraft:glass_pane", 0, 2),
                    drop("minecraft:copper_nugget", 1, 3), drop("minecraft:redstone", 0, 2)]),
-        ("random_sequence", "mymod:entities/cathode_walker")]))
+        ("random_sequence", "tomyen:entities/cathode_walker")]))
     write(os.path.join(DATA, "loot_table/blocks/crt_television.json"), OrderedDict([
         ("type", "minecraft:block"),
         ("pools", [OrderedDict([("condition", {"type": "minecraft:survives_explosion"}), ("rolls", 1),
-                                ("entries", [{"type": "minecraft:item", "name": "mymod:crt_television"}])])]),
-        ("random_sequence", "mymod:blocks/crt_television")]))
-    tag_add(os.path.join(MC_DATA, "tags/block/mineable/axe.json"), "mymod:crt_television")
+                                ("entries", [{"type": "minecraft:item", "name": "tomyen:crt_television"}])])]),
+        ("random_sequence", "tomyen:blocks/crt_television")]))
+    tag_add(os.path.join(MC_DATA, "tags/block/mineable/axe.json"), "tomyen:crt_television")
     # Water's damage to it: no knockback, no hunger, the same whatever the difficulty.
     write(os.path.join(DATA, "damage_type/short_circuit.json"), OrderedDict([
-        ("exhaustion", 0.0), ("message_id", "mymod.short_circuit"), ("scaling", "never")]))
+        ("exhaustion", 0.0), ("message_id", "tomyen.short_circuit"), ("scaling", "never")]))
 
     # The Cathode Tube's uses. A vacuum tube is a computer's oldest logic, a CRT a heart monitor's screen and a HUD's
     # display: each an alternative to the usual recipe, never harder.
-    shapeless("computer_chip_from_cathode_tube", ["mymod:cathode_tube", "mymod:tech_scrap"], "mymod:computer_chip")
-    shapeless("bio_monitor_module_from_cathode_tube", ["mymod:cathode_tube", "mymod:tech_scrap", "minecraft:glistering_melon_slice"],
-              "mymod:bio_monitor_module", category="equipment")
+    shapeless("computer_chip_from_cathode_tube", ["tomyen:cathode_tube", "tomyen:tech_scrap"], "tomyen:computer_chip")
+    shapeless("bio_monitor_module_from_cathode_tube", ["tomyen:cathode_tube", "tomyen:tech_scrap", "minecraft:glistering_melon_slice"],
+              "tomyen:bio_monitor_module", category="equipment")
     shaped("power_armor_helmet_mk1_from_cathode_tube", ["BTB", "IGI"], OrderedDict([
-        ("B", "minecraft:iron_block"), ("T", "mymod:cathode_tube"), ("I", "minecraft:iron_ingot"), ("G", "minecraft:glass_pane")]),
-        "mymod:power_armor_helmet_mk1", category="equipment")
+        ("B", "minecraft:iron_block"), ("T", "tomyen:cathode_tube"), ("I", "minecraft:iron_ingot"), ("G", "minecraft:glass_pane")]),
+        "tomyen:power_armor_helmet_mk1", category="equipment")
     shaped("crt_television", ["PPP", "PTR", "PPP"], OrderedDict([
-        ("P", "#minecraft:planks"), ("T", "mymod:cathode_tube"), ("R", "minecraft:redstone")]), "mymod:crt_television")
+        ("P", "#minecraft:planks"), ("T", "tomyen:cathode_tube"), ("R", "minecraft:redstone")]), "tomyen:crt_television")
 
     # ------------------------------------------------------------------------------------------ sounds and lang
     def ev(subtitle, *sounds):
-        return OrderedDict([("subtitle", "subtitles.mymod." + subtitle),
+        return OrderedDict([("subtitle", "subtitles.tomyen." + subtitle),
                             ("sounds", [OrderedDict([("name", "minecraft:" + n)] + [(k, v) for k, v in extra.items()])
                                         for n, extra in sounds])])
 
@@ -1070,24 +1070,24 @@ def main():
         ("cathode_walker_click_off", ev("cathode_walker_click_off", ("random/click", {"pitch": 0.7, "volume": 0.8}))),
         ("crt_television_toggle", ev("crt_television_toggle", ("random/click", {"pitch": 0.9, "volume": 0.6}))),
     ]))
-    insert_after(os.path.join(ASSETS, "lang/en_us.json"), "item.mymod.leader_core.use", OrderedDict([
-        ("entity.mymod.cathode_walker", "Cathode Walker"),
-        ("item.mymod.cathode_walker_spawn_egg", "Cathode Walker Spawn Egg"),
-        ("item.mymod.cathode_tube", "Cathode Tube"),
-        ("block.mymod.crt_television", "CRT Television"),
-        ("death.attack.mymod.short_circuit", "%1$s shorted out"),
-        ("death.attack.mymod.short_circuit.player", "%1$s shorted out whilst fighting %2$s"),
-        ("subtitles.mymod.cathode_walker_ambient", "Static hisses"),
-        ("subtitles.mymod.cathode_walker_step", "Bare feet slap"),
-        ("subtitles.mymod.cathode_walker_kick", "Cathode Walker kicks"),
-        ("subtitles.mymod.cathode_walker_charge", "Cathode Walker's screen brightens"),
-        ("subtitles.mymod.cathode_walker_static_burst", "Static roars"),
-        ("subtitles.mymod.cathode_walker_short", "Cathode Walker sparks"),
-        ("subtitles.mymod.cathode_walker_hurt", "Cathode Walker crackles"),
-        ("subtitles.mymod.cathode_walker_death", "Screen implodes"),
-        ("subtitles.mymod.cathode_walker_pop", "Tube pops"),
-        ("subtitles.mymod.cathode_walker_click_off", "Television clicks off"),
-        ("subtitles.mymod.crt_television_toggle", "Television clicks"),
+    insert_after(os.path.join(ASSETS, "lang/en_us.json"), "item.tomyen.leader_core.use", OrderedDict([
+        ("entity.tomyen.cathode_walker", "Cathode Walker"),
+        ("item.tomyen.cathode_walker_spawn_egg", "Cathode Walker Spawn Egg"),
+        ("item.tomyen.cathode_tube", "Cathode Tube"),
+        ("block.tomyen.crt_television", "CRT Television"),
+        ("death.attack.tomyen.short_circuit", "%1$s shorted out"),
+        ("death.attack.tomyen.short_circuit.player", "%1$s shorted out whilst fighting %2$s"),
+        ("subtitles.tomyen.cathode_walker_ambient", "Static hisses"),
+        ("subtitles.tomyen.cathode_walker_step", "Bare feet slap"),
+        ("subtitles.tomyen.cathode_walker_kick", "Cathode Walker kicks"),
+        ("subtitles.tomyen.cathode_walker_charge", "Cathode Walker's screen brightens"),
+        ("subtitles.tomyen.cathode_walker_static_burst", "Static roars"),
+        ("subtitles.tomyen.cathode_walker_short", "Cathode Walker sparks"),
+        ("subtitles.tomyen.cathode_walker_hurt", "Cathode Walker crackles"),
+        ("subtitles.tomyen.cathode_walker_death", "Screen implodes"),
+        ("subtitles.tomyen.cathode_walker_pop", "Tube pops"),
+        ("subtitles.tomyen.cathode_walker_click_off", "Television clicks off"),
+        ("subtitles.tomyen.crt_television_toggle", "Television clicks"),
     ]))
 
     # ------------------------------------------------------------------------------------------ previews

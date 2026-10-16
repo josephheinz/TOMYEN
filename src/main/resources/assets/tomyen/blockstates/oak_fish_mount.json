@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "tomyen:block/oak_fish_mount"
+    },
+    "facing=east": {
+      "model": "tomyen:block/oak_fish_mount",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "tomyen:block/oak_fish_mount",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tomyen:block/oak_fish_mount",
+      "y": 270
+    }
+  }
+}

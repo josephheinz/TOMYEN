@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:earthworms",
+    "tomyen:earthworms",
+    "tomyen:earthworms",
+    "tomyen:earthworms"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:bone_meal"
+  }
+}

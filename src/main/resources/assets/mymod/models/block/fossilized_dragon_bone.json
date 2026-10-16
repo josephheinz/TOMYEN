@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "mymod:block/fossilized_dragon_bone_top",
-    "side": "mymod:block/fossilized_dragon_bone_side"
-  }
-}

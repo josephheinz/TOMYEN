@@ -1,0 +1,168 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:range_dispatch",
+        "property": "tomyen:loaded_rounds",
+        "entries": [
+          {
+            "threshold": 0.5,
+            "model": {
+              "type": "minecraft:range_dispatch",
+              "property": "tomyen:gun_animation",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/harpoon_gun_loaded_f1"
+                  }
+                },
+                {
+                  "threshold": 1.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/harpoon_gun_loaded_f2"
+                  }
+                },
+                {
+                  "threshold": 2.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/harpoon_gun_loaded_f3"
+                  }
+                },
+                {
+                  "threshold": 3.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/harpoon_gun_loaded_f4"
+                  }
+                },
+                {
+                  "threshold": 4.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/harpoon_gun_loaded_f5"
+                  }
+                },
+                {
+                  "threshold": 5.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/harpoon_gun_loaded_f6"
+                  }
+                },
+                {
+                  "threshold": 6.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "tomyen:item/harpoon_gun_loaded"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/harpoon_gun_loaded"
+              }
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:range_dispatch",
+          "property": "tomyen:gun_animation",
+          "entries": [
+            {
+              "threshold": 0.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/harpoon_gun_f1"
+              }
+            },
+            {
+              "threshold": 1.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/harpoon_gun_f2"
+              }
+            },
+            {
+              "threshold": 2.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/harpoon_gun_f3"
+              }
+            },
+            {
+              "threshold": 3.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/harpoon_gun_f4"
+              }
+            },
+            {
+              "threshold": 4.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/harpoon_gun_f5"
+              }
+            },
+            {
+              "threshold": 5.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/harpoon_gun_f6"
+              }
+            },
+            {
+              "threshold": 6.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "tomyen:item/harpoon_gun"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "tomyen:item/harpoon_gun"
+          }
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:underbarrel_attachment",
+        "cases": [
+          {
+            "when": "tomyen:flashlight",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/harpoon_gun_flashlight"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "tomyen:grip_attachment",
+        "cases": [
+          {
+            "when": "tomyen:rifle_sling",
+            "model": {
+              "type": "minecraft:model",
+              "model": "tomyen:item/attachment/harpoon_gun_rifle_sling"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:empty"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "tomyen:computer_chip",
+    "S": "minecraft:netherite_scrap",
+    "G": "minecraft:gold_ingot",
+    "N": "minecraft:netherite_ingot"
+  },
+  "pattern": [
+    "CSC",
+    "GNG",
+    "CSC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:mk3_plating_kit"
+  }
+}

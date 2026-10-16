@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:voidsteel_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "tomyen:voidsteel_ingot"
+  }
+}
