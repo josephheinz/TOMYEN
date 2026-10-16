@@ -78,6 +78,8 @@ import com.jheinz.mymod.client.meteorite.MeteorRenderer;
 import com.jheinz.mymod.meteorite.Meteorites;
 import com.jheinz.mymod.station.ModMenus;
 import com.jheinz.mymod.client.scrapbench.ScrapBenchClient;
+import com.jheinz.mymod.client.sodajetpack.SodaJetpackClient;
+import com.jheinz.mymod.client.tvhelmet.TvHelmetClient;
 
 public class MyModClient implements ClientModInitializer {
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(MyMod.id("weapons"));
@@ -164,6 +166,8 @@ public class MyModClient implements ClientModInitializer {
 		WerewolfClient.initialize();
 		BananaClient.initialize();
 		BigRedBootsRenderer.initialize();
+		TvHelmetClient.initialize();
+		SodaJetpackClient.initialize();
 		SoulVacuumClient.initialize();
 		SilverClient.initialize();
 		NapalmClient.initialize();

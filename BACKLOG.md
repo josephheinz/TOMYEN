@@ -37,8 +37,6 @@ Mutated by uranium:
 ## Wacky weapons and gear
 - **Fish gun.** Fires your raw fish as ammo, and damage scales with fish weight. A trophy tuna is a cannonball.
 - **Leaf blower.** Knocks back mobs and items; upgrades into a vacuum that sucks up drops.
-- **Cathode TV helmet.** Wear a Cathode Walker's screen: static night vision, and your face shows emotes to other players.
-- **Soda-bottle jetpack.** An early-game, terrible jetpack that runs on sugar and slime.
 - **Trombone.** Plays notes. A sad trombone curses mobs with Weakness; a war march buffs allies.
 
 ## Wacky mobs

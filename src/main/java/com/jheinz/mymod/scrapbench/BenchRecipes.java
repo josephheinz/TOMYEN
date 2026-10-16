@@ -23,6 +23,7 @@ import com.jheinz.mymod.detector.Detectors;
 import com.jheinz.mymod.scrapbench.BenchRecipe.Cost;
 import com.jheinz.mymod.shoddy.ShoddyGuns;
 import com.jheinz.mymod.skullcrane.Skullcranes;
+import com.jheinz.mymod.sodajetpack.SodaJetpacks;
 import com.jheinz.mymod.survival.Survival;
 
 /**
@@ -60,6 +61,9 @@ public final class BenchRecipes {
 					cost(ScrapBench.SCREWS, 4)),
 			recipe(Survival.SCRAP_LEGGINGS, 1, cost(Items.LEATHER_LEGGINGS, 1), cost(ModItems.TECH_SCRAP, 2), cost(ScrapBench.SCREWS, 3)),
 			recipe(Survival.SCRAP_BOOTS, 1, cost(Items.LEATHER_BOOTS, 1), cost(ModItems.TECH_SCRAP, 1), cost(ScrapBench.SCREWS, 1)),
+			// The Soda-Bottle Jetpack: bottles strapped on with string and leather, slime to seal the funnel.
+			recipe(SodaJetpacks.SODA_JETPACK, 1, cost(Items.GLASS_BOTTLE, 4), cost(Items.STRING, 4), cost(Items.LEATHER, 2),
+					cost(Items.SLIME_BALL, 2)),
 			// Blueprints: Workshop guns from bench parts. Each still has its Weapon Station recipe.
 			locked(Blueprints.FLARE_GUN, cost(Items.COPPER_INGOT, 2), cost(ScrapBench.SPRING, 1), cost(Items.DYE.orange(), 1)),
 			locked(Blueprints.NAIL_GUN, cost(Skullcranes.SERVO_ARM, 1), cost(Items.IRON_INGOT, 2), cost(ScrapBench.SPRING, 1),
