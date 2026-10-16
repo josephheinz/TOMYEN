@@ -7,10 +7,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.blueprint.BlueprintRecipes;
 import com.jheinz.mymod.energy.EnergyWeapons;
 import com.jheinz.mymod.gunsmith.Gunsmith;
 import com.jheinz.mymod.industry.Industry;
@@ -191,7 +193,7 @@ public final class StationRecipes {
 			// The Mk I power armor torso, the Bulwark Walker's weapons, smoke launcher and autocannon ammunition, the Minigun and
 			// its parts, and the energy weapons.
 			Stream.of(PowerArmorRecipes.station(), MechRecipes.station(), Miniguns.station(), EnergyWeapons.stationRecipes(),
-					Gunsmith.stationRecipes())
+					Gunsmith.stationRecipes(), BlueprintRecipes.station())
 					.flatMap(List::stream)).toList();
 
 	static {
@@ -211,6 +213,12 @@ public final class StationRecipes {
 
 	/** Loads the list at startup so the duplicate check above fails fast. */
 	public static void initialize() {
+	}
+
+	/** The recipe the inputs make for this player: blueprint recipes they haven't learned don't count. */
+	public static StationRecipe find(Container inputs, Player player) {
+		StationRecipe recipe = find(inputs);
+		return recipe != null && recipe.unlockedFor(player) ? recipe : null;
 	}
 
 	public static StationRecipe find(Container inputs) {

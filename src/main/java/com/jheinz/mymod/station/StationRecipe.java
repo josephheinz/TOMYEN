@@ -2,16 +2,31 @@ package com.jheinz.mymod.station;
 
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import com.jheinz.mymod.blueprint.Blueprints;
+
 /**
  * Something the Weapon Station makes. Shapeless with amounts: the input slots must hold at least
- * {@code count} of every cost (spread across slots in any order) and nothing else.
+ * {@code count} of every cost (spread across slots in any order) and nothing else. A recipe with a {@code blueprint}
+ * is locked until the player has read that blueprint (see {@link Blueprints}).
  */
-public record StationRecipe(Item resultItem, int resultCount, List<Cost> costs) {
+public record StationRecipe(Item resultItem, int resultCount, List<Cost> costs, @Nullable Identifier blueprint) {
 	public record Cost(Item item, int count) {
+	}
+
+	public StationRecipe(Item resultItem, int resultCount, List<Cost> costs) {
+		this(resultItem, resultCount, costs, null);
+	}
+
+	public boolean unlockedFor(Player player) {
+		return blueprint == null || Blueprints.knows(player, blueprint);
 	}
 
 	/** A fresh result stack. Built on demand: stacks can't exist before item components are bound at startup. */

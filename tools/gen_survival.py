@@ -948,22 +948,14 @@ def write_data():
     scrap = m("tech_scrap")
     shaped("crowbar", ["  N", " I ", "I  "], {"I": "minecraft:iron_ingot", "N": "minecraft:iron_nugget"}, "minecraft:iron_ingot",
            book="tools")
-    for piece, count in (("helmet", 2), ("chestplate", 3), ("leggings", 2), ("boots", 1)):
-        shapeless(f"scrap_{piece}", [f"minecraft:leather_{piece}"] + [scrap] * count + ["minecraft:copper_nugget"], scrap)
+    # Scrap armor, the pipe bomb, the bear trap and the tripwire alarm are assembled on the Scrap Bench
+    # (scrapbench/BenchRecipes.java).
     shaped("bandage", ["PSP"], {"P": "minecraft:paper", "S": "minecraft:string"}, "minecraft:paper", count=2, category="misc",
            book="misc")
     shaped("first_aid_kit", ["LFL", "BHB"], {"L": "minecraft:leather", "F": "#minecraft:small_flowers", "B": m("bandage"),
                                              "H": "minecraft:honey_bottle"}, m("bandage"), category="misc", book="misc")
     shapeless("molotov_cocktail", [m("fish_oil"), "minecraft:string"], m("fish_oil"))
-    shaped("pipe_bomb", ["S  ", "IGI"], {"S": "minecraft:string", "I": "minecraft:iron_ingot", "G": "minecraft:gunpowder"},
-           "minecraft:gunpowder", count=2)
-    shaped("bear_trap", ["N N", "IHI", " C "], {"N": "minecraft:iron_nugget", "I": "minecraft:iron_ingot",
-                                               "H": "minecraft:tripwire_hook", "C": "minecraft:iron_chain"},
-           "minecraft:iron_ingot", category="redstone", book="redstone")
     shapeless("silver_bear_trap", [m("bear_trap"), m("silver_ingot")], m("silver_ingot"), category="redstone", book="redstone")
-    shaped("tripwire_alarm", [" C ", "THR", "PPP"], {"C": "minecraft:copper_ingot", "T": scrap, "H": "minecraft:tripwire_hook",
-                                                    "R": "minecraft:redstone", "P": "#minecraft:wooden_slabs"},
-           "minecraft:tripwire_hook", category="redstone", book="redstone")
     shaped("canteen", [" N ", "LBL", " L "], {"N": "minecraft:iron_nugget", "L": "minecraft:leather", "B": "minecraft:glass_bottle"},
            "minecraft:leather", category="misc", book="tools")
     shaped("scavengers_satchel", [" S ", "LTL", "LLL"], {"S": "minecraft:string", "L": "minecraft:leather", "T": scrap},
