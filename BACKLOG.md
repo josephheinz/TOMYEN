@@ -34,9 +34,6 @@ Mutated by uranium:
 - **Glowing Rat King.** A cluster of rats that splits when hit. Found near uranium deposits.
 - **Two-Headed Cow.** A passive mutant you can milk for anti-radiation milk.
 
-## Wacky weapons and gear
-- **Trombone.** Plays notes. A sad trombone curses mobs with Weakness; a war march buffs allies.
-
 ## Wacky mobs
 - **Shrimp with a gun.** Human-sized (not tiny): an ocean mob that shoots.
 - **Gnome army.** Garden gnomes that come alive at night near fae biomes and steal your crops in formation.

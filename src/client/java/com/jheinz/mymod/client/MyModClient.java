@@ -82,6 +82,7 @@ import com.jheinz.mymod.station.ModMenus;
 import com.jheinz.mymod.client.scrapbench.ScrapBenchClient;
 import com.jheinz.mymod.client.sodajetpack.SodaJetpackClient;
 import com.jheinz.mymod.client.tvhelmet.TvHelmetClient;
+import com.jheinz.mymod.client.trombone.TromboneClient;
 
 public class MyModClient implements ClientModInitializer {
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(MyMod.id("weapons"));
@@ -188,5 +189,6 @@ public class MyModClient implements ClientModInitializer {
 		GunsmithClient.initialize();
 		FishGunClient.initialize();
 		LeafBlowerClient.initialize();
+		TromboneClient.initialize();
 	}
 }

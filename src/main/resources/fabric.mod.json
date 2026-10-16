@@ -30,6 +30,10 @@
 		{
 			"config": "mymod.fishing.client.mixins.json",
 			"environment": "client"
+		},
+		{
+			"config": "mymod.trombone.client.mixins.json",
+			"environment": "client"
 		}
 	],
 	"depends": {

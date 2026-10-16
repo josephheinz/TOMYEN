@@ -128,8 +128,8 @@ public class BigBanana extends PathfinderMob {
 		}
 	}
 
-	/** Bounces for joy: a hop, a boop and a few notes. */
-	void bounce() {
+	/** Bounces for joy: a hop, a boop and a few notes (also to a Trombone's tune). */
+	public void bounce() {
 		if (level() instanceof ServerLevel level) {
 			jumpFromGround();
 			level.broadcastEntityEvent(this, HAPPY_EVENT);

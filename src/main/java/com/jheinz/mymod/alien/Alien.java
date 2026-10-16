@@ -62,6 +62,10 @@ public class Alien extends PathfinderMob {
 	private static final int DAZE_TICKS = 300;
 
 	private static final EntityDataAccessor<Boolean> DATA_DAZED = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.BOOLEAN);
+	/** Hands clapped over its ears (a Trombone is playing). */
+	private static final EntityDataAccessor<Boolean> DATA_EARS_COVERED = SynchedEntityData.defineId(Alien.class,
+			EntityDataSerializers.BOOLEAN);
+	private static final int EARS_TICKS = 80;
 
 	private @Nullable UUID shipId;
 	private @Nullable Ufo ship;
@@ -69,6 +73,7 @@ public class Alien extends PathfinderMob {
 	private @Nullable LivingEntity scaredOf;
 	private int fearTicks;
 	private int dazeTicks;
+	private int earsTicks;
 	private int zapCooldown = 40;
 
 	public Alien(EntityType<? extends Alien> type, Level level) {
@@ -87,6 +92,7 @@ public class Alien extends PathfinderMob {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
 		builder.define(DATA_DAZED, false);
+		builder.define(DATA_EARS_COVERED, false);
 	}
 
 	@Override
@@ -150,6 +156,20 @@ public class Alien extends PathfinderMob {
 		return entityData.get(DATA_DAZED);
 	}
 
+	/** Someone's playing a Trombone nearby: it can't stand it. Hands over its ears, it runs from them for a while. */
+	public void coverEars(LivingEntity musician) {
+		earsTicks = EARS_TICKS;
+		entityData.set(DATA_EARS_COVERED, true);
+		if (!isDazed()) {
+			scaredOf = musician;
+			fearTicks = Math.max(fearTicks, EARS_TICKS);
+		}
+	}
+
+	public boolean earsCovered() {
+		return entityData.get(DATA_EARS_COVERED);
+	}
+
 	/** Sent after a sleeper: off to their bed. */
 	void goToBed(BlockPos pos) {
 		bed = pos;
@@ -181,6 +201,9 @@ public class Alien extends PathfinderMob {
 		zapCooldown = Math.max(0, zapCooldown - 1);
 		if (dazeTicks > 0 && --dazeTicks == 0) {
 			entityData.set(DATA_DAZED, false);
+		}
+		if (earsTicks > 0 && --earsTicks == 0) {
+			entityData.set(DATA_EARS_COVERED, false);
 		}
 		if (scaredOf != null && (!scaredOf.isAlive() || fearTicks == 0)) {
 			scaredOf = null;

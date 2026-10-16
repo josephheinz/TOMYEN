@@ -1,0 +1,145 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": [
+          "gui",
+          "ground",
+          "fixed"
+        ],
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/trombone"
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mymod:item/trombone_slide_4"
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:composite",
+      "models": [
+        {
+          "type": "minecraft:model",
+          "model": "mymod:item/trombone"
+        },
+        {
+          "type": "minecraft:range_dispatch",
+          "property": "mymod:trombone_slide",
+          "entries": [
+            {
+              "threshold": 0.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_1"
+              }
+            },
+            {
+              "threshold": 1.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_2"
+              }
+            },
+            {
+              "threshold": 2.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_3"
+              }
+            },
+            {
+              "threshold": 3.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_4"
+              }
+            },
+            {
+              "threshold": 4.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_5"
+              }
+            },
+            {
+              "threshold": 5.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_6"
+              }
+            },
+            {
+              "threshold": 6.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_7"
+              }
+            },
+            {
+              "threshold": 7.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_8"
+              }
+            },
+            {
+              "threshold": 8.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_9"
+              }
+            },
+            {
+              "threshold": 9.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_10"
+              }
+            },
+            {
+              "threshold": 10.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_11"
+              }
+            },
+            {
+              "threshold": 11.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_12"
+              }
+            },
+            {
+              "threshold": 12.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_13"
+              }
+            },
+            {
+              "threshold": 13.5,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mymod:item/trombone_slide_14"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mymod:item/trombone_slide_0"
+          }
+        }
+      ]
+    }
+  }
+}
