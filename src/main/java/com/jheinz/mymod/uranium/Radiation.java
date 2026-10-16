@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import com.jheinz.mymod.ModEffects;
+import com.jheinz.mymod.herbalism.HerbalRemedies;
 import com.jheinz.mymod.powerarmor.PowerArmor;
 import com.jheinz.mymod.powerarmor.PowerArmorSuit;
 
@@ -29,7 +30,7 @@ import com.jheinz.mymod.powerarmor.PowerArmorSuit;
  * nausea, half a heart every two seconds) from {@link #LEVEL_IV}. The level falls again as the dose wears off.
  * </ul>
  * A full Hazmat Suit or a complete suit of power armor stops any new dose (the old one still has to wear off), and
- * players in creative or spectator mode take none.
+ * players in creative or spectator mode take none. Anti-Radiation Tea's Radioprotection halves new doses.
  */
 public final class Radiation {
 	public static final int RAW_DOSE = 10;
@@ -87,6 +88,7 @@ public final class Radiation {
 
 	/** Adds a dose to a player, unless they're shielded. */
 	public static void irradiate(ServerPlayer player, int ticks) {
+		ticks = HerbalRemedies.radiationDose(player, ticks);
 		if (!isShielded(player) && ticks > 0) {
 			MobEffectInstance current = player.getEffect(ModEffects.RADIATION_SICKNESS);
 			int dose = Math.min(MAX_DOSE, (current == null ? 0 : current.getDuration()) + ticks);

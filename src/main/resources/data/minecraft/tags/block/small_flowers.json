@@ -1,6 +1,11 @@
 {
   "replace": false,
   "values": [
-    "mymod:fae_bloom"
+    "mymod:fae_bloom",
+    "mymod:wolfsbane",
+    "mymod:yarrow",
+    "mymod:chamomile",
+    "mymod:moonpetal",
+    "mymod:water_mint"
   ]
 }

@@ -38,6 +38,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
+import com.jheinz.mymod.herbalism.Wolfsbane;
 import com.jheinz.mymod.silver.EvilBane;
 
 /**
@@ -150,9 +151,11 @@ public class Werewolf extends Monster implements EvilBane.Wary {
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		boolean bane = silverIncoming || EvilBane.isSilverOrHoly(source) || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
+		// Wolfsbane (a coated blade or arrow) bites through the hide like silver, and harder.
+		float wolfsbane = Wolfsbane.strike(level, this, source);
+		boolean bane = silverIncoming || wolfsbane > 1.0f || EvilBane.isSilverOrHoly(source) || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
 		silverIncoming = false;
-		return super.hurtServer(level, source, bane ? damage : damage * (1.0f - RESISTANCE));
+		return super.hurtServer(level, source, (bane ? damage : damage * (1.0f - RESISTANCE)) * wolfsbane);
 	}
 
 	@Override

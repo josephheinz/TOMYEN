@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.Vec3;
 
+import com.jheinz.mymod.herbalism.HerbalWards;
 import com.jheinz.mymod.holy.CrucifixItem;
 
 /**
@@ -106,8 +107,8 @@ class VampireHuntGoal extends Goal {
 			return;
 		}
 
-		if (CrucifixItem.isHeldBy(target)) {
-			// Held at bay: prowl round just outside the ward, waiting for the crucifix to be put away.
+		if (CrucifixItem.isHeldBy(target) || HerbalWards.repelsVampires(target)) {
+			// Held at bay: prowl round just outside the ward, waiting for the crucifix to be put away (or the garlic to wear off).
 			vampire.setStalking(false);
 			vampire.setAggressive(false);
 			vampire.setSwooping(false);

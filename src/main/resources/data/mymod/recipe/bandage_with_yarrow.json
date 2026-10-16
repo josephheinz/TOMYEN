@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:paper",
+    "minecraft:paper",
+    "minecraft:string",
+    "mymod:yarrow"
+  ],
+  "result": {
+    "count": 3,
+    "id": "mymod:bandage"
+  }
+}

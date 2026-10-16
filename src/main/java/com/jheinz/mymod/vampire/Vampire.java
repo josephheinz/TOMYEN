@@ -41,6 +41,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.jheinz.mymod.ModEffects;
+import com.jheinz.mymod.herbalism.HerbalWards;
 import com.jheinz.mymod.holy.CrucifixItem;
 import com.jheinz.mymod.holy.LightOrb;
 
@@ -255,6 +256,7 @@ public class Vampire extends Monster {
 		super.aiStep();
 		if (!level().isClientSide()) {
 			keepOutOfWards();
+			HerbalWards.keepVampireOut(this);
 			if (revealTicks > 0) {
 				revealTicks--;
 			}
