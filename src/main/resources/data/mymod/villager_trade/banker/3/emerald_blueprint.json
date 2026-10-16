@@ -3,7 +3,7 @@
     "id": "mymod:blueprint"
   },
   "given_item_modifier": {
-    "function": "mymod:random_blueprint",
+    "type": "mymod:random_blueprint",
     "tier": "foundry"
   },
   "max_uses": 2,

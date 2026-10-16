@@ -1016,7 +1016,7 @@ def write_data():
     # The banker deals in repossessed schematics.
     write(os.path.join(mine, "villager_trade", "banker", "3", "emerald_blueprint.json"), OrderedDict([
         ("gives", {"id": m("blueprint")}),
-        ("given_item_modifier", {"function": m("random_blueprint"), "tier": "foundry"}),
+        ("given_item_modifier", {"type": m("random_blueprint"), "tier": "foundry"}),
         ("max_uses", 2), ("reputation_discount", 0.05),
         ("wants", {"id": "minecraft:emerald", "count": 16}), ("xp", 10)]))
     trade_set = os.path.join(mine, "trade_set", "banker", "level_3.json")
