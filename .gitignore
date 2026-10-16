@@ -41,3 +41,10 @@ replay_*.log
 
 # modpack exports
 dist/
+
+# python
+__pycache__/
+*.pyc
+
+# claude code agent worktrees
+.claude/worktrees/
