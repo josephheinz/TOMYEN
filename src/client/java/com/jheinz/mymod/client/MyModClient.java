@@ -24,6 +24,7 @@ import com.jheinz.mymod.ModEntities;
 import com.jheinz.mymod.ModNetworking;
 import com.jheinz.mymod.ModParticles;
 import com.jheinz.mymod.MyMod;
+import com.jheinz.mymod.client.scarecrow.ScarecrowClient;
 import com.jheinz.mymod.client.survival.SurvivalClient;
 import com.jheinz.mymod.client.alien.AlienClient;
 import com.jheinz.mymod.client.bank.BankClient;
@@ -172,6 +173,7 @@ public class MyModClient implements ClientModInitializer {
 		FishEntitiesClient.initialize();
 		DetectorClient.initialize();
 		SurvivalClient.initialize();
+		ScarecrowClient.initialize();
 		StarForgeClient.initialize();
 		GunsmithClient.initialize();
 	}

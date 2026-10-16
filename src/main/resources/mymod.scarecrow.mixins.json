@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"package": "com.jheinz.mymod.scarecrow.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"FarmlandBlockScarecrowMixin",
+		"MobTargetSelectorAccessor",
+		"RabbitRaidGardenScarecrowMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

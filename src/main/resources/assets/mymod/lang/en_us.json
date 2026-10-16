@@ -2114,5 +2114,20 @@
   "subtitles.mymod.lever_up": "Lever closed",
   "subtitles.mymod.lever_load": "Round pushed into a gate",
   "subtitles.mymod.bipod_deploy": "Bipod swings down",
-  "subtitles.mymod.bipod_fold": "Bipod folds"
+  "subtitles.mymod.bipod_fold": "Bipod folds",
+  "entity.mymod.scarecrow": "Scarecrow",
+  "item.mymod.scarecrow": "Scarecrow",
+  "item.mymod.pumpkin_scarecrow": "Jack-o'-Scarecrow",
+  "item.mymod.scrap_scarecrow": "Scrap Scarecrow",
+  "item.mymod.scarecrow.tooltip.ufo": "UFOs go for it before your livestock",
+  "item.mymod.scarecrow.tooltip.mobs": "Hostile mobs nearby attack it for a few seconds",
+  "item.mymod.scrap_scarecrow.tooltip.mobs": "Hostile mobs and rogue machines nearby attack it for a few seconds",
+  "item.mymod.scarecrow.tooltip.crops": "Mobs don't trample farmland and rabbits leave crops alone nearby",
+  "item.mymod.scarecrow.tooltip.repair": "Mend with hay bales or wheat; dress it in armor",
+  "entity.mymod.scarecrow.rejected": "The UFO throws the scarecrow back in disgust",
+  "entity.mymod.scarecrow.probed.0": "Rejected Specimen #%s",
+  "entity.mymod.scarecrow.probed.1": "Sample %s: Just Hay",
+  "entity.mymod.scarecrow.probed.2": "Probed (Inconclusive) #%s",
+  "entity.mymod.scarecrow.probed.3": "Return to Sender #%s",
+  "subtitles.mymod.ufo_disappointed": "UFO grumbles in disappointment"
 }

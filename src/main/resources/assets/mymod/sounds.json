@@ -3329,5 +3329,25 @@
         "volume": 0.5
       }
     ]
+  },
+  "ufo_disappointed": {
+    "subtitle": "subtitles.mymod.ufo_disappointed",
+    "sounds": [
+      {
+        "name": "minecraft:mob/villager/no1",
+        "pitch": 1.7,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/villager/no2",
+        "pitch": 1.7,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/villager/no3",
+        "pitch": 1.7,
+        "attenuation_distance": 48
+      }
+    ]
   }
 }

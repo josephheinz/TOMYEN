@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mymod:scarecrow",
+    "mymod:tech_scrap",
+    "mymod:tech_scrap",
+    "minecraft:redstone"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:scrap_scarecrow"
+  }
+}

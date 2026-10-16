@@ -26,6 +26,7 @@
 		},
 		"mymod.fishing.mixins.json",
 		"mymod.survival.mixins.json",
+		"mymod.scarecrow.mixins.json",
 		{
 			"config": "mymod.fishing.client.mixins.json",
 			"environment": "client"

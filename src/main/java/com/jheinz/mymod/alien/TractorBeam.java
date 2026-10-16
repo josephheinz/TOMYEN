@@ -29,7 +29,8 @@ import net.minecraft.world.phys.Vec3;
  * they can't walk or sneak off it (see PlayerTractorBeamMixin). Its renderer draws the beam itself, a glowing cone from
  * the saucer (or, carrying off a sleeper, from somewhere high overhead) down to the victim.
  * <ul>
- * <li>Lifting an animal for a {@link Ufo}, it rises {@value #ANIMAL_RISE} blocks a tick, drifting in under the saucer,
+ * <li>Lifting an animal for a {@link Ufo}, it rises {@value #ANIMAL_RISE} blocks a tick (a heavy {@link AbductionDecoy}
+ * slower), drifting in under the saucer,
  * the animal turning slowly as it goes, until the animal's into the hull. It lets go (and the animal floats down) if the
  * saucer stops beaming, goes, or starts to crash, or if someone puts the animal on a lead.
  * <li>Carrying off a player for {@link Abductions}, it lifts them {@value #PLAYER_RISE} blocks a tick for
@@ -132,7 +133,8 @@ public class TractorBeam extends Entity {
 			return;
 		}
 		// Up, and in under the middle of the saucer.
-		setPos(getX() + (ufo.getX() - getX()) * 0.02, getY() + ANIMAL_RISE, getZ() + (ufo.getZ() - getZ()) * 0.02);
+		double rise = rider instanceof AbductionDecoy decoy ? decoy.beamRise() : ANIMAL_RISE;
+		setPos(getX() + (ufo.getX() - getX()) * 0.02, getY() + rise, getZ() + (ufo.getZ() - getZ()) * 0.02);
 		if (ticks % 4 == 0) {
 			level.sendParticles(ParticleTypes.END_ROD, getX(), getY() + rider.getBbHeight() * 0.5, getZ(), 1, 0.6, 0.6, 0.6, 0.01);
 		}

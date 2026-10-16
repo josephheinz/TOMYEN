@@ -52,6 +52,7 @@ import com.jheinz.mymod.voidsteel.Voidsteel;
 import com.jheinz.mymod.werewolf.Werewolves;
 import com.jheinz.mymod.banana.Bananas;
 import com.jheinz.mymod.station.ModMenus;
+import com.jheinz.mymod.scarecrow.Scarecrows;
 import com.jheinz.mymod.survival.Survival;
 import com.jheinz.mymod.starforge.StarForge;
 
@@ -122,6 +123,7 @@ public class MyMod implements ModInitializer {
 		Fishing.initialize();
 		Detectors.initialize();
 		Survival.initialize();
+		Scarecrows.initialize();
 		StarForge.initialize();
 		linkBlockItems();
 	}

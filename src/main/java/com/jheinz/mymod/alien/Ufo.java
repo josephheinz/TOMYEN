@@ -53,7 +53,8 @@ import com.jheinz.mymod.energy.RayGunItem;
  * <ul>
  * <li><b>Roaming</b>: wandering waypoints within {@value #ROAM_RADIUS} blocks of them. Every few seconds it looks for a
  * cow, sheep or pig (the {@code mymod:abductable} tag) out under the open sky within {@value #SEARCH_RADIUS} blocks,
- * never a named or tamed one, or one on a lead or being ridden.
+ * never a named or tamed one, or one on a lead or being ridden. A {@link AbductionDecoy decoy} (a scarecrow) in range
+ * beats any animal.
  * <li><b>Abducting</b>: it hovers {@value #BEAM_HEIGHT} blocks over the animal and lifts it in a {@link TractorBeam},
  * slowly, spinning, until it disappears into the hull. {@value #BEAM_BREAK_DAMAGE} damage to the saucer while it's
  * beaming makes it lose its grip (the animal floats down), and so does putting the animal on a lead. After two or three
@@ -122,7 +123,7 @@ public class Ufo extends Mob {
 	private int abductions;
 	private final int maxAbductions;
 	private int searchCooldown = 60;
-	private @Nullable Animal prey;
+	private @Nullable LivingEntity prey;
 	private @Nullable TractorBeam beam;
 	private float beamDamage;
 	private @Nullable LivingEntity attacker;
@@ -371,17 +372,28 @@ public class Ufo extends Mob {
 		}
 	}
 
-	/** The nearest animal it may take, out under the open sky. */
-	private @Nullable Animal findPrey(ServerLevel level) {
+	/** The nearest decoy that draws it, or else the nearest animal it may take, out under the open sky. */
+	private @Nullable LivingEntity findPrey(ServerLevel level) {
 		AABB area = new AABB(getX() - SEARCH_RADIUS, getY() - 64.0, getZ() - SEARCH_RADIUS, getX() + SEARCH_RADIUS, getY() + 8.0,
 				getZ() + SEARCH_RADIUS);
-		Animal nearest = null;
-		for (Animal animal : level.getEntitiesOfClass(Animal.class, area, Ufo::canAbduct)) {
-			if (nearest == null || animal.distanceToSqr(this) < nearest.distanceToSqr(this)) {
-				nearest = animal;
+		LivingEntity decoy = nearest(level.getEntitiesOfClass(LivingEntity.class, area,
+				entity -> entity instanceof AbductionDecoy d && d.attractsUfo(this)));
+		return decoy != null ? decoy : nearest(level.getEntitiesOfClass(Animal.class, area, Ufo::canAbduct));
+	}
+
+	private <T extends LivingEntity> @Nullable T nearest(List<T> candidates) {
+		T nearest = null;
+		for (T candidate : candidates) {
+			if (nearest == null || candidate.distanceToSqr(this) < nearest.distanceToSqr(this)) {
+				nearest = candidate;
 			}
 		}
 		return nearest;
+	}
+
+	/** Whether it can still go for what it picked: a decoy that still draws it, or an animal it may take. */
+	private boolean canStillTake(LivingEntity prey) {
+		return prey instanceof AbductionDecoy decoy ? decoy.attractsUfo(this) : prey instanceof Animal animal && canAbduct(animal);
 	}
 
 	/** Livestock only: never a pet, a named animal, one on a lead or one with someone riding it. */
@@ -403,7 +415,7 @@ public class Ufo extends Mob {
 			}
 			return;
 		}
-		if (prey == null || !canAbduct(prey) || stateTicks > 600) {
+		if (prey == null || !canStillTake(prey) || stateTicks > 600) {
 			prey = null;
 			setState(ROAMING);
 			return;
@@ -421,7 +433,7 @@ public class Ufo extends Mob {
 		}
 	}
 
-	/** Its beam has lifted the animal right up into the hull: gone. */
+	/** Its beam has lifted the animal right up into the hull: gone (a decoy decides for itself what happens next). */
 	void tookAboard(LivingEntity animal) {
 		abductions++;
 		entityData.set(DATA_BEAMING, false);
@@ -429,7 +441,11 @@ public class Ufo extends Mob {
 		if (level() instanceof ServerLevel level) {
 			level.sendParticles(ParticleTypes.END_ROD, getX(), getY(), getZ(), 20, 0.4, 0.1, 0.4, 0.05);
 		}
-		animal.discard();
+		if (animal instanceof AbductionDecoy decoy) {
+			decoy.takenAboard(this);
+		} else {
+			animal.discard();
+		}
 		beam = null;
 		prey = null;
 		searchCooldown = 200;
