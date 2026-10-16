@@ -53,6 +53,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
+import com.jheinz.mymod.herbalism.Herbalism;
+
 /**
  * A Cathode Walker: a wood-veneer CRT television with rabbit-ear antennas, strutting about on a pair of bare human
  * legs. Its screen is its face: grey static while it wanders, a grinning pixel face once it's hunting, colour bars
@@ -268,7 +270,7 @@ public class CathodeWalker extends Monster {
 		double screenY = getY(0.8);
 		for (Player player : level.getEntitiesOfClass(Player.class, getBoundingBox().inflate(BURST_RANGE))) {
 			if (!(player instanceof ServerPlayer watcher) || player.isSpectator() || player.distanceToSqr(this) > BURST_RANGE * BURST_RANGE
-					|| !isLookingAtMe(player, GAZE_CONE, false, true, screenY, getEyeY())) {
+					|| !isLookingAtMe(player, GAZE_CONE, false, true, screenY, getEyeY()) || Herbalism.isCalm(player)) {
 				continue;
 			}
 			ServerPlayNetworking.send(watcher, new StaticBurstPayload(OVERLAY_TICKS));

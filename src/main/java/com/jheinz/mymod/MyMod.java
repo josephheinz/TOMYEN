@@ -17,6 +17,7 @@ import com.jheinz.mymod.cathode.CathodeWalkers;
 import com.jheinz.mymod.detector.Detectors;
 import com.jheinz.mymod.fae.Fae;
 import com.jheinz.mymod.fishing.Fishing;
+import com.jheinz.mymod.herbalism.Herbalism;
 import com.jheinz.mymod.dragonscale.Dragonscales;
 import com.jheinz.mymod.fishing.fish.FishEntities;
 import com.jheinz.mymod.fishing.fish.Fishes;
@@ -125,6 +126,7 @@ public class MyMod implements ModInitializer {
 		Survival.initialize();
 		Scarecrows.initialize();
 		StarForge.initialize();
+		Herbalism.initialize();
 		linkBlockItems();
 	}
 

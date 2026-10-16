@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "minecraft:stick",
+    "B": "#minecraft:stone_tool_materials"
+  },
+  "pattern": [
+    "  S",
+    "B B",
+    " B "
+  ],
+  "result": {
+    "id": "mymod:mortar_and_pestle"
+  }
+}

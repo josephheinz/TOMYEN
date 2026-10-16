@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_wolfsbane": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mymod:wolfsbane"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mymod:purple_dye_from_wolfsbane"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_wolfsbane"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mymod:purple_dye_from_wolfsbane"
+    ]
+  }
+}
