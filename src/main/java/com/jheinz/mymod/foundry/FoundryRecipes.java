@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.bloomery.BloomSteelRecipes;
 import com.jheinz.mymod.foundry.FoundryRecipe.Cost;
 import com.jheinz.mymod.froststeel.Froststeel;
 import com.jheinz.mymod.industry.IndustryRecipes;
@@ -45,7 +46,9 @@ public final class FoundryRecipes {
 			Magmasteel.foundry(),
 			SoulSteel.foundry(),
 			Froststeel.foundry(),
-			Voidsteel.foundry()).flatMap(List::stream).toList();
+			Voidsteel.foundry(),
+			// Bloom steel refined into real steel.
+			BloomSteelRecipes.foundry()).flatMap(List::stream).toList();
 
 	private FoundryRecipes() {
 	}

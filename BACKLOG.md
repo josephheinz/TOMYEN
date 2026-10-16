@@ -3,7 +3,6 @@
 Ideas approved for later. Not started yet.
 
 ## Early game
-- **Field forge / bloomery.** A crude early Foundry that smelts iron into a weaker "bloom steel". It gives a few cheap steel-tier recipes so the jump to the real Foundry isn't a wall.
 - **Scrap Bench.** A cheap first workstation, before the Weapon Station. Breaks junk down into tech scrap, nuggets and springs, and assembles homemade guns and early gadgets. The Scavenger tier's home base.
 - **Blueprints.** Found in loot. Each unlocks a Weapon Station or Scrap Bench recipe early (e.g. an "M1911 schematic"), so exploring has a progression payoff.
 

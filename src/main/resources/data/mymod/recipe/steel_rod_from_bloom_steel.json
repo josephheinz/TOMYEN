@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "mymod:bloom_steel_ingot",
+    "S": "minecraft:string",
+    "L": "minecraft:leather"
+  },
+  "pattern": [
+    "  B",
+    " BS",
+    "LBS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:steel_rod"
+  }
+}

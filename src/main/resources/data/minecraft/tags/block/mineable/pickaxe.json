@@ -57,6 +57,8 @@
     "mymod:silver_bear_trap",
     "mymod:star_forge",
     "mymod:kettle",
-    "mymod:mortar_and_pestle"
+    "mymod:mortar_and_pestle",
+    "mymod:bloomery",
+    "mymod:bloom_steel_block"
   ]
 }

@@ -6,7 +6,8 @@
     "mymod:fae_silver_hoe",
     "mymod:star_steel_hoe",
     "mymod:froststeel_hoe",
-    "mymod:voidsteel_hoe"
+    "mymod:voidsteel_hoe",
+    "mymod:bloom_steel_hoe"
   ],
   "replace": false
 }
