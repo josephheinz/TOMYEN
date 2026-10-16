@@ -1,6 +1,7 @@
 {
   "values": [
     "mymod:bauxite_ore",
-    "mymod:aluminium_block"
+    "mymod:aluminium_block",
+    "mymod:bloom_steel_block"
   ]
 }

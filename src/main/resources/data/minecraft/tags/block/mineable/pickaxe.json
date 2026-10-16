@@ -55,6 +55,8 @@
     "mymod:mech_gantry",
     "mymod:bear_trap",
     "mymod:silver_bear_trap",
-    "mymod:star_forge"
+    "mymod:star_forge",
+    "mymod:bloomery",
+    "mymod:bloom_steel_block"
   ]
 }

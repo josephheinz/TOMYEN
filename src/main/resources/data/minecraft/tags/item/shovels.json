@@ -6,7 +6,8 @@
     "mymod:fae_silver_shovel",
     "mymod:star_steel_shovel",
     "mymod:froststeel_shovel",
-    "mymod:voidsteel_shovel"
+    "mymod:voidsteel_shovel",
+    "mymod:bloom_steel_shovel"
   ],
   "replace": false
 }

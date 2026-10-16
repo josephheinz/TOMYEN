@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.bloomery.BloomSteelRecipes;
 import com.jheinz.mymod.energy.EnergyWeapons;
 import com.jheinz.mymod.gunsmith.Gunsmith;
 import com.jheinz.mymod.industry.Industry;
@@ -191,7 +192,7 @@ public final class StationRecipes {
 			// The Mk I power armor torso, the Bulwark Walker's weapons, smoke launcher and autocannon ammunition, the Minigun and
 			// its parts, and the energy weapons.
 			Stream.of(PowerArmorRecipes.station(), MechRecipes.station(), Miniguns.station(), EnergyWeapons.stationRecipes(),
-					Gunsmith.stationRecipes())
+					Gunsmith.stationRecipes(), BloomSteelRecipes.station())
 					.flatMap(List::stream)).toList();
 
 	static {

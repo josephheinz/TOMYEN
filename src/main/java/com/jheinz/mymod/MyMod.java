@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.jheinz.mymod.alien.Aliens;
 import com.jheinz.mymod.bank.Banking;
 import com.jheinz.mymod.bigredboots.BigRedBoots;
+import com.jheinz.mymod.bloomery.Bloomery;
 import com.jheinz.mymod.cathode.CathodeWalkers;
 import com.jheinz.mymod.detector.Detectors;
 import com.jheinz.mymod.fae.Fae;
@@ -78,6 +79,7 @@ public class MyMod implements ModInitializer {
 		ModBlocks.initialize();
 		Industry.initialize();
 		Magmasteel.initialize();
+		Bloomery.initialize();
 		Souls.initialize();
 		Silver.initialize();
 		Tungsten.initialize();

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "mymod:bloom_steel_ingot"
+  },
+  "pattern": [
+    "BB",
+    "B ",
+    "BB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mymod:steel_drill_bit"
+  }
+}

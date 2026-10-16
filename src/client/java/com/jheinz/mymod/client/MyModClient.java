@@ -72,6 +72,7 @@ import com.jheinz.mymod.client.powerarmor.PowerArmorClient;
 import com.jheinz.mymod.client.tank.TankClient;
 import com.jheinz.mymod.client.uranium.UraniumClient;
 import com.jheinz.mymod.client.starforge.StarForgeClient;
+import com.jheinz.mymod.client.bloomery.BloomeryClient;
 import com.jheinz.mymod.client.meteorite.MeteorRenderer;
 import com.jheinz.mymod.meteorite.Meteorites;
 import com.jheinz.mymod.station.ModMenus;
@@ -173,6 +174,7 @@ public class MyModClient implements ClientModInitializer {
 		DetectorClient.initialize();
 		SurvivalClient.initialize();
 		StarForgeClient.initialize();
+		BloomeryClient.initialize();
 		GunsmithClient.initialize();
 	}
 }
