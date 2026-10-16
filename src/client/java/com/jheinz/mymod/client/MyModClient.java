@@ -53,6 +53,8 @@ import com.jheinz.mymod.client.exoskeleton.ExoskeletonRenderer;
 import com.jheinz.mymod.client.exoskeleton.ExoskeletonScreen;
 import com.jheinz.mymod.client.fae.FaeClient;
 import com.jheinz.mymod.client.fishing.FishingClient;
+import com.jheinz.mymod.client.fishgun.FishGunClient;
+import com.jheinz.mymod.client.leafblower.LeafBlowerClient;
 import com.jheinz.mymod.client.fishing.fish.FishEntitiesClient;
 import com.jheinz.mymod.client.gunsmith.GunsmithClient;
 import com.jheinz.mymod.client.hogfire.HogfireClient;
@@ -180,5 +182,7 @@ public class MyModClient implements ClientModInitializer {
 		StarForgeClient.initialize();
 		BloomeryClient.initialize();
 		GunsmithClient.initialize();
+		FishGunClient.initialize();
+		LeafBlowerClient.initialize();
 	}
 }

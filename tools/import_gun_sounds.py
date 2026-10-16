@@ -264,6 +264,14 @@ TABLE = {
                                   L(LR22 + "Single Isolated WAV.wav", 0.12, 0.8, -6.0), pitch=0.72, lp=2500, length=0.7, fade=0.4,
                                   rms=-15.0), 1.0, 1.0),
     ],
+    # The Fish Gun's FWOOMP: a 20 gauge slowed to half speed and muffled into a deep air thump, the bipod's slam under it
+    # for the valve banging open. (The rush of the fish leaving is vanilla's wind charge, played alongside in game.)
+    "fish_gun_fire": [
+        ("fish_gun_fire", shot(L(G20 + "Single Isolated.wav"), L(S2M + "Bipod/WAV/Bipod Impact Both Legs.wav", 0.0, 0.6, -4.0),
+                               pitch=0.5, hp=40, lp=1100, length=0.9, fade=0.55, rms=-15.0), 1.0, 1.0),
+        ("fish_gun_fire_2", shot(L(G20 + "Single Isolated.wav"), L(S2M + "Bipod/WAV/Bipod Impact Both Legs.wav", 0.0, 0.6, -4.0),
+                                 pitch=0.56, hp=40, lp=1250, length=0.85, fade=0.5, rms=-15.5), 0.96, 1.0),
+    ],
     # A single-shot's break action opening and snapping shut.
     "break_open": [("break_open", mech(L(S1R + "Single Shot Reload Part 1 WAV.wav", 0.1, 0.46)), 1.0, 1.0)],
     "break_close": [("break_close", mech(L(S1R + "Single Shot Reload Part 2 WAV.wav", 0.15, 0.6)), 1.0, 1.0)],

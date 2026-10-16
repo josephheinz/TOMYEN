@@ -20,6 +20,7 @@ import com.jheinz.mymod.ModItems;
 import com.jheinz.mymod.blueprint.Blueprint;
 import com.jheinz.mymod.blueprint.Blueprints;
 import com.jheinz.mymod.detector.Detectors;
+import com.jheinz.mymod.leafblower.LeafBlowers;
 import com.jheinz.mymod.scrapbench.BenchRecipe.Cost;
 import com.jheinz.mymod.shoddy.ShoddyGuns;
 import com.jheinz.mymod.skullcrane.Skullcranes;
@@ -52,6 +53,9 @@ public final class BenchRecipes {
 					cost(ScrapBench.SPRING, 1), cost(ItemTags.WOODEN_SLABS, 3)),
 			recipe(blockItem(Survival.BEAR_TRAP), 1, cost(Items.IRON_INGOT, 2), cost(ScrapBench.SPRING, 2), cost(Items.IRON_CHAIN, 1),
 					cost(Items.IRON_NUGGET, 2)),
+			// A two-stroke leaf blower: an iron engine and fan, screws, a string pull cord, tech scrap for the carburettor.
+			recipe(LeafBlowers.LEAF_BLOWER, 1, cost(Items.IRON_INGOT, 3), cost(ScrapBench.SCREWS, 3), cost(Items.STRING, 2),
+					cost(ModItems.TECH_SCRAP, 2)),
 			recipe(Survival.PIPE_BOMB_ITEM, 2, cost(Items.IRON_INGOT, 1), cost(Items.GUNPOWDER, 2), cost(Items.STRING, 1),
 					cost(ScrapBench.SCREWS, 2)),
 			// Scrap armor: junk bolted onto leather.

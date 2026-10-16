@@ -3349,5 +3349,81 @@
         "attenuation_distance": 48
       }
     ]
+  },
+  "fish_gun_whoosh": {
+    "subtitle": "subtitles.mymod.fish_gun_whoosh",
+    "sounds": [
+      {
+        "name": "minecraft:entity/wind_charge/wind_burst1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/wind_charge/wind_burst2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/wind_charge/wind_burst3",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "fish_splat": {
+    "subtitle": "subtitles.mymod.fish_splat",
+    "sounds": [
+      {
+        "name": "minecraft:mob/slime/big1",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:mob/slime/big2",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:mob/slime/big3",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:mob/slime/big4",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:block/honeyblock/break1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:block/honeyblock/break2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:block/mud/break1",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:block/mud/break2",
+        "pitch": 1.2
+      }
+    ]
+  },
+  "leaf_blower_engine": {
+    "subtitle": "subtitles.mymod.leaf_blower_engine",
+    "sounds": [
+      "mymod:leaf_blower_engine"
+    ]
+  },
+  "leaf_blower_start": {
+    "subtitle": "subtitles.mymod.leaf_blower_start",
+    "sounds": [
+      "mymod:leaf_blower_start"
+    ]
+  },
+  "fish_gun_fire": {
+    "subtitle": "subtitles.mymod.fish_gun_fire",
+    "sounds": [
+      "mymod:fish_gun_fire",
+      {
+        "name": "mymod:fish_gun_fire_2",
+        "pitch": 0.96
+      }
+    ]
   }
 }

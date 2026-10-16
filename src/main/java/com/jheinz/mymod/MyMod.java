@@ -17,6 +17,8 @@ import com.jheinz.mymod.bloomery.Bloomery;
 import com.jheinz.mymod.cathode.CathodeWalkers;
 import com.jheinz.mymod.detector.Detectors;
 import com.jheinz.mymod.fae.Fae;
+import com.jheinz.mymod.fishgun.FishGuns;
+import com.jheinz.mymod.leafblower.LeafBlowers;
 import com.jheinz.mymod.fishing.Fishing;
 import com.jheinz.mymod.herbalism.Herbalism;
 import com.jheinz.mymod.dragonscale.Dragonscales;
@@ -133,6 +135,8 @@ public class MyMod implements ModInitializer {
 		Blueprints.initialize();
 		StarForge.initialize();
 		Herbalism.initialize();
+		FishGuns.initialize();
+		LeafBlowers.initialize();
 		linkBlockItems();
 	}
 

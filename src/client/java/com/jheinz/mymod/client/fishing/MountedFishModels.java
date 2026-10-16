@@ -52,7 +52,7 @@ public final class MountedFishModels {
 		float height(float length);
 	}
 
-	private static final Map<Item, Function<BlockEntityRendererProvider.Context, MountedFish>> FACTORIES = new HashMap<>();
+	private static final Map<Item, Function<Function<ModelLayerLocation, ModelPart>, MountedFish>> FACTORIES = new HashMap<>();
 
 	static {
 		vanilla(Items.COD, ModelLayers.COD, "cod", -1);
@@ -68,7 +68,7 @@ public final class MountedFishModels {
 			ModelLayerLocation layer = new ModelLayerLocation(MyMod.id(shape.id()), "main");
 			Identifier texture = MyMod.id("textures/entity/fish/" + shape.id() + ".png");
 			Identifier glow = shape.glows() ? MyMod.id("textures/entity/fish/" + shape.id() + "_glow.png") : null;
-			FACTORIES.put(kind.catchItem(), context -> new ModelFish(context.bakeLayer(layer), texture, glow, -1));
+			FACTORIES.put(kind.catchItem(), baker -> new ModelFish(baker.apply(layer), texture, glow, -1));
 		}
 	}
 
@@ -77,13 +77,18 @@ public final class MountedFishModels {
 
 	private static void vanilla(Item item, ModelLayerLocation layer, String texture, int tint) {
 		Identifier id = Identifier.withDefaultNamespace("textures/entity/fish/" + texture + ".png");
-		FACTORIES.put(item, context -> new ModelFish(context.bakeLayer(layer), id, null, tint));
+		FACTORIES.put(item, baker -> new ModelFish(baker.apply(layer), id, null, tint));
 	}
 
 	/** Every mounted fish model, baked for one renderer. */
 	static Map<Item, MountedFish> bake(BlockEntityRendererProvider.Context context) {
+		return bake(context::bakeLayer);
+	}
+
+	/** Every mounted fish model, baked by {@code baker} (any renderer context's bakeLayer): the Fish Gun's rounds use them too. */
+	public static Map<Item, MountedFish> bake(Function<ModelLayerLocation, ModelPart> baker) {
 		Map<Item, MountedFish> out = new HashMap<>();
-		FACTORIES.forEach((item, factory) -> out.put(item, factory.apply(context)));
+		FACTORIES.forEach((item, factory) -> out.put(item, factory.apply(baker)));
 		return out;
 	}
 

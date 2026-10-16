@@ -12,6 +12,10 @@ import com.jheinz.mymod.MagazineContents;
 import com.jheinz.mymod.MagazineItem;
 import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.client.energy.EnergyClient;
+import com.jheinz.mymod.client.fishgun.FishGunClient;
+import com.jheinz.mymod.client.leafblower.LeafBlowerClient;
+import com.jheinz.mymod.fishgun.FishGunItem;
+import com.jheinz.mymod.leafblower.LeafBlowerItem;
 import com.jheinz.mymod.client.launcher.LauncherClient;
 import com.jheinz.mymod.client.minigun.MinigunHud;
 import com.jheinz.mymod.energy.EnergyWeaponItem;
@@ -41,6 +45,10 @@ public final class AmmoHud {
 
 		if (held.getItem() instanceof RocketLauncherItem) {
 			LauncherClient.extractAmmo(graphics, minecraft, held, x, y);
+		} else if (held.getItem() instanceof FishGunItem) {
+			FishGunClient.extractHud(graphics, minecraft, held, x, y);
+		} else if (held.getItem() instanceof LeafBlowerItem blower) {
+			LeafBlowerClient.extractHud(graphics, minecraft, held, blower, x, y);
 		} else if (held.getItem() instanceof FlamethrowerItem) {
 			extractFuel(graphics, minecraft, held, x, y);
 		} else if (held.getItem() instanceof MinigunItem) {

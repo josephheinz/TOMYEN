@@ -16,6 +16,7 @@ import com.jheinz.mymod.GunItem;
 import com.jheinz.mymod.MagazineContents;
 import com.jheinz.mymod.ModComponents;
 import com.jheinz.mymod.launcher.RocketLauncherItem;
+import com.jheinz.mymod.leafblower.LeafBlowerItem;
 import com.jheinz.mymod.napalm.FlamethrowerItem;
 import com.jheinz.mymod.shotgun.ShotgunItem;
 
@@ -78,7 +79,7 @@ public final class GunReloads {
 				continue;
 			}
 			float factor = GunItem.reloadFactor(player);
-			if (item instanceof FlamethrowerItem) {
+			if (item instanceof FlamethrowerItem || item instanceof LeafBlowerItem) {
 				RELOADS.put(id, new Reload(Kind.REFUEL, item, Util.getMillis(), (long) (gun.stats().reloadTicks() * 50L * factor)));
 			} else if (gun.stats().singleRounds() && rounds - last.rounds() == 1) {
 				RELOADS.put(id, new Reload(Kind.ROUND, item, Util.getMillis(), ROUND_MILLIS));

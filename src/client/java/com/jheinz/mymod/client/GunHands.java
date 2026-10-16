@@ -14,6 +14,10 @@ import net.minecraft.world.item.Item;
 
 import com.jheinz.mymod.GunRecoil;
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.client.fishgun.FishGunClient;
+import com.jheinz.mymod.client.leafblower.LeafBlowerClient;
+import com.jheinz.mymod.fishgun.FishGuns;
+import com.jheinz.mymod.leafblower.LeafBlowerItem;
 import com.jheinz.mymod.energy.EnergyWeapons;
 import com.jheinz.mymod.client.launcher.LauncherAnimation;
 import com.jheinz.mymod.client.gunsmith.GunsmithClient;
@@ -68,6 +72,11 @@ public final class GunHands {
 			return shoddy;
 		} else if (gunsmith != null) {
 			return gunsmith;
+		} else if (gun == FishGuns.FISH_GUN) {
+			return FishGunClient.anchors();
+		} else if (gun instanceof LeafBlowerItem blower) {
+			// The shooting hand on the loop handle over the engine, the off hand on the rubber grip under the tube.
+			return LeafBlowerClient.anchors(blower.vacuum());
 		} else if (gun == ModItems.M4) {
 			return rifle(-0.022f, 0.119f, 0.156f, 0.055f, 0.179f, -0.390f);
 		} else if (gun == ModItems.AKM) {

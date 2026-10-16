@@ -6,6 +6,10 @@ import org.joml.Vector3f;
 import net.minecraft.world.item.Item;
 
 import com.jheinz.mymod.ModItems;
+import com.jheinz.mymod.client.fishgun.FishGunClient;
+import com.jheinz.mymod.client.leafblower.LeafBlowerClient;
+import com.jheinz.mymod.fishgun.FishGuns;
+import com.jheinz.mymod.leafblower.LeafBlowerItem;
 import com.jheinz.mymod.client.gunsmith.GunsmithClient;
 import com.jheinz.mymod.client.shoddy.ShoddyGunClient;
 import com.jheinz.mymod.energy.EnergyWeapons;
@@ -29,6 +33,10 @@ public record GunDisplay(Vector3f translation, float yaw, float scale) {
 			return shoddy;
 		} else if (gunsmith != null) {
 			return gunsmith;
+		} else if (gun == FishGuns.FISH_GUN) {
+			return FishGunClient.display();
+		} else if (gun instanceof LeafBlowerItem blower) {
+			return LeafBlowerClient.display(blower.vacuum());
 		} else if (gun == ModItems.GLOCK) {
 			return display(0.0f, 3.0f, -6.0f, -6, 0.65f);
 		} else if (gun == ModItems.M1911) {
