@@ -3349,5 +3349,79 @@
         "attenuation_distance": 48
       }
     ]
+  },
+  "trombone_note": {
+    "subtitle": "subtitles.mymod.trombone_note",
+    "sounds": [
+      {
+        "name": "mymod:trombone_note",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "trombone_attack": {
+    "sounds": [
+      {
+        "name": "mymod:trombone_attack",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "sad_trombone": {
+    "subtitle": "subtitles.mymod.sad_trombone",
+    "sounds": [
+      {
+        "name": "mymod:sad_trombone",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "trombone_fanfare": {
+    "subtitle": "subtitles.mymod.trombone_fanfare",
+    "sounds": [
+      {
+        "name": "mymod:trombone_fanfare",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "trombone_lullaby": {
+    "subtitle": "subtitles.mymod.trombone_lullaby",
+    "sounds": [
+      {
+        "name": "minecraft:note/icechime",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:note/bell",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "trombone_disco": {
+    "subtitle": "subtitles.mymod.trombone_disco",
+    "sounds": [
+      {
+        "name": "minecraft:note/bit",
+        "pitch": 1.0
+      },
+      {
+        "name": "minecraft:note/pling",
+        "pitch": 1.25
+      }
+    ]
+  },
+  "werewolf_whimper": {
+    "subtitle": "subtitles.mymod.werewolf_whimper",
+    "sounds": [
+      {
+        "name": "minecraft:mob/wolf/classic/whine",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/wolf/big/whine",
+        "pitch": 0.75
+      }
+    ]
   }
 }

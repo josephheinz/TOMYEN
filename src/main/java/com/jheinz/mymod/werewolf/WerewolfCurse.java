@@ -46,6 +46,7 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.mymod.herbalism.HerbalWards;
+import com.jheinz.mymod.trombone.TromboneMoods;
 import com.jheinz.mymod.holy.CrucifixItem;
 import com.jheinz.mymod.silver.Silver;
 
@@ -187,7 +188,7 @@ public final class WerewolfCurse {
 				continue;
 			}
 			if (changing && !villager.isBaby() && level.getRandom().nextInt(TRANSFORM_STAGGER) == 0
-					&& !HerbalWards.holdsBackCurse(level, villager)) {
+					&& !TromboneMoods.lulled(villager) && !HerbalWards.holdsBackCurse(level, villager)) {
 				startTransform(level, villager);
 				continue;
 			}

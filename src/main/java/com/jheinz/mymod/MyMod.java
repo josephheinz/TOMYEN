@@ -59,6 +59,7 @@ import com.jheinz.mymod.survival.Survival;
 import com.jheinz.mymod.scrapbench.ScrapBench;
 import com.jheinz.mymod.blueprint.Blueprints;
 import com.jheinz.mymod.starforge.StarForge;
+import com.jheinz.mymod.trombone.Trombones;
 
 public class MyMod implements ModInitializer {
 	public static final String MOD_ID = "mymod";
@@ -133,6 +134,7 @@ public class MyMod implements ModInitializer {
 		Blueprints.initialize();
 		StarForge.initialize();
 		Herbalism.initialize();
+		Trombones.initialize();
 		linkBlockItems();
 	}
 

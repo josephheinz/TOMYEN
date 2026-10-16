@@ -87,6 +87,18 @@ public class AlienModel extends EntityModel<AlienRenderState> {
 			rightArm.xRot = Mth.lerp(raise, rightArm.xRot, -1.45f + head.xRot);
 			rightArm.yRot = head.yRot * raise;
 		}
+		if (state.earsCovered) {
+			// Both hands clapped to the sides of its head, shaking, head ducked.
+			float shiver = 0.05f * Mth.sin(age * 1.7f);
+			rightArm.xRot = -Mth.PI + 0.2f;
+			leftArm.xRot = -Mth.PI + 0.2f;
+			rightArm.yRot = 0.0f;
+			leftArm.yRot = 0.0f;
+			rightArm.zRot = -0.42f + shiver;
+			leftArm.zRot = 0.42f - shiver;
+			head.xRot += 0.25f;
+			head.zRot += shiver;
+		}
 		if (state.dazed) {
 			float sway = Mth.sin(age * 0.18f);
 			head.zRot += 0.35f * sway;

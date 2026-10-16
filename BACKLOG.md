@@ -39,7 +39,6 @@ Mutated by uranium:
 - **Leaf blower.** Knocks back mobs and items; upgrades into a vacuum that sucks up drops.
 - **Cathode TV helmet.** Wear a Cathode Walker's screen: static night vision, and your face shows emotes to other players.
 - **Soda-bottle jetpack.** An early-game, terrible jetpack that runs on sugar and slime.
-- **Trombone.** Plays notes. A sad trombone curses mobs with Weakness; a war march buffs allies.
 
 ## Wacky mobs
 - **Shrimp with a gun.** Human-sized (not tiny): an ocean mob that shoots.

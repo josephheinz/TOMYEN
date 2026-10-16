@@ -29,6 +29,7 @@ public class AlienRenderer extends MobRenderer<Alien, AlienRenderState, AlienMod
 		super.extractRenderState(alien, state, partialTicks);
 		state.seed = (alien.getId() % 53) * 0.71f;
 		state.dazed = alien.isDazed();
+		state.earsCovered = alien.earsCovered();
 		state.attackTime = alien.getSwingAnimation(partialTicks);
 	}
 }
