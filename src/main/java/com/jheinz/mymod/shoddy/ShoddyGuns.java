@@ -23,9 +23,9 @@ import com.jheinz.mymod.MyMod;
 import com.jheinz.mymod.shotgun.ShotgunItem.Shell;
 
 /**
- * The Scavenger-tier guns: janky homemade firearms made on a crafting table from pipe (iron), wood, flint, tape and tech
- * scrap, before the Foundry's steel makes real ones possible. All four load a round at a time and misfire, jam and
- * backfire more as they wear (see {@link ShoddyGunItem}).
+ * The Scavenger-tier guns: janky homemade firearms assembled on the Scrap Bench from pipe (iron), wood, flint, springs,
+ * screws and tech scrap, before the Foundry's steel makes real ones possible. All four load a round at a time and
+ * misfire, jam and backfire more as they wear (see {@link ShoddyGunItem}).
  * <ul>
  * <li>Pipe Pistol: a slam-fire pipe on a plank grip. One crude round, short range, wild; cocked by drawing the striker
  * back after loading.</li>

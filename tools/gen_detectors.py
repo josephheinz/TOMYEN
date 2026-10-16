@@ -473,8 +473,7 @@ shaped("prospectors_pendulum", [" C", " S", " N"], {"C": "minecraft:copper_nugge
        "minecraft:iron_nugget")
 shaped("dowsing_rod", ["S S", " A ", " S "], {"S": "minecraft:stick", "A": "minecraft:amethyst_shard"}, "minecraft:amethyst_shard")
 shapeless("fae_dowsing_rod", ["mymod:dowsing_rod", "mymod:fae_dust", "mymod:fae_dust"], "mymod:fae_dust")
-shaped("metal_detector", ["RT ", " I ", "CCC"], {"R": "minecraft:redstone", "T": "mymod:tech_scrap", "I": "minecraft:iron_ingot",
-                                                 "C": "minecraft:copper_ingot"}, "mymod:tech_scrap")
+# The metal detector is assembled on the Scrap Bench (scrapbench/BenchRecipes.java).
 shaped("meteorite_scanner", ["SOS", "SXS", "SRS"], {"S": "mymod:steel_ingot", "O": "mymod:optic_lens", "X": "mymod:computer_chip",
                                                     "R": "minecraft:redstone"}, "mymod:optic_lens")
 shaped("ufo_radar", ["SKS", "XTX", "SRS"], {"S": "mymod:steel_ingot", "K": "mymod:copper_coil", "X": "mymod:computer_chip",

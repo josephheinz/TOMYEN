@@ -46,8 +46,8 @@ import com.jheinz.mymod.station.StationRecipe;
  * <ul>
  * <li><b>Slingshot</b> (Scavenger): a forked stick and a rubber band. Iron nuggets, flint or a pinch of gravel, quiet and
  * weak.</li>
- * <li><b>Flare Gun</b> (Scavenger): a break-open signal pistol. Sets what it hits alight; lights up the sky; can draw a
- * saucer.</li>
+ * <li><b>Flare Gun</b> (Workshop, or Scavenger with its blueprint): a break-open signal pistol. Sets what it hits
+ * alight; lights up the sky; can draw a saucer.</li>
  * <li><b>Snub Revolver</b> (Workshop): a cheap five-shot .38 sidearm, before the .357.</li>
  * <li><b>Sawed-off</b> (Workshop): two 12 gauge barrels, one or both at once.</li>
  * <li><b>Lever-Action Rifle</b> (Workshop): eight .38 Special in a tube, the lever worked after every shot; takes the
@@ -253,6 +253,9 @@ public final class Gunsmith {
 				recipe(NAIL_STRIP, 1, cost(Items.IRON_INGOT, 1), cost(ModItems.TECH_SCRAP, 1)),
 				recipe(NAIL_COIL, 1, cost(Items.IRON_INGOT, 2), cost(Items.COPPER_INGOT, 1), cost(ModItems.TECH_SCRAP, 1)),
 				recipe(HARPOON_SPEAR, 2, cost(Industry.STEEL_INGOT, 1), cost(Items.FLINT, 1), cost(Items.STRING, 1)),
+				// The Flare Gun moved here from the crafting table (its blueprint makes it on the Scrap Bench).
+				recipe(FLARE_GUN, 1, cost(Items.COPPER_INGOT, 2), cost(Items.IRON_INGOT, 1), cost(Items.TRIPWIRE_HOOK, 1),
+						cost(Items.DYE.orange(), 1)),
 				// Workshop guns: iron and wood with a bit of tech scrap for springs and pins.
 				recipe(SNUB_REVOLVER, 1, cost(Items.IRON_INGOT, 3), cost(Items.COPPER_INGOT, 1), cost(ModItems.TECH_SCRAP, 1),
 						cost(Items.LEATHER, 1)),

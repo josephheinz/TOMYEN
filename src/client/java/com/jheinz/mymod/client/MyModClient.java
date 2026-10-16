@@ -77,6 +77,7 @@ import com.jheinz.mymod.client.bloomery.BloomeryClient;
 import com.jheinz.mymod.client.meteorite.MeteorRenderer;
 import com.jheinz.mymod.meteorite.Meteorites;
 import com.jheinz.mymod.station.ModMenus;
+import com.jheinz.mymod.client.scrapbench.ScrapBenchClient;
 
 public class MyModClient implements ClientModInitializer {
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(MyMod.id("weapons"));
@@ -118,6 +119,7 @@ public class MyModClient implements ClientModInitializer {
 		MenuScreens.register(ModMenus.EXOSKELETON, ExoskeletonScreen::new);
 		ExoskeletonRenderer.initialize();
 		MenuScreens.register(ModMenus.FOUNDRY, FoundryScreen::new);
+		ScrapBenchClient.initialize();
 		EntityRendererRegistry.register(ModEntities.SHOPPING_CART, ShoppingCartRenderer::new);
 		ModelLayerRegistry.registerModelLayer(ShoppingCartModel.LAYER, ShoppingCartModel::createBodyLayer);
 		EntityRendererRegistry.register(ModEntities.VAMPIRE, VampireRenderer::new);

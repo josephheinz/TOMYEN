@@ -15,16 +15,16 @@ import net.minecraft.world.item.ItemStack;
 import com.jheinz.mymod.ModBlocks;
 
 /**
- * Three input slots and a result slot, like a smithing table. The server matches the inputs
+ * Four input slots and a result slot, like a smithing table. The server matches the inputs
  * against {@link StationRecipes} (or fits attachments to a gun, see {@link AttachmentFitting}) and puts
  * the result in the result slot; taking it consumes the inputs.
  */
 public class WeaponStationMenu extends AbstractContainerMenu {
-	public static final int INPUT_COUNT = 3;
+	public static final int INPUT_COUNT = 4;
 	public static final int RESULT_SLOT = INPUT_COUNT;
 
 	// Slot positions, shared with the screen's background texture.
-	public static final int INPUT_X = 27;
+	public static final int INPUT_X = 17;
 	public static final int SLOT_Y = 47;
 	public static final int RESULT_X = 129;
 
@@ -33,6 +33,7 @@ public class WeaponStationMenu extends AbstractContainerMenu {
 	private static final int INVENTORY_END = HOTBAR_START + 9;
 
 	private final ContainerLevelAccess access;
+	private final Player player;
 	private final ResultContainer result = new ResultContainer();
 	private final Container inputs = new SimpleContainer(INPUT_COUNT) {
 		@Override
@@ -49,6 +50,7 @@ public class WeaponStationMenu extends AbstractContainerMenu {
 	public WeaponStationMenu(int containerId, Inventory inventory, ContainerLevelAccess access) {
 		super(ModMenus.WEAPON_STATION, containerId);
 		this.access = access;
+		this.player = inventory.player;
 		for (int i = 0; i < INPUT_COUNT; i++) {
 			addSlot(new Slot(inputs, i, INPUT_X + i * 18, SLOT_Y));
 		}
@@ -63,7 +65,7 @@ public class WeaponStationMenu extends AbstractContainerMenu {
 			// Only the server knows a real level/pos; the client gets the result slot synced.
 			access.execute((level, pos) -> {
 				ItemStack fitted = AttachmentFitting.result(inputs);
-				StationRecipe recipe = fitted == null ? StationRecipes.find(inputs) : null;
+				StationRecipe recipe = fitted == null ? StationRecipes.find(inputs, player) : null;
 				result.setItem(0, fitted != null ? fitted : recipe == null ? ItemStack.EMPTY : recipe.result());
 			});
 		}
@@ -139,7 +141,7 @@ public class WeaponStationMenu extends AbstractContainerMenu {
 			if (AttachmentFitting.result(inputs) != null) {
 				AttachmentFitting.consume(inputs);
 			} else {
-				StationRecipe recipe = StationRecipes.find(inputs);
+				StationRecipe recipe = StationRecipes.find(inputs, player);
 				if (recipe != null) {
 					recipe.consume(inputs);
 				}

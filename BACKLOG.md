@@ -2,10 +2,6 @@
 
 Ideas approved for later. Not started yet.
 
-## Early game
-- **Scrap Bench.** A cheap first workstation, before the Weapon Station. Breaks junk down into tech scrap, nuggets and springs, and assembles homemade guns and early gadgets. The Scavenger tier's home base.
-- **Blueprints.** Found in loot. Each unlocks a Weapon Station or Scrap Bench recipe early (e.g. an "M1911 schematic"), so exploring has a progression payoff.
-
 ## Mobs
 Rogue machines (early to mid game; drop parts):
 - **Rust Crawler.** A dog-sized scrap spider that comes in packs out of junk and drags small items away. An early source of tech scrap.

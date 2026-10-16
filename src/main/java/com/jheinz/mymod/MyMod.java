@@ -56,6 +56,8 @@ import com.jheinz.mymod.banana.Bananas;
 import com.jheinz.mymod.station.ModMenus;
 import com.jheinz.mymod.scarecrow.Scarecrows;
 import com.jheinz.mymod.survival.Survival;
+import com.jheinz.mymod.scrapbench.ScrapBench;
+import com.jheinz.mymod.blueprint.Blueprints;
 import com.jheinz.mymod.starforge.StarForge;
 
 public class MyMod implements ModInitializer {
@@ -127,6 +129,8 @@ public class MyMod implements ModInitializer {
 		Detectors.initialize();
 		Survival.initialize();
 		Scarecrows.initialize();
+		ScrapBench.initialize();
+		Blueprints.initialize();
 		StarForge.initialize();
 		Herbalism.initialize();
 		linkBlockItems();
