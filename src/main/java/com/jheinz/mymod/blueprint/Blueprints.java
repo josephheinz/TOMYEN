@@ -134,11 +134,12 @@ public final class Blueprints {
 	public static void initialize() {
 		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, MyMod.id("random_blueprint"), RandomBlueprintFunction.MAP_CODEC);
 		BlueprintLoot.initialize();
-		// One of each in the creative tabs; the blank one only in My Mod (where every item is listed).
-		List<ItemStack> stacks = ALL.stream().map(Blueprints::stack).toList();
-		CreativeModeTabEvents.modifyOutputEvent(ModCreativeTabs.MY_MOD_TAB_KEY).register(output -> output.insertAfter(BLUEPRINT_ITEM, stacks));
+		// One of each in the creative tabs; the blank one only in My Mod (where every item is listed). The stacks are built
+		// when the tab fills, since item components aren't bound yet during mod initialization.
+		CreativeModeTabEvents.modifyOutputEvent(ModCreativeTabs.MY_MOD_TAB_KEY)
+				.register(output -> output.insertAfter(BLUEPRINT_ITEM, ALL.stream().map(Blueprints::stack).toList()));
 		// Next to the smithing templates, the other "schematics" in vanilla.
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS)
-				.register(output -> output.insertBefore(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, stacks));
+		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS).register(output ->
+				output.insertBefore(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ALL.stream().map(Blueprints::stack).toList()));
 	}
 }
