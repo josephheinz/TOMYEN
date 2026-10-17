@@ -1,0 +1,154 @@
+{
+  "variants": {
+    "column=0,facing=north,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c0_r0"
+    },
+    "column=0,facing=north,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c0_r1"
+    },
+    "column=0,facing=east,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c0_r0",
+      "y": 90
+    },
+    "column=0,facing=east,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c0_r1",
+      "y": 90
+    },
+    "column=0,facing=south,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c0_r0",
+      "y": 180
+    },
+    "column=0,facing=south,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c0_r1",
+      "y": 180
+    },
+    "column=0,facing=west,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c0_r0",
+      "y": 270
+    },
+    "column=0,facing=west,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c0_r1",
+      "y": 270
+    },
+    "column=1,facing=north,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c1_r0"
+    },
+    "column=1,facing=north,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c1_r1"
+    },
+    "column=1,facing=east,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c1_r0",
+      "y": 90
+    },
+    "column=1,facing=east,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c1_r1",
+      "y": 90
+    },
+    "column=1,facing=south,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c1_r0",
+      "y": 180
+    },
+    "column=1,facing=south,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c1_r1",
+      "y": 180
+    },
+    "column=1,facing=west,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c1_r0",
+      "y": 270
+    },
+    "column=1,facing=west,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c1_r1",
+      "y": 270
+    },
+    "column=2,facing=north,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c2_r0"
+    },
+    "column=2,facing=north,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c2_r1"
+    },
+    "column=2,facing=east,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c2_r0",
+      "y": 90
+    },
+    "column=2,facing=east,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c2_r1",
+      "y": 90
+    },
+    "column=2,facing=south,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c2_r0",
+      "y": 180
+    },
+    "column=2,facing=south,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c2_r1",
+      "y": 180
+    },
+    "column=2,facing=west,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c2_r0",
+      "y": 270
+    },
+    "column=2,facing=west,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c2_r1",
+      "y": 270
+    },
+    "column=3,facing=north,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c3_r0"
+    },
+    "column=3,facing=north,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c3_r1"
+    },
+    "column=3,facing=east,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c3_r0",
+      "y": 90
+    },
+    "column=3,facing=east,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c3_r1",
+      "y": 90
+    },
+    "column=3,facing=south,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c3_r0",
+      "y": 180
+    },
+    "column=3,facing=south,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c3_r1",
+      "y": 180
+    },
+    "column=3,facing=west,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c3_r0",
+      "y": 270
+    },
+    "column=3,facing=west,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c3_r1",
+      "y": 270
+    },
+    "column=4,facing=north,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c4_r0"
+    },
+    "column=4,facing=north,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c4_r1"
+    },
+    "column=4,facing=east,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c4_r0",
+      "y": 90
+    },
+    "column=4,facing=east,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c4_r1",
+      "y": 90
+    },
+    "column=4,facing=south,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c4_r0",
+      "y": 180
+    },
+    "column=4,facing=south,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c4_r1",
+      "y": 180
+    },
+    "column=4,facing=west,row=0": {
+      "model": "tomyen:block/giant_fish_mount_c4_r0",
+      "y": 270
+    },
+    "column=4,facing=west,row=1": {
+      "model": "tomyen:block/giant_fish_mount_c4_r1",
+      "y": 270
+    }
+  }
+}

@@ -12,6 +12,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -29,6 +30,11 @@ public class FishMountBlockEntity extends BlockEntity {
 
 	public FishMountBlockEntity(BlockPos pos, BlockState state) {
 		super(Fishing.FISH_MOUNT_ENTITY, pos, state);
+	}
+
+	/** For a bigger mount with its own block entity type (the Giant Fish Mount). */
+	protected FishMountBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	public ItemStack fish() {

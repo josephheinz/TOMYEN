@@ -1,0 +1,18 @@
+{
+  "item": "tomyen:giant_catfish",
+  "weight": 1,
+  "difficulty": 5,
+  "behavior": "thrasher",
+  "min_rod_tier": 2,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "#minecraft:is_river"
+  ],
+  "time": "night",
+  "size": {
+    "min_lb": 180.0,
+    "avg_lb": 320.0,
+    "max_lb": 720.0,
+    "trophy_lb": 180.0
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:rotten_flesh",
+    "minecraft:rotten_flesh",
+    "tomyen:raw_shrimp",
+    "tomyen:garlic"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tomyen:stink_bait"
+  }
+}
