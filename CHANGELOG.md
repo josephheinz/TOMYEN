@@ -1,4 +1,8 @@
-# Unreleased
+# TOMYEN 0.3.0: Corpse Run
+
+Die and go get your stuff back from the Isle of the Damned, fuse items in fae ponds, and race a bathtub. This is still an early alpha, so back up your worlds before updating.
+
+Requires **Fabric Loader 0.19.5+**, **Fabric API** and **Minecraft 26.3** (Java 25).
 
 ## The Isle of the Damned
 - **Die and your belongings go to the Isle,** a foggy death dimension. A gravestone marks where you fell: sneak and hold right-click on it for 5 seconds (or offer a holy or soul item) to go down after them.
@@ -11,6 +15,11 @@
 
 ## Vehicles
 - **Bathtub Boat:** a clawfoot tub with an outboard motor. Twice as fast as a boat on kerosene, rows when the tank is empty, waddles on land, and has a rubber duck horn (H).
+
+## Known issues
+- The Isle hasn't been tested in multiplayer, or with Revenants that died holding a gun.
+- The Moonblade may still deal its night bonus during the day.
+- Some fusions were merged before their in-game tests finished, so expect rough edges. Patches will follow.
 
 # TOMYEN 0.2.0: Creature Feature
 
