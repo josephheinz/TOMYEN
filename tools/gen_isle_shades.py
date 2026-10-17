@@ -2,11 +2,11 @@
 items, the soul wisp's sprite, their models, sounds, lang lines, tags, the Soul Charge recipe, and the Shade Heart
 advancement. (The Isle's terrain, biomes and their spawns are still tools/gen_isle.py's.)
 
-Textures follow the mod's rule: vanilla art put through a ramp of the Isle's own colours by brightness, except the
-wisp's sprite, which is drawn here.
+All three textures are drawn here (they're one-offs, not a material or tier, so there's no vanilla art to recolour),
+in the Isle's soul-cyan and shade-violet ramps.
 
-    soul wisp (item)   the soul fire flame particle in a faint ring of soul light, sparks rising off it
-    shade heart        the heart of the sea, in a shade's violet, its glint soul-cyan
+    soul wisp (item)   a small soul flame with a white core in a faint ring of soul light, sparks rising off it
+    shade heart        a faceted violet heart, lit up its left lobe, with a soul-cyan glint
     soul wisp (entity) a round mote of soul fire, 16x16: a white core in rings out to a clear edge (one quad, so
                        nothing overlaps; see SoulWispRenderer)
 
@@ -33,7 +33,7 @@ if not ARGS:
 ASSETS = ARGS[0]
 sys.argv = sys.argv[:1] + ARGS[:1]
 import gen_fae  # noqa: E402,F401  (reads ASSETS from sys.argv)
-from gen_fae import Sprite, ramp, recolour, lum, read_texture, item_def, recipe, shapeless, tag, CLEAR  # noqa: E402
+from gen_fae import Sprite, ramp, recolour, lum, read_texture, item_model, recipe, shapeless, tag, CLEAR  # noqa: E402
 from gen_longswords import client_jar, REPO  # noqa: E402
 from gunkit import png, write  # noqa: E402
 
@@ -46,34 +46,74 @@ SHADE = [0x0e0820, 0x241446, 0x41287a, 0x6c4cb4, 0xa58ae6]
 # ======================================================================================================= textures
 
 
-def soul_wisp_item(flame):
-    """The soul fire flame particle (8x8) standing in a faint round halo of soul light, three sparks drifting up off
-    it: a mote of soul fire, held."""
+WISP = [
+    "..........s.....",
+    "................",
+    ".......o.....s..",
+    ".......oo.......",
+    "......omo.......",
+    "......omlo......",
+    ".....omllo......",
+    "....omllwmo.....",
+    "....omlwwlmo....",
+    "...omlwwwwlmo...",
+    "...omlwwwwlmo...",
+    "...omllwwllmo...",
+    "....omllllmo....",
+    ".....ommmmo.....",
+    "......oooo......",
+    "................",
+]
+
+HEART = [
+    "................",
+    "..oooo....oooo..",
+    ".o4c43o..o3332o.",
+    "o4g4433oo333221o",
+    "o44433333322211o",
+    "o44333332222111o",
+    "o33333332221111o",
+    ".o233333222111o.",
+    ".o22333322111 o.".replace(" ", "1"),
+    "..o2233322111o..",
+    "...o22332111o...",
+    "....o223211o....",
+    ".....o2321o.....",
+    "......o21o......",
+    ".......oo.......",
+    "................",
+]
+
+
+def drawn(grid, palette):
+    """A sprite from rows of palette keys ('.' is clear)."""
+    assert len(grid) == 16 and all(len(row) == 16 for row in grid), grid
     s = Sprite(16, 16)
+    for y, row in enumerate(grid):
+        for x, k in enumerate(row):
+            if k != ".":
+                s.set(x, y, palette[k])
+    return s
+
+
+def soul_wisp_item():
+    """A small soul flame, drawn: a teardrop with a white-hot core, its tip leaning, two sparks rising off it, and a
+    one-texel ring of faint soul light round it so it reads as ghostly rather than solid."""
+    soul = {"o": ramp(SOUL, 0.25), "m": ramp(SOUL, 0.5), "l": ramp(SOUL, 0.75), "w": ramp(SOUL, 1.0), "s": ramp(SOUL, 0.75)}
+    s = drawn(WISP, soul)
+    body = {(x, y) for y, row in enumerate(WISP) for x, k in enumerate(row) if k in "omlw"}
     for y in range(16):
         for x in range(16):
-            r = ((x - 7.5) ** 2 + (y - 9.0) ** 2) ** 0.5
-            if r < 6.2:
-                s.set(x, y, ramp(SOUL, 0.55 if r > 4.6 else 0.45, 45 if r > 4.6 else 105))
-    for y in range(flame.h):
-        for x in range(flame.w):
-            c = flame.get(x, y)
-            if c[3]:
-                s.set(x + 4, y + 5, recolour([c], SOUL, stretch=False)[0][:3] + (255,))
-    for x, y, t in ((3, 3, 0.85), (11, 2, 1.0), (12, 6, 0.6)):
-        s.set(x, y, ramp(SOUL, t))
+            if WISP[y][x] == "." and any((x + dx, y + dy) in body for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                s.set(x, y, ramp(SOUL, 0.5, 70))
     return s
 
 
-def shade_heart(src):
-    """The heart of the sea in shade violet, its few brightest texels (the glint) in soul-cyan."""
-    s = Sprite(src.w, src.h, recolour(src.px, SHADE))
-    ls = sorted(lum(c) for c in src.px if c[3])
-    cut = ls[int(len(ls) * 0.985)]
-    for i, c in enumerate(src.px):
-        if c[3] and lum(c) >= cut:
-            s.px[i] = ramp(SOUL, 0.75 + 0.25 * (lum(c) - cut) / max(1e-6, ls[-1] - cut))
-    return s
+def shade_heart():
+    """A faceted heart in a shade's violet: a lit facet up the left lobe, darker planes falling away to the right and
+    down to the point, a crease down the middle, and a soul-cyan glint."""
+    return drawn(HEART, {"o": ramp(SHADE, 0.0), "1": ramp(SHADE, 0.2), "2": ramp(SHADE, 0.4), "3": ramp(SHADE, 0.6),
+                         "4": ramp(SHADE, 0.85), "g": ramp(SOUL, 1.0), "c": ramp(SOUL, 0.75)})
 
 
 def soul_wisp_sprite():
@@ -113,6 +153,10 @@ LANG = OrderedDict([
     ("entity.tomyen.shade.boss", "Shade of the %s"),
     ("entity.tomyen.shade.boss_named", "Shade of %s"),
     ("entity.tomyen.soul_wisp", "Soul Wisp"),
+    ("item.tomyen.soul_wisp", "Soul Wisp"),
+    ("item.tomyen.soul_wisp.hint", "Three and soul sand make a Soul Charge; an offering at your gravestone"),
+    ("item.tomyen.shade_heart", "Shade Heart"),
+    ("item.tomyen.shade_heart.hint", "Offer it at your gravestone to draw your belongings up a depth"),
     ("message.tomyen.isle.tide_surges", "The Soul Tide surges..."),
     ("message.tomyen.isle.boss_shade", "%s gathers itself out of the fog"),
     ("message.tomyen.isle.boss_shade_rests", "%s is laid to rest"),
@@ -191,8 +235,11 @@ def write_data():
     tag("entity_type", "tomyen", "shade_casters", CASTERS)
     tag("entity_type", "tomyen", "soulless", SOULLESS)
     tag("entity_type", "tomyen", "evil", ["tomyen:shade"])
-    # The Soul Wisp and Shade Heart items (offering tag, Soul Charge recipe, shade_heart advancement, item models) are on
-    # the backlog; shades drop Ectoplasm and Soul Charges for now.
+    # The Soul Wisp is an offering; the Shade Heart is handled on its own in PayingRespects, so it's not in the tag.
+    tag("item", "tomyen", "isle_soul_offerings", ["tomyen:soul_wisp"])
+    recipe("soul_charge_from_soul_wisps",
+           shapeless("soul_charge", ["tomyen:soul_wisp"] * 3 + ["#minecraft:soul_fire_base_blocks"], "misc"),
+           "misc", ["tomyen:soul_wisp"])
 
 
 def preview_sheet(path, sprites):
@@ -228,6 +275,10 @@ def main():
             sprites.append(sprite)
 
         out("entity", "soul_wisp", soul_wisp_sprite())
+        out("item", "soul_wisp", soul_wisp_item())
+        out("item", "shade_heart", shade_heart())
+    for name in ("soul_wisp", "shade_heart"):
+        item_model(name)
     write_data()
     merge(os.path.join(ASSETS, "sounds.json"), sounds_json())
     merge(os.path.join(ASSETS, "lang", "en_us.json"), LANG, indent=2)

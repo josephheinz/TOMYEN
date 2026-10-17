@@ -30,6 +30,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 
 import com.jheinz.tomyen.MyMod;
 import com.jheinz.tomyen.metal.HintItem;
+import com.jheinz.tomyen.soul.Souls;
 
 /**
  * The Isle of the Damned, pass 2: its shades and the Soul Tide.
@@ -39,8 +40,8 @@ import com.jheinz.tomyen.metal.HintItem;
  * the Soul Tide, all in {@link IsleSouls} (fixed-size saved data, never entities).
  * <li>{@link ShadeManager} raises {@link Shade}s from those records, and waves of them from the tide, round players on
  * the Isle, and dissolves them when the players go.
- * <li>Shades drop Ectoplasm, and boss shades Soul Charges too (see {@link ShadeLoot}). The Soul Wisp and Shade Heart
- * items are on the backlog.
+ * <li>Shades drop {@link #SOUL_WISP}s (and a little Ectoplasm), and boss shades a Soul Charge and their
+ * {@link #SHADE_HEART} too (see {@link ShadeLoot}; the heart's use is in {@code PayingRespects}).
  * <li>{@link SoulWisp}s drift about the Isle on their own, its only natural spawn.
  * </ul>
  */
@@ -72,7 +73,13 @@ public final class IsleShades {
 			.noLootTable());
 
 	// --- Items --------------------------------------------------------------------------------------------------------
-	/** What a shade leaves when it's beaten: a mote of soul fire. */
+	/** What a shade leaves when it's beaten: a mote of soul fire. Three and a soul sand or soul soil make a Soul Charge. */
+	public static final Item SOUL_WISP = item("soul_wisp", p -> new HintItem(p, List.of("item.tomyen.soul_wisp.hint")),
+			new Item.Properties());
+	/** A boss shade's, one each: offered at your gravestone, it draws your hoard up a depth. */
+	public static final Item SHADE_HEART = item("shade_heart", p -> new HintItem(p, List.of("item.tomyen.shade_heart.hint")),
+			new Item.Properties().stacksTo(16).rarity(Rarity.RARE));
+
 	// --- Sounds (vanilla ones, re-pitched: see sounds.json) -----------------------------------------------------------
 	public static final SoundEvent SHADE_AMBIENT = sound("shade_ambient");
 	public static final SoundEvent SHADE_HURT = sound("shade_hurt");
@@ -117,6 +124,7 @@ public final class IsleShades {
 		SpawnPlacements.register(SOUL_WISP_ENTITY, SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING, SoulWisp::checkSpawnRules);
 		SoulRecorder.initialize();
 		ShadeManager.initialize();
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS);
+		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS)
+				.register(output -> output.insertAfter(Souls.SOUL_CHARGE, SOUL_WISP, SHADE_HEART));
 	}
 }

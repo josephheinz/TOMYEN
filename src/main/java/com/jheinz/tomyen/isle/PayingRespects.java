@@ -14,6 +14,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -38,7 +39,11 @@ import com.jheinz.tomyen.starforge.Infusion;
  * Charges, soul steel, anything Soulbound: see the {@code tomyen:isle_holy_offerings} and
  * {@code tomyen:isle_soul_offerings} item tags) takes them down at once, with Soul Ward for their first minute there.
  * It costs a little of the offering: one from a stack, a twentieth of a tool's durability, or a minute's cooldown for
- * a relic like the crucifix that's neither. A Shade Heart (from a boss's shade) also draws the hoard up a depth first.
+ * a relic like the crucifix that's neither.
+ *
+ * <p><b>A Shade Heart</b> (a boss shade's drop) is checked before any other offering: it draws the hoard up a depth
+ * and then takes its owner down as an offering would. It's only used up if the hoard could rise; at the Shore it stays
+ * in hand and nobody goes anywhere.
  */
 public final class PayingRespects {
 	public static final int RESPECT_TICKS = 100;
@@ -85,6 +90,26 @@ public final class PayingRespects {
 			return;
 		}
 		GlobalPos from = GlobalPos.of(level.dimension(), pos);
+		for (InteractionHand hand : InteractionHand.values()) {
+			ItemStack held = player.getItemInHand(hand);
+			if (held.is(IsleShades.SHADE_HEART)) {
+				PAYING.remove(player.getUUID());
+				if (!raiseHoard(player, level)) {
+					level.playSound(null, pos, SoundEvents.SOUL_ESCAPE.value(), SoundSource.PLAYERS, 0.8f, 0.6f);
+					return;
+				}
+				level.playSound(null, pos, SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.PLAYERS, 1.0f, 0.7f);
+				level.playSound(null, pos, Isle.OFFERING, SoundSource.PLAYERS, 1.0f, 0.8f);
+				level.sendParticles(ParticleTypes.SOUL, pos.getX() + 0.5, pos.getY() + 0.9, pos.getZ() + 0.5, 40, 0.3, 0.5, 0.3, 0.08);
+				level.sendParticles(ParticleTypes.REVERSE_PORTAL, pos.getX() + 0.5, pos.getY() + 0.9, pos.getZ() + 0.5, 30, 0.3, 0.4, 0.3,
+						0.05);
+				if (!player.hasInfiniteMaterials()) {
+					held.shrink(1);
+				}
+				IsleDimension.sendIn(player, from, true);
+				return;
+			}
+		}
 		for (InteractionHand hand : InteractionHand.values()) {
 			ItemStack held = player.getItemInHand(hand);
 			if (isOffering(held) && !player.getCooldowns().isOnCooldown(held)) {
@@ -137,7 +162,7 @@ public final class PayingRespects {
 		IsleDepth up = IsleDepth.of(hoard.depth().index - 1);
 		RevenantManager.dismiss(level.getServer(), player.getUUID());
 		Hoards.put(level.getServer(), hoard.withDepth(up));
-		player.sendSystemMessage(Component.translatable("message.tomyen.isle.heart_raises", up.displayName()).withStyle(ChatFormatting.AQUA));
+		player.sendOverlayMessage(Component.translatable("message.tomyen.isle.heart_raises", up.displayName()).withStyle(ChatFormatting.AQUA));
 		return true;
 	}
 

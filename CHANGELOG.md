@@ -1,3 +1,8 @@
+# TOMYEN 0.3.1 (Unreleased)
+
+## The Isle of the Damned
+- **Soul Wisps and Shade Hearts:** shades now drop Soul Wisps (plus a little Ectoplasm off echoes and bosses). Three wisps and a soul sand or soul soil make a Soul Charge, and a wisp works as a gravestone offering. Boss shades also drop a rare Shade Heart: offer it at your gravestone to draw your belongings up one depth before you go down.
+
 # TOMYEN 0.3.0: Corpse Run
 
 Die and go get your stuff back from the Isle of the Damned, fuse items in fae ponds, and race a bathtub. This is still an early alpha, so back up your worlds before updating.
