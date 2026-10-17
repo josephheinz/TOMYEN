@@ -1,0 +1,60 @@
+# Pushing a version tag (e.g. `git tag v0.1.0 && git push origin v0.1.0`) builds the mod
+# and publishes a GitHub Release with the mod jar attached. The release notes are that
+# version's section of CHANGELOG.md (a `# ... 0.1.0...` heading down to the next `# `
+# heading), or GitHub's generated notes if CHANGELOG.md has no section for it.
+
+name: release
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v7
+      - name: setup jdk
+        uses: actions/setup-java@v6
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+      - name: setup gradle
+        uses: gradle/actions/setup-gradle@v6
+      - name: check tag matches gradle.properties version
+        run: |
+          version=$(sed -n 's/^version=//p' gradle.properties | tr -d '[:space:]')
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match version=$version in gradle.properties"
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+      - name: build
+        run: ./gradlew build
+      - name: extract release notes from CHANGELOG.md
+        run: |
+          awk -v v="$VERSION" '
+            /^# / {
+              if (found) exit
+              n = split($0, w, " ")
+              for (i = 2; i <= n; i++) { x = w[i]; sub(/:$/, "", x); if (x == v || x == "v" v) found = 1 }
+              if (found) { print substr($0, 3) > "release-title.txt"; next }
+            }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+      - name: create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          jar="build/libs/tomyen-$VERSION.jar"
+          if [ -s release-notes.md ] && grep -q '[^[:space:]]' release-notes.md; then
+            gh release create "$GITHUB_REF_NAME" "$jar" --verify-tag \
+              --title "$(cat release-title.txt)" --notes-file release-notes.md
+          else
+            echo "::warning::No CHANGELOG.md section for $VERSION, using generated notes"
+            gh release create "$GITHUB_REF_NAME" "$jar" --verify-tag \
+              --title "TOMYEN $VERSION" --generate-notes
+          fi
