@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:tusk_spear",
+    "tomyen:moose_antler"
+  ],
+  "result": "tomyen:antler_pike",
+  "station": "pond",
+  "tier": 1
+}

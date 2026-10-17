@@ -71,6 +71,7 @@ FUSIONS = [
 ]
 BUILT = {"swordfish_sword", "fish_fish_fish", "rocket_boots", "murder_wings", "stormcrow_rig"}
 BUILT |= {"barbel_lash", "grave_auger", "hexed_rod", "whiskerline_rod", "writ_of_absolution"}  # batch 4
+BUILT |= {"slide_hammer", "antler_pike", "tuskaxe", "moonblade", "pufferblade", "gnome_lance", "leviathan_blade"}  # batch 2
 
 LANG = o(
     ("item.tomyen.fused", "Fused"),

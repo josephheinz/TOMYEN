@@ -216,5 +216,6 @@ public class MyModClient implements ClientModInitializer {
 		BathtubClient.initialize();
 		FusionClient.initialize();
 		IsleClient.initialize();
+		com.jheinz.tomyen.client.fusion.melee.MeleeFusionsClient.initialize();
 	}
 }

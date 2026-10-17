@@ -1,50 +1,51 @@
 {
-	"schemaVersion": 1,
-	"id": "tomyen",
-	"version": "${version}",
-	"name": "TOMYEN",
-	"description": "The Only Mod You'll Ever Need. An invasion of meteors, fae, werewolves, rogue machines and UFOs, and the guns, gear, vehicles and gadgets to fight back.",
-	"authors": [
-		"jheinz"
-	],
-	"license": "CC0-1.0",
-	"icon": "assets/tomyen/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"com.jheinz.tomyen.MyMod"
-		],
-		"client": [
-			"com.jheinz.tomyen.client.MyModClient"
-		]
-	},
-	"mixins": [
-		"tomyen.mixins.json",
-		{
-			"config": "tomyen.client.mixins.json",
-			"environment": "client"
-		},
-		"tomyen.fishing.mixins.json",
-		"tomyen.survival.mixins.json",
-		"tomyen.scarecrow.mixins.json",
-		"tomyen.isle.mixins.json",
-		{
-			"config": "tomyen.isle.client.mixins.json",
-			"environment": "client"
-		},
-		{
-			"config": "tomyen.fishing.client.mixins.json",
-			"environment": "client"
-		},
-		{
-			"config": "tomyen.trombone.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.19.5",
-		"minecraft": "~26.3",
-		"java": ">=25",
-		"fabric-api": "*"
-	}
+  "schemaVersion": 1,
+  "id": "tomyen",
+  "version": "${version}",
+  "name": "TOMYEN",
+  "description": "The Only Mod You'll Ever Need. An invasion of meteors, fae, werewolves, rogue machines and UFOs, and the guns, gear, vehicles and gadgets to fight back.",
+  "authors": [
+    "jheinz"
+  ],
+  "license": "CC0-1.0",
+  "icon": "assets/tomyen/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.jheinz.tomyen.MyMod"
+    ],
+    "client": [
+      "com.jheinz.tomyen.client.MyModClient"
+    ]
+  },
+  "mixins": [
+    "tomyen.mixins.json",
+    {
+      "config": "tomyen.client.mixins.json",
+      "environment": "client"
+    },
+    "tomyen.fishing.mixins.json",
+    "tomyen.survival.mixins.json",
+    "tomyen.scarecrow.mixins.json",
+    "tomyen.isle.mixins.json",
+    {
+      "config": "tomyen.isle.client.mixins.json",
+      "environment": "client"
+    },
+    {
+      "config": "tomyen.fishing.client.mixins.json",
+      "environment": "client"
+    },
+    {
+      "config": "tomyen.trombone.client.mixins.json",
+      "environment": "client"
+    },
+    "tomyen.fusion_melee.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
 }

@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:boar_tusk",
+    "tomyen:bloom_steel_axe"
+  ],
+  "result": "tomyen:tuskaxe",
+  "station": "pond",
+  "tier": 1
+}

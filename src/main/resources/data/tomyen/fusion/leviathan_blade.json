@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:swordfish_sword",
+    "tomyen:moonblade"
+  ],
+  "result": "tomyen:leviathan_blade",
+  "station": "reactor",
+  "tier": 2
+}

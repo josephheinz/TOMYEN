@@ -172,6 +172,7 @@ public class MyMod implements ModInitializer {
 		Bathtubs.initialize();
 		Fusions.initialize();
 		Isle.initialize();
+		com.jheinz.tomyen.fusion.melee.MeleeFusions.initialize();
 		linkBlockItems();
 	}
 
