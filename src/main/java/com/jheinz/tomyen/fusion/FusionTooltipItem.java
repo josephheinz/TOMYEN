@@ -23,7 +23,7 @@ public class FusionTooltipItem extends Item {
 		appendFusionLines(tooltip, lines);
 	}
 
-	static void appendFusionLines(Consumer<Component> tooltip, String... lines) {
+	public static void appendFusionLines(Consumer<Component> tooltip, String... lines) {
 		tooltip.accept(Component.translatable("item.tomyen.fused").withStyle(ChatFormatting.LIGHT_PURPLE));
 		for (String line : lines) {
 			tooltip.accept(Component.translatable(line).withStyle(ChatFormatting.GRAY));

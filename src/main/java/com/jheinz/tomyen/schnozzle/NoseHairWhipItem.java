@@ -11,6 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -84,6 +85,7 @@ public class NoseHairWhipItem extends Item {
 	private static final double YANK_LIFT = 0.25;
 
 	public static final float SLIME_CHANCE = 0.15f;
+	private static final Identifier LASH_TEXTURE = MyMod.id("textures/entity/nose_hair_whip_lash.png");
 	private static final int SLIMED_TICKS = 60;
 
 	public NoseHairWhipItem(Properties properties) {
@@ -109,6 +111,21 @@ public class NoseHairWhipItem extends Item {
 						.build());
 	}
 
+	/** How far an attack lashes out (the {@code attack_range} component should match); a longer whip overrides it. */
+	public float attackReach() {
+		return ATTACK_REACH;
+	}
+
+	/** How far a snag reaches. */
+	public double snagRange() {
+		return SNAG_RANGE;
+	}
+
+	/** The lash's ribbon texture (client/schnozzle/WhipLashes). */
+	public Identifier lashTexture() {
+		return LASH_TEXTURE;
+	}
+
 	public static boolean isHeldBy(Player player) {
 		return player.getMainHandItem().getItem() instanceof NoseHairWhipItem;
 	}
@@ -120,7 +137,7 @@ public class NoseHairWhipItem extends Item {
 			return;
 		}
 		Vec3 start = player.getEyePosition();
-		Vec3 end = start.add(player.getViewVector(1.0f).scale(ATTACK_REACH));
+		Vec3 end = start.add(player.getViewVector(1.0f).scale(attackReach()));
 		crack(level, level.clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player)).getLocation());
 	}
 
@@ -165,7 +182,7 @@ public class NoseHairWhipItem extends Item {
 
 	/** Lashes at whatever the player is looking at and pulls it (or the player) in. */
 	private void snag(ServerLevel level, Player player, ItemStack stack) {
-		HitResult hit = snagTarget(player);
+		HitResult hit = snagTarget(player, snagRange());
 		Vec3 to = hit.getLocation();
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), Schnozzles.WHIP_SNAG, SoundSource.PLAYERS, 1.0f,
 				0.9f + level.getRandom().nextFloat() * 0.2f);
@@ -216,9 +233,9 @@ public class NoseHairWhipItem extends Item {
 	}
 
 	/** The first creature or dropped item along the player's line of sight within range, else the block there, else a miss. */
-	private static HitResult snagTarget(Player player) {
+	private static HitResult snagTarget(Player player, double range) {
 		Vec3 start = player.getEyePosition();
-		Vec3 end = start.add(player.getViewVector(1.0f).scale(SNAG_RANGE));
+		Vec3 end = start.add(player.getViewVector(1.0f).scale(range));
 		HitResult block = player.level().clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
 		end = block.getLocation();
 		EntityHitResult entity = ProjectileUtil.getEntityHitResult(player.level(), player, start, end,

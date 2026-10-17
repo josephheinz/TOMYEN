@@ -120,7 +120,7 @@ public final class FishingFights {
 		}
 		boolean trophy = size != null && size.isTrophy(weight);
 		begin(player, hook, species, count, species.behavior(),
-				Math.min(5, difficulty(species, stats, weight) + HagsCurse.fightPenalty(player)), stats, shown, weight,
+				Math.min(5, difficulty(species, stats, weight) + HagsCurse.fightPenalty(player) + rodPenalty(player)), stats, shown, weight,
 				FightStrength.of(species, weight), trophy);
 		hook.setFighting(true);
 		hook.level().playSound(null, hook.getX(), hook.getY(), hook.getZ(), Fishing.HOOKED, SoundSource.NEUTRAL, 1.0f, 1.0f);
@@ -273,6 +273,9 @@ public final class FishingFights {
 						}
 						weighIn(player, fight.species(), caught, weight, size.isTrophy(weight), TrophyFish.day(level));
 					}
+					if (rodStack(player).getItem() instanceof RodItem rod) {
+						caught = rod.landed(level, player, caught);
+					}
 					land(level, player, hook, caught.copy(), xp);
 					damageRod(player, 1);
 					eatBait(player, hook);
@@ -364,6 +367,11 @@ public final class FishingFights {
 		double dz = player.getZ() - hook.getZ();
 		item.setDeltaMovement(dx * 0.1, dy * 0.1 + Math.sqrt(Math.sqrt(dx * dx + dy * dy + dz * dz)) * 0.08, dz * 0.1);
 		level.addFreshEntity(item);
+	}
+
+	/** The fight penalty of the rod in hand ({@link RodItem#fightPenalty}). */
+	private static int rodPenalty(ServerPlayer player) {
+		return rodStack(player).getItem() instanceof RodItem rod ? rod.fightPenalty() : 0;
 	}
 
 	private static ItemStack rodStack(ServerPlayer player) {

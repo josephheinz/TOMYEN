@@ -55,8 +55,9 @@ public final class WhipHandles {
 	 * @param entityId the holder's id, if it's a player or mannequin, else -1
 	 * @param mainHand whether it's the whip in the main hand
 	 * @param ageInTicks the holder's age this frame, which the lash's sway runs on
+	 * @param whip the whip held, for its lash's reach and texture
 	 */
-	public record Handle(int entityId, boolean mainHand, Vec3 tip, Vec3 along, WhipMotion motion, float ageInTicks) {
+	public record Handle(int entityId, boolean mainHand, Vec3 tip, Vec3 along, WhipMotion motion, float ageInTicks, NoseHairWhipItem whip) {
 	}
 
 	private static final List<Handle> CAPTURED = new ArrayList<>();
@@ -91,7 +92,7 @@ public final class WhipHandles {
 	 * the level's space.
 	 */
 	public static void capture(PoseStack.Pose holdPose, ItemStackRenderState item, int entityId, boolean mainHand, WhipMotion motion,
-			float ageInTicks) {
+			float ageInTicks, NoseHairWhipItem whip) {
 		if (!capturing || item.isEmpty()) {
 			return;
 		}
@@ -102,7 +103,7 @@ public final class WhipHandles {
 		if (along.lengthSquared() < 1.0e-8f) {
 			return;
 		}
-		CAPTURED.add(new Handle(entityId, mainHand, new Vec3(tip), new Vec3(along.normalize()), motion, ageInTicks));
+		CAPTURED.add(new Handle(entityId, mainHand, new Vec3(tip), new Vec3(along.normalize()), motion, ageInTicks, whip));
 	}
 
 	/** The item's own display transform, as its first layer applies it when drawn (ItemStackRenderState.LayerRenderState.submit). */
@@ -120,7 +121,7 @@ public final class WhipHandles {
 		boolean main = hand == InteractionHand.MAIN_HAND;
 		ItemStack shown = main ? hands.mainHandItem : hands.offHandItem;
 		ItemStackRenderState item = main ? hands.mainHandRenderState : hands.offHandRenderState;
-		if (!(shown.getItem() instanceof NoseHairWhipItem) || item.isEmpty() || hands.handRenderSelection == null) {
+		if (!(shown.getItem() instanceof NoseHairWhipItem whip) || item.isEmpty() || hands.handRenderSelection == null) {
 			return null;
 		}
 		HumanoidArm arm = main ? avatar.mainArm : avatar.mainArm.getOpposite();
@@ -143,7 +144,7 @@ public final class WhipHandles {
 		if (along.lengthSquared() < 1.0e-8f) {
 			return null;
 		}
-		return new Handle(avatar.id, main, new Vec3(tip), new Vec3(along.normalize()), motion, avatar.ageInTicks);
+		return new Handle(avatar.id, main, new Vec3(tip), new Vec3(along.normalize()), motion, avatar.ageInTicks, whip);
 	}
 
 	/** A point of the hand pass (before its bob), as the camera-relative level point drawn on the same pixel. */

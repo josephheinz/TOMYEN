@@ -126,6 +126,29 @@ public final class DebtCollection {
 		return debt.withTicksLeft(left).withWarned(warned);
 	}
 
+	/**
+	 * Pushes the player's deadline back by this many ticks (to no more than {@code cap} left), calling off a hunt that's
+	 * on (its collectors leave by themselves, see {@link Collectors}) and re-arming the warnings put back ahead. The Writ of
+	 * Absolution. Returns the new account, or null if they owe nothing.
+	 */
+	public static @Nullable Debt pushBack(ServerPlayer player, int ticks, int cap) {
+		Debt debt = Debt.of(player);
+		if (debt == null) {
+			return null;
+		}
+		Debt pushed = debt.withHunt(false, 0, 0).withTicksLeft(Math.min(cap, Math.max(0, debt.ticksLeft()) + ticks));
+		int warned = pushed.warned();
+		for (int i = 0; i < WARNINGS.length; i++) {
+			if (WARNINGS[i] < pushed.ticksLeft()) {
+				warned &= ~(1 << i);
+			}
+		}
+		pushed = pushed.withWarned(warned);
+		player.setAttached(Banking.DEBT, pushed);
+		endBar(player);
+		return pushed;
+	}
+
 	/** The player's account summary, for an ATM or banker: what's owed and when it's due. */
 	public static Component statement(ServerPlayer player) {
 		Debt debt = Debt.of(player);
