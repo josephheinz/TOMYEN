@@ -1,4 +1,8 @@
-# Unreleased
+# TOMYEN 0.2.0: Creature Feature
+
+Ten new mobs, a river boss and a fish called Fish Fish. This is still an early alpha, so back up your worlds before updating.
+
+Requires **Fabric Loader 0.19.5+**, **Fabric API** and **Minecraft 26.3** (Java 25).
 
 ## New mobs
 - **Shrimp with a Gun:** a human-sized shrimp that comes out of oceans and onto beaches at night. It fires four-round bursts from a pistol, then has to reload, which is your chance to rush it. It drops Raw Shrimp (food and ocean-fish bait) and, rarely, its Shrimp Pistol.
@@ -15,6 +19,9 @@
 
 ## Fishing
 - **Fish Fish:** a new and extremely generic fish, common in rivers, oceans and most temperate biomes.
+
+## Fixes
+- Night vision from the Neuralink, the Cathode TV Helmet and Star Steel gear no longer flashes.
 
 # TOMYEN 0.1.0: First Public Test
 

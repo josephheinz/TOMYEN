@@ -30,7 +30,7 @@ The output goes to `build/libs/`:
 | `tomyen-<version>.jar` | **The mod. This is the one to install.** |
 | `tomyen-<version>-sources.jar` | Source code only, for IDEs and other developers. Don't put it in `mods/`. |
 
-`<version>` comes from `version` in `gradle.properties` (currently `0.1.0`).
+`<version>` comes from `version` in `gradle.properties` (currently `0.2.0`).
 
 ### Install
 
