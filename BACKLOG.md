@@ -46,8 +46,6 @@ Mutated by uranium:
 
 ## Isle of the Damned follow-ups
 The Isle itself is built (gravestone, Revenant, depths, shades, Soul Tide). Still to do:
-- **Soul Wisp item.** Shades drop it; three plus soul sand or soul soil make a Soul Charge, and it works as a gravestone offering. Shades drop Ectoplasm for now.
-- **Shade Heart.** A boss shade's drop. Offered at your gravestone, it raises your hoard one depth (the `raiseHoard` code in `isle/PayingRespects` is already there, just unused).
 - **Ghost shader (maybe).** A real shader for shades and Revenants: a glowing rim and a slight shimmer, instead of the current tint and transparency.
 - **Other ways in (not chosen yet):** a Soul Compass, a Ferryman who rows you over at night for emeralds or fish, or an overcharged Soul Vacuum tearing a rift.
 - **Not tested yet:** multiplayer, Revenants that use guns, and pass 2 hasn't been run in game.

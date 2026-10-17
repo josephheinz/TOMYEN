@@ -2845,5 +2845,9 @@
   "item.tomyen.revenant_mail.spent": "Death ward: spent, returns at dawn",
   "item.tomyen.revenant_mail.kept": "Your Revenant Mail refuses to let go. Your gear stays with you.",
   "item.tomyen.revenant_mail.title": "The Mail Holds",
-  "item.tomyen.revenant_mail.subtitle": "Nothing was lost. The ward returns at dawn."
+  "item.tomyen.revenant_mail.subtitle": "Nothing was lost. The ward returns at dawn.",
+  "item.tomyen.soul_wisp": "Soul Wisp",
+  "item.tomyen.soul_wisp.hint": "Three and soul sand make a Soul Charge; an offering at your gravestone",
+  "item.tomyen.shade_heart": "Shade Heart",
+  "item.tomyen.shade_heart.hint": "Offer it at your gravestone to draw your belongings up a depth"
 }
