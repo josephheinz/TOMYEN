@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": "tomyen:steel_plate",
+    "E": "tomyen:empty_canister",
+    "R": "tomyen:rubber",
+    "A": "tomyen:servo_arm",
+    "S": "tomyen:steel_ingot",
+    "X": "tomyen:propeller"
+  },
+  "pattern": [
+    "PEP",
+    "RAS",
+    " X "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:outboard_motor"
+  }
+}

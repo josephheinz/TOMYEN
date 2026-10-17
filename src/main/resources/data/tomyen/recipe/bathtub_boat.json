@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:bathtub",
+    "tomyen:outboard_motor"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:bathtub_boat"
+  }
+}
