@@ -1,0 +1,23 @@
+{
+  "item": "tomyen:fish_fish",
+  "weight": 14,
+  "difficulty": 2,
+  "behavior": "steady",
+  "min_rod_tier": 0,
+  "dimension": "minecraft:overworld",
+  "biomes": [
+    "#minecraft:is_river",
+    "#minecraft:is_ocean",
+    "#minecraft:is_beach",
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "#minecraft:is_forest",
+    "minecraft:swamp",
+    "minecraft:meadow"
+  ],
+  "size": {
+    "min_lb": 0.5,
+    "avg_lb": 2.0,
+    "max_lb": 20.0
+  }
+}

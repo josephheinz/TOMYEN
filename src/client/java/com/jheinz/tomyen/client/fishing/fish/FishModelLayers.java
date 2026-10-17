@@ -30,6 +30,9 @@ public final class FishModelLayers {
 	/** Fins are single faces, drawn from both sides by the entity cutout render type. */
 	private static final Set<Direction> WEST = EnumSet.of(Direction.WEST);
 	private static final Set<Direction> NORTH = EnumSet.of(Direction.NORTH);
+	private static final Set<Direction> DOWN_WEST_NORTH_EAST_SOUTH = EnumSet.of(Direction.DOWN, Direction.WEST, Direction.NORTH, Direction.EAST, Direction.SOUTH);
+	private static final Set<Direction> UP_WEST_NORTH_EAST_SOUTH = EnumSet.of(Direction.UP, Direction.WEST, Direction.NORTH, Direction.EAST, Direction.SOUTH);
+	private static final Set<Direction> DOWN_UP_WEST_NORTH_EAST = EnumSet.of(Direction.DOWN, Direction.UP, Direction.WEST, Direction.NORTH, Direction.EAST);
 
 	public static final List<Shape> SHAPES = List.of(
 			new Shape("brook_trout", FishModelLayers::brookTrout, false, 0.5444F, 0.1058F, 0.2812F, false),
@@ -64,7 +67,8 @@ public final class FishModelLayers {
 			new Shape("mahi_mahi", FishModelLayers::mahiMahi, false, 1.0227F, 0.1136F, 0.5625F, false),
 			new Shape("barracuda", FishModelLayers::barracuda, false, 0.549F, 0.0915F, 0.525F, false),
 			new Shape("mooshroom_minnow", FishModelLayers::mooshroomMinnow, false, 0.2386F, 0.0455F, 0.15F, false),
-			new Shape("cometfish", FishModelLayers::cometfish, true, 0.3421F, 0.0789F, 0.3F, false));
+			new Shape("cometfish", FishModelLayers::cometfish, true, 0.3421F, 0.0789F, 0.3F, false),
+			new Shape("fish_fish", FishModelLayers::fishFish, false, 0.6875F, 0.0781F, 0.2625F, false));
 
 	private FishModelLayers() {
 	}
@@ -758,5 +762,25 @@ public final class FishModelLayers {
 				.texOffs(0, 8).addBox(0.0F, -5.0F, 3.0F, 0.0F, 10.0F, 14.0F, WEST),
 				PartPose.offset(0.0F, 0.0F, 2.0F));
 		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.4211F));
+	}
+
+	private static LayerDefinition fishFish() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create()
+				.texOffs(0, 0).addBox(-2.5F, -4.5F, -8.0F, 5.0F, 9.0F, 14.0F)
+				.texOffs(0, 23).addBox(-2.0F, -5.75F, -6.0F, 4.0F, 1.0F, 10.0F, DOWN_WEST_NORTH_EAST_SOUTH)
+				.texOffs(28, 23).addBox(-2.0F, 4.75F, -6.0F, 4.0F, 1.0F, 10.0F, UP_WEST_NORTH_EAST_SOUTH)
+				.texOffs(44, 0).addBox(-2.0F, -3.75F, -13.0F, 4.0F, 7.0F, 5.0F)
+				.texOffs(36, 34).addBox(-1.5F, -2.5F, -14.0F, 3.0F, 5.0F, 1.0F, DOWN_UP_WEST_NORTH_EAST)
+				.texOffs(26, 24).addBox(0.0F, -12.0F, -6.0F, 0.0F, 6.0F, 10.0F, WEST)
+				.texOffs(44, 28).addBox(0.0F, 6.0F, -4.0F, 0.0F, 4.0F, 6.0F, WEST)
+				.texOffs(0, 34).addBox(-2.5F, -3.5F, -12.0F, 5.0F, 3.0F, 3.0F),
+				PartPose.offset(0.0F, 14.0F, 0.0F));
+		p0.addOrReplaceChild("tail", CubeListBuilder.create()
+				.texOffs(16, 34).addBox(-1.5F, -2.0F, 0.25F, 3.0F, 4.0F, 2.0F)
+				.texOffs(38, -6).addBox(0.0F, -7.0F, 2.0F, 0.0F, 14.0F, 6.0F, WEST),
+				PartPose.offset(0.0F, 0.0F, 6.0F));
+		return LayerDefinition.create(mesh, 64, 64).apply(MeshTransformer.scaling(0.5F));
 	}
 }

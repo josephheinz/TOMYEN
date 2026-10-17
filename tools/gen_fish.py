@@ -884,6 +884,31 @@ o 1a1424 o, O 100c18 o, 4 4a4260 b, 3 3a3448 b, 2 2a2436 b, j ff8a2a k, H ffb84a
 F e85a1a k, f ff9a2a k, g ffe08a k
 """),
 
+    # The platonic fish, a deliberate joke: a fish the way a child draws one, done well. Side on and facing left (the
+    # one sprite here that doesn't swim the diagonal), plain blue with a pale belly, a round eye with a shine, a gill
+    # line, one fin up top, one below and a fan of a tail. Not a cod, not a salmon: just a fish.
+    Sprite("fish_fish", "Fish Fish", """
+................
+....oo.........o
+....ofoo......oO
+...offffo....ogO
+...oLLLLO....ogO
+..oLLLLLLo..ofgO
+.oLWELmLLLoofggO
+oLLEELLmLLLFffgO
+obbbbbbmbbbFfgO.
+MbbbbbbmbbbFfgO.
+ovvvvvvmvvvFffgO
+.ovvvvmvvvOOffgO
+..owwwwwwO..ofgO
+...owwwOO....ogO
+....ofO......ogO
+..............oO
+""", """
+o 1d3a5c o, O 132840 o, M 132840 o, L 8cc6ee b, b 4f96d6 b, m 3b7bbd b, v a8cfe8 b, w d8ecf8 b, E 0f1720 k
+W f4f8fc k, F 2c66a6 f, f 4a8cd0 f, g 7fb8e6 f
+""", "cooked_fish_fish", "Cooked Fish Fish"),
+
     Sprite("tackle_box", "Tackle Box", """
 ................
 ................
@@ -964,6 +989,9 @@ PANFISH_WATERS = ["#minecraft:is_river", "minecraft:swamp", "minecraft:plains", 
                   "#minecraft:is_forest", "minecraft:savanna", "minecraft:meadow"]
 COOL_FRESH = ["#minecraft:is_river", "#minecraft:is_taiga", "#minecraft:is_forest", "minecraft:plains",
               "minecraft:snowy_plains", "minecraft:meadow"]
+# Anywhere ordinary: every river, sea and beach, and the lakes and ponds of the plains and forests.
+COMMON_WATERS = ["#minecraft:is_river", "#minecraft:is_ocean", "#minecraft:is_beach", "minecraft:plains",
+                 "minecraft:sunflower_plains", "#minecraft:is_forest", "minecraft:swamp", "minecraft:meadow"]
 OVERWORLD = "minecraft:overworld"
 NETHER = "minecraft:the_nether"
 
@@ -1025,6 +1053,9 @@ SPECIES_DATA = OrderedDict([
     # Only in water near a fallen meteorite (a crash site's meteorite stone or meteoric iron ore within 12 blocks).
     ("cometfish", (20, 4, "thrasher", 1, dict(dimension=OVERWORLD, near_block=OrderedDict([
         ("block", "#tomyen:meteorite_blocks"), ("radius", 12)])))),
+    # The most generic fish there is: a little of everywhere common (rivers, lakes, the sea), never very many, and a
+    # perfectly average fight.
+    ("fish_fish", (14, 2, "steady", 0, dict(dimension=OVERWORLD, biomes=COMMON_WATERS))),
     # Junk and treasure: never weighed, never mounted as fish, and no fight to speak of.
     ("tackle_box", (2, 2, "sinker", 0, dict(dimension=OVERWORLD))),
     ("sunken_coin_pouch", (2, 1, "sinker", 0, dict(dimension=OVERWORLD, biomes=["#minecraft:is_ocean", "#minecraft:is_river",
@@ -1073,6 +1104,7 @@ SIZES = OrderedDict([
     ("barracuda", (2.0, 10.0, 85.0)),           # great barracuda: 85 lb (Christmas Island, Kiribati, 1992)
     ("mooshroom_minnow", (0.005, 0.02, 0.1)),   # a common shiner's numbers: a few grams, about 45 g (0.1 lb) at most
     ("cometfish", (1.0, 6.0, 48.0)),            # a steelhead's numbers: record 48 lb (Lake Diefenbaker SK, 2009)
+    ("fish_fish", (0.5, 2.0, 20.0)),            # a fish's numbers: about two pounds, twenty at the very most
 ])
 
 KEY_ORDER = ["item", "weight", "difficulty", "behavior", "min_rod_tier", "fluid", "dimension", "biomes", "time",
@@ -1327,6 +1359,7 @@ def main():
     lang["tooltip.tomyen.cometfish"] = "Still warm from the sky"
     lang["tooltip.tomyen.mooshroom_minnow"] = "Tastes like suspicious stew"
     lang["tooltip.tomyen.barracuda"] = "Raw reef predators can carry ciguatera"
+    lang["tooltip.tomyen.fish_fish"] = "It's a fish."
     merge_lang(lang)
     write(os.path.join(RES, "data", "minecraft", "tags", "item", "fishes.json"),
           OrderedDict([("replace", False), ("values", tag_values)]))

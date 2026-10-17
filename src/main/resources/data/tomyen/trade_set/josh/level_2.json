@@ -1,0 +1,8 @@
+{
+  "amount": 2,
+  "random_sequence": "tomyen:trade_set/josh/level_2",
+  "trades": [
+    "tomyen:josh/2/emerald_fish_fish_bucket",
+    "tomyen:josh/2/emerald_dozen_fish_fish"
+  ]
+}

@@ -25,6 +25,7 @@ import com.jheinz.tomyen.herbalism.Herbalism;
 import com.jheinz.tomyen.dragonscale.Dragonscales;
 import com.jheinz.tomyen.fishing.fish.FishEntities;
 import com.jheinz.tomyen.fishing.fish.Fishes;
+import com.jheinz.tomyen.fishing.josh.Josh;
 import com.jheinz.tomyen.drill.Drills;
 import com.jheinz.tomyen.hogfire.Hogfires;
 import com.jheinz.tomyen.industry.Industry;
@@ -136,6 +137,7 @@ public class MyMod implements ModInitializer {
 		Fishes.initialize();
 		FishEntities.initialize();
 		Fishing.initialize();
+		Josh.initialize();
 		Detectors.initialize();
 		Survival.initialize();
 		Scarecrows.initialize();
