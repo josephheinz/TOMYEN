@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:ember_puffer",
+    "tomyen:magmasteel_sword"
+  ],
+  "result": "tomyen:pufferblade",
+  "station": "pond",
+  "tier": 1
+}

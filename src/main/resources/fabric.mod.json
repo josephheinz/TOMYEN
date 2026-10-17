@@ -27,6 +27,7 @@
 		"tomyen.fishing.mixins.json",
 		"tomyen.survival.mixins.json",
 		"tomyen.scarecrow.mixins.json",
+		"tomyen.fusion_melee.mixins.json",
 		{
 			"config": "tomyen.fishing.client.mixins.json",
 			"environment": "client"

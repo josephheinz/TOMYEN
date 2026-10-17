@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:garden_gnome",
+    "tomyen:tusk_spear"
+  ],
+  "result": "tomyen:gnome_lance",
+  "station": "pond",
+  "tier": 1
+}

@@ -1,0 +1,7 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "tomyen:item/antler_pike"
+  },
+  "swap_animation_scale": 1.95
+}

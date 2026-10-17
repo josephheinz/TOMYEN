@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "com.jheinz.tomyen.fusion.melee.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"PiercingWeaponSprintMixin",
+		"PlayerAttackChargeMixin",
+		"PlayerStabLanceMixin",
+		"ServerPunchSwingMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

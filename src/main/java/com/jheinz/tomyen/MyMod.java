@@ -170,6 +170,7 @@ public class MyMod implements ModInitializer {
 		GiantCatfishes.initialize();
 		Bathtubs.initialize();
 		Fusions.initialize();
+		com.jheinz.tomyen.fusion.melee.MeleeFusions.initialize();
 		linkBlockItems();
 	}
 

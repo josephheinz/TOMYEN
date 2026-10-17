@@ -70,6 +70,7 @@ FUSIONS = [
      "A crow's feather on a shrimp's dart flies quiet and finds its way."),
 ]
 BUILT = {"swordfish_sword", "fish_fish_fish", "rocket_boots", "murder_wings", "stormcrow_rig"}
+BUILT |= {"slide_hammer", "antler_pike", "tuskaxe", "moonblade", "pufferblade", "gnome_lance", "leviathan_blade"}  # batch 2
 
 LANG = o(
     ("item.tomyen.fused", "Fused"),

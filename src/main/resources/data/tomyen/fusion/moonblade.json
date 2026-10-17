@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:moonscale_koi",
+    "tomyen:fae_silver_sword"
+  ],
+  "result": "tomyen:moonblade",
+  "station": "pond",
+  "tier": 1
+}

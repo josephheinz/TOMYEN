@@ -1,0 +1,20 @@
+package com.jheinz.tomyen.fusion.melee.mixin;
+
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.jheinz.tomyen.fusion.melee.MeleeSwings;
+
+/** Notes a charged attack before the attack spends the charge (the punch that follows sees it spent). */
+@Mixin(Player.class)
+public abstract class PlayerAttackChargeMixin {
+	@Inject(method = "attack", at = @At("HEAD"))
+	private void tomyen$noteCharge(Entity target, CallbackInfo ci) {
+		MeleeSwings.attacking((Player) (Object) this);
+	}
+}
