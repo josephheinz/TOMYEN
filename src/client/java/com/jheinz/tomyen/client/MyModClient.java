@@ -61,6 +61,7 @@ import com.jheinz.tomyen.client.leafblower.LeafBlowerClient;
 import com.jheinz.tomyen.client.fishing.fish.FishEntitiesClient;
 import com.jheinz.tomyen.client.gunsmith.GunsmithClient;
 import com.jheinz.tomyen.client.hogfire.HogfireClient;
+import com.jheinz.tomyen.client.hag.BogHagClient;
 import com.jheinz.tomyen.client.schnozzle.SchnozzleClient;
 import com.jheinz.tomyen.client.skullcrane.SkullcraneClient;
 import com.jheinz.tomyen.client.werewolf.WerewolfClient;
@@ -202,5 +203,6 @@ public class MyModClient implements ClientModInitializer {
 		TromboneClient.initialize();
 		ShrimpClient.initialize();
 		GraveDiggerClient.initialize();
+		BogHagClient.initialize();
 	}
 }

@@ -30,6 +30,7 @@ import com.jheinz.tomyen.fishing.FishingNetworking.FightEnd;
 import com.jheinz.tomyen.fishing.FishingNetworking.FightResult;
 import com.jheinz.tomyen.fishing.FishingNetworking.FightStart;
 import com.jheinz.tomyen.fishing.FishingNetworking.Outcome;
+import com.jheinz.tomyen.hag.HagsCurse;
 import com.jheinz.tomyen.uranium.Radiation;
 
 /**
@@ -92,7 +93,8 @@ public final class FishingFights {
 	}
 
 	public static void start(ServerPlayer player, RodHook hook, FishingSpecies species, int count) {
-		RodStats stats = hook.stats();
+		// A Hag's Curse makes every fight a step harder and the rod's numbers worse.
+		RodStats stats = HagsCurse.fishing(player, hook.stats());
 		ItemStack shown = stats.mods().sonar() ? species.stack() : ItemStack.EMPTY;
 		float weight = 0.0f;
 		FishSize size = species.size();
@@ -101,7 +103,8 @@ public final class FishingFights {
 			weight = size.roll(hook.rng(), bonus);
 		}
 		boolean trophy = size != null && size.isTrophy(weight);
-		begin(player, hook, species, count, species.behavior(), difficulty(species, stats, weight), stats, shown, weight,
+		begin(player, hook, species, count, species.behavior(),
+				Math.min(5, difficulty(species, stats, weight) + HagsCurse.fightPenalty(player)), stats, shown, weight,
 				FightStrength.of(species, weight), trophy);
 		hook.setFighting(true);
 		hook.level().playSound(null, hook.getX(), hook.getY(), hook.getZ(), Fishing.HOOKED, SoundSource.NEUTRAL, 1.0f, 1.0f);
@@ -215,6 +218,17 @@ public final class FishingFights {
 			ServerLevel level = (ServerLevel) hook.level();
 			switch (outcome) {
 				case CAUGHT -> {
+					ItemStack spoiled = HagsCurse.spoiledCatch(level, player, hook, rodStack(player));
+					if (!spoiled.isEmpty()) {
+						// Cursed: it was junk on the line all along.
+						caught = spoiled;
+						xp = 1;
+						land(level, player, hook, caught.copy(), xp);
+						damageRod(player, 1);
+						eatBait(player, hook);
+						hook.discard();
+						break;
+					}
 					int count = fight.count();
 					if (perfect && player.getRandom().nextBoolean()) {
 						count++;

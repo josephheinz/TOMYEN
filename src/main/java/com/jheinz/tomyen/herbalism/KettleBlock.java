@@ -52,6 +52,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import com.jheinz.tomyen.hag.BogHags;
+
 /**
  * The Kettle: a copper kettle for brewing herbal teas. Set over a campfire it hangs from a little iron tripod
  * ({@link #HUNG}); it also sits on a magma block. Either way it needs the heat to brew.
@@ -103,7 +105,8 @@ public class KettleBlock extends BaseEntityBlock {
 				Herbalism.RADROOT.asItem(), Herbalism.ANTI_RADIATION_TEA,
 				Herbalism.CHAMOMILE.asItem(), Herbalism.CALMING_TEA,
 				Herbalism.GINSENG.asItem(), Herbalism.VIGOR_TONIC,
-				Herbalism.MOONPETAL.asItem(), Herbalism.MOONPETAL_TEA);
+				Herbalism.MOONPETAL.asItem(), Herbalism.MOONPETAL_TEA,
+				Herbalism.WATER_MINT.asItem(), BogHags.HEXBREAKER_TEA);
 	}
 
 	/** Whether there's heat under it: a lit campfire or a magma block. */
