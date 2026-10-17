@@ -3755,5 +3755,185 @@
         "pitch": 0.75
       }
     ]
+  },
+  "shrimp_ambient": {
+    "subtitle": "subtitles.tomyen.shrimp_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:mob/silverfish/say1",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/silverfish/say2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/silverfish/say3",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/silverfish/say4",
+        "pitch": 0.55
+      }
+    ]
+  },
+  "shrimp_hurt": {
+    "subtitle": "subtitles.tomyen.shrimp_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/silverfish/hit1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/silverfish/hit2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/silverfish/hit3",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/guardian/land_hit",
+        "pitch": 1.1
+      }
+    ]
+  },
+  "shrimp_death": {
+    "subtitle": "subtitles.tomyen.shrimp_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/silverfish/kill",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/guardian/land_death",
+        "pitch": 1.0
+      }
+    ]
+  },
+  "shrimp_step": {
+    "subtitle": "subtitles.tomyen.shrimp_step",
+    "sounds": [
+      {
+        "name": "minecraft:mob/turtle/walk1",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:mob/turtle/walk2",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:mob/turtle/walk3",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:mob/turtle/walk4",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:mob/turtle/walk5",
+        "pitch": 1.4
+      }
+    ]
+  },
+  "shrimp_swim": {
+    "subtitle": "subtitles.tomyen.shrimp_swim",
+    "sounds": [
+      {
+        "name": "minecraft:entity/fish/swim1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:entity/fish/swim2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:entity/fish/swim3",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:entity/fish/swim4",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "shrimp_snap": {
+    "subtitle": "subtitles.tomyen.shrimp_snap",
+    "sounds": [
+      {
+        "name": "minecraft:mob/zombie/woodbreak",
+        "pitch": 1.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:item/shield/block1",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:item/shield/block2",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:item/shield/block3",
+        "pitch": 1.6
+      }
+    ]
+  },
+  "shrimp_cock": {
+    "subtitle": "subtitles.tomyen.shrimp_cock",
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "pitch": 1.5,
+        "volume": 0.8
+      }
+    ]
+  },
+  "shrimp_reload_round": {
+    "subtitle": "subtitles.tomyen.shrimp_reload_round",
+    "sounds": [
+      {
+        "name": "minecraft:item/crossbow/loading_middle1",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle2",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle3",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle4",
+        "pitch": 1.5
+      }
+    ]
+  },
+  "shrimp_reload_rack": {
+    "subtitle": "subtitles.tomyen.shrimp_reload_rack",
+    "sounds": [
+      {
+        "name": "minecraft:item/crossbow/loading_end",
+        "pitch": 1.25
+      }
+    ]
+  },
+  "shrimp_pistol_shot": {
+    "subtitle": "subtitles.tomyen.shrimp_pistol_shot",
+    "sounds": [
+      {
+        "name": "tomyen:pipe_pistol_shot",
+        "pitch": 1.15
+      },
+      {
+        "name": "tomyen:pipe_pistol_shot_2",
+        "pitch": 1.2
+      },
+      {
+        "name": "tomyen:pipe_pistol_shot_3",
+        "pitch": 1.25
+      }
+    ]
   }
 }

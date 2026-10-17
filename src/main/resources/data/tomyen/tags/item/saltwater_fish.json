@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cod",
+    "minecraft:pufferfish",
+    "minecraft:tropical_fish",
+    "tomyen:mackerel",
+    "tomyen:red_snapper",
+    "tomyen:tuna",
+    "tomyen:mahi_mahi",
+    "tomyen:swordfish",
+    "tomyen:barracuda",
+    "tomyen:flounder",
+    "tomyen:parrotfish",
+    "tomyen:sturgeon",
+    "tomyen:ice_char",
+    "tomyen:glowfin_tetra",
+    "tomyen:anglerfish",
+    "tomyen:abyssal_squidling",
+    "tomyen:starlit_gar"
+  ]
+}

@@ -7,7 +7,9 @@ import net.minecraft.world.item.Item;
 import com.jheinz.tomyen.client.GunDisplay;
 import com.jheinz.tomyen.client.GunHands;
 import com.jheinz.tomyen.client.shotgun.ShotgunAnimation;
+import com.jheinz.tomyen.client.shrimp.ShrimpClient;
 import com.jheinz.tomyen.shoddy.ShoddyGuns;
+import com.jheinz.tomyen.shrimp.Shrimps;
 
 /**
  * Where things are on the homemade guns, for the shared gun rendering: first-person display transforms (GunDisplay),
@@ -42,7 +44,9 @@ public final class ShoddyGunClient {
 	}
 
 	public static GunDisplay display(Item gun) {
-		if (gun == ShoddyGuns.PIPE_PISTOL) {
+		if (gun == Shrimps.SHRIMP_PISTOL) {
+			return ShrimpClient.PISTOL_DISPLAY;
+		} else if (gun == ShoddyGuns.PIPE_PISTOL) {
 			return new GunDisplay(new Vector3f(-0.293f, 3.136f, -3.155f), -6, 0.65f);
 		} else if (gun == ShoddyGuns.PIPE_RIFLE) {
 			return new GunDisplay(new Vector3f(0.015f, 2.124f, -0.118f), -8, 0.55f);
@@ -55,7 +59,9 @@ public final class ShoddyGunClient {
 	}
 
 	public static GunHands.Anchors anchors(Item gun) {
-		if (gun == ShoddyGuns.PIPE_PISTOL) {
+		if (gun == Shrimps.SHRIMP_PISTOL) {
+			return ShrimpClient.PISTOL_ANCHORS;
+		} else if (gun == ShoddyGuns.PIPE_PISTOL) {
 			// Like the other handguns: the off hand cups the shooting hand.
 			return anchors(-0.020f, 0.131f, -0.181f, -0.090f, 0.101f, -0.151f);
 		} else if (gun == ShoddyGuns.PIPE_RIFLE) {
@@ -73,7 +79,9 @@ public final class ShoddyGunClient {
 	}
 
 	public static ShotgunAnimation.Geometry geometry(Item gun) {
-		if (gun == ShoddyGuns.PIPE_PISTOL) {
+		if (gun == Shrimps.SHRIMP_PISTOL) {
+			return ShrimpClient.PISTOL_GEOMETRY;
+		} else if (gun == ShoddyGuns.PIPE_PISTOL) {
 			return PIPE_PISTOL;
 		} else if (gun == ShoddyGuns.PIPE_RIFLE) {
 			return PIPE_RIFLE;
