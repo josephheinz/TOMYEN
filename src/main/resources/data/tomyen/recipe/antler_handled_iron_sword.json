@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "tomyen:antler_handle",
+    "X": "#minecraft:iron_tool_materials"
+  },
+  "pattern": [
+    "X",
+    "X",
+    "#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:iron_sword",
+    "components": {
+      "minecraft:max_damage": 375,
+      "minecraft:lore": [
+        {
+          "translate": "item.tomyen.antler_handle.fitted",
+          "color": "gray",
+          "italic": false
+        }
+      ]
+    }
+  }
+}

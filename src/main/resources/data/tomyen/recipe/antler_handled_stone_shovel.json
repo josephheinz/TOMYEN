@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "tomyen:antler_handle",
+    "X": "#minecraft:stone_tool_materials"
+  },
+  "pattern": [
+    "X",
+    "#",
+    "#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:stone_shovel",
+    "components": {
+      "minecraft:max_damage": 196,
+      "minecraft:lore": [
+        {
+          "translate": "item.tomyen.antler_handle.fitted",
+          "color": "gray",
+          "italic": false
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "tomyen:antler_handle",
+    "X": "tomyen:bloom_steel_ingot"
+  },
+  "pattern": [
+    "XXX",
+    " # ",
+    " # "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:bloom_steel_pickaxe",
+    "components": {
+      "minecraft:max_damage": 600,
+      "minecraft:lore": [
+        {
+          "translate": "item.tomyen.antler_handle.fitted",
+          "color": "gray",
+          "italic": false
+        }
+      ]
+    }
+  }
+}
