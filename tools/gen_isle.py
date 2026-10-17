@@ -1057,9 +1057,12 @@ def write_world():
     write(os.path.join(root, "dimension", "isle.json"), dimension())
     write(os.path.join(root, "dimension_type", "isle.json"), dimension_type())
     write(os.path.join(root, "worldgen", "noise_settings", "isle.json"), noise_settings())
-    for kind in ("dead_tree", "headstones", "bones", "arch", "brazier", "soul_fire"):
+    for kind in ("dead_tree", "headstones", "bones", "arch", "brazier"):
         write(os.path.join(root, "worldgen", "feature", f"isle_{kind}.json"),
               OrderedDict([("type", "tomyen:isle_ruin"), ("kind", kind)]))
+    # The Abyss's extra soul fires are braziers until a dedicated soul_fire ruin kind exists.
+    write(os.path.join(root, "worldgen", "feature", "isle_soul_fire.json"),
+          OrderedDict([("type", "tomyen:isle_ruin"), ("kind", "brazier")]))
     for name, fog, start, end, sky, water, particles, (trees, stones, bones, arch, brazier, vents), wisps in DEPTHS:
         depth = name[5:]
         placed(f"isle_dead_trees_{depth}", "tomyen:isle_dead_tree", count=trees)
