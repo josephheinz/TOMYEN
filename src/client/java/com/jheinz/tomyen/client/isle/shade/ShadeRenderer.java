@@ -92,6 +92,8 @@ public class ShadeRenderer extends EntityRenderer<Shade, ShadeRenderState> {
 					BROKEN.add(type);
 					return;
 				}
+				// Never added to the world, so it has no id of its own; renderers read it (for variants and seeds).
+				entity.setId(shade.getId());
 				puppet = new Puppet(entity);
 				puppets.put(shade, puppet);
 			}
