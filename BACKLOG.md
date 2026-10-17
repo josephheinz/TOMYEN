@@ -48,33 +48,13 @@ Mutated by uranium:
 - **Blender.** Blends two foods into a smoothie with both their effects. Blending a mob egg is... a choice.
 - **Fax machine.** Sends items to another fax machine anywhere, but sometimes it only prints half the stack.
 
-## Isle of the Damned (death dimension)
-When you die, a copy of you, as you were at death (gear, held weapon, armor), is summoned in a new dimension called **the Isle of the Damned**, holding your dropped items. You have to get there and beat your dead self to get your stuff back. A "Dark Souls corpse run" for the mod.
-
-**Getting there** (undecided; options):
-- **Soul compass / Damned Key:** dropped by your death, or crafted from a Soul Charge plus something you lost. Use it at a gravestone that appears where you died.
-- **Gravestone portal:** your death spot spawns a gravestone. Right-click it with a holy or soul item to be pulled down to the Isle.
-- **Ferryman:** a boatman NPC at night on rivers who rows you over, paying in emeralds or fish (ties to fishing and the bank).
-- **Soul Vacuum reversed:** overcharge the existing Soul Vacuum to tear a rift.
-- **Dying with no way back:** your items stay safe on the Isle until you reach it. Nothing despawns there, which removes the usual 5-minute item-despawn panic.
-
-**The fight:**
-- Your Revenant copies your death loadout and fights with your weapons. It's harder if you died geared up, and easy if you died naked.
-- Beat it to recover your items and some of your XP.
-- Die on the Isle and the Revenant gets stronger, or your items move deeper into the Isle.
-- Multiplayer: other players' Revenants are there too.
-
-**Every mob that dies being there:** this is the lag risk. Never keep real entities for every death. Options:
-- Store a tiny **death record** (mob type, position, maybe name or gear), not an entity, in a capped ring buffer per region. Most deaths aren't kept at all.
-- **Spawn only near players on the Isle:** shades materialise from the records around you and dissolve when you leave. Cap active shades (e.g. 20–40).
-- **Notable deaths only:** player deaths, named mobs, elites (Schnozzle, Pack Leader, werewolves, mech pilots, trophy fish?), and things the player killed. Ordinary despawns and farm kills are skipped.
-- **Aggregate the rest:** routine deaths add to a "Soul Tide" counter per mob type. The Isle spawns waves scaled to the tide instead of 1:1 copies, so a big mob farm makes the Isle more dangerous without storing thousands of entries.
-- Older records fade over time.
-
-**Ties to existing content:**
-- The soul and soul steel line (Soul Vacuum, Soul Charges).
-- Holy and evil damage (Revenants are `#mymod:evil`).
-- The Star Forge's Soulbound infusion: Soulbound gear stays with you, so it doesn't end up on the Isle.
+## Isle of the Damned follow-ups
+The Isle itself is built (gravestone, Revenant, depths, shades, Soul Tide). Still to do:
+- **Soul Wisp item.** Shades drop it; three plus soul sand or soul soil make a Soul Charge, and it works as a gravestone offering. Shades drop Ectoplasm for now.
+- **Shade Heart.** A boss shade's drop. Offered at your gravestone, it raises your hoard one depth (the `raiseHoard` code in `isle/PayingRespects` is already there, just unused).
+- **Ghost shader (maybe).** A real shader for shades and Revenants: a glowing rim and a slight shimmer, instead of the current tint and transparency.
+- **Other ways in (not chosen yet):** a Soul Compass, a Ferryman who rows you over at night for emeralds or fish, or an overcharged Soul Vacuum tearing a rift.
+- **Not tested yet:** multiplayer, Revenants that use guns, and pass 2 hasn't been run in game.
 
 ## Fishing
 - **Josh.** A new fish species named "Josh".
