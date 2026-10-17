@@ -4,6 +4,11 @@
 - **Soul Wisps and Shade Hearts:** shades now drop Soul Wisps (plus a little Ectoplasm off echoes and bosses). Three wisps and a soul sand or soul soil make a Soul Charge, and a wisp works as a gravestone offering. Boss shades also drop a rare Shade Heart: offer it at your gravestone to draw your belongings up one depth before you go down.
 - **Shades look like the mobs they were.** They were all showing up as soul-fire orbs; now each one is a see-through, tinted ghost of its old mob.
 
+## The Snow Warden
+- **Snow Warden:** a rare, three-block-tall boss made of packed snow and ice, with a glowing carved pumpkin for a head. It roams the snowy plains and ice spikes and leaves snow where it walks. When it first spots you it sniffs the air and roars. It punches hard, slams the ground to throw back and slow everyone nearby, lobs huge snowballs, and charges up a frost blast that goes through walls, freezes you and is only halved by a shield. Fire does triple damage to it. It has a boss bar and always drops a Frozen Heart.
+- **Glacial Froststeel armor:** combine a froststeel piece with a Frozen Heart at a smithing table (no template needed). It has netherite-level protection and still counts as froststeel for the freeze-proof set bonus. Melee attackers get slowed and frozen, more for each glacial piece you wear.
+- **Snow Globe:** glass around a Frozen Heart on a snowy wooden base. Shake it to see the snow fly. Something stirs inside...
+
 # TOMYEN 0.3.0: Corpse Run
 
 Die and go get your stuff back from the Isle of the Damned, fuse items in fae ponds, and race a bathtub. This is still an early alpha, so back up your worlds before updating.

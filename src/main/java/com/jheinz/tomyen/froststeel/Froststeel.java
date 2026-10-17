@@ -18,9 +18,11 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.equipment.ArmorMaterial;
@@ -35,6 +37,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
 import com.jheinz.tomyen.MyMod;
+import com.jheinz.tomyen.exoskeleton.ExoSockets;
 import com.jheinz.tomyen.foundry.FoundryRecipe;
 import com.jheinz.tomyen.magmasteel.Magmasteel;
 import com.jheinz.tomyen.metal.MetalSet;
@@ -49,6 +52,7 @@ import com.jheinz.tomyen.metal.MetalSet;
  * <p>Its armor keeps the cold out: each piece takes {@link #FREEZE_REDUCTION_PER_PIECE} off freeze damage, and the
  * full set can't freeze at all (LivingEntityFroststeelMixin), walks on powder snow without sinking
  * (PowderSnowBlockFroststeelMixin) and freezes still water underfoot as Frost Walker I does, without the enchantment.
+ * Glacial Froststeel ({@link GlacialFroststeel}) counts as froststeel for all of that: see {@link #piecesWorn}.
  */
 public final class Froststeel {
 	public static final String NAME = "froststeel";
@@ -70,6 +74,9 @@ public final class Froststeel {
 			FroststeelWeaponItem::new, List.of(),
 			List.of("item.tomyen.froststeel.armor_piece", "item.tomyen.froststeel.armor_set"), MapColor.ICE, 0, false);
 
+	/** The armor slots, in the order of {@link MetalSet#armor()}: head, chest, legs, feet. */
+	public static final List<EquipmentSlot> SLOTS = List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET);
+
 	/** Where each wearer of the full set last froze the water around them: it freezes again when they move on. */
 	private static final Map<ServerPlayer, BlockPos> LAST_STEP = new WeakHashMap<>();
 
@@ -82,14 +89,33 @@ public final class Froststeel {
 				.withMaxTemperature(FOUNDRY_TEMPERATURE));
 	}
 
-	/** What fraction of freeze damage gets through the froststeel the entity wears. */
-	public static float freezeDamageScale(LivingEntity entity) {
-		return Math.max(0.0f, 1.0f - FREEZE_REDUCTION_PER_PIECE * SET.piecesWorn(entity));
+	/**
+	 * How many armor slots the entity has froststeel in: plain or glacial ({@link GlacialFroststeel}), in the slot or
+	 * socketed in a worn exoskeleton.
+	 */
+	public static int piecesWorn(LivingEntity entity) {
+		List<ItemStack> socketed = ExoSockets.socketedArmor(entity);
+		List<Item> plain = SET.armor();
+		int worn = 0;
+		for (int i = 0; i < SLOTS.size(); i++) {
+			Item frost = plain.get(i);
+			Item glacial = GlacialFroststeel.ARMOR.get(i);
+			ItemStack inSlot = entity.getItemBySlot(SLOTS.get(i));
+			if (inSlot.is(frost) || inSlot.is(glacial) || socketed.stream().anyMatch(stack -> stack.is(frost) || stack.is(glacial))) {
+				worn++;
+			}
+		}
+		return worn;
 	}
 
-	/** Whether the cold can't touch this entity: a full set keeps it from freezing at all. */
+	/** What fraction of freeze damage gets through the froststeel the entity wears. */
+	public static float freezeDamageScale(LivingEntity entity) {
+		return Math.max(0.0f, 1.0f - FREEZE_REDUCTION_PER_PIECE * piecesWorn(entity));
+	}
+
+	/** Whether the cold can't touch this entity: a full set (plain or glacial, mixed as you like) keeps it from freezing. */
 	public static boolean coldProof(LivingEntity entity) {
-		return SET.wearsFullSet(entity);
+		return piecesWorn(entity) == SLOTS.size();
 	}
 
 	/**

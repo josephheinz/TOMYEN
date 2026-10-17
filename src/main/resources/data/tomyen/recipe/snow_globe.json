@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "minecraft:glass",
+    "H": "tomyen:frozen_heart",
+    "S": "minecraft:snow_block",
+    "W": "#minecraft:wooden_slabs"
+  },
+  "pattern": [
+    "GGG",
+    "GHG",
+    "WSW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:snow_globe"
+  }
+}

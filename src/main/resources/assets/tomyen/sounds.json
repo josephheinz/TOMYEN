@@ -6338,5 +6338,562 @@
         "pitch": 1.3
       }
     ]
+  },
+  "snow_warden_ambient": {
+    "subtitle": "subtitles.tomyen.snow_warden_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/ambient_1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_4",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_5",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_6",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_7",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_8",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_9",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_10",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_11",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/ambient_12",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/stray/idle1",
+        "pitch": 0.5,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/stray/idle2",
+        "pitch": 0.5,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/stray/idle3",
+        "pitch": 0.5,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/stray/idle4",
+        "pitch": 0.5,
+        "volume": 0.6
+      }
+    ]
+  },
+  "snow_warden_hurt": {
+    "subtitle": "subtitles.tomyen.snow_warden_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/hurt_1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/warden/hurt_2",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/warden/hurt_3",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/warden/hurt_4",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:entity/snowman/hurt1",
+        "pitch": 0.5,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:entity/snowman/hurt2",
+        "pitch": 0.5,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:entity/snowman/hurt3",
+        "pitch": 0.5,
+        "volume": 0.8
+      }
+    ]
+  },
+  "snow_warden_death": {
+    "subtitle": "subtitles.tomyen.snow_warden_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/death_1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/warden/death_2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/snowman/death1",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:entity/snowman/death2",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:entity/snowman/death3",
+        "pitch": 0.45
+      }
+    ]
+  },
+  "snow_warden_step": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/step_1",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/warden/step_2",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/warden/step_3",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/warden/step_4",
+        "pitch": 0.8,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:step/snow1",
+        "pitch": 0.6,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:step/snow2",
+        "pitch": 0.6,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:step/snow3",
+        "pitch": 0.6,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:step/snow4",
+        "pitch": 0.6,
+        "volume": 0.9
+      }
+    ]
+  },
+  "snow_warden_sniff": {
+    "subtitle": "subtitles.tomyen.snow_warden_sniff",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/sniff_1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/warden/sniff_2",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/warden/sniff_3",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/warden/sniff_4",
+        "pitch": 0.75
+      }
+    ]
+  },
+  "snow_warden_roar": {
+    "subtitle": "subtitles.tomyen.snow_warden_roar",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/roar_1",
+        "pitch": 0.7,
+        "volume": 1.4,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/warden/roar_2",
+        "pitch": 0.7,
+        "volume": 1.4,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/warden/roar_3",
+        "pitch": 0.7,
+        "volume": 1.4,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/warden/roar_4",
+        "pitch": 0.7,
+        "volume": 1.4,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/warden/roar_5",
+        "pitch": 0.7,
+        "volume": 1.4,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "snow_warden_swing": {
+    "subtitle": "subtitles.tomyen.snow_warden_swing",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/attack_impact_1",
+        "pitch": 0.8,
+        "volume": 1.2
+      },
+      {
+        "name": "minecraft:mob/warden/attack_impact_2",
+        "pitch": 0.8,
+        "volume": 1.2
+      }
+    ]
+  },
+  "snow_warden_slam": {
+    "subtitle": "subtitles.tomyen.snow_warden_slam",
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:random/explode2",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:random/explode3",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:random/explode4",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/warden/attack_impact_1",
+        "pitch": 0.6,
+        "volume": 1.4
+      },
+      {
+        "name": "minecraft:mob/warden/attack_impact_2",
+        "pitch": 0.6,
+        "volume": 1.4
+      },
+      {
+        "name": "minecraft:block/powder_snow/break1",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:block/powder_snow/break2",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:block/powder_snow/break3",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:block/powder_snow/break4",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:block/powder_snow/break5",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:block/powder_snow/break6",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:block/powder_snow/break7",
+        "pitch": 0.5,
+        "volume": 1.0
+      }
+    ]
+  },
+  "snow_warden_blast_charge": {
+    "subtitle": "subtitles.tomyen.snow_warden_blast_charge",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/sonic_charge1",
+        "pitch": 0.8,
+        "volume": 1.4,
+        "attenuation_distance": 32
+      },
+      {
+        "name": "minecraft:mob/warden/sonic_charge2",
+        "pitch": 0.8,
+        "volume": 1.4,
+        "attenuation_distance": 32
+      },
+      {
+        "name": "minecraft:mob/warden/sonic_charge3",
+        "pitch": 0.8,
+        "volume": 1.4,
+        "attenuation_distance": 32
+      },
+      {
+        "name": "minecraft:mob/warden/sonic_charge4",
+        "pitch": 0.8,
+        "volume": 1.4,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "snow_warden_blast": {
+    "subtitle": "subtitles.tomyen.snow_warden_blast",
+    "sounds": [
+      {
+        "name": "minecraft:mob/warden/sonic_boom1",
+        "pitch": 0.85,
+        "volume": 2.0,
+        "attenuation_distance": 40
+      },
+      {
+        "name": "minecraft:mob/warden/sonic_boom2",
+        "pitch": 0.85,
+        "volume": 2.0,
+        "attenuation_distance": 40
+      },
+      {
+        "name": "minecraft:mob/warden/sonic_boom3",
+        "pitch": 0.85,
+        "volume": 2.0,
+        "attenuation_distance": 40
+      },
+      {
+        "name": "minecraft:mob/warden/sonic_boom4",
+        "pitch": 0.85,
+        "volume": 2.0,
+        "attenuation_distance": 40
+      },
+      {
+        "name": "minecraft:random/glass1",
+        "pitch": 0.6,
+        "volume": 1.2
+      },
+      {
+        "name": "minecraft:random/glass2",
+        "pitch": 0.6,
+        "volume": 1.2
+      },
+      {
+        "name": "minecraft:random/glass3",
+        "pitch": 0.6,
+        "volume": 1.2
+      }
+    ]
+  },
+  "snow_warden_throw": {
+    "subtitle": "subtitles.tomyen.snow_warden_throw",
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/throw",
+        "pitch": 0.6,
+        "volume": 1.2
+      }
+    ]
+  },
+  "frost_boulder_burst": {
+    "subtitle": "subtitles.tomyen.frost_boulder_burst",
+    "sounds": [
+      {
+        "name": "minecraft:block/powder_snow/break1",
+        "pitch": 0.6,
+        "volume": 1.4
+      },
+      {
+        "name": "minecraft:block/powder_snow/break2",
+        "pitch": 0.6,
+        "volume": 1.4
+      },
+      {
+        "name": "minecraft:block/powder_snow/break3",
+        "pitch": 0.6,
+        "volume": 1.4
+      },
+      {
+        "name": "minecraft:block/powder_snow/break4",
+        "pitch": 0.6,
+        "volume": 1.4
+      },
+      {
+        "name": "minecraft:block/powder_snow/break5",
+        "pitch": 0.6,
+        "volume": 1.4
+      },
+      {
+        "name": "minecraft:block/powder_snow/break6",
+        "pitch": 0.6,
+        "volume": 1.4
+      },
+      {
+        "name": "minecraft:block/powder_snow/break7",
+        "pitch": 0.6,
+        "volume": 1.4
+      },
+      {
+        "name": "minecraft:dig/snow1",
+        "pitch": 0.5,
+        "volume": 1.2
+      },
+      {
+        "name": "minecraft:dig/snow2",
+        "pitch": 0.5,
+        "volume": 1.2
+      },
+      {
+        "name": "minecraft:dig/snow3",
+        "pitch": 0.5,
+        "volume": 1.2
+      },
+      {
+        "name": "minecraft:dig/snow4",
+        "pitch": 0.5,
+        "volume": 1.2
+      }
+    ]
+  },
+  "snow_globe_shake": {
+    "subtitle": "subtitles.tomyen.snow_globe_shake",
+    "sounds": [
+      {
+        "name": "minecraft:random/glass1",
+        "pitch": 1.8,
+        "volume": 0.35
+      },
+      {
+        "name": "minecraft:random/glass2",
+        "pitch": 1.8,
+        "volume": 0.35
+      },
+      {
+        "name": "minecraft:random/glass3",
+        "pitch": 1.8,
+        "volume": 0.35
+      },
+      {
+        "name": "minecraft:block/powder_snow/step1",
+        "pitch": 1.2,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/powder_snow/step2",
+        "pitch": 1.2,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/powder_snow/step3",
+        "pitch": 1.2,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/powder_snow/step4",
+        "pitch": 1.2,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/powder_snow/step5",
+        "pitch": 1.2,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/powder_snow/step6",
+        "pitch": 1.2,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/powder_snow/step7",
+        "pitch": 1.2,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/powder_snow/step8",
+        "pitch": 1.2,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/powder_snow/step9",
+        "pitch": 1.2,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/powder_snow/step10",
+        "pitch": 1.2,
+        "volume": 0.8
+      }
+    ]
+  },
+  "frost_thorns": {
+    "subtitle": "subtitles.tomyen.frost_thorns",
+    "sounds": [
+      {
+        "name": "minecraft:block/amethyst/break1",
+        "pitch": 1.4,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/amethyst/break2",
+        "pitch": 1.4,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/amethyst/break3",
+        "pitch": 1.4,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/amethyst/break4",
+        "pitch": 1.4,
+        "volume": 0.7
+      }
+    ]
   }
 }

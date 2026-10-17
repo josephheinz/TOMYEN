@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "tomyen:glacial_froststeel"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "tomyen:glacial_froststeel"
+      }
+    ]
+  }
+}

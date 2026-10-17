@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_frozen_heart": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tomyen:frozen_heart"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "tomyen:glacial_froststeel_chestplate_smithing"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_frozen_heart"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tomyen:glacial_froststeel_chestplate_smithing"
+    ]
+  }
+}

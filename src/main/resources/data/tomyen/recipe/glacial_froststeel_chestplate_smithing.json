@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": "tomyen:frozen_heart",
+  "base": "tomyen:froststeel_chestplate",
+  "result": {
+    "id": "tomyen:glacial_froststeel_chestplate"
+  }
+}
