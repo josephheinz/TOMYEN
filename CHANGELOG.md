@@ -1,0 +1,74 @@
+# TOMYEN 0.1.0: First Public Test
+
+**The Only Mod You'll Ever Need.** Meteors, fae, werewolves, rogue machines and UFOs are invading, and this is everything you get to fight back. This is an early alpha. Expect bugs and balance changes, and keep backups of your worlds.
+
+Requires **Fabric Loader 0.19.5+**, **Fabric API** and **Minecraft 26.3** (Java 25).
+
+## Guns and gear
+- **Real firearms:** Glock 17, M1911, .357 Revolver, Snub Revolver, MP5, MAC-10, M4 Carbine, AKM, Galil, AWP, M249 SAW, Remington 870, SPAS-12, Lever-Action Rifle, Sawed-off, Nail Gun, Harpoon Gun, Flare Gun and Slingshot.
+- **Gun features:** magazines you load and swap, fire modes, aim down sights, weapon inspect, recoil and spread, real recorded gun sounds, and keyframed reload animations in first and third person.
+- **Ammo for every caliber,** including FMJ, hollow point, AP, silver, holy silver, tungsten and depleted-uranium rounds.
+- **Attachments:** suppressors, muzzle brakes, compensators, red dots, holo sights, Kobra and hunting scopes, lasers, flashlights, grips, a bipod, a sling, a bayonet, extended and drum magazines, and a Glock switch.
+- **Weapon Station:** builds every gun from crafted parts.
+- **Homemade early guns:** Pipe Pistol, Pipe Rifle, Blunderbuss and Junk Repeater.
+- **Heavy weapons:** RPG-7 with homing rockets, the M2 Flamethrower, napalm, and a power armor Minigun.
+- **Energy weapons:** Laser Rifle, Railgun and Ray Gun, salvaged from the aliens.
+- **Wacky weapons:** Fish Gun, Leaf Blower / Blower-Vac, Nose Hair Whip, Trombone (play songs that hex enemies and rally allies) and the Soul Vacuum.
+- **Armor:** plate carriers with Level I to III plates, Hazmat suit, Scrap armor, Cathode TV Helmet (with night vision) and Big Red Boots.
+- **Mobility:** Soda-Bottle Jetpack and Grapple Claw.
+
+## Vehicles and suits
+- **Tank:** a full-size drivable main battle tank with a crew HUD, manual loading, thermal sights and smoke launchers.
+- **Bulwark Walker:** a mech with swappable arm weapons, built in the Mech Gantry.
+- **Power Armor Mk I to III:** fusion cores, a repulsor and a Unibeam.
+- **Hogfire:** a flying, rocket-powered pig that takes a gun mount.
+- **Exoskeleton:** module sockets for armor, elytra and servo gear.
+- **Servo gear:** Servo Arm Backpack and Servo Drone.
+
+## Invaders and new mobs
+- **UFO invasion:** UFOs with tractor beams, and Aliens.
+- **Meteorites:** falling meteors and crash sites carrying Meteoric Iron, Star Steel and star crystals.
+- **Werewolves:** cursed villagers turn on their village every few nights.
+- **The Feywild:** Fae Rings lead to a new dimension with fairies, fae silver and fishing ponds.
+- **Rogue machines:**
+  - the Cathode Walker, a CRT television on human legs;
+  - Skullcranes and the Skullcrane Pack Leader;
+  - the Shopping Cart.
+- **Undead and evil:** Vampires, countered by the Crucifix and silver.
+- **The weird stuff:**
+  - The Schnozzle, a rare flying nose.
+  - The Big Banana, a three-block-tall walking banana.
+  - The banker villager, with credit cards, bank vaults and a debt-collection raid if you don't pay.
+
+## Fishing
+- **Fishing minigame:** a quick-time reeling fight that gets harder with the fish's weight and rarity.
+- **41 fish species** spread across biomes, dimensions, times of day and weather. Every fish has a realistic weight range, and many swim as live, bucketable fish.
+- **Rods:** 11 rods, from a stick-and-string pole to Star Steel, customised with lines, hooks, reels, bobbers and lures at the **Tackle Bench**.
+- **Baits:** earthworms, crickets, chum and more, plus bait for trophy-sized catches.
+- **Fish Mount:** shows off your biggest catches.
+- **Catches beyond fish:** junk, treasure, tackle boxes and an old boot.
+
+## Materials and crafting
+- **New metals with full tool and armor sets:** Bloom Steel, Silver and Holy Silver, Magmasteel, Soul Steel, Froststeel, Voidsteel, Star Steel and Fae Silver.
+- **Long swords:** one for every tier.
+- **Dragonscale armor:** made from dragon fossils.
+- **Industry:**
+  - Steel, aluminium, duralumin, rubber and oil, plus kerosene and rocket fuel.
+  - Tungsten and uranium, with a Centrifuge and radiation.
+- **Early-game stations:**
+  - the Bloomery, a crude first-hour forge;
+  - the Scrap Bench, which builds from Blueprints;
+  - Herbalism, with eight wild herbs, a kettle, a mortar, teas and herbal wards.
+- **Late game:** the Star Forge infuses gear under the night sky.
+- **Drills:** powered mining drills with swappable bits, plus drill-only rock.
+
+## Survival and utility
+- **Scavenger's kit:** crowbar, bandages, first aid kits, a canteen, a satchel, Molotov cocktails, pipe bombs, traps and an alarm.
+- **Detectors and trackers:** Prospector's Pendulum, Metal Detector, Meteorite Scanner, Dowsing Rods, UFO Radar, Geiger Counter, Lunar Almanac and Ledger.
+- **Scarecrows:** guard your crops and decoy mobs and UFOs.
+- **Neuralink:** brain implants with modules for ESP, night vision, ore X-ray, telekinesis, blink, EMP and more.
+
+## Good to know
+- Everything is in the **TOMYEN** and **Industry** creative tabs.
+- The keybinds are grouped under **TOMYEN** in Controls: fire mode, inspect, tank controls, power armor, the fishing reel and more.
+- The real gun sounds come from CC0 sound packs. Thanks to their creators.
