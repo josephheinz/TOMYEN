@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "facing=east,lean=0": {
+      "model": "tomyen:block/old_headstone_lean0",
+      "y": 90
+    },
+    "facing=east,lean=1": {
+      "model": "tomyen:block/old_headstone_lean1",
+      "y": 90
+    },
+    "facing=east,lean=2": {
+      "model": "tomyen:block/old_headstone_lean2",
+      "y": 90
+    },
+    "facing=north,lean=0": {
+      "model": "tomyen:block/old_headstone_lean0"
+    },
+    "facing=north,lean=1": {
+      "model": "tomyen:block/old_headstone_lean1"
+    },
+    "facing=north,lean=2": {
+      "model": "tomyen:block/old_headstone_lean2"
+    },
+    "facing=south,lean=0": {
+      "model": "tomyen:block/old_headstone_lean0",
+      "y": 180
+    },
+    "facing=south,lean=1": {
+      "model": "tomyen:block/old_headstone_lean1",
+      "y": 180
+    },
+    "facing=south,lean=2": {
+      "model": "tomyen:block/old_headstone_lean2",
+      "y": 180
+    },
+    "facing=west,lean=0": {
+      "model": "tomyen:block/old_headstone_lean0",
+      "y": 270
+    },
+    "facing=west,lean=1": {
+      "model": "tomyen:block/old_headstone_lean1",
+      "y": 270
+    },
+    "facing=west,lean=2": {
+      "model": "tomyen:block/old_headstone_lean2",
+      "y": 270
+    }
+  }
+}

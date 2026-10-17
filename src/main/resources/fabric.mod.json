@@ -27,6 +27,11 @@
 		"tomyen.fishing.mixins.json",
 		"tomyen.survival.mixins.json",
 		"tomyen.scarecrow.mixins.json",
+		"tomyen.isle.mixins.json",
+		{
+			"config": "tomyen.isle.client.mixins.json",
+			"environment": "client"
+		},
 		{
 			"config": "tomyen.fishing.client.mixins.json",
 			"environment": "client"

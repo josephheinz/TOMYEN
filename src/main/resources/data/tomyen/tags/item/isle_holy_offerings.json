@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "tomyen:holy_silver_ingot",
+    "tomyen:holy_silver_nugget",
+    "tomyen:crucifix",
+    "tomyen:holy_silver_crucifix"
+  ]
+}

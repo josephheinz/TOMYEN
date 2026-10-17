@@ -1,0 +1,36 @@
+{
+  "parent": "tomyen:isle/root",
+  "criteria": {
+    "reached_abyss": {
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "biomes": "tomyen:isle_abyss"
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.tomyen.isle.abyss.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "minecraft:soul_lantern"
+    },
+    "title": {
+      "translate": "advancements.tomyen.isle.abyss.title"
+    }
+  },
+  "requirements": [
+    [
+      "reached_abyss"
+    ]
+  ]
+}

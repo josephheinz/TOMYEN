@@ -61,6 +61,15 @@
     "tomyen:bloomery",
     "tomyen:bloom_steel_block",
     "tomyen:bathtub",
-    "tomyen:fusion_reactor"
+    "tomyen:fusion_reactor",
+    "tomyen:ashen_stone",
+    "tomyen:grave_stone_bricks",
+    "tomyen:cracked_grave_stone_bricks",
+    "tomyen:mossy_grave_stone_bricks",
+    "tomyen:grave_stone_brick_stairs",
+    "tomyen:grave_stone_brick_slab",
+    "tomyen:grave_stone_brick_wall",
+    "tomyen:old_headstone",
+    "tomyen:soul_brazier"
   ]
 }

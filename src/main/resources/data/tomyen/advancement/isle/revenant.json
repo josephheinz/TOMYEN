@@ -1,0 +1,34 @@
+{
+  "parent": "tomyen:isle/root",
+  "criteria": {
+    "killed_revenant": {
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "tomyen:revenant"
+          }
+        }
+      },
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.tomyen.isle.revenant.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:skeleton_skull"
+    },
+    "title": {
+      "translate": "advancements.tomyen.isle.revenant.title"
+    }
+  },
+  "requirements": [
+    [
+      "killed_revenant"
+    ]
+  ]
+}

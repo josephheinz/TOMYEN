@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tomyen:block/soul_cache",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "tomyen:block/soul_cache"
+    },
+    "facing=south": {
+      "model": "tomyen:block/soul_cache",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tomyen:block/soul_cache",
+      "y": 270
+    }
+  }
+}

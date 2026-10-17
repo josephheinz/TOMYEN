@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "tomyen:grave_stone_bricks",
+  "result": {
+    "id": "tomyen:grave_stone_brick_wall"
+  }
+}
