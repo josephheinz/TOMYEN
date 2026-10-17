@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": "tomyen:optic_lens",
+    "X": "tomyen:propeller",
+    "C": "tomyen:computer_chip",
+    "A": "tomyen:servo_arm"
+  },
+  "pattern": [
+    " L ",
+    "XCX",
+    "A A"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:servo_drone"
+  }
+}

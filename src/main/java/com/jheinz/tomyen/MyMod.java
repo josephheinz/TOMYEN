@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.jheinz.tomyen.accountant.Accountants;
 import com.jheinz.tomyen.alien.Aliens;
 import com.jheinz.tomyen.bank.Banking;
+import com.jheinz.tomyen.bathtub.Bathtubs;
 import com.jheinz.tomyen.bigredboots.BigRedBoots;
 import com.jheinz.tomyen.bloomery.Bloomery;
 import com.jheinz.tomyen.cathode.CathodeWalkers;
@@ -166,6 +167,7 @@ public class MyMod implements ModInitializer {
 		Mooses.initialize();
 		Crows.initialize();
 		GiantCatfishes.initialize();
+		Bathtubs.initialize();
 		linkBlockItems();
 	}
 

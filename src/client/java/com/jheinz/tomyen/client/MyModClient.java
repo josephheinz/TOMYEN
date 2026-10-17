@@ -70,6 +70,7 @@ import com.jheinz.tomyen.client.skullcrane.SkullcraneClient;
 import com.jheinz.tomyen.client.werewolf.WerewolfClient;
 import com.jheinz.tomyen.client.boar.BoarClient;
 import com.jheinz.tomyen.client.banana.BananaClient;
+import com.jheinz.tomyen.client.bathtub.BathtubClient;
 import com.jheinz.tomyen.client.banshee.BansheeClient;
 import com.jheinz.tomyen.client.soul.SoulVacuumClient;
 import com.jheinz.tomyen.client.silver.SilverClient;
@@ -210,5 +211,6 @@ public class MyModClient implements ClientModInitializer {
 		MooseClient.initialize();
 		CrowClient.initialize();
 		GiantCatfishClient.initialize();
+		BathtubClient.initialize();
 	}
 }

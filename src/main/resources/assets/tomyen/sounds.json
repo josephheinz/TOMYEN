@@ -5862,5 +5862,26 @@
         "volume": 1.4
       }
     ]
+  },
+  "bathtub_boat_motor": {
+    "subtitle": "subtitles.tomyen.bathtub_boat_motor",
+    "sounds": [
+      "tomyen:leaf_blower_engine"
+    ]
+  },
+  "bathtub_boat_start": {
+    "subtitle": "subtitles.tomyen.bathtub_boat_start",
+    "sounds": [
+      {
+        "name": "tomyen:leaf_blower_start",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "rubber_duck_squeak": {
+    "subtitle": "subtitles.tomyen.rubber_duck_squeak",
+    "sounds": [
+      "tomyen:rubber_duck_squeak"
+    ]
   }
 }

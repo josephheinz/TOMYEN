@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": "tomyen:steel_plate",
+    "Q": "minecraft:quartz",
+    "W": "minecraft:white_dye",
+    "N": "minecraft:gold_nugget"
+  },
+  "pattern": [
+    "P P",
+    "QWQ",
+    "N N"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:bathtub"
+  }
+}
