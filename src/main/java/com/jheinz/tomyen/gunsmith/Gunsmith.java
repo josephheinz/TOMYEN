@@ -30,6 +30,7 @@ import com.jheinz.tomyen.ModItems;
 import com.jheinz.tomyen.MyMod;
 import com.jheinz.tomyen.attachment.AttachmentItem;
 import com.jheinz.tomyen.attachment.AttachmentSlot;
+import com.jheinz.tomyen.boar.Boars;
 import com.jheinz.tomyen.industry.Industry;
 import com.jheinz.tomyen.shoddy.ShoddyGuns;
 import com.jheinz.tomyen.shotgun.ShotgunItem.Handling;
@@ -112,7 +113,9 @@ public final class Gunsmith {
 	private static final List<Shell> ROUNDS_38_SNUB = List.of(
 			new Shell(BULLET_38_FMJ, 1, 5.5f, 0.0f, 10.0, 32.0, 0.55f, 40.0, 0xD8A84E),
 			new Shell(BULLET_38_SILVER, 1, 5.5f, 0.0f, 10.0, 32.0, 0.55f, 40.0, 0xC9D3E0));
-	private static final List<Shell> SPEARS = List.of(new Shell(HARPOON_SPEAR, 1, 11.0f, 0.0f, 16.0, 32.0, 0.6f, 24.0, 0xB8C2C8));
+	// The tusk harpoon (Boars) is the cheap early spear: it hits softer and falls off sooner than steel.
+	private static final List<Shell> SPEARS = List.of(new Shell(HARPOON_SPEAR, 1, 11.0f, 0.0f, 16.0, 32.0, 0.6f, 24.0, 0xB8C2C8),
+			new Shell(Boars.TUSK_HARPOON, 1, 8.0f, 0.0f, 12.0, 24.0, 0.55f, 20.0, 0xE6DCC0));
 	private static final List<Shell> FLARES = List.of(new Shell(FLARE_SHELL, 1, 4.0f, 0.0f, 64.0, 64.0, 1.0f, 64.0, 0xFF5A3A));
 	public static final List<Ammo> AMMO_NAILS = List.of(new Ammo(IRON_NAIL, 3.5f, ModDamageTypes.BULLET, 0xA9AEB3));
 
@@ -320,6 +323,7 @@ public final class Gunsmith {
 			ammo.addAll(magazineEntries(NAIL_STRIP, AMMO_NAILS));
 			ammo.addAll(magazineEntries(NAIL_COIL, AMMO_NAILS));
 			ammo.add(new ItemStack(HARPOON_SPEAR));
+			ammo.add(new ItemStack(Boars.TUSK_HARPOON));
 			ammo.add(new ItemStack(FLARE_SHELL));
 			output.insertAfter(ShoddyGuns.SCRAP_SHELL, ammo);
 		});

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "T": "tomyen:boar_tusk",
+    "/": "minecraft:stick",
+    "S": "minecraft:string"
+  },
+  "pattern": [
+    "  T",
+    " /S",
+    "/  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:tusk_spear"
+  }
+}

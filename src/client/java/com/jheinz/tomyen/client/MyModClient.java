@@ -64,6 +64,7 @@ import com.jheinz.tomyen.client.hogfire.HogfireClient;
 import com.jheinz.tomyen.client.schnozzle.SchnozzleClient;
 import com.jheinz.tomyen.client.skullcrane.SkullcraneClient;
 import com.jheinz.tomyen.client.werewolf.WerewolfClient;
+import com.jheinz.tomyen.client.boar.BoarClient;
 import com.jheinz.tomyen.client.banana.BananaClient;
 import com.jheinz.tomyen.client.banshee.BansheeClient;
 import com.jheinz.tomyen.client.soul.SoulVacuumClient;
@@ -174,6 +175,7 @@ public class MyModClient implements ClientModInitializer {
 		CathodeWalkerClient.initialize();
 		WerewolfClient.initialize();
 		BansheeClient.initialize();
+		BoarClient.initialize();
 		BananaClient.initialize();
 		BigRedBootsRenderer.initialize();
 		TvHelmetClient.initialize();
