@@ -5,6 +5,13 @@
 - **Gnome army:** garden gnomes are statues by day. At night a Gnome Captain leads a squad out of fae forests to steal your ripe crops in formation. Scarecrows keep them away. Kill the captain and the squad flees. Smash a statue at dawn to keep it as a Garden Gnome block.
 - **The Accountant:** a slime in a suit who lives by village ATMs. Take out emerald loans from him, and expect audits. If your debt is overdue, he pays it down with the emeralds in your pockets. Kill him and the bank bills you, and he splits into Junior Accountants. He drops the new Extension Form, which buys you an extra day on your debt.
 - **Josh:** a villager named Josh who sells only Fish Fish. About one village in eight gets one, or you can make your own with a Fish Fish Crate.
+- **Bog Hag:** a swamp witch who throws hexes and calls up slimes. Her Hag's Curse slows mining, spoils ore, and makes fish bite late and fight harder. Milk won't fix it: brew Hexbreaker Tea from water mint in the Kettle. She drops herbs, Bog Muck (bait) and the Hag Charm rod lure.
+- **Grave Digger:** a zombie who tunnels under your walls when he can't reach you. Listen for digging under the floor. Cobblestone, planks, bricks, obsidian and metal stop him. He drops the Gravedigger's Shovel, which digs faster at night.
+- **Banshee:** a floating ghost whose wail blinds you and sends nearby undead after you. Normal weapons do half damage, and any holy weapon kills her in one hit. She drops Ectoplasm, used for Soul Charges.
+- **Wild Boar:** paws the ground, then charges, and is dazed if it hits a wall or your shield. Tusks make the Tusk Spear, Tusk Harpoons for the Harpoon Gun, and a Tusk Hook.
+- **Crow Murder:** flocks that strip farms and steal shiny items, sometimes right out of your hand. They stash loot in a treetop Crow Nest you can raid. Scarecrows keep them off. Crow Feathers make the Crow Fly lure and arrows.
+- **Moose:** big taiga and swamp animals. Bulls charge and cows stomp. Calm one with food and saddle it to ride through snow and water. Antlers make Antler Handles for tougher tools, and an Antler Hook.
+- **Giant Catfish (The River Monster):** a rare river boss. Hook it at night (Stink Bait helps) and it surfaces to fight, overturning boats and dragging you underwater. Harpoons pull it in and stun it. It drops a giant trophy for the new Giant Fish Mount, Catfish Whiskers for Whisker Line, and an Ancient Hook.
 
 ## Fishing
 - **Fish Fish:** a new and extremely generic fish, common in rivers, oceans and most temperate biomes.

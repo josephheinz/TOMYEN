@@ -19,17 +19,6 @@ Fae and Feywild:
 - **Changeling.** Looks like a villager or a cow until you get close. Steals items and flees to a fae ring.
 - **Toadstool Troll.** A big, slow Feywild brute covered in Fae Mushrooms. Drops Fae Dust and fae-wood.
 
-Undead and evil (silver and holy weapons matter):
-- **Bog Hag.** A swamp witch whose curses make fishing and mining go badly for a while. Drops herbs and charms (ties to herbalism).
-- **Grave Digger.** A zombie with a shovel that tunnels under walls at night.
-- **Banshee.** A ghost whose wail blinds you and wakes nearby undead. Holy weapons one-shot it.
-
-Nature and early game:
-- **Wild Boar.** A jungle and taiga pig that charges. Drops tusks for spears and harpoon heads.
-- **Giant Catfish / River Monster.** A rare river boss that drags you underwater. Its trophy goes on a giant Fish Mount.
-- **Crow Murder.** Flocks of crows that steal crops and shiny items. The scarecrow counters them.
-- **Moose.** A big neutral animal in snowy taiga. Drops leather and antler trophies.
-
 Mutated by uranium:
 - **Glowing Rat King.** A cluster of rats that splits when hit. Found near uranium deposits.
 - **Two-Headed Cow.** A passive mutant you can milk for anti-radiation milk.
