@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jheinz.tomyen.accountant.Accountants;
 import com.jheinz.tomyen.alien.Aliens;
 import com.jheinz.tomyen.bank.Banking;
 import com.jheinz.tomyen.bigredboots.BigRedBoots;
@@ -117,6 +118,7 @@ public class MyMod implements ModInitializer {
 		Miniguns.initialize();
 		LongSwords.initialize();
 		Banking.initialize();
+		Accountants.initialize();
 		NeuralCore.initialize();
 		PowerArmors.initialize();
 		Mechs.initialize();

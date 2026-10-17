@@ -27,6 +27,7 @@ import com.jheinz.tomyen.MyMod;
 import com.jheinz.tomyen.client.scarecrow.ScarecrowClient;
 import com.jheinz.tomyen.client.survival.SurvivalClient;
 import com.jheinz.tomyen.client.alien.AlienClient;
+import com.jheinz.tomyen.client.accountant.AccountantClient;
 import com.jheinz.tomyen.client.bank.BankClient;
 import com.jheinz.tomyen.client.bigredboots.BigRedBootsRenderer;
 import com.jheinz.tomyen.client.cathode.CathodeWalkerClient;
@@ -157,6 +158,7 @@ public class MyModClient implements ClientModInitializer {
 		TankClient.initialize();
 		LauncherClient.initialize();
 		BankClient.initialize();
+		AccountantClient.initialize();
 		PowerArmorClient.initialize();
 		MechClient.initialize();
 		IndustryClient.initialize();
