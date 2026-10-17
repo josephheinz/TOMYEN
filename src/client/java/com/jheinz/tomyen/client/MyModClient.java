@@ -25,6 +25,7 @@ import com.jheinz.tomyen.ModNetworking;
 import com.jheinz.tomyen.ModParticles;
 import com.jheinz.tomyen.MyMod;
 import com.jheinz.tomyen.client.scarecrow.ScarecrowClient;
+import com.jheinz.tomyen.client.gnome.GnomeClient;
 import com.jheinz.tomyen.client.survival.SurvivalClient;
 import com.jheinz.tomyen.client.alien.AlienClient;
 import com.jheinz.tomyen.client.bank.BankClient;
@@ -184,6 +185,7 @@ public class MyModClient implements ClientModInitializer {
 		DetectorClient.initialize();
 		SurvivalClient.initialize();
 		ScarecrowClient.initialize();
+		GnomeClient.initialize();
 		StarForgeClient.initialize();
 		BloomeryClient.initialize();
 		GunsmithClient.initialize();

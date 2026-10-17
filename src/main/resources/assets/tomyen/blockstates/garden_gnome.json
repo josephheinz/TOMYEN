@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "tomyen:block/garden_gnome"
+    },
+    "facing=east": {
+      "model": "tomyen:block/garden_gnome",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "tomyen:block/garden_gnome",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tomyen:block/garden_gnome",
+      "y": 270
+    }
+  }
+}

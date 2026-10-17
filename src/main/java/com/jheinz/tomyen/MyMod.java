@@ -57,6 +57,7 @@ import com.jheinz.tomyen.werewolf.Werewolves;
 import com.jheinz.tomyen.banana.Bananas;
 import com.jheinz.tomyen.station.ModMenus;
 import com.jheinz.tomyen.scarecrow.Scarecrows;
+import com.jheinz.tomyen.gnome.Gnomes;
 import com.jheinz.tomyen.survival.Survival;
 import com.jheinz.tomyen.scrapbench.ScrapBench;
 import com.jheinz.tomyen.blueprint.Blueprints;
@@ -136,6 +137,7 @@ public class MyMod implements ModInitializer {
 		Detectors.initialize();
 		Survival.initialize();
 		Scarecrows.initialize();
+		Gnomes.initialize();
 		ScrapBench.initialize();
 		Blueprints.initialize();
 		StarForge.initialize();
