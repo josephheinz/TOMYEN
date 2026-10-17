@@ -34,12 +34,6 @@ Mutated by uranium:
 - **Glowing Rat King.** A cluster of rats that splits when hit. Found near uranium deposits.
 - **Two-Headed Cow.** A passive mutant you can milk for anti-radiation milk.
 
-## Wacky mobs
-- **Shrimp with a gun.** Human-sized (not tiny): an ocean mob that shoots.
-- **Gnome army.** Garden gnomes that come alive at night near fae biomes and steal your crops in formation.
-- **The Accountant.** A slime in a suit, linked to the banker. Audits you, steals emeralds if your debt is overdue, and you can also **take out loans from him**.
-- **Josh (villager).** A villager named Josh who only sells Fish Fish.
-
 ## Vehicles, structures and big systems
 - **Hogfire air force.** Rocket-saddle any animal: cow bombers, chicken interceptors, a horse with a minigun.
 - **Bathtub boat.** A fast speedboat made from a bathtub and an outboard motor that runs on kerosene.
@@ -90,7 +84,6 @@ When you die, a copy of you, as you were at death (gear, held weapon, armor), is
 - The Star Forge's Soulbound infusion: Soulbound gear stays with you, so it doesn't end up on the Isle.
 
 ## Fishing
-- **Fish Fish.** A new fish species named "Fish Fish".
 - **Josh.** A new fish species named "Josh".
 
 ## Gear

@@ -1,3 +1,14 @@
+# Unreleased
+
+## New mobs
+- **Shrimp with a Gun:** a human-sized shrimp that comes out of oceans and onto beaches at night. It fires four-round bursts from a pistol, then has to reload, which is your chance to rush it. It drops Raw Shrimp (food and ocean-fish bait) and, rarely, its Shrimp Pistol.
+- **Gnome army:** garden gnomes are statues by day. At night a Gnome Captain leads a squad out of fae forests to steal your ripe crops in formation. Scarecrows keep them away. Kill the captain and the squad flees. Smash a statue at dawn to keep it as a Garden Gnome block.
+- **The Accountant:** a slime in a suit who lives by village ATMs. Take out emerald loans from him, and expect audits. If your debt is overdue, he pays it down with the emeralds in your pockets. Kill him and the bank bills you, and he splits into Junior Accountants. He drops the new Extension Form, which buys you an extra day on your debt.
+- **Josh:** a villager named Josh who sells only Fish Fish. About one village in eight gets one, or you can make your own with a Fish Fish Crate.
+
+## Fishing
+- **Fish Fish:** a new and extremely generic fish, common in rivers, oceans and most temperate biomes.
+
 # TOMYEN 0.1.0: First Public Test
 
 **The Only Mod You'll Ever Need.** Meteors, fae, werewolves, rogue machines and UFOs are invading, and this is everything you get to fight back. This is an early alpha. Expect bugs and balance changes, and keep backups of your worlds.
