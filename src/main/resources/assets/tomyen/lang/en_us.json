@@ -2361,5 +2361,17 @@
   "subtitles.tomyen.trombone_fanfare": "Trombone fanfare",
   "subtitles.tomyen.trombone_lullaby": "Lullaby chimes",
   "subtitles.tomyen.trombone_disco": "Disco beat",
-  "subtitles.tomyen.werewolf_whimper": "Werewolf whimpers"
+  "subtitles.tomyen.werewolf_whimper": "Werewolf whimpers",
+  "entity.tomyen.grave_digger": "Grave Digger",
+  "item.tomyen.grave_digger_spawn_egg": "Grave Digger Spawn Egg",
+  "item.tomyen.gravedigger_shovel": "Gravedigger's Shovel",
+  "item.tomyen.gravedigger_shovel.night": "Digs faster by night",
+  "item.tomyen.gravedigger_shovel.night_now": "Night shift: digging faster",
+  "item.tomyen.gravedigger_shovel.bones": "Sometimes turns up old bones",
+  "subtitles.tomyen.grave_digger_ambient": "Grave Digger groans",
+  "subtitles.tomyen.grave_digger_hurt": "Grave Digger hurts",
+  "subtitles.tomyen.grave_digger_death": "Grave Digger dies",
+  "subtitles.tomyen.grave_digger_dig": "Shovel digs",
+  "subtitles.tomyen.grave_digger_dig_muffled": "Something digs below",
+  "subtitles.tomyen.grave_digger_clang": "Shovel clangs"
 }
