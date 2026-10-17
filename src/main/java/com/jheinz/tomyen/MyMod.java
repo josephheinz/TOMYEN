@@ -20,6 +20,7 @@ import com.jheinz.tomyen.fae.Fae;
 import com.jheinz.tomyen.fishgun.FishGuns;
 import com.jheinz.tomyen.leafblower.LeafBlowers;
 import com.jheinz.tomyen.fishing.Fishing;
+import com.jheinz.tomyen.hag.BogHags;
 import com.jheinz.tomyen.herbalism.Herbalism;
 import com.jheinz.tomyen.dragonscale.Dragonscales;
 import com.jheinz.tomyen.fishing.fish.FishEntities;
@@ -140,6 +141,7 @@ public class MyMod implements ModInitializer {
 		Blueprints.initialize();
 		StarForge.initialize();
 		Herbalism.initialize();
+		BogHags.initialize();
 		FishGuns.initialize();
 		LeafBlowers.initialize();
 		Trombones.initialize();

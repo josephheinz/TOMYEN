@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "tomyen:bog_muck",
+    "tomyen:bog_muck",
+    "tomyen:bog_muck",
+    "tomyen:bog_muck"
+  ],
+  "result": {
+    "count": 2,
+    "id": "minecraft:mud"
+  }
+}

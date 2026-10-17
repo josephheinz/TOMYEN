@@ -3755,5 +3755,151 @@
         "pitch": 0.75
       }
     ]
+  },
+  "bog_hag_ambient": {
+    "subtitle": "subtitles.tomyen.bog_hag_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:entity/witch/ambient1",
+        "pitch": 0.72
+      },
+      {
+        "name": "minecraft:entity/witch/ambient2",
+        "pitch": 0.72
+      },
+      {
+        "name": "minecraft:entity/witch/ambient3",
+        "pitch": 0.72
+      },
+      {
+        "name": "minecraft:entity/witch/ambient4",
+        "pitch": 0.72
+      },
+      {
+        "name": "minecraft:entity/witch/ambient5",
+        "pitch": 0.72
+      }
+    ]
+  },
+  "bog_hag_cackle": {
+    "subtitle": "subtitles.tomyen.bog_hag_cackle",
+    "sounds": [
+      {
+        "name": "minecraft:entity/witch/celebrate",
+        "pitch": 0.78
+      },
+      {
+        "name": "minecraft:entity/witch/ambient4",
+        "pitch": 0.9
+      }
+    ]
+  },
+  "bog_hag_cast": {
+    "subtitle": "subtitles.tomyen.bog_hag_cast",
+    "sounds": [
+      {
+        "name": "minecraft:entity/witch/throw1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/witch/throw2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/witch/throw3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/evocation_illager/prepare_attack1",
+        "pitch": 1.3,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:mob/evocation_illager/prepare_attack2",
+        "pitch": 1.3,
+        "volume": 0.5
+      }
+    ]
+  },
+  "bog_hag_summon": {
+    "subtitle": "subtitles.tomyen.bog_hag_summon",
+    "sounds": [
+      {
+        "name": "minecraft:mob/evocation_illager/prepare_summon",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "bog_hag_hurt": {
+    "subtitle": "subtitles.tomyen.bog_hag_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:entity/witch/hurt1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:entity/witch/hurt2",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:entity/witch/hurt3",
+        "pitch": 0.75
+      }
+    ]
+  },
+  "bog_hag_death": {
+    "subtitle": "subtitles.tomyen.bog_hag_death",
+    "sounds": [
+      {
+        "name": "minecraft:entity/witch/death1",
+        "pitch": 0.68
+      },
+      {
+        "name": "minecraft:entity/witch/death2",
+        "pitch": 0.68
+      },
+      {
+        "name": "minecraft:entity/witch/death3",
+        "pitch": 0.68
+      }
+    ]
+  },
+  "hex_splat": {
+    "subtitle": "subtitles.tomyen.hex_splat",
+    "sounds": [
+      {
+        "name": "minecraft:mob/slime/small1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/slime/small2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/slime/small3",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/slime/small4",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/slime/small5",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "hags_curse": {
+    "subtitle": "subtitles.tomyen.hags_curse",
+    "sounds": [
+      {
+        "name": "minecraft:mob/evocation_illager/cast1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/evocation_illager/cast2",
+        "pitch": 0.6
+      }
+    ]
   }
 }
