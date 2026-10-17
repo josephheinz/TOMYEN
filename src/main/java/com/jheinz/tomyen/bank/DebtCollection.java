@@ -111,6 +111,21 @@ public final class DebtCollection {
 		endBar(player);
 	}
 
+	/**
+	 * The account with its deadline pushed back by this many ticks (never past a full {@link #TERM_TICKS}), and the
+	 * warnings now ahead of it again re-armed. For an account not yet in collections (an Extension Form).
+	 */
+	public static Debt extended(Debt debt, int ticks) {
+		int left = Math.min(TERM_TICKS, debt.ticksLeft() + ticks);
+		int warned = debt.warned();
+		for (int i = 0; i < WARNINGS.length; i++) {
+			if (WARNINGS[i] < left) {
+				warned &= ~(1 << i);
+			}
+		}
+		return debt.withTicksLeft(left).withWarned(warned);
+	}
+
 	/** The player's account summary, for an ATM or banker: what's owed and when it's due. */
 	public static Component statement(ServerPlayer player) {
 		Debt debt = Debt.of(player);

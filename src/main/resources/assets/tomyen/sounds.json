@@ -3755,5 +3755,141 @@
         "pitch": 0.75
       }
     ]
+  },
+  "accountant_hop": {
+    "subtitle": "subtitles.tomyen.accountant_hop",
+    "sounds": [
+      {
+        "name": "minecraft:mob/slime/small1",
+        "pitch": 1.35,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/slime/small2",
+        "pitch": 1.35,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/slime/small3",
+        "pitch": 1.35,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/slime/small4",
+        "pitch": 1.35,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/slime/small5",
+        "pitch": 1.35,
+        "volume": 0.7
+      }
+    ]
+  },
+  "accountant_squish": {
+    "subtitle": "subtitles.tomyen.accountant_squish",
+    "sounds": [
+      {
+        "name": "minecraft:mob/slime/small1",
+        "pitch": 1.55,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:mob/slime/small2",
+        "pitch": 1.55,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:mob/slime/small3",
+        "pitch": 1.55,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:mob/slime/small4",
+        "pitch": 1.55,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:mob/slime/small5",
+        "pitch": 1.55,
+        "volume": 0.5
+      }
+    ]
+  },
+  "accountant_hurt": {
+    "subtitle": "subtitles.tomyen.accountant_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/slime/big1",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/slime/big2",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/slime/big3",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/slime/big4",
+        "pitch": 1.3
+      }
+    ]
+  },
+  "accountant_death": {
+    "subtitle": "subtitles.tomyen.accountant_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/slime/big1",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:mob/slime/big2",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:mob/slime/big3",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:mob/slime/big4",
+        "pitch": 1.1
+      }
+    ]
+  },
+  "accountant_papers": {
+    "subtitle": "subtitles.tomyen.accountant_papers",
+    "sounds": [
+      {
+        "name": "minecraft:item/book/open_flip1",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:item/book/open_flip2",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:item/book/open_flip3",
+        "pitch": 1.1
+      }
+    ]
+  },
+  "accountant_scribble": {
+    "subtitle": "subtitles.tomyen.accountant_scribble",
+    "sounds": [
+      {
+        "name": "minecraft:ui/cartography_table/drawmap1",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:ui/cartography_table/drawmap2",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:ui/cartography_table/drawmap3",
+        "pitch": 1.2
+      }
+    ]
   }
 }
