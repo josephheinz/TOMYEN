@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:crow_feather",
+    "minecraft:elytra"
+  ],
+  "result": "tomyen:murder_wings",
+  "station": "reactor",
+  "tier": 1
+}

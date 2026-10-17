@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:fusion_reactor"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "tomyen:blocks/fusion_reactor"
+}

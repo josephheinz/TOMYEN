@@ -30,6 +30,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.PathfinderMob;
@@ -131,6 +132,10 @@ public class Crow extends PathfinderMob {
 	private int landingRetry;
 	private int idleTimer;
 	private int hopCooldown;
+
+	// --- called up by Murder Wings (fusion.MurderCrows): pecks one target, then vanishes; never joins a murder
+	private int summonTicks;
+	private int summonTarget = -1;
 
 	// --- client animation
 	private int peckTicks;
@@ -319,6 +324,10 @@ public class Crow extends PathfinderMob {
 	@Override
 	protected void customServerAiStep(ServerLevel level) {
 		super.customServerAiStep(level);
+		if (summonTicks > 0) {
+			hunt(level);
+			return;
+		}
 		if (--membershipCheck <= 0) {
 			membershipCheck = 40;
 			updateMembership(level);
@@ -377,7 +386,8 @@ public class Crow extends PathfinderMob {
 		}
 		int followers = 0;
 		Crow join = null;
-		for (Crow other : level.getEntitiesOfClass(Crow.class, getBoundingBox().inflate(24.0), crow -> crow != this && crow.isAlive())) {
+		for (Crow other : level.getEntitiesOfClass(Crow.class, getBoundingBox().inflate(24.0), crow -> crow != this && crow.isAlive()
+				&& !crow.isSummoned())) {
 			Crow theirs = other.leader();
 			if (theirs == this) {
 				followers++;
@@ -1145,6 +1155,73 @@ public class Crow extends PathfinderMob {
 		return cawTicks <= 0 ? 0.0f : 1.0f - (cawTicks - partialTicks) / 12.0f;
 	}
 
+	// ------------------------------------------------------------------------------------------------ summoned
+
+	/** Called up by Murder Wings: dives at the target for {@code ticks}, then vanishes in a puff of feathers. */
+	public void summonAgainst(LivingEntity target, int ticks) {
+		summonTicks = ticks;
+		summonTarget = target.getId();
+		setPersistenceRequired();
+		if (level() instanceof ServerLevel level && !isFlying()) {
+			takeOff(level);
+		}
+	}
+
+	public boolean isSummoned() {
+		return summonTicks > 0;
+	}
+
+	/** A summoned crow's whole mind: in for a peck at its target, up and away, and in again; gone when time's up. */
+	private void hunt(ServerLevel level) {
+		Entity entity = summonTarget < 0 ? null : level.getEntity(summonTarget);
+		if (--summonTicks <= 0 || !(entity instanceof LivingEntity target) || !target.isAlive() || distanceToSqr(target) > 32.0 * 32.0) {
+			level.sendParticles(ParticleTypes.POOF, getX(), getY(0.5), getZ(), 6, 0.15, 0.15, 0.15, 0.02);
+			level.sendParticles(ParticleTypes.SMOKE, getX(), getY(0.5), getZ(), 4, 0.15, 0.15, 0.15, 0.01);
+			discard();
+			return;
+		}
+		if (!isFlying()) {
+			takeOff(level);
+		}
+		if (attackCooldown > 0) {
+			attackCooldown--;
+		}
+		goal = null;
+		if (retreatTicks > 0) {
+			retreatTicks--;
+			Vec3 away = position().subtract(target.position()).multiply(1.0, 0.0, 1.0);
+			away = away.lengthSqr() < 1.0E-4 ? new Vec3(1.0, 0.0, 0.0) : away.normalize();
+			goTo(level, target.position().add(away.scale(3.0)).add(0.0, target.getBbHeight() + 2.0, 0.0), false, 0.5);
+		} else {
+			Vec3 head = target.getEyePosition();
+			goTo(level, head, false, 0.6);
+			lookAt(head);
+			if (attackCooldown <= 0 && distanceToSqr(target) < 1.6 * 1.6 + target.getBbWidth()) {
+				if (doHurtTarget(level, target)) {
+					level.broadcastEntityEvent(this, EVENT_PECK);
+					playSound(Crows.PECK, 0.7f, 0.9f + random.nextFloat() * 0.3f);
+				}
+				attackCooldown = 20;
+				retreatTicks = 12 + random.nextInt(10);
+				cawSoon(2, true);
+			}
+		}
+		if (cawDelay > 0 && --cawDelay == 0) {
+			caw(level, cawAlarm);
+		}
+		fly(level, flock);
+	}
+
+	@Override
+	protected boolean shouldDropLoot(ServerLevel level) {
+		return !isSummoned() && super.shouldDropLoot(level);
+	}
+
+	@Override
+	public boolean shouldDropExperience() {
+		return !isSummoned() && super.shouldDropExperience();
+	}
+
 	// ------------------------------------------------------------------------------------------------ saving
 
 	@Override
@@ -1154,6 +1231,7 @@ public class Crow extends PathfinderMob {
 		output.storeNullable("nest", BlockPos.CODEC, nest);
 		output.storeNullable("home", BlockPos.CODEC, home);
 		output.putBoolean("flying", isFlying());
+		output.putInt("summon_ticks", summonTicks);
 	}
 
 	@Override
@@ -1163,5 +1241,7 @@ public class Crow extends PathfinderMob {
 		nest = input.read("nest", BlockPos.CODEC).orElse(null);
 		home = input.read("home", BlockPos.CODEC).orElse(null);
 		setFlag(FLAG_FLYING, input.getBooleanOr("flying", false));
+		// A summoned crow reloaded has lost its target: it vanishes on its next tick.
+		summonTicks = Math.min(1, input.getIntOr("summon_ticks", 0));
 	}
 }

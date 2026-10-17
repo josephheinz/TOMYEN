@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:rocket_boots",
+    "tomyen:murder_wings"
+  ],
+  "result": "tomyen:stormcrow_rig",
+  "station": "reactor",
+  "tier": 2
+}

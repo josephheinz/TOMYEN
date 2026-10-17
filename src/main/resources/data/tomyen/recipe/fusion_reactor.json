@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": "tomyen:alien_alloy",
+    "S": "tomyen:star_steel_ingot",
+    "V": "tomyen:void_flux",
+    "A": "tomyen:alien_reactor",
+    "F": "tomyen:fusion_core",
+    "P": "tomyen:steel_plate"
+  },
+  "pattern": [
+    "LSL",
+    "VAV",
+    "PFP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:fusion_reactor"
+  }
+}
