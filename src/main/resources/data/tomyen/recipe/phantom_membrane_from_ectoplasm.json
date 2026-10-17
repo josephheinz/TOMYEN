@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:ectoplasm",
+    "tomyen:ectoplasm"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:phantom_membrane"
+  }
+}
