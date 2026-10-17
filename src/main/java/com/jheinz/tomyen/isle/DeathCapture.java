@@ -22,6 +22,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.gamerules.GameRules;
 
 import com.jheinz.tomyen.MyMod;
+import com.jheinz.tomyen.fusion.gear.RevenantMail;
 import com.jheinz.tomyen.starforge.InfusionEffects;
 
 /**
@@ -59,6 +60,10 @@ public final class DeathCapture {
 	/** Called as the player dies, before vanilla drops their inventory: takes it all into their hoard. */
 	public static void capture(ServerPlayer player, ServerLevel level) {
 		if (level.getGameRules().get(GameRules.KEEP_INVENTORY) || player.isSpectator()) {
+			return;
+		}
+		if (RevenantMail.tryKeepGear(player)) {
+			// The mail's daily ward keeps everything on them, so nothing goes to the Isle.
 			return;
 		}
 		MinecraftServer server = level.getServer();

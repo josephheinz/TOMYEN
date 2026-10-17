@@ -36,7 +36,8 @@ import net.minecraft.world.level.gamerules.GameRules;
  * the old inventory, armor and offhand included, is copied onto the new player, as vanilla does under keepInventory.
  * With keepInventory on, nothing is spent: vanilla is keeping everything anyway.
  *
- * <h2>For the Isle of the Damned (wire this in when it merges)</h2>
+ * <h2>The Isle of the Damned</h2>
+ * Wired in: {@code isle.DeathCapture.capture} calls {@link #tryKeepGear} first and takes nothing when it answers true.
  * The Isle's death capture, wherever it takes a dying player's items (before it empties or copies the inventory), should
  * start with:
  * <pre>{@code
