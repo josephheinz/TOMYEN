@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:fish_fish",
+    "tomyen:fish_fish"
+  ],
+  "result": "tomyen:fish_fish_fish",
+  "station": "pond",
+  "tier": 1
+}

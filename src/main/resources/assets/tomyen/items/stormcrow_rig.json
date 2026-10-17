@@ -1,0 +1,14 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "minecraft:broken",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "tomyen:item/stormcrow_rig"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "tomyen:item/stormcrow_rig_broken"
+    }
+  }
+}

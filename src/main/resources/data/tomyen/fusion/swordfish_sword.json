@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:swordfish",
+    "minecraft:diamond_sword"
+  ],
+  "result": "tomyen:swordfish_sword",
+  "station": "pond",
+  "tier": 1
+}
