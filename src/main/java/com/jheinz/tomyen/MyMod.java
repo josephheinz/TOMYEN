@@ -54,6 +54,7 @@ import com.jheinz.tomyen.tungsten.Tungsten;
 import com.jheinz.tomyen.uranium.Uranium;
 import com.jheinz.tomyen.voidsteel.Voidsteel;
 import com.jheinz.tomyen.werewolf.Werewolves;
+import com.jheinz.tomyen.boar.Boars;
 import com.jheinz.tomyen.banana.Bananas;
 import com.jheinz.tomyen.station.ModMenus;
 import com.jheinz.tomyen.scarecrow.Scarecrows;
@@ -143,6 +144,7 @@ public class MyMod implements ModInitializer {
 		FishGuns.initialize();
 		LeafBlowers.initialize();
 		Trombones.initialize();
+		Boars.initialize();
 		linkBlockItems();
 	}
 

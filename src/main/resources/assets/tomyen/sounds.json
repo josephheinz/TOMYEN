@@ -3755,5 +3755,298 @@
         "pitch": 0.75
       }
     ]
+  },
+  "boar_ambient": {
+    "subtitle": "subtitles.tomyen.boar_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:mob/pig/big/ambient1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/pig/big/ambient2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/pig/big/ambient3",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/pig/big/ambient4",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/pig/big/ambient5",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/pig/big/ambient6",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle1",
+        "pitch": 1.35,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle2",
+        "pitch": 1.35,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle3",
+        "pitch": 1.35,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle4",
+        "pitch": 1.35,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle5",
+        "pitch": 1.35,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle6",
+        "pitch": 1.35,
+        "volume": 0.6
+      }
+    ]
+  },
+  "boar_hurt": {
+    "subtitle": "subtitles.tomyen.boar_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/pig/big/hit1",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:mob/pig/big/hit2",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:mob/pig/big/hit3",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:mob/hoglin/hurt1",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/hoglin/hurt2",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/hoglin/hurt3",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/hoglin/hurt4",
+        "pitch": 1.3
+      }
+    ]
+  },
+  "boar_death": {
+    "subtitle": "subtitles.tomyen.boar_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/pig/big/death",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/hoglin/death1",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/hoglin/death2",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/hoglin/death3",
+        "pitch": 1.3
+      }
+    ]
+  },
+  "boar_angry": {
+    "subtitle": "subtitles.tomyen.boar_angry",
+    "sounds": [
+      {
+        "name": "minecraft:mob/hoglin/angry1",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry2",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry3",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry4",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry5",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry6",
+        "pitch": 1.3
+      }
+    ]
+  },
+  "boar_paw": {
+    "subtitle": "subtitles.tomyen.boar_paw",
+    "sounds": [
+      {
+        "name": "minecraft:block/rooted_dirt/step1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:block/rooted_dirt/step2",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:block/rooted_dirt/step3",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:block/rooted_dirt/step4",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:block/rooted_dirt/step5",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:block/rooted_dirt/step6",
+        "pitch": 0.75
+      }
+    ]
+  },
+  "boar_charge": {
+    "subtitle": "subtitles.tomyen.boar_charge",
+    "sounds": [
+      {
+        "name": "minecraft:mob/hoglin/attack1",
+        "pitch": 1.25
+      },
+      {
+        "name": "minecraft:mob/hoglin/attack2",
+        "pitch": 1.25
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry1",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry4",
+        "pitch": 1.5
+      }
+    ]
+  },
+  "boar_impact": {
+    "subtitle": "subtitles.tomyen.boar_impact",
+    "sounds": [
+      {
+        "name": "minecraft:mob/goat/impact1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/goat/impact2",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "boar_stunned": {
+    "subtitle": "subtitles.tomyen.boar_stunned",
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/stun1",
+        "pitch": 1.5,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/ravager/stun2",
+        "pitch": 1.5,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/ravager/stun3",
+        "pitch": 1.5,
+        "volume": 0.7
+      }
+    ]
+  },
+  "boar_root": {
+    "subtitle": "subtitles.tomyen.boar_root",
+    "sounds": [
+      {
+        "name": "minecraft:block/rooted_dirt/break1",
+        "pitch": 1.1,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/rooted_dirt/break2",
+        "pitch": 1.1,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/rooted_dirt/break3",
+        "pitch": 1.1,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/rooted_dirt/break4",
+        "pitch": 1.1,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/pig/big/eat1",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:mob/pig/big/eat2",
+        "pitch": 0.9
+      }
+    ]
+  },
+  "boar_step": {
+    "subtitle": "subtitles.tomyen.boar_step",
+    "sounds": [
+      {
+        "name": "minecraft:mob/hoglin/step1",
+        "pitch": 1.3,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:mob/hoglin/step2",
+        "pitch": 1.3,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:mob/hoglin/step3",
+        "pitch": 1.3,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:mob/hoglin/step4",
+        "pitch": 1.3,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:mob/hoglin/step5",
+        "pitch": 1.3,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:mob/hoglin/step6",
+        "pitch": 1.3,
+        "volume": 0.5
+      }
+    ]
   }
 }
