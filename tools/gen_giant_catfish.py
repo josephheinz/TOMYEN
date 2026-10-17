@@ -1480,8 +1480,8 @@ write(os.path.join(DATA, "loot_table", "blocks", "giant_fish_mount.json"), Order
     ("pools", [OrderedDict([("rolls", 1), ("entries", [{"type": "minecraft:item", "name": "tomyen:giant_fish_mount"}]),
                             ("condition", OrderedDict([("type", "minecraft:all_of"), ("terms", [
                                 {"type": "minecraft:survives_explosion"},
-                                OrderedDict([("type", "minecraft:block_state_property"), ("block", "tomyen:giant_fish_mount"),
-                                             ("properties", OrderedDict([("column", str(MASTER_COLUMN)), ("row", "0")]))])])]))])]),
+                                OrderedDict([("type", "minecraft:match_block"), ("blocks", "tomyen:giant_fish_mount"),
+                                             ("state", OrderedDict([("column", str(MASTER_COLUMN)), ("row", "0")]))])])]))])]),
     ("random_sequence", "tomyen:blocks/giant_fish_mount")]))
 
 

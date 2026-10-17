@@ -16,9 +16,9 @@
             "type": "minecraft:survives_explosion"
           },
           {
-            "type": "minecraft:block_state_property",
-            "block": "tomyen:giant_fish_mount",
-            "properties": {
+            "type": "minecraft:match_block",
+            "blocks": "tomyen:giant_fish_mount",
+            "state": {
               "column": "2",
               "row": "0"
             }

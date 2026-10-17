@@ -1081,7 +1081,7 @@ def unlock(recipe, category, items):
     """The recipe advancement: unlocked on having any of the items."""
     criteria = OrderedDict((f"has_{i.split(':')[1]}", {"conditions": {"items": [{"items": i}]}, "trigger": "minecraft:inventory_changed"})
                            for i in items)
-    criteria["has_the_recipe"] = {"conditions": {"recipe": f"tomyen:{recipe}"}, "trigger": "minecraft:recipe_unlocked"}
+    criteria["has_the_recipe"] = {"conditions": {"recipes": f"tomyen:{recipe}"}, "trigger": "minecraft:recipe_unlocked"}
     write(os.path.join(DATA, f"advancement/recipes/{category}/{recipe}.json"), OrderedDict([
         ("parent", "minecraft:recipes/root"), ("criteria", criteria),
         ("requirements", [list(criteria.keys())]), ("rewards", {"recipes": [f"tomyen:{recipe}"]})]))
@@ -1118,7 +1118,7 @@ merge(os.path.join(ASSETS, "sounds.json"), OrderedDict([
     event("crow_hurt", vanilla(["tomyen:crow/caw2", "tomyen:crow/caw4"], 1.3, 0.9)),
     event("crow_death", vanilla(["tomyen:crow/caw1", "tomyen:crow/caw3"], 0.8, 1.0)),
     event("crow_flap", vanilla(["mob/phantom/flap1", "mob/phantom/flap2", "mob/phantom/flap3", "mob/phantom/flap4"], 1.7, 0.45)),
-    event("crow_peck", vanilla(["block/azalea_leaves/hit1", "block/azalea_leaves/hit2", "block/azalea_leaves/hit3"], 1.6, 0.5),
+    event("crow_peck", vanilla(["block/azalea_leaves/step1", "block/azalea_leaves/step2", "block/azalea_leaves/step3"], 1.6, 0.5),
           subtitle=False),
     event("crow_snatch", vanilla(["random/pop"], 1.4, 0.8) + vanilla(["tomyen:crow/caw3"], 1.25, 0.9)),
     event("crow_nest_rustle", vanilla(["block/azalea_leaves/step1", "block/azalea_leaves/step2", "block/azalea_leaves/step3",

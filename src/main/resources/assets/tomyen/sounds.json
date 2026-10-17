@@ -3929,7 +3929,7 @@
         "pitch": 0.6
       },
       {
-        "name": "minecraft:mob/guardian/land_hit",
+        "name": "minecraft:mob/guardian/land_hit1",
         "pitch": 1.1
       }
     ]
@@ -5591,17 +5591,17 @@
   "crow_peck": {
     "sounds": [
       {
-        "name": "minecraft:block/azalea_leaves/hit1",
+        "name": "minecraft:block/azalea_leaves/step1",
         "pitch": 1.6,
         "volume": 0.5
       },
       {
-        "name": "minecraft:block/azalea_leaves/hit2",
+        "name": "minecraft:block/azalea_leaves/step2",
         "pitch": 1.6,
         "volume": 0.5
       },
       {
-        "name": "minecraft:block/azalea_leaves/hit3",
+        "name": "minecraft:block/azalea_leaves/step3",
         "pitch": 1.6,
         "volume": 0.5
       }

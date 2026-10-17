@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "tomyen:crow_nest"
+        "recipes": "tomyen:crow_nest"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

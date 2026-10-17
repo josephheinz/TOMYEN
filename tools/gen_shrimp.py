@@ -1328,7 +1328,7 @@ SOUNDS = OrderedDict([
     # Clicks and chitters: the silverfish, slowed; the guardian's landed flopping for its hurt and death.
     ("shrimp_ambient", event("shrimp_ambient", vanilla(["mob/silverfish/say%d" % i for i in (1, 2, 3, 4)], 0.55))),
     ("shrimp_hurt", event("shrimp_hurt", vanilla(["mob/silverfish/hit%d" % i for i in (1, 2, 3)], 0.6)
-                          + vanilla(["mob/guardian/land_hit"], 1.1))),
+                          + vanilla(["mob/guardian/land_hit1"], 1.1))),
     ("shrimp_death", event("shrimp_death", vanilla(["mob/silverfish/kill"], 0.5) + vanilla(["mob/guardian/land_death"], 1.0))),
     ("shrimp_step", event("shrimp_step", vanilla(["mob/turtle/walk%d" % i for i in (1, 2, 3, 4, 5)], 1.4))),
     ("shrimp_swim", event("shrimp_swim", vanilla(["entity/fish/swim%d" % i for i in (1, 2, 3, 4)], 0.8))),
