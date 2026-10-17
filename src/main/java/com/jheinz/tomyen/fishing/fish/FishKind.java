@@ -185,11 +185,16 @@ public final class FishKind {
 	/** Only in water within a few blocks of a fallen meteorite (its species file's near_block). */
 	public static final FishKind COMETFISH = kind("cometfish", Fishes.COMETFISH, 0.5f, 0.3f, Voice.SALMON).health(5)
 			.spawns(BiomeSelectors.foundInOverworld(), 2, 1, 1, Depth.ANY).near(METEORITE_BLOCKS, 12);
+	/** Just a fish, a cod's size, in small schools wherever the water is ordinary (its species file's biomes). */
+	public static final FishKind FISH_FISH = kind("fish_fish", Fishes.FISH_FISH, 0.5f, 0.4f, Voice.COD).school(4)
+			.spawns(rivers().or(BiomeSelectors.tag(BiomeTags.IS_OCEAN)).or(BiomeSelectors.tag(BiomeTags.IS_BEACH))
+					.or(BiomeSelectors.tag(BiomeTags.IS_FOREST)).or(BiomeSelectors.includeByKey(Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS,
+							Biomes.SWAMP, Biomes.MEADOW)), 2, 1, 3, Depth.SURFACE);
 
 	public static final List<FishKind> ALL = List.of(BROOK_TROUT, MUD_CATFISH, PIKE, MACKEREL, SWORDFISH, ANGLERFISH, GLOWFIN_TETRA,
 			PARROTFISH, ICE_CHAR, BOG_EEL, CAVE_BLINDFISH, SCULK_GULPER, PIXIE_MINNOW, MOONSCALE_KOI, MAGMA_EEL, EMBER_PUFFER,
 			GLOWING_MUTANT_CARP, STARLIT_GAR, ABYSSAL_SQUIDLING, GHOULFISH, LARGEMOUTH_BASS, BLUEGILL, YELLOW_PERCH, WALLEYE, CRAPPIE,
-			STURGEON, RED_SNAPPER, FLOUNDER, TUNA, MAHI_MAHI, BARRACUDA, MOOSHROOM_MINNOW, COMETFISH);
+			STURGEON, RED_SNAPPER, FLOUNDER, TUNA, MAHI_MAHI, BARRACUDA, MOOSHROOM_MINNOW, COMETFISH, FISH_FISH);
 
 	private final String id;
 	private final Item catchItem;

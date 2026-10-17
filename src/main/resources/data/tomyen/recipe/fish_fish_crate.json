@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:barrel",
+    "tomyen:fish_fish",
+    "tomyen:fish_fish"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:fish_fish_crate"
+  }
+}

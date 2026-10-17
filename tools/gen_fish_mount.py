@@ -710,7 +710,7 @@ def shapeless(name, ingredients, result, count, unlock, category="misc"):
 RAW_FISH = ["minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish"] + ["tomyen:" + n for n in (
     "brook_trout", "mud_catfish", "pike", "mackerel", "swordfish", "anglerfish", "glowfin_tetra", "parrotfish", "ice_char",
     "bog_eel", "cave_blindfish", "largemouth_bass", "bluegill", "yellow_perch", "walleye", "crappie", "sturgeon", "red_snapper",
-    "flounder", "tuna", "mahi_mahi", "barracuda")]
+    "flounder", "tuna", "mahi_mahi", "barracuda", "fish_fish")]
 PREDATOR_FISH = ["minecraft:cod", "minecraft:salmon"] + ["tomyen:" + n for n in (
     "pike", "swordfish", "anglerfish", "starlit_gar", "magma_eel", "mud_catfish", "bog_eel", "largemouth_bass", "walleye",
     "tuna", "mahi_mahi", "barracuda")]

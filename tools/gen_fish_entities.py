@@ -1386,10 +1386,40 @@ def cometfish():
     return f
 
 
+def fish_fish():
+    """The platonic fish: an oval body, a fan of a tail, one fin up and one down, a round white eye with a black pupil,
+    a gill line and a little smile. Plain blue over a pale belly, like the item and like nothing in particular."""
+    def pattern(x, y, t, face, part):
+        if part.name == "snout" and face in ("north", "south") and -0.75 <= y < -0.25:
+            return C("1d3a5c")                       # the smile
+        return None
+    f = Fish("fish_fish", "Fish Fish",
+             [(0.22, C("d8ecf8")), (0.36, C("a8cfe8")), (0.74, C("4f96d6")), (1.01, C("3f84c4"))], -3.0, 3.0,
+             dict(base=C("4a8cd0"), light=C("7fb8e6"), ray=C("3b7bbd"), edge=C("2c66a6")),
+             cooked="cooked_fish_fish", title_cooked="Cooked Fish Fish", pattern=pattern,
+             gill=(9.5, 0.2, 0.85, C("2f6aa8")),
+             eye=dict(pupil=C("0f1720"), shine=C("0f1720"), iris=C("f4f8fc"), rim=C("1d3a5c")))
+    # The body is stepped top and bottom (a back and a belly a little shorter and narrower than it), so the box reads
+    # as the oval a child draws; the head steps down again into a blunt snout.
+    f.parts = [
+        zbox("body", "skin", 3, -2.25, 10, 2.25, 1.25),
+        zbox("back", "skin", 4, 2.25, 9, 3.0, 1.0, drop=("down",)),
+        zbox("belly", "skin", 4, -3.0, 9, -2.25, 1.0, drop=("up",)),
+        zbox("head", "skin", 10, -1.75, 12.5, 2.0, 1.0),
+        zbox("snout", "skin", 12.5, -1.25, 13, 1.25, 0.75, drop=("west",)),
+        zbox("wrist", "skin", 1.75, -1.0, 3, 1.0, 0.75),
+        fin("tail", [(2.0, -0.75), (-0.75, -3.5), (-0.25, 0.0), (-0.75, 3.5), (2.0, 0.75)], root=(2.5, 0.0)),
+        fin("dorsal", [(4.0, 3.0), (4.5, 6.0), (6.0, 5.75), (9.0, 3.0)], root=(7.5, 1.0)),
+        fin("anal", [(5.0, -3.0), (5.5, -4.75), (7.0, -4.5), (8.0, -3.0)], root=(7.0, -1.0)),
+        zbox("eye", "eye", 10.5, 0.25, 12.0, 1.75, 1.25),
+    ]
+    return f
+
+
 FISH = [brook_trout, mud_catfish, pike, mackerel, swordfish, anglerfish, glowfin_tetra, parrotfish, ice_char, bog_eel,
         cave_blindfish, sculk_gulper, pixie_minnow, moonscale_koi, magma_eel, ember_puffer, glowing_mutant_carp,
         starlit_gar, abyssal_squidling, ghoulfish, largemouth_bass, bluegill, yellow_perch, walleye, crappie, sturgeon,
-        red_snapper, flounder, tuna, mahi_mahi, barracuda, mooshroom_minnow, cometfish]
+        red_snapper, flounder, tuna, mahi_mahi, barracuda, mooshroom_minnow, cometfish, fish_fish]
 
 
 # ============================================================================================================= rigs
@@ -1400,7 +1430,8 @@ FISH = [brook_trout, mud_catfish, pike, mackerel, swordfish, anglerfish, glowfin
 #   parts by name: tail, tail2, tail3 (a chain that wags), whisker_*, lure, wing_*, tentacle_*.
 # cuts: fins split at these x positions (pieces <fin>_0, _1, ... from the tail forward), for fins running over a joint.
 # glow: skin and trim colours that also glow, besides the parts the old model already lit.
-# bucket: which vanilla fish bucket's fish is recoloured for its bucket sprite.
+# bucket: which vanilla fish bucket's fish is recoloured for its bucket sprite (bucket_ramp: the colours, dark to
+#   light, to recolour it with instead of the fish's own).
 
 RIG = {
     "brook_trout": dict(length=15, groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
@@ -1460,6 +1491,10 @@ RIG = {
     "barracuda": dict(length=28, bucket="salmon", groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
     "mooshroom_minnow": dict(length=7, bucket="tropical_fish", groups=[("tail", "body", (2, 0, 0), ["wrist", "tail"])]),
     "cometfish": dict(length=16, glow=["fff0b0", "ffb84a", "ff8a2a"], groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
+    # A cod's length, in a tropical fish's bucket (a cod's would make it look like a blue cod).
+    # Its own blues would vanish into the bucket's water: in the bucket it's outlined in navy and lit pale.
+    "fish_fish": dict(length=14, bucket="tropical_fish", bucket_ramp=["1d3a5c", "2c66a6", "8cc6ee", "d8ecf8"],
+                      groups=[("tail", "body", (3, 0, 0), ["wrist", "tail"])]),
 }
 
 # The fish swimming in lava: their buckets hold lava.
@@ -1851,6 +1886,16 @@ def java_layer(rig):
 
 
 def java_file(rigs):
+    # Fins are single faces (WEST or NORTH); a box with a face against another box leaves that face out, and each
+    # such set of faces gets a constant of its own.
+    sets = []
+    for r in rigs:
+        for _, cube in r.cubes:
+            name = "_".join(cube.faces)
+            if len(cube.faces) not in (1, 6) and name not in sets:
+                sets.append(name)
+    face_sets = "".join(f"\n\tprivate static final Set<Direction> {n} = EnumSet.of("
+                        + ", ".join("Direction." + d for d in n.split("_")) + ");" for n in sets)
     shapes = []
     for r in rigs:
         shapes.append(f"\t\t\tnew Shape(\"{r.f.name}\", FishModelLayers::{camel(r.f.name)}, {str(r.glows).lower()}, "
@@ -1887,7 +1932,7 @@ public final class FishModelLayers {{
 
 	/** Fins are single faces, drawn from both sides by the entity cutout render type. */
 	private static final Set<Direction> WEST = EnumSet.of(Direction.WEST);
-	private static final Set<Direction> NORTH = EnumSet.of(Direction.NORTH);
+	private static final Set<Direction> NORTH = EnumSet.of(Direction.NORTH);{face_sets}
 
 	public static final List<Shape> SHAPES = List.of(
 {(","+chr(10)).join(shapes)});
@@ -1928,7 +1973,8 @@ def recolour(px, keep, ramp):
 def bucket_sprite(f, vanilla):
     """Vanilla's fish bucket with its fish recoloured to this one; lava fish in a lava bucket instead."""
     template = vanilla("%s_bucket" % RIG[f.name].get("bucket", "cod"))
-    fish = recolour(template, BUCKET_GREYS | WATER, fish_ramp(f))
+    ramp = [C(h) for h in RIG[f.name]["bucket_ramp"]] if "bucket_ramp" in RIG[f.name] else fish_ramp(f)
+    fish = recolour(template, BUCKET_GREYS | WATER, ramp)
     if f.name not in LAVA:
         return fish
     water = vanilla("water_bucket")

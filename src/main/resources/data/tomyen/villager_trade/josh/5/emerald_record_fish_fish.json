@@ -1,0 +1,30 @@
+{
+  "gives": {
+    "id": "tomyen:fish_fish",
+    "components": {
+      "tomyen:trophy": {
+        "weight_lb": 20.0,
+        "average_lb": 2.0,
+        "caught_by": "Josh",
+        "day": 1
+      },
+      "minecraft:max_stack_size": 1,
+      "minecraft:item_name": {
+        "translate": "item.tomyen.trophy_fish",
+        "with": [
+          {
+            "translate": "item.tomyen.fish_fish"
+          }
+        ],
+        "color": "gold"
+      }
+    }
+  },
+  "max_uses": 1,
+  "reputation_discount": 0.05,
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 32
+  },
+  "xp": 30
+}

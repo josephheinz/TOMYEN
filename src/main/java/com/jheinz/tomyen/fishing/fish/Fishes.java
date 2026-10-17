@@ -49,7 +49,8 @@ import com.jheinz.tomyen.uranium.Radiation;
  * <li>The second catch is mostly common, early fish (bass, bluegill, perch, walleye, crappie, snapper, flounder,
  * mahi-mahi, barracuda) and two giants: a tuna renders into two bottles of Fish Oil, a sturgeon's swim bladder into
  * isinglass (slime balls), and a banker buys either. A Mooshroom Minnow gives a suspicious stew's random effect (two and
- * a bowl make stew); a Cometfish, from water near a fallen meteorite, cuts into Star Bait.
+ * a bowl make stew); a Cometfish, from water near a fallen meteorite, cuts into Star Bait. The Fish Fish is just a
+ * fish (and Josh, a villager, sells nothing else).
  * <li>Junk and treasure come up too: Rusty Scrap (tech scrap, or an iron nugget in a furnace), a Tackle Box (parts and
  * bait) and a Sunken Coin Pouch (emeralds and gold, or more emeralds from a banker).
  * </ul>
@@ -151,6 +152,10 @@ public final class Fishes {
 	public static final Item COMETFISH = special("cometfish", 3, 0.4f, Rarity.UNCOMMON,
 			effects(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600), new MobEffectInstance(MobEffects.SPEED, 300)), player -> {
 			}, "tooltip.tomyen.cometfish");
+	/** The platonic fish, in rivers, lakes and the sea everywhere ordinary: a cod's food, cooked or not. It's a fish. */
+	public static final Item FISH_FISH = special("fish_fish", 2, 0.1f, Rarity.COMMON, Consumables.DEFAULT_FOOD, player -> {
+	}, "tooltip.tomyen.fish_fish");
+	public static final Item COOKED_FISH_FISH = food("cooked_fish_fish", 5, 0.6f);
 
 	// --- Not fish -------------------------------------------------------------------------------------------------
 	public static final Item OLD_BOOT = register("old_boot", Item::new, new Item.Properties().stacksTo(16));
@@ -174,7 +179,7 @@ public final class Fishes {
 			MAGMA_EEL, EMBER_PUFFER, GLOWING_MUTANT_CARP, STARLIT_GAR, ABYSSAL_SQUIDLING, GHOULFISH,
 			LARGEMOUTH_BASS, COOKED_LARGEMOUTH_BASS, BLUEGILL, COOKED_BLUEGILL, YELLOW_PERCH, COOKED_YELLOW_PERCH, WALLEYE, COOKED_WALLEYE,
 			CRAPPIE, COOKED_CRAPPIE, STURGEON, STURGEON_STEAK, RED_SNAPPER, COOKED_RED_SNAPPER, FLOUNDER, COOKED_FLOUNDER, TUNA, TUNA_STEAK,
-			MAHI_MAHI, COOKED_MAHI_MAHI, BARRACUDA, COOKED_BARRACUDA, MOOSHROOM_MINNOW, COMETFISH);
+			MAHI_MAHI, COOKED_MAHI_MAHI, BARRACUDA, COOKED_BARRACUDA, MOOSHROOM_MINNOW, COMETFISH, FISH_FISH, COOKED_FISH_FISH);
 
 	/** Experience in a Sculk Gulper's belly. */
 	private static final int GULPER_EXPERIENCE = 20;

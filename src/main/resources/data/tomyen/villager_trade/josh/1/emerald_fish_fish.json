@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "tomyen:fish_fish"
+  },
+  "max_uses": 16,
+  "reputation_discount": 0.05,
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 1
+  },
+  "xp": 2
+}
