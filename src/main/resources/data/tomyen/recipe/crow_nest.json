@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:stick",
+    "F": "tomyen:crow_feather",
+    "H": "minecraft:wheat"
+  },
+  "pattern": [
+    "# #",
+    "FHF",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:crow_nest"
+  }
+}

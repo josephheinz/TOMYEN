@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "loot=false": {
+      "model": "tomyen:block/crow_nest"
+    },
+    "loot=true": {
+      "model": "tomyen:block/crow_nest_loot"
+    }
+  }
+}

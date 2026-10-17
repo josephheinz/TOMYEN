@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "arrow",
+  "key": {
+    "#": "minecraft:stick",
+    "X": "minecraft:flint",
+    "Y": "tomyen:crow_feather"
+  },
+  "pattern": [
+    "X",
+    "#",
+    "Y"
+  ],
+  "result": {
+    "count": 6,
+    "id": "minecraft:arrow"
+  }
+}
