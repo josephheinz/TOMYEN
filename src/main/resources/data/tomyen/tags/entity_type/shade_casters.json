@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:skeleton",
+    "minecraft:stray",
+    "minecraft:bogged",
+    "minecraft:wither_skeleton",
+    "minecraft:blaze",
+    "minecraft:ghast",
+    "minecraft:witch",
+    "minecraft:evoker",
+    "minecraft:illusioner",
+    "minecraft:pillager",
+    "minecraft:breeze",
+    "minecraft:shulker",
+    "minecraft:guardian",
+    "tomyen:bog_hag"
+  ]
+}

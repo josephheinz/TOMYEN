@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:wither",
+    "minecraft:ender_dragon",
+    "minecraft:elder_guardian",
+    "minecraft:warden",
+    "tomyen:schnozzle",
+    "tomyen:giant_catfish"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "#tomyen:shade_bosses",
+    "tomyen:skullcrane_leader",
+    "tomyen:werewolf",
+    "tomyen:gnome_captain",
+    "tomyen:banshee",
+    "tomyen:bog_hag",
+    "minecraft:ravager",
+    "minecraft:evoker",
+    "minecraft:piglin_brute"
+  ]
+}

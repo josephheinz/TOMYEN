@@ -18,6 +18,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 
+import com.jheinz.tomyen.isle.shade.ShadeCommands;
+
 /**
  * {@code /isle}, for operators: looking into and steering the Isle of the Damned when testing it, or putting a lost
  * gravestone back.
@@ -29,6 +31,12 @@ import net.minecraft.world.phys.Vec3;
  * <li>{@code /isle arena [player]}: to the edge of their Revenant's arena (built if need be).
  * <li>{@code /isle sink [player]}: their hoard one depth deeper, as if they'd died on the Isle.
  * <li>{@code /isle gravestone [player]}: a new gravestone for their hoard where they stand (the old one crumbles).
+ * <li>{@code /isle souls}: what the Isle remembers (records, regions, bosses), the Soul Tide and its biggest types,
+ * the shades about now, and what recording a death costs.
+ * <li>{@code /isle souls clear}: forgets every record; {@code /isle shades clear}: dissolves every shade.
+ * <li>{@code /isle tide add <type> <count>}, {@code /isle tide clear}, {@code /isle tide wave [player]} (their next
+ * wave now).
+ * <li>{@code /isle survey [step]}: a map of the Isle's terrain from its generator, and each ring's share of land.
  * </ul>
  */
 final class IsleCommands {
@@ -50,6 +58,7 @@ final class IsleCommands {
 			root.then(withPlayer("arena", IsleCommands::arena));
 			root.then(withPlayer("sink", IsleCommands::sink));
 			root.then(withPlayer("gravestone", IsleCommands::gravestone));
+			ShadeCommands.register(root);
 			dispatcher.register(root);
 		});
 	}
