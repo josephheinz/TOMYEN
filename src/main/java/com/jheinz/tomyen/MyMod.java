@@ -58,6 +58,7 @@ import com.jheinz.tomyen.uranium.Uranium;
 import com.jheinz.tomyen.voidsteel.Voidsteel;
 import com.jheinz.tomyen.werewolf.Werewolves;
 import com.jheinz.tomyen.banana.Bananas;
+import com.jheinz.tomyen.banshee.Banshees;
 import com.jheinz.tomyen.station.ModMenus;
 import com.jheinz.tomyen.scarecrow.Scarecrows;
 import com.jheinz.tomyen.gnome.Gnomes;
@@ -130,6 +131,7 @@ public class MyMod implements ModInitializer {
 		Skullcranes.initialize();
 		CathodeWalkers.initialize();
 		Werewolves.initialize();
+		Banshees.initialize();
 		Bananas.initialize();
 		BigRedBoots.initialize();
 		TvHelmets.initialize();

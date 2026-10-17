@@ -2452,5 +2452,15 @@
   "subtitles.tomyen.gnome_thaw": "Gnome statue cracks",
   "subtitles.tomyen.gnome_shatter": "Gnome statue shatters",
   "subtitles.tomyen.gnome_captain_order": "Gnome Captain toots an order",
-  "subtitles.tomyen.gnome_rout": "Gnomes flee in disarray"
+  "subtitles.tomyen.gnome_rout": "Gnomes flee in disarray",
+  "entity.tomyen.banshee": "Banshee",
+  "item.tomyen.banshee_spawn_egg": "Banshee Spawn Egg",
+  "item.tomyen.ectoplasm": "Ectoplasm",
+  "subtitles.tomyen.banshee_ambient": "Banshee sobs",
+  "subtitles.tomyen.banshee_wail_windup": "Banshee draws breath",
+  "subtitles.tomyen.banshee_wail": "Banshee wails",
+  "subtitles.tomyen.banshee_touch": "Banshee's chill touch",
+  "subtitles.tomyen.banshee_hurt": "Banshee hurts",
+  "subtitles.tomyen.banshee_death": "Banshee fades",
+  "subtitles.tomyen.banshee_banished": "Banshee is banished"
 }

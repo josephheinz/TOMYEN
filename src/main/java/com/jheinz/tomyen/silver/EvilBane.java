@@ -56,7 +56,7 @@ public record EvilBane(float multiplier, boolean holy) {
 	public static float multiplier(Item round, Entity target) {
 		EvilBane bane = of(round);
 		if (bane != null && target instanceof Wary wary) {
-			wary.struckBySilver();
+			wary.struckBy(bane);
 		}
 		return bane != null && HolyLight.isEvil(target) ? bane.multiplier() : 1.0f;
 	}
@@ -77,6 +77,11 @@ public record EvilBane(float multiplier, boolean holy) {
 	public interface Wary {
 		/** A silver round is about to hit it; called just before its damage is dealt. */
 		void struckBySilver();
+
+		/** A round of this bane is about to hit it (holy or not, see {@link #holy}); by default, as any silver. */
+		default void struckBy(EvilBane bane) {
+			struckBySilver();
+		}
 	}
 
 	/** After a round of this item hits: holy silver sets an evil target alight. */
