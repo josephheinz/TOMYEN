@@ -2,6 +2,7 @@
 
 ## The Isle of the Damned
 - **Soul Wisps and Shade Hearts:** shades now drop Soul Wisps (plus a little Ectoplasm off echoes and bosses). Three wisps and a soul sand or soul soil make a Soul Charge, and a wisp works as a gravestone offering. Boss shades also drop a rare Shade Heart: offer it at your gravestone to draw your belongings up one depth before you go down.
+- **Shades look like the mobs they were.** They were all showing up as soul-fire orbs; now each one is a see-through, tinted ghost of its old mob.
 
 # TOMYEN 0.3.0: Corpse Run
 
