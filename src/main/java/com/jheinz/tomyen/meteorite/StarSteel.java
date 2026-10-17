@@ -11,8 +11,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -25,6 +23,7 @@ import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.tags.DamageTypeTags;
 
+import com.jheinz.tomyen.GearNightVision;
 import com.jheinz.tomyen.MyMod;
 
 /**
@@ -52,9 +51,6 @@ public final class StarSteel {
 	public static final float NIGHT_DAMAGE_TAKEN = 0.8f;
 
 	private static final int EFFECT_INTERVAL = 10;
-	/** Night Vision only flickers in its last 200 ticks, so it's topped up well before. */
-	private static final int NIGHT_VISION_DURATION = 300;
-	private static final int NIGHT_VISION_TOP_UP = 240;
 	private static final EquipmentSlot[] ARMOR = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
 	private StarSteel() {
@@ -100,6 +96,7 @@ public final class StarSteel {
 	}
 
 	public static void initialize() {
+		GearNightVision.source(StarSteel::wearingFullSet, true);
 		ServerTickEvents.END_LEVEL_TICK.register(level -> {
 			if (level.getGameTime() % EFFECT_INTERVAL != 0) {
 				return;
@@ -111,17 +108,8 @@ public final class StarSteel {
 	}
 
 	private static void tick(ServerLevel level, ServerPlayer player) {
-		MobEffectInstance vision = player.getEffect(MobEffects.NIGHT_VISION);
-		// The set's own Night Vision is ambient and never longer than ours; a potion's isn't.
-		boolean ours = vision != null && vision.isAmbient() && vision.getDuration() <= NIGHT_VISION_DURATION;
 		if (!wearingFullSet(player)) {
-			if (ours) {
-				player.removeEffect(MobEffects.NIGHT_VISION);
-			}
 			return;
-		}
-		if (vision == null || ours && vision.getDuration() < NIGHT_VISION_TOP_UP) {
-			player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, NIGHT_VISION_DURATION, 0, true, false, true));
 		}
 		if (!player.isInvisible()) {
 			level.sendParticles(ParticleTypes.GLOW, player.getX(), player.getY() + player.getBbHeight() * 0.5, player.getZ(), 1,

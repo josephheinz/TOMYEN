@@ -44,6 +44,7 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.phys.Vec3;
 
+import com.jheinz.tomyen.GearNightVision;
 import com.jheinz.tomyen.MyMod;
 import com.jheinz.tomyen.cathode.CathodeWalkers;
 import com.jheinz.tomyen.exoskeleton.ExoSockets;
@@ -57,7 +58,7 @@ import com.jheinz.tomyen.exoskeleton.ExoSockets;
  * and point; tap it for the next), kept in the {@link #SCREEN} attachment, which is synced to everyone and saved. The
  * screen shows static while you're hurt, and colour bars once you've stood idle for {@value #IDLE_MILLIS} ms.
  * <li><b>Static night vision.</b> The TV Night Vision key switches it on and off with a click: night vision (no
- * particles, refreshed each second and dropped when you take the set off), and a faint scanline and static overlay
+ * particles, given by GearNightVision and dropped when you take the set off), and a faint scanline and static overlay
  * over your view.
  * <li><b>Heavy.</b> {@value #SPEED_PENALTY} slower.
  * <li><b>Not waterproof</b>, like the Cathode Walker it came out of. With its screen under water it shorts out: a zap
@@ -75,8 +76,6 @@ public final class TvHelmets {
 	public static final int ENCHANTABILITY = 10;
 	/** Fraction of walking speed lost to the weight. */
 	public static final double SPEED_PENALTY = 0.05;
-	/** Night vision's duration, refreshed while it's on; over 200 so the screen never flickers as it runs low. */
-	private static final int VISION_TICKS = 260;
 	/** Ticks a shorted set takes to dry out once its screen is out of the water. */
 	public static final int DRY_TICKS = 80;
 	/** How long without input before the screen drifts to colour bars. */
@@ -161,6 +160,7 @@ public final class TvHelmets {
 				tick(player);
 			}
 		});
+		GearNightVision.source(player -> isWearing(player) && screen(player).seeing(), true);
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COMBAT).register(output -> output.insertAfter(Items.TURTLE_HELMET, TV_HELMET));
 	}
 
@@ -199,16 +199,12 @@ public final class TvHelmets {
 		player.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), TOGGLE, SoundSource.PLAYERS, 0.7f, on ? 1.2f : 0.8f);
 		player.sendOverlayMessage(Component.translatable(on ? "tv_helmet.tomyen.night_vision.on" : "tv_helmet.tomyen.night_vision.off")
 				.withStyle(on ? ChatFormatting.AQUA : ChatFormatting.GRAY));
-		if (!on) {
-			dropNightVision(player);
-		}
 	}
 
-	/** Every tick, for every player: the screen's mode, shorting out, and night vision. */
+	/** Every tick, for every player: the screen's mode and shorting out. (Night vision follows the mode, see GearNightVision.) */
 	private static void tick(ServerPlayer player) {
 		TvScreen screen = screen(player);
 		if (!isWearing(player)) {
-			dropNightVision(player);
 			if (screen.mode() != TvScreen.NORMAL) {
 				player.setAttached(SCREEN, screen.withMode(TvScreen.NORMAL));
 			}
@@ -243,19 +239,10 @@ public final class TvHelmets {
 			player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 15, 0, true, false, false));
 			level.playSound(null, player.getX(), player.getEyeY(), player.getZ(), CathodeWalkers.SHORT, SoundSource.PLAYERS, 0.3f, 1.4f);
 		}
-		if (screen.seeing()) {
-			MobEffectInstance vision = player.getEffect(MobEffects.NIGHT_VISION);
-			if (vision == null || vision.isAmbient() && vision.getDuration() < VISION_TICKS - 20) {
-				player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, VISION_TICKS, 0, true, false, true));
-			}
-		} else {
-			dropNightVision(player);
-		}
 	}
 
 	/** Water got in: a zap, a moment's blindness, sparks and a fizz. */
 	private static void shortOut(ServerLevel level, ServerPlayer player) {
-		dropNightVision(player);
 		player.hurtServer(level, player.damageSources().source(CathodeWalkers.SHORT_CIRCUIT), SHORT_DAMAGE);
 		player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, SHORT_BLINDNESS, 0, true, false, false));
 		Vec3 eye = player.getEyePosition();
@@ -263,13 +250,5 @@ public final class TvHelmets {
 		level.sendParticles(ParticleTypes.BUBBLE, eye.x, eye.y, eye.z, 10, 0.3, 0.3, 0.3, 0.05);
 		level.playSound(null, eye.x, eye.y, eye.z, CathodeWalkers.SHORT, SoundSource.PLAYERS, 1.0f, 1.0f);
 		player.sendOverlayMessage(Component.translatable("tv_helmet.tomyen.shorted").withStyle(ChatFormatting.YELLOW));
-	}
-
-	/** Takes away the set's own night vision (ambient, no longer than it gives), leaving any from a potion alone. */
-	private static void dropNightVision(ServerPlayer player) {
-		MobEffectInstance vision = player.getEffect(MobEffects.NIGHT_VISION);
-		if (vision != null && vision.isAmbient() && vision.getDuration() <= VISION_TICKS) {
-			player.removeEffect(MobEffects.NIGHT_VISION);
-		}
 	}
 }

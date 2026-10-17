@@ -20,6 +20,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 
+import com.jheinz.tomyen.GearNightVision;
 import com.jheinz.tomyen.ModDamageTypes;
 import com.jheinz.tomyen.ModEffects;
 import com.jheinz.tomyen.launcher.PG7Rocket;
@@ -28,7 +29,7 @@ import com.jheinz.tomyen.napalm.Napalm;
 /**
  * The server side of the passive modules. (ESP and x-ray only draw on the wearer's screen.)
  * <ul>
- * <li>Night vision: ambient and hidden, and kept above the 10 seconds where it starts to flicker.
+ * <li>Night vision: handed out by {@link GearNightVision}, with no icon.
  * <li>Bio-Monitor: bleeding runs out twice as fast (and does half damage, see BleedingEffect), and the wearer is
  * told which mobs within {@link #THREAT_RANGE} are hunting them so the HUD can point out the ones out of view.
  * <li>Recall: the wearer is told their last death and respawn point.
@@ -38,7 +39,6 @@ import com.jheinz.tomyen.napalm.Napalm;
  */
 public final class NeuralinkEffects {
 	private static final int INTERVAL = 20;
-	private static final int NIGHT_VISION_TICKS = 260;
 	private static final double THREAT_RANGE = 32.0;
 	private static final int THREAT_INTERVAL = 10;
 	private static final int RECALL_INTERVAL = 40;
@@ -52,6 +52,7 @@ public final class NeuralinkEffects {
 
 	public static void initialize() {
 		ServerTickEvents.END_SERVER_TICK.register(NeuralinkEffects::tick);
+		GearNightVision.source(player -> NeuralinkItem.isActive(player, NeuralinkModule.NIGHT_VISION), false);
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (!blocked && source.getEntity() instanceof ServerPlayer shooter
 					&& (ModDamageTypes.isBullet(source) || source.getDirectEntity() instanceof PG7Rocket || source.is(Napalm.NAPALM))
@@ -68,7 +69,6 @@ public final class NeuralinkEffects {
 	private static void tick(MinecraftServer server) {
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			if (server.getTickCount() % INTERVAL == 0) {
-				nightVision(player);
 				slowBleeding(player);
 			}
 			if (server.getTickCount() % THREAT_INTERVAL == 0) {
@@ -80,19 +80,6 @@ public final class NeuralinkEffects {
 			MindReader.tick(player);
 		}
 		HiveMind.tick(server);
-	}
-
-	private static void nightVision(ServerPlayer player) {
-		MobEffectInstance current = player.getEffect(MobEffects.NIGHT_VISION);
-		// A potion's night vision isn't ambient; leave that alone.
-		boolean ours = current != null && current.isAmbient() && current.getDuration() <= NIGHT_VISION_TICKS;
-		if (NeuralinkItem.isActive(player, NeuralinkModule.NIGHT_VISION)) {
-			if (current == null || ours) {
-				player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, NIGHT_VISION_TICKS, 0, true, false, false));
-			}
-		} else if (ours) {
-			player.removeEffect(MobEffects.NIGHT_VISION);
-		}
 	}
 
 	/** Takes an extra second off a bleed each second, so it runs out twice as fast. */

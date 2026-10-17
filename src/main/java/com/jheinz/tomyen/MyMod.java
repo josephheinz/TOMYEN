@@ -87,6 +87,7 @@ public class MyMod implements ModInitializer {
 		ModSounds.initialize();
 		ModParticles.initialize();
 		ModEffects.initialize();
+		GearNightVision.initialize();
 		ModItems.initialize();
 		ModCreativeTabs.initialize();
 		ModBlocks.initialize();
