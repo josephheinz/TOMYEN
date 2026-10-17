@@ -1,6 +1,7 @@
 {
   "values": [
     "#tomyen:holy_vulnerable",
-    "#minecraft:undead"
+    "#minecraft:undead",
+    "tomyen:grave_digger"
   ]
 }

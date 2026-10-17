@@ -1,0 +1,25 @@
+{
+  "values": [
+    "minecraft:obsidian",
+    "minecraft:crying_obsidian",
+    "minecraft:reinforced_deepslate",
+    "minecraft:bedrock",
+    "minecraft:barrier",
+    "minecraft:end_portal_frame",
+    "#minecraft:beacon_base_blocks",
+    "tomyen:steel_block",
+    "tomyen:silver_block",
+    "tomyen:holy_silver_block",
+    "tomyen:tungsten_block",
+    "tomyen:aluminium_block",
+    "tomyen:bloom_steel_block",
+    "tomyen:magmasteel_block",
+    "tomyen:soul_steel_block",
+    "tomyen:star_steel_block",
+    "tomyen:froststeel_block",
+    "tomyen:voidsteel_block",
+    "tomyen:raw_silver_block",
+    "tomyen:raw_tungsten_block",
+    "tomyen:raw_uranium_block"
+  ]
+}

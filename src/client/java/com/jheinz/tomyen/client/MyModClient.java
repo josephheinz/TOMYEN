@@ -87,6 +87,7 @@ import com.jheinz.tomyen.client.scrapbench.ScrapBenchClient;
 import com.jheinz.tomyen.client.sodajetpack.SodaJetpackClient;
 import com.jheinz.tomyen.client.tvhelmet.TvHelmetClient;
 import com.jheinz.tomyen.client.trombone.TromboneClient;
+import com.jheinz.tomyen.client.gravedigger.GraveDiggerClient;
 
 public class MyModClient implements ClientModInitializer {
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(MyMod.id("weapons"));
@@ -198,5 +199,6 @@ public class MyModClient implements ClientModInitializer {
 		LeafBlowerClient.initialize();
 		TromboneClient.initialize();
 		ShrimpClient.initialize();
+		GraveDiggerClient.initialize();
 	}
 }

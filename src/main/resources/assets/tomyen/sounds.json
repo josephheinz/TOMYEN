@@ -4441,5 +4441,164 @@
         "attenuation_distance": 48
       }
     ]
+  },
+  "grave_digger_ambient": {
+    "subtitle": "subtitles.tomyen.grave_digger_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:mob/zombie/say1",
+        "pitch": 0.72
+      },
+      {
+        "name": "minecraft:mob/zombie/say2",
+        "pitch": 0.72
+      },
+      {
+        "name": "minecraft:mob/zombie/say3",
+        "pitch": 0.72
+      }
+    ]
+  },
+  "grave_digger_hurt": {
+    "subtitle": "subtitles.tomyen.grave_digger_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/zombie/hurt1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/zombie/hurt2",
+        "pitch": 0.75
+      }
+    ]
+  },
+  "grave_digger_death": {
+    "subtitle": "subtitles.tomyen.grave_digger_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/zombie/death",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "grave_digger_step": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/husk/step1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/husk/step2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/husk/step3",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/husk/step4",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/husk/step5",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "grave_digger_dig": {
+    "subtitle": "subtitles.tomyen.grave_digger_dig",
+    "sounds": [
+      {
+        "name": "minecraft:item/shovel/flatten1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:item/shovel/flatten2",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:item/shovel/flatten3",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:item/shovel/flatten4",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:dig/gravel1",
+        "pitch": 0.7,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:dig/gravel2",
+        "pitch": 0.7,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:dig/gravel3",
+        "pitch": 0.7,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:dig/gravel4",
+        "pitch": 0.7,
+        "volume": 0.8
+      }
+    ]
+  },
+  "grave_digger_dig_muffled": {
+    "subtitle": "subtitles.tomyen.grave_digger_dig_muffled",
+    "sounds": [
+      {
+        "name": "minecraft:dig/gravel1",
+        "pitch": 0.45,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:dig/gravel2",
+        "pitch": 0.45,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:dig/gravel3",
+        "pitch": 0.45,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:dig/gravel4",
+        "pitch": 0.45,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:item/shovel/flatten1",
+        "pitch": 0.4,
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:item/shovel/flatten2",
+        "pitch": 0.4,
+        "volume": 0.45
+      }
+    ]
+  },
+  "grave_digger_clang": {
+    "subtitle": "subtitles.tomyen.grave_digger_clang",
+    "sounds": [
+      {
+        "name": "minecraft:mob/zombie/metal1",
+        "pitch": 1.25,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/zombie/metal2",
+        "pitch": 1.25,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/zombie/metal3",
+        "pitch": 1.25,
+        "volume": 0.7
+      }
+    ]
   }
 }
