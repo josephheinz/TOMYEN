@@ -75,6 +75,7 @@ import com.jheinz.tomyen.sodajetpack.SodaJetpacks;
 import com.jheinz.tomyen.tvhelmet.TvHelmets;
 import com.jheinz.tomyen.trombone.Trombones;
 import com.jheinz.tomyen.gravedigger.GraveDiggers;
+import com.jheinz.tomyen.isle.Isle;
 
 public class MyMod implements ModInitializer {
 	public static final String MOD_ID = "tomyen";
@@ -166,6 +167,7 @@ public class MyMod implements ModInitializer {
 		Mooses.initialize();
 		Crows.initialize();
 		GiantCatfishes.initialize();
+		Isle.initialize();
 		linkBlockItems();
 	}
 

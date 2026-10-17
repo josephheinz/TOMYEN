@@ -1,0 +1,57 @@
+{
+  "type": "tomyen:isle",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "tomyen:isle_shore",
+          "parameters": {
+            "temperature": [
+              -1.0,
+              0.2121
+            ],
+            "humidity": 0.0,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "depth": 0.0,
+            "weirdness": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "tomyen:isle_hollows",
+          "parameters": {
+            "temperature": [
+              0.2121,
+              1.0
+            ],
+            "humidity": 0.0,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "depth": 0.0,
+            "weirdness": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "tomyen:isle_abyss",
+          "parameters": {
+            "temperature": [
+              1.0,
+              2.0
+            ],
+            "humidity": 0.0,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "depth": 0.0,
+            "weirdness": 0.0,
+            "offset": 0.0
+          }
+        }
+      ]
+    },
+    "settings": "tomyen:isle"
+  }
+}

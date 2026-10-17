@@ -60,6 +60,7 @@ import com.jheinz.tomyen.client.fishgun.FishGunClient;
 import com.jheinz.tomyen.client.shrimp.ShrimpClient;
 import com.jheinz.tomyen.client.moose.MooseClient;
 import com.jheinz.tomyen.client.fishing.catfish.GiantCatfishClient;
+import com.jheinz.tomyen.client.isle.IsleClient;
 import com.jheinz.tomyen.client.leafblower.LeafBlowerClient;
 import com.jheinz.tomyen.client.fishing.fish.FishEntitiesClient;
 import com.jheinz.tomyen.client.gunsmith.GunsmithClient;
@@ -210,5 +211,6 @@ public class MyModClient implements ClientModInitializer {
 		MooseClient.initialize();
 		CrowClient.initialize();
 		GiantCatfishClient.initialize();
+		IsleClient.initialize();
 	}
 }

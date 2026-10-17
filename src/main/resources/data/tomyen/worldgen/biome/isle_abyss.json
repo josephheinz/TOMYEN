@@ -1,0 +1,56 @@
+{
+  "attributes": {
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:ash"
+          },
+          "probability": 0.008
+        },
+        {
+          "particle": {
+            "type": "minecraft:soul"
+          },
+          "probability": 0.0015
+        }
+      ],
+      "modifier": "append"
+    },
+    "minecraft:visual/fog_color": "#0c1214",
+    "minecraft:visual/fog_end_distance": 44.0,
+    "minecraft:visual/fog_start_distance": 0.0,
+    "minecraft:visual/sky_color": "#080c0e",
+    "minecraft:visual/water_fog_color": "#06090a"
+  },
+  "carvers": [],
+  "downfall": 0.0,
+  "effects": {
+    "foliage_color": "#5e6660",
+    "grass_color": "#646b63",
+    "water_color": "#06090a"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [
+      "tomyen:isle_arch_abyss",
+      "tomyen:isle_brazier_abyss"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [
+      "tomyen:isle_dead_trees_abyss",
+      "tomyen:isle_headstones_abyss",
+      "tomyen:isle_bones_abyss",
+      "minecraft:patch_dead_bush"
+    ],
+    []
+  ],
+  "has_precipitation": false,
+  "temperature": 0.3
+}

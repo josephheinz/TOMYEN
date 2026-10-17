@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "tomyen:ashen_stone",
+    "tomyen:ash_soil",
+    "tomyen:soul_moss",
+    "minecraft:soul_soil"
+  ]
+}

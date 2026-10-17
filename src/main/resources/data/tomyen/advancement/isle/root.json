@@ -1,0 +1,27 @@
+{
+  "criteria": {
+    "entered_isle": {
+      "conditions": {
+        "to": "tomyen:isle"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "background": "tomyen:gui/advancements/backgrounds/isle",
+    "description": {
+      "translate": "advancements.tomyen.isle.root.description"
+    },
+    "icon": {
+      "id": "tomyen:grave_stone_bricks"
+    },
+    "title": {
+      "translate": "advancements.tomyen.isle.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "entered_isle"
+    ]
+  ]
+}

@@ -5862,5 +5862,236 @@
         "volume": 1.4
       }
     ]
+  },
+  "isle_respects": {
+    "subtitle": "subtitles.tomyen.isle_respects",
+    "sounds": [
+      {
+        "name": "minecraft:block/respawn_anchor/charge1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/respawn_anchor/charge2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/respawn_anchor/charge3",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "isle_pulled_down": {
+    "subtitle": "subtitles.tomyen.isle_pulled_down",
+    "sounds": [
+      {
+        "name": "minecraft:mob/wither/spawn",
+        "pitch": 1.4
+      }
+    ]
+  },
+  "isle_offering": {
+    "subtitle": "subtitles.tomyen.isle_offering",
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/activate",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "isle_arrive": {
+    "subtitle": "subtitles.tomyen.isle_arrive",
+    "sounds": [
+      {
+        "name": "minecraft:block/respawn_anchor/set_spawn1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/respawn_anchor/set_spawn2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/respawn_anchor/set_spawn3",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "isle_return": {
+    "subtitle": "subtitles.tomyen.isle_return",
+    "sounds": [
+      {
+        "name": "minecraft:block/respawn_anchor/deplete1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:block/respawn_anchor/deplete2",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "isle_hoard_sinks": {
+    "subtitle": "subtitles.tomyen.isle_hoard_sinks",
+    "sounds": [
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/mood1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/mood2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/mood3",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/mood4",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "isle_loop": {
+    "sounds": [
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/ambience",
+        "pitch": 0.8,
+        "stream": true
+      }
+    ]
+  },
+  "isle_additions": {
+    "subtitle": "subtitles.tomyen.isle_additions",
+    "sounds": [
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper4",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper5",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper6",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper7",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper8",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "music.isle": {
+    "sounds": [
+      {
+        "name": "minecraft:music/game/nether/soulsand_valley/so_below",
+        "pitch": 0.85,
+        "stream": true
+      }
+    ]
+  },
+  "revenant_ambient": {
+    "subtitle": "subtitles.tomyen.revenant_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:mob/ghast/moan1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ghast/moan2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ghast/moan3",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ghast/moan4",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ghast/moan5",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ghast/moan6",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ghast/moan7",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "revenant_hurt": {
+    "subtitle": "subtitles.tomyen.revenant_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/wither/hurt1",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:mob/wither/hurt2",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:mob/wither/hurt3",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:mob/wither/hurt4",
+        "pitch": 1.5
+      }
+    ]
+  },
+  "revenant_death": {
+    "subtitle": "subtitles.tomyen.revenant_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/ghast/death",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "revenant_form": {
+    "subtitle": "subtitles.tomyen.revenant_form",
+    "sounds": [
+      {
+        "name": "minecraft:mob/evocation_illager/prepare_summon",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "soul_cache_open": {
+    "subtitle": "subtitles.tomyen.soul_cache_open",
+    "sounds": [
+      {
+        "name": "minecraft:block/vault/open_shutter",
+        "pitch": 0.7
+      }
+    ]
+  },
+  "return_rift_opens": {
+    "subtitle": "subtitles.tomyen.return_rift_opens",
+    "sounds": [
+      {
+        "name": "minecraft:block/end_portal/endportal",
+        "pitch": 1.4
+      }
+    ]
   }
 }

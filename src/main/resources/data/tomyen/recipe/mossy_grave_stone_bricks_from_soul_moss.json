@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "mossy_stone_bricks",
+  "ingredients": [
+    "tomyen:grave_stone_bricks",
+    "tomyen:soul_moss"
+  ],
+  "result": {
+    "id": "tomyen:mossy_grave_stone_bricks"
+  }
+}
