@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "tomyen:moose_antler"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tomyen:antler_handle"
+  }
+}

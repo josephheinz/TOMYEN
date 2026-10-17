@@ -2452,5 +2452,22 @@
   "subtitles.tomyen.gnome_thaw": "Gnome statue cracks",
   "subtitles.tomyen.gnome_shatter": "Gnome statue shatters",
   "subtitles.tomyen.gnome_captain_order": "Gnome Captain toots an order",
-  "subtitles.tomyen.gnome_rout": "Gnomes flee in disarray"
+  "subtitles.tomyen.gnome_rout": "Gnomes flee in disarray",
+  "entity.tomyen.moose": "Moose",
+  "item.tomyen.moose_spawn_egg": "Moose Spawn Egg",
+  "item.tomyen.moose_antler": "Moose Antler",
+  "item.tomyen.antler_handle": "Antler Handle",
+  "item.tomyen.antler_handle.fitted": "Antler handle: half again as durable",
+  "item.tomyen.antler_hook": "Antler Hook",
+  "item.tomyen.raw_venison": "Raw Venison",
+  "item.tomyen.cooked_venison": "Cooked Venison",
+  "subtitles.tomyen.moose_ambient": "Moose groans",
+  "subtitles.tomyen.moose_bellow": "Moose bellows",
+  "subtitles.tomyen.moose_hurt": "Moose hurts",
+  "subtitles.tomyen.moose_death": "Moose dies",
+  "subtitles.tomyen.moose_snort": "Moose snorts",
+  "subtitles.tomyen.moose_charge_hit": "Moose rams",
+  "subtitles.tomyen.moose_stomp": "Moose stomps",
+  "subtitles.tomyen.moose_eat": "Moose browses",
+  "subtitles.tomyen.moose_shed": "Moose sheds an antler"
 }

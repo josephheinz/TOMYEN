@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:moose_antler",
+    "minecraft:flint",
+    "minecraft:string"
+  ],
+  "result": {
+    "count": 3,
+    "id": "tomyen:antler_hook"
+  }
+}
