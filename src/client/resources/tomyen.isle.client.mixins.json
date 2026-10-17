@@ -3,7 +3,10 @@
 	"package": "com.jheinz.tomyen.client.isle.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"RevenantRendererDispatchMixin"
+		"RenderSetupAccessor",
+		"RenderTypeAccessor",
+		"RevenantRendererDispatchMixin",
+		"SoulTideFogMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

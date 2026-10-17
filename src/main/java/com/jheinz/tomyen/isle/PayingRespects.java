@@ -23,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
 import com.jheinz.tomyen.holy.CrucifixItem;
+import com.jheinz.tomyen.isle.shade.IsleShades;
 import com.jheinz.tomyen.silver.EvilBane;
 import com.jheinz.tomyen.starforge.Infusion;
 
@@ -37,7 +38,7 @@ import com.jheinz.tomyen.starforge.Infusion;
  * Charges, soul steel, anything Soulbound: see the {@code tomyen:isle_holy_offerings} and
  * {@code tomyen:isle_soul_offerings} item tags) takes them down at once, with Soul Ward for their first minute there.
  * It costs a little of the offering: one from a stack, a twentieth of a tool's durability, or a minute's cooldown for
- * a relic like the crucifix that's neither.
+ * a relic like the crucifix that's neither. A Shade Heart (from a boss's shade) also draws the hoard up a depth first.
  */
 public final class PayingRespects {
 	public static final int RESPECT_TICKS = 100;
@@ -121,6 +122,23 @@ public final class PayingRespects {
 			PAYING.remove(player.getUUID());
 			IsleDimension.sendIn(player, from, false);
 		}
+	}
+
+	/**
+	 * A Shade Heart offered at the stone draws the hoard up a depth (its Revenant re-forms up there) before the trip
+	 * down. False, and nothing spent, if it's already as shallow as it goes.
+	 */
+	private static boolean raiseHoard(ServerPlayer player, ServerLevel level) {
+		Hoard hoard = Hoards.get(level.getServer(), player.getUUID());
+		if (hoard == null || hoard.depth().index == 0) {
+			player.sendOverlayMessage(Component.translatable("message.tomyen.isle.heart_shallowest"));
+			return false;
+		}
+		IsleDepth up = IsleDepth.of(hoard.depth().index - 1);
+		RevenantManager.dismiss(level.getServer(), player.getUUID());
+		Hoards.put(level.getServer(), hoard.withDepth(up));
+		player.sendSystemMessage(Component.translatable("message.tomyen.isle.heart_raises", up.displayName()).withStyle(ChatFormatting.AQUA));
+		return true;
 	}
 
 	/** "Paying respects" over a bar of ten pips. */

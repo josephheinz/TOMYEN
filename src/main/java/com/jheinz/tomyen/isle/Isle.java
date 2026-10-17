@@ -41,6 +41,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
 import com.jheinz.tomyen.MyMod;
+import com.jheinz.tomyen.isle.shade.IsleShades;
 import com.jheinz.tomyen.isle.worldgen.IsleFeatures;
 
 /**
@@ -55,7 +56,7 @@ import com.jheinz.tomyen.isle.worldgen.IsleFeatures;
  * home, leaving the hoard where it is.
  *
  * <p>This class registers it all; {@link IsleDimension} is the dimension itself and {@link IsleEvents} the hooks later
- * passes (shades, the Soul Tide) build on.
+ * passes build on. Pass 2 (the world's dead come back as shades, and the Soul Tide) is {@link IsleShades}.
  */
 public final class Isle {
 	// --- Sounds (vanilla ones, re-pitched: see sounds.json) -----------------------------------------------------------
@@ -199,6 +200,7 @@ public final class Isle {
 		PayingRespects.initialize();
 		RevenantManager.initialize();
 		IsleCommands.initialize();
+		IsleShades.initialize();
 
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.NATURAL_BLOCKS).register(output -> {
 			output.insertAfter(Items.TUFF, ASHEN_STONE);

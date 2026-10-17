@@ -886,6 +886,9 @@ def d_clamp(x, lo, hi):
 # Hollows begin (175 blocks), 1 where the Abyss does (380). IsleDepth's radii match.
 ABYSS_R = 380.0
 HOLLOWS_T = round((175.0 / ABYSS_R) ** 2, 4)
+# How far (in t) each outer ring's terrain takes to come in: about 45 blocks at each edge.
+HOLLOWS_RAMP = round(((220.0 / ABYSS_R) ** 2) - HOLLOWS_T, 4)
+ABYSS_RAMP = round(((425.0 / ABYSS_R) ** 2) - 1.0, 4)
 
 
 def depth_t():
@@ -894,20 +897,47 @@ def depth_t():
                                                      ("point", [0, 0, 0])]))]), round(1.0 / ABYSS_R ** 2, 12))
 
 
+def d_unary(kind, x):
+    return OrderedDict([("type", f"minecraft:{kind}"), ("input", x)])
+
+
+def ridge(noise, xz):
+    """1 along the noise's zero line, falling away either side: sharp crests where the noise crosses zero."""
+    return d_add(1.0, d_mul(-2.0, d_unary("abs", d_noise(noise, xz))))
+
+
 def surface_height():
-    """The ground's height: islands from broad noise round a sea at 63, an island always at the origin (the arrival
-    shrine's), the ground sinking a few blocks through the Hollows and more in the Abyss, where narrow spires rise."""
+    """The ground's height (as density: it's the height, less y, plus a little 3D noise out past the Shore).
+
+    The Shore is as it was: islands from broad noise round a sea at 63, an island always at the origin (the arrival
+    shrine's). Past it the land rises rather than drowns. The Hollows ramp in over their first 45 blocks: the ground
+    stands four and a half blocks higher, with crests along a ridged noise up to six more, and craggy 3D noise up to
+    seven blocks either way gives it overhangs and broken edges. The Abyss ramps in over its first 45: on top of the
+    Hollows' rise, sharp ridgelines up to fourteen blocks, the old narrow spires, and deep trenches cut where the base
+    noise is low, ten blocks down, black water between black crags; its 3D noise is rougher still.
+    """
     t = depth_t()
     h = d_add(60.5, d_mul(16.0, d_noise("minecraft:surface", 0.45)))
     h = d_add(h, d_mul(3.0, d_noise("minecraft:surface_secondary", 1.2)))
     origin = d_clamp(d_add(1.0, d_mul(-(ABYSS_R / 46.0) ** 2, t)), 0.0, 1.0)
     h = d_add(h, d_mul(14.0, origin))
-    h = d_add(h, d_mul(-6.3, d_clamp(d_add(t, -HOLLOWS_T), 0.0, 0.79)))
-    h = d_add(h, d_mul(-4.0, d_clamp(d_add(t, -1.0), 0.0, 1.0)))
-    abyss = d_mul(3.33, d_clamp(d_add(t, -0.9), 0.0, 0.3))
+    hollows = d_clamp(d_mul(1.0 / HOLLOWS_RAMP, d_add(t, -HOLLOWS_T)), 0.0, 1.0)
+    abyss = d_clamp(d_mul(1.0 / ABYSS_RAMP, d_add(t, -1.0)), 0.0, 1.0)
+    h = d_add(h, d_mul(4.5, hollows))
+    h = d_add(h, d_mul(d_mul(10.0, hollows), d_clamp(d_add(ridge("minecraft:ridge", 1.4), -0.4), 0.0, 0.6)))
+    h = d_add(h, d_mul(abyss, d_mul(28.0, d_clamp(d_add(ridge("minecraft:surface_secondary", 0.9), -0.5), 0.0, 0.5))))
+    h = d_add(h, d_mul(d_mul(-20.0, abyss), d_clamp(d_add(-0.05, d_mul(-1.0, d_noise("minecraft:surface", 0.45))), 0.0, 0.5)))
+    spires_at = d_mul(3.33, d_clamp(d_add(t, -0.9), 0.0, 0.3))
     spires = d_mul(60.0, d_clamp(d_add(d_noise("minecraft:surface_secondary", 3.0), -0.5), 0.0, 0.35))
-    h = d_add(h, d_mul(abyss, spires))
-    return OrderedDict([("type", "minecraft:cache"), ("input", h)])
+    h = d_add(h, d_mul(spires_at, spires))
+    return OrderedDict([("type", "minecraft:cache"), ("input", h)]), hollows, abyss
+
+
+def crags(hollows, abyss):
+    """3D roughness, out past the Shore only: up to 7 blocks of it in the Hollows, 11 in the Abyss."""
+    strength = d_add(d_mul(7.0, hollows), d_mul(4.0, abyss))
+    noise = d_add(d_noise("minecraft:cave_cheese", 1.6, 2.2), d_mul(0.5, d_noise("minecraft:surface_secondary", 4.0, 4.0)))
+    return OrderedDict([("type", "minecraft:interpolated"), ("cell_size_xz", 4), ("cell_size_y", 4), ("input", d_mul(strength, noise))])
 
 
 def material_rule():
@@ -923,28 +953,36 @@ def material_rule():
     def patches(noise, lo, hi=1.0):
         return OrderedDict([("type", "minecraft:noise_threshold"), ("max_threshold", hi), ("min_threshold", lo), ("noise", noise)])
 
+    # The Hollows go darker underfoot, more moss than ash; the Abyss is soul soil and moss, and its cliffs (anything
+    # steep) bare black basalt.
     top = OrderedDict([("type", "minecraft:sequence"), ("sequence", [
-        when(biome("isle_hollows"), when(patches("minecraft:surface", 0.12), block("tomyen:soul_moss"))),
-        when(biome("isle_abyss"), when(patches("minecraft:surface", 0.25), block("minecraft:soul_soil"))),
-        when(biome("isle_abyss"), when(patches("minecraft:patch", 0.3), block("tomyen:soul_moss"))),
+        when(biome("isle_abyss"), when({"type": "minecraft:steep"}, block("minecraft:smooth_basalt"))),
+        when(biome("isle_hollows"), when(patches("minecraft:surface", -0.05), block("tomyen:soul_moss"))),
+        when(biome("isle_abyss"), when(patches("minecraft:surface", 0.05), block("minecraft:soul_soil"))),
+        when(biome("isle_abyss"), when(patches("minecraft:patch", 0.2), block("tomyen:soul_moss"))),
+        block("tomyen:ash_soil")])])
+    under = OrderedDict([("type", "minecraft:sequence"), ("sequence", [
+        when(biome("isle_abyss"), when({"type": "minecraft:steep"}, block("minecraft:smooth_basalt"))),
         block("tomyen:ash_soil")])])
     return OrderedDict([("type", "minecraft:sequence"), ("sequence", [
         "minecraft:bedrock_floor",
         when("minecraft:on_floor", top),
-        when("minecraft:under_floor", block("tomyen:ash_soil"))])])
+        when("minecraft:under_floor", under)])])
 
 
 def noise_settings():
     y = OrderedDict([("type", "minecraft:gradient"), ("axis", "y"), ("from_coordinate", 0), ("to_coordinate", 256),
                      ("from_value", 0.0), ("to_value", 256.0)])
     t = d_clamp(depth_t(), 0.0, 2.0)
+    height, hollows, abyss = surface_height()
+    final_density = d_add(OrderedDict([("type", "minecraft:sub"), ("left", height), ("right", y)]), crags(hollows, abyss))
     return OrderedDict([
         ("default_block", "tomyen:ashen_stone"), ("default_fluid", "minecraft:water"), ("disable_mob_generation", True),
         ("legacy_random_source", False), ("material_rule", material_rule()),
         ("noise", OrderedDict([("height", 256), ("min_y", 0)])),
         ("noise_router", OrderedDict([
             ("chunk_surface_level", 0.0), ("continents", 0.0), ("depth", 0.0), ("erosion", 0.0),
-            ("final_density", OrderedDict([("type", "minecraft:sub"), ("left", surface_height()), ("right", y)])),
+            ("final_density", final_density),
             ("ridges", 0.0), ("temperature", t), ("vegetation", d_noise("minecraft:vegetation", 1.5))])),
         ("sea_level", 63), ("spawn_target", [])])
 
@@ -991,13 +1029,14 @@ def dimension_type():
 
 
 DEPTHS = [
-    # name, fog colour, fog start, fog end, sky, water, particles, features (dead trees, headstones, bones, arches, braziers)
+    # name, fog colour, fog start, fog end, sky, water, particles, features (dead trees, headstones, bones, arches, braziers,
+    # soul fire vents), soul wisps (weight, fewest, most in a group)
     ("isle_shore", "#2b3439", 10.0, 112.0, "#1d272c", "#141a1d",
-     [("minecraft:ash", 0.004), ("minecraft:white_ash", 0.002)], (2, 2, 3, 14, 12)),
+     [("minecraft:ash", 0.004), ("minecraft:white_ash", 0.002)], (2, 2, 3, 14, 12, 0), (6, 1, 2)),
     ("isle_hollows", "#1b2529", 4.0, 72.0, "#131b1f", "#0e1315",
-     [("minecraft:ash", 0.006), ("minecraft:white_ash", 0.002), ("minecraft:soul", 0.0006)], (3, 3, 2, 9, 7)),
+     [("minecraft:ash", 0.006), ("minecraft:white_ash", 0.002), ("minecraft:soul", 0.0006)], (3, 3, 2, 9, 7, 0), (10, 1, 3)),
     ("isle_abyss", "#0c1214", 0.0, 44.0, "#080c0e", "#06090a",
-     [("minecraft:ash", 0.008), ("minecraft:soul", 0.0015)], (2, 4, 1, 6, 5)),
+     [("minecraft:ash", 0.008), ("minecraft:soul", 0.0015)], (2, 4, 1, 6, 5, 2), (8, 1, 2)),
 ]
 
 
@@ -1018,10 +1057,10 @@ def write_world():
     write(os.path.join(root, "dimension", "isle.json"), dimension())
     write(os.path.join(root, "dimension_type", "isle.json"), dimension_type())
     write(os.path.join(root, "worldgen", "noise_settings", "isle.json"), noise_settings())
-    for kind in ("dead_tree", "headstones", "bones", "arch", "brazier"):
+    for kind in ("dead_tree", "headstones", "bones", "arch", "brazier", "soul_fire"):
         write(os.path.join(root, "worldgen", "feature", f"isle_{kind}.json"),
               OrderedDict([("type", "tomyen:isle_ruin"), ("kind", kind)]))
-    for name, fog, start, end, sky, water, particles, (trees, stones, bones, arch, brazier) in DEPTHS:
+    for name, fog, start, end, sky, water, particles, (trees, stones, bones, arch, brazier, vents), wisps in DEPTHS:
         depth = name[5:]
         placed(f"isle_dead_trees_{depth}", "tomyen:isle_dead_tree", count=trees)
         placed(f"isle_headstones_{depth}", "tomyen:isle_headstones", count=stones)
@@ -1032,8 +1071,17 @@ def write_world():
         features[4] = [f"tomyen:isle_arch_{depth}", f"tomyen:isle_brazier_{depth}"]
         features[9] = [f"tomyen:isle_dead_trees_{depth}", f"tomyen:isle_headstones_{depth}", f"tomyen:isle_bones_{depth}",
                        "minecraft:patch_dead_bush"]
+        if vents:
+            placed(f"isle_soul_fire_{depth}", "tomyen:isle_soul_fire", count=vents)
+            features[9].append(f"tomyen:isle_soul_fire_{depth}")
+        weight, fewest, most = wisps
+        spawns = OrderedDict([("argument", OrderedDict([("spawn_costs", {}), ("spawns_by_category", {"ambient": [OrderedDict([
+            ("type", "tomyen:soul_wisp"),
+            ("count", OrderedDict([("type", "minecraft:uniform"), ("max_inclusive", most), ("min_inclusive", fewest)])),
+            ("weight", weight)])]})])), ("modifier", "overlay")])
         biome = OrderedDict([
             ("attributes", OrderedDict([
+                ("minecraft:gameplay/natural_mob_spawns", spawns),
                 ("minecraft:visual/ambient_particles", OrderedDict([
                     ("argument", [OrderedDict([("particle", {"type": p}), ("probability", pr)]) for p, pr in particles]),
                     ("modifier", "append")])),

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "#tomyen:machines",
+    "tomyen:shade",
+    "tomyen:soul_wisp",
+    "tomyen:revenant"
+  ]
+}

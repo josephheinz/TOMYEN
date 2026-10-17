@@ -1,5 +1,24 @@
 {
   "attributes": {
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "ambient": [
+            {
+              "type": "tomyen:soul_wisp",
+              "count": {
+                "type": "minecraft:uniform",
+                "max_inclusive": 2,
+                "min_inclusive": 1
+              },
+              "weight": 8
+            }
+          ]
+        }
+      },
+      "modifier": "overlay"
+    },
     "minecraft:visual/ambient_particles": {
       "argument": [
         {
@@ -47,7 +66,8 @@
       "tomyen:isle_dead_trees_abyss",
       "tomyen:isle_headstones_abyss",
       "tomyen:isle_bones_abyss",
-      "minecraft:patch_dead_bush"
+      "minecraft:patch_dead_bush",
+      "tomyen:isle_soul_fire_abyss"
     ],
     []
   ],
