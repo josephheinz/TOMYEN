@@ -4071,5 +4071,241 @@
         "pitch": 1.25
       }
     ]
+  },
+  "gnome_ambient": {
+    "subtitle": "subtitles.tomyen.gnome_ambient",
+    "sounds": [
+      {
+        "name": "minecraft:mob/villager/idle1",
+        "pitch": 1.9,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/villager/idle2",
+        "pitch": 1.9,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/villager/idle3",
+        "pitch": 1.9,
+        "volume": 0.6
+      }
+    ]
+  },
+  "gnome_hurt": {
+    "subtitle": "subtitles.tomyen.gnome_hurt",
+    "sounds": [
+      {
+        "name": "minecraft:mob/villager/hit1",
+        "pitch": 1.9,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/villager/hit2",
+        "pitch": 1.9,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/villager/hit3",
+        "pitch": 1.9,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/villager/hit4",
+        "pitch": 1.9,
+        "volume": 0.7
+      }
+    ]
+  },
+  "gnome_death": {
+    "subtitle": "subtitles.tomyen.gnome_death",
+    "sounds": [
+      {
+        "name": "minecraft:mob/villager/death",
+        "pitch": 2.0,
+        "volume": 0.8
+      }
+    ]
+  },
+  "gnome_giggle": {
+    "subtitle": "subtitles.tomyen.gnome_giggle",
+    "sounds": [
+      {
+        "name": "minecraft:mob/villager/yes1",
+        "pitch": 2.0,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/villager/yes2",
+        "pitch": 2.0,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:mob/villager/yes3",
+        "pitch": 2.0,
+        "volume": 0.7
+      }
+    ]
+  },
+  "gnome_scatter": {
+    "subtitle": "subtitles.tomyen.gnome_scatter",
+    "sounds": [
+      {
+        "name": "minecraft:mob/villager/no1",
+        "pitch": 2.0,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/villager/no2",
+        "pitch": 2.0,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:mob/villager/no3",
+        "pitch": 2.0,
+        "volume": 0.8
+      }
+    ]
+  },
+  "gnome_poke": {
+    "subtitle": "subtitles.tomyen.gnome_poke",
+    "sounds": [
+      {
+        "name": "minecraft:item/trident/pierce1",
+        "pitch": 1.8,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:item/trident/pierce2",
+        "pitch": 1.8,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:item/trident/pierce3",
+        "pitch": 1.8,
+        "volume": 0.5
+      }
+    ]
+  },
+  "gnome_step": {
+    "sounds": [
+      {
+        "name": "minecraft:note/hat",
+        "pitch": 1.6,
+        "volume": 0.18
+      }
+    ]
+  },
+  "gnome_freeze": {
+    "subtitle": "subtitles.tomyen.gnome_freeze",
+    "sounds": [
+      {
+        "name": "minecraft:block/decorated_pot/insert1",
+        "pitch": 1.3,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:block/decorated_pot/insert2",
+        "pitch": 1.3,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:block/decorated_pot/insert3",
+        "pitch": 1.3,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:block/decorated_pot/insert4",
+        "pitch": 1.3,
+        "volume": 0.9
+      }
+    ]
+  },
+  "gnome_thaw": {
+    "subtitle": "subtitles.tomyen.gnome_thaw",
+    "sounds": [
+      {
+        "name": "minecraft:block/calcite/break1",
+        "pitch": 1.5,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/calcite/break2",
+        "pitch": 1.5,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/calcite/break3",
+        "pitch": 1.5,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/calcite/break4",
+        "pitch": 1.5,
+        "volume": 0.8
+      }
+    ]
+  },
+  "gnome_shatter": {
+    "subtitle": "subtitles.tomyen.gnome_shatter",
+    "sounds": [
+      {
+        "name": "minecraft:block/decorated_pot/shatter1",
+        "pitch": 1.25
+      },
+      {
+        "name": "minecraft:block/decorated_pot/shatter2",
+        "pitch": 1.25
+      },
+      {
+        "name": "minecraft:block/decorated_pot/shatter3",
+        "pitch": 1.25
+      },
+      {
+        "name": "minecraft:block/decorated_pot/shatter4",
+        "pitch": 1.25
+      },
+      {
+        "name": "minecraft:block/decorated_pot/shatter5",
+        "pitch": 1.25
+      }
+    ]
+  },
+  "gnome_captain_order": {
+    "subtitle": "subtitles.tomyen.gnome_captain_order",
+    "sounds": [
+      {
+        "name": "minecraft:note/flute",
+        "pitch": 1.35,
+        "volume": 0.9,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "gnome_captain_drum": {
+    "sounds": [
+      {
+        "name": "minecraft:note/snare",
+        "pitch": 1.5,
+        "volume": 0.35
+      }
+    ]
+  },
+  "gnome_rout": {
+    "subtitle": "subtitles.tomyen.gnome_rout",
+    "sounds": [
+      {
+        "name": "minecraft:mob/villager/no1",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:mob/villager/no2",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:mob/villager/no3",
+        "pitch": 1.6
+      }
+    ]
   }
 }

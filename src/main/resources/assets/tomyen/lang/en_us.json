@@ -2436,5 +2436,21 @@
   "subtitles.tomyen.shrimp_cock": "Shrimp cocks its pistol",
   "subtitles.tomyen.shrimp_reload_round": "Shrimp loads a round",
   "subtitles.tomyen.shrimp_reload_rack": "Shrimp racks its pistol",
-  "subtitles.tomyen.shrimp_pistol_shot": "Shrimp pistol fires"
+  "subtitles.tomyen.shrimp_pistol_shot": "Shrimp pistol fires",
+  "entity.tomyen.gnome": "Gnome",
+  "entity.tomyen.gnome_captain": "Gnome Captain",
+  "item.tomyen.gnome_spawn_egg": "Gnome Spawn Egg",
+  "item.tomyen.gnome_captain_spawn_egg": "Gnome Captain Spawn Egg",
+  "block.tomyen.garden_gnome": "Garden Gnome",
+  "subtitles.tomyen.gnome_ambient": "Gnome mutters",
+  "subtitles.tomyen.gnome_hurt": "Gnome hurts",
+  "subtitles.tomyen.gnome_death": "Gnome dies",
+  "subtitles.tomyen.gnome_giggle": "Gnome giggles",
+  "subtitles.tomyen.gnome_scatter": "Gnomes scatter",
+  "subtitles.tomyen.gnome_poke": "Gnome pokes",
+  "subtitles.tomyen.gnome_freeze": "Gnome turns to ceramic",
+  "subtitles.tomyen.gnome_thaw": "Gnome statue cracks",
+  "subtitles.tomyen.gnome_shatter": "Gnome statue shatters",
+  "subtitles.tomyen.gnome_captain_order": "Gnome Captain toots an order",
+  "subtitles.tomyen.gnome_rout": "Gnomes flee in disarray"
 }

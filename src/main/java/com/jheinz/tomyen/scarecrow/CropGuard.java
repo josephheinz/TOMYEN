@@ -9,6 +9,7 @@ import net.minecraft.world.phys.AABB;
  * <ul>
  * <li>Mobs landing on farmland don't trample it back to dirt (players still can): FarmlandBlockScarecrowMixin.
  * <li>Rabbits don't go raiding carrots there: RabbitRaidGardenScarecrowMixin.
+ * <li>Gnome raiding parties leave the farm alone: {@link #scaresGnomes}.
  * </ul>
  * <b>Crow Murder hook:</b> when crows arrive (the backlog's Crow Murder: flocks that steal crops and shiny items), their
  * crop-raiding goal should skip any target where {@link #scaresCrows} is true, and a flock that's already landed in
@@ -32,6 +33,14 @@ public final class CropGuard {
 	 * guarded area; a crow-specific twist (a wider radius, or a pumpkin-head's glow working at night) goes here.
 	 */
 	public static boolean scaresCrows(Level level, BlockPos pos) {
+		return isGuarded(level, pos);
+	}
+
+	/**
+	 * Whether a gnome raiding party keeps off the crops at this spot: they never pick a guarded farm, pull up a guarded
+	 * crop, or stay on one once a scarecrow goes up (see the gnome package's CropRaids).
+	 */
+	public static boolean scaresGnomes(Level level, BlockPos pos) {
 		return isGuarded(level, pos);
 	}
 }
