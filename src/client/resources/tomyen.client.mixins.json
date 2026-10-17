@@ -45,6 +45,7 @@
 		"HumanoidMobRendererExoSocketsMixin",
 		"LivingEntityRendererExoSocketsMixin",
 		"WingsLayerExoSocketsMixin",
+		"EntityRendererAstralSightMixin",
 		"WingsLayerDragonscaleMixin",
 		"ItemLayerRenderStateInvoker",
 		"ItemStackRenderStateAccessor",

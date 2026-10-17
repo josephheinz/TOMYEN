@@ -78,6 +78,7 @@ import com.jheinz.tomyen.trombone.Trombones;
 import com.jheinz.tomyen.gravedigger.GraveDiggers;
 import com.jheinz.tomyen.fusion.Fusions;
 import com.jheinz.tomyen.isle.Isle;
+import com.jheinz.tomyen.fusion.gear.FusionGear;
 
 public class MyMod implements ModInitializer {
 	public static final String MOD_ID = "tomyen";
@@ -173,6 +174,7 @@ public class MyMod implements ModInitializer {
 		Fusions.initialize();
 		Isle.initialize();
 		com.jheinz.tomyen.fusion.melee.MeleeFusions.initialize();
+		FusionGear.initialize();
 		linkBlockItems();
 	}
 

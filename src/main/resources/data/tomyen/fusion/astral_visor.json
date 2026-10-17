@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:tv_helmet",
+    "tomyen:starlight_lens"
+  ],
+  "result": "tomyen:astral_visor",
+  "station": "reactor",
+  "tier": 1
+}

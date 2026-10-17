@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:ectoplasm",
+    "tomyen:holy_silver_chestplate"
+  ],
+  "result": "tomyen:phantasmal_chestplate",
+  "station": "reactor",
+  "tier": 1
+}

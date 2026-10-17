@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "tomyen:item/revenant_mail_plated_level_1"
+  }
+}
