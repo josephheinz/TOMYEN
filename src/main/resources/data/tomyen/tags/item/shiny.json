@@ -1,0 +1,36 @@
+{
+  "values": [
+    "minecraft:gold_ingot",
+    "minecraft:gold_nugget",
+    "minecraft:iron_ingot",
+    "minecraft:iron_nugget",
+    "minecraft:copper_ingot",
+    "minecraft:copper_nugget",
+    "minecraft:netherite_ingot",
+    "minecraft:emerald",
+    "minecraft:diamond",
+    "minecraft:amethyst_shard",
+    "tomyen:silver_ingot",
+    "tomyen:silver_nugget",
+    "tomyen:holy_silver_ingot",
+    "tomyen:holy_silver_nugget",
+    "tomyen:fae_silver_ingot",
+    "tomyen:sunken_coin_pouch",
+    "tomyen:steel_ingot",
+    "tomyen:tungsten_ingot",
+    "tomyen:tungsten_nugget",
+    "tomyen:aluminium_ingot",
+    "tomyen:duralumin_ingot",
+    "tomyen:meteoric_iron_ingot",
+    "tomyen:star_steel_ingot",
+    "tomyen:star_crystal_shard",
+    {
+      "id": "#c:ingots",
+      "required": false
+    },
+    {
+      "id": "#c:nuggets",
+      "required": false
+    }
+  ]
+}

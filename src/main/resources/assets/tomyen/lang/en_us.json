@@ -2530,5 +2530,20 @@
   "subtitles.tomyen.moose_charge_hit": "Moose rams",
   "subtitles.tomyen.moose_stomp": "Moose stomps",
   "subtitles.tomyen.moose_eat": "Moose browses",
-  "subtitles.tomyen.moose_shed": "Moose sheds an antler"
+  "subtitles.tomyen.moose_shed": "Moose sheds an antler",
+  "entity.tomyen.crow": "Crow",
+  "entity.tomyen.crow.snatched": "A crow snatched your %s!",
+  "entity.tomyen.crow.defend": "The crows are defending their nest!",
+  "item.tomyen.crow_spawn_egg": "Crow Spawn Egg",
+  "item.tomyen.crow_feather": "Crow Feather",
+  "item.tomyen.crow_fly": "Crow Fly",
+  "block.tomyen.crow_nest": "Crow Nest",
+  "container.tomyen.crow_nest": "Crow Nest",
+  "subtitles.tomyen.crow_caw": "Crow caws",
+  "subtitles.tomyen.crow_alarm": "Crows scatter, cawing",
+  "subtitles.tomyen.crow_hurt": "Crow hurts",
+  "subtitles.tomyen.crow_death": "Crow dies",
+  "subtitles.tomyen.crow_flap": "Crow takes off",
+  "subtitles.tomyen.crow_snatch": "Crow snatches something",
+  "subtitles.tomyen.crow_nest_rustle": "Crow nest rustles"
 }

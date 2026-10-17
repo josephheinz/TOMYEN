@@ -65,6 +65,7 @@ import com.jheinz.tomyen.banshee.Banshees;
 import com.jheinz.tomyen.station.ModMenus;
 import com.jheinz.tomyen.scarecrow.Scarecrows;
 import com.jheinz.tomyen.gnome.Gnomes;
+import com.jheinz.tomyen.crow.Crows;
 import com.jheinz.tomyen.survival.Survival;
 import com.jheinz.tomyen.scrapbench.ScrapBench;
 import com.jheinz.tomyen.blueprint.Blueprints;
@@ -162,6 +163,7 @@ public class MyMod implements ModInitializer {
 		GraveDiggers.initialize();
 		Boars.initialize();
 		Mooses.initialize();
+		Crows.initialize();
 		linkBlockItems();
 	}
 

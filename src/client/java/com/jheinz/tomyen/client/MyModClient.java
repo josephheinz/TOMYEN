@@ -26,6 +26,7 @@ import com.jheinz.tomyen.ModParticles;
 import com.jheinz.tomyen.MyMod;
 import com.jheinz.tomyen.client.scarecrow.ScarecrowClient;
 import com.jheinz.tomyen.client.gnome.GnomeClient;
+import com.jheinz.tomyen.client.crow.CrowClient;
 import com.jheinz.tomyen.client.survival.SurvivalClient;
 import com.jheinz.tomyen.client.alien.AlienClient;
 import com.jheinz.tomyen.client.accountant.AccountantClient;
@@ -206,5 +207,6 @@ public class MyModClient implements ClientModInitializer {
 		GraveDiggerClient.initialize();
 		BogHagClient.initialize();
 		MooseClient.initialize();
+		CrowClient.initialize();
 	}
 }

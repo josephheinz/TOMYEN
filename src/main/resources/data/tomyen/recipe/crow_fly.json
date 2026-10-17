@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:crow_feather",
+    "tomyen:crow_feather",
+    "minecraft:iron_nugget",
+    "minecraft:string"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:crow_fly"
+  }
+}
