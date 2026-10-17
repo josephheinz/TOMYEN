@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tomyen:giant_fish_mount"
+        }
+      ],
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:survives_explosion"
+          },
+          {
+            "type": "minecraft:block_state_property",
+            "block": "tomyen:giant_fish_mount",
+            "properties": {
+              "column": "2",
+              "row": "0"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "random_sequence": "tomyen:blocks/giant_fish_mount"
+}

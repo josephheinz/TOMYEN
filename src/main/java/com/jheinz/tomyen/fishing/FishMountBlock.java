@@ -4,15 +4,19 @@ import java.util.Map;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -32,6 +36,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jspecify.annotations.Nullable;
 
+import com.jheinz.tomyen.MyMod;
+
 /**
  * A Fish Mount: a carved plaque with a brass name plate that hangs on a wall like an item frame. Right-click it with a
  * fish (any fish: mod or vanilla, trophy or not) to mount it; right-click with an empty hand to take it back down. The
@@ -47,6 +53,9 @@ public class FishMountBlock extends HorizontalDirectionalBlock implements Entity
 			Direction.WEST, Block.box(13.5, 1, 0, 16, 15, 16),
 			Direction.EAST, Block.box(0, 1, 0, 2.5, 15, 16));
 
+	/** Fish too big for a plaque this size: they go on a Giant Fish Mount instead. */
+	public static final TagKey<Item> GIANT_TROPHIES = TagKey.create(Registries.ITEM, MyMod.id("giant_trophies"));
+
 	public FishMountBlock(Properties properties) {
 		super(properties);
 		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
@@ -59,7 +68,7 @@ public class FishMountBlock extends HorizontalDirectionalBlock implements Entity
 
 	/** Whether a stack can go on a mount: any fish, plus anything a species file catches (an old boot, say). */
 	public static boolean mountable(ItemStack stack) {
-		return !stack.isEmpty() && (stack.is(ItemTags.FISHES) || stack.has(Fishing.TROPHY) || FishingSpecies.forItem(stack.getItem()) != null);
+		return !stack.isEmpty() && !stack.is(GIANT_TROPHIES) && (stack.is(ItemTags.FISHES) || stack.has(Fishing.TROPHY) || FishingSpecies.forItem(stack.getItem()) != null);
 	}
 
 	@Override
@@ -110,6 +119,12 @@ public class FishMountBlock extends HorizontalDirectionalBlock implements Entity
 			// Something's up already: tell them what (an empty hand takes it down, in useWithoutItem).
 			if (player instanceof ServerPlayer serverPlayer) {
 				serverPlayer.sendOverlayMessage(mount.describe());
+			}
+			return InteractionResult.SUCCESS;
+		}
+		if (stack.is(GIANT_TROPHIES)) {
+			if (player instanceof ServerPlayer serverPlayer) {
+				serverPlayer.sendOverlayMessage(Component.translatable("block.tomyen.fish_mount.too_big"));
 			}
 			return InteractionResult.SUCCESS;
 		}

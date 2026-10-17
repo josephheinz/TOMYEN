@@ -64,7 +64,23 @@ public final class FishingFights {
 		}
 	}
 
+	/**
+	 * A fish too big to land with a rod. Won on the line, it comes up out of the water as a creature instead of flying to the
+	 * angler, and the fight goes on with weapons (the Giant Catfish: see GiantCatfishes).
+	 */
+	@FunctionalInterface
+	public interface Surfacing {
+		/** Server side, the fight just won: whether {@code species}' fish came up as a creature (then it isn't landed). */
+		boolean surface(ServerLevel level, ServerPlayer player, RodHook hook, FishingSpecies species, float weight);
+	}
+
+	private static final List<Surfacing> SURFACING = new ArrayList<>();
+
 	private FishingFights() {
+	}
+
+	public static void surfacing(Surfacing surfacing) {
+		SURFACING.add(surfacing);
 	}
 
 	/** The species of fish swimming in to {@code hook} now, or null if no species file allows one here. */
@@ -215,6 +231,12 @@ public final class FishingFights {
 			ServerLevel level = (ServerLevel) hook.level();
 			switch (outcome) {
 				case CAUGHT -> {
+					xp = 1 + player.getRandom().nextInt(6) + 2 * fight.params().difficulty();
+					if (surfaced(level, player, hook, fight, xp)) {
+						caught = fight.species().stack();
+						weight = fight.weight();
+						break;
+					}
 					int count = fight.count();
 					if (perfect && player.getRandom().nextBoolean()) {
 						count++;
@@ -259,6 +281,20 @@ public final class FishingFights {
 		if (!player.hasDisconnected()) {
 			ServerPlayNetworking.send(player, new FightEnd(fight.params().id(), outcome.ordinal(), caught, perfect, xp, weight));
 		}
+	}
+
+	/** Whether the fish came up as a creature: the line takes the strain (the rod's worn), the bait's gone, and so is the bobber. */
+	private static boolean surfaced(ServerLevel level, ServerPlayer player, RodHook hook, Fight fight, int xp) {
+		for (Surfacing surfacing : SURFACING) {
+			if (surfacing.surface(level, player, hook, fight.species(), fight.weight())) {
+				level.addFreshEntity(new ExperienceOrb(level, player.getX(), player.getY() + 0.5, player.getZ() + 0.5, xp));
+				damageRod(player, SNAP_DAMAGE);
+				eatBait(player, hook);
+				hook.discard();
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** The weight on the action bar, and a fanfare for a new personal best. */

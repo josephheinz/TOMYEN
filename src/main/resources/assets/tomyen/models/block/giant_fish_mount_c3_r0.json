@@ -1,0 +1,514 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "minecraft:block/dark_oak_planks",
+    "plaque": "tomyen:block/giant_fish_mount"
+  },
+  "elements": [
+    {
+      "name": "board_0",
+      "from": [
+        0,
+        1,
+        14.0
+      ],
+      "to": [
+        16,
+        2,
+        16.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6.0,
+            3.625,
+            8.0,
+            3.75
+          ],
+          "texture": "#plaque"
+        },
+        "south": {
+          "uv": [
+            2.0,
+            3.625,
+            4.0,
+            3.75
+          ],
+          "texture": "#plaque",
+          "cullface": "south"
+        },
+        "down": {
+          "uv": [
+            2.0,
+            9.5,
+            4.0,
+            9.75
+          ],
+          "texture": "#plaque"
+        }
+      }
+    },
+    {
+      "name": "board_1",
+      "from": [
+        0,
+        2,
+        14.0
+      ],
+      "to": [
+        16,
+        3,
+        16.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6.0,
+            3.5,
+            8.0,
+            3.625
+          ],
+          "texture": "#plaque"
+        },
+        "south": {
+          "uv": [
+            2.0,
+            3.5,
+            4.0,
+            3.625
+          ],
+          "texture": "#plaque",
+          "cullface": "south"
+        }
+      }
+    },
+    {
+      "name": "board_2",
+      "from": [
+        0,
+        3,
+        14.0
+      ],
+      "to": [
+        16,
+        4,
+        16.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6.0,
+            3.375,
+            8.0,
+            3.5
+          ],
+          "texture": "#plaque"
+        },
+        "south": {
+          "uv": [
+            2.0,
+            3.375,
+            4.0,
+            3.5
+          ],
+          "texture": "#plaque",
+          "cullface": "south"
+        }
+      }
+    },
+    {
+      "name": "board_3",
+      "from": [
+        0,
+        4,
+        14.0
+      ],
+      "to": [
+        16,
+        5,
+        16.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6.0,
+            3.25,
+            8.0,
+            3.375
+          ],
+          "texture": "#plaque"
+        },
+        "south": {
+          "uv": [
+            2.0,
+            3.25,
+            4.0,
+            3.375
+          ],
+          "texture": "#plaque",
+          "cullface": "south"
+        }
+      }
+    },
+    {
+      "name": "board_4",
+      "from": [
+        0,
+        5,
+        14.0
+      ],
+      "to": [
+        16,
+        6,
+        16.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6.0,
+            3.125,
+            8.0,
+            3.25
+          ],
+          "texture": "#plaque"
+        },
+        "south": {
+          "uv": [
+            2.0,
+            3.125,
+            4.0,
+            3.25
+          ],
+          "texture": "#plaque",
+          "cullface": "south"
+        }
+      }
+    },
+    {
+      "name": "board_5",
+      "from": [
+        0,
+        6,
+        14.0
+      ],
+      "to": [
+        16,
+        8,
+        16.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6.0,
+            2.875,
+            8.0,
+            3.125
+          ],
+          "texture": "#plaque"
+        },
+        "south": {
+          "uv": [
+            2.0,
+            2.875,
+            4.0,
+            3.125
+          ],
+          "texture": "#plaque",
+          "cullface": "south"
+        }
+      }
+    },
+    {
+      "name": "board_6",
+      "from": [
+        0,
+        8,
+        14.0
+      ],
+      "to": [
+        16,
+        16,
+        16.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6.0,
+            1.875,
+            8.0,
+            2.875
+          ],
+          "texture": "#plaque"
+        },
+        "south": {
+          "uv": [
+            2.0,
+            1.875,
+            4.0,
+            2.875
+          ],
+          "texture": "#plaque",
+          "cullface": "south"
+        }
+      }
+    },
+    {
+      "name": "bevel_0",
+      "from": [
+        0,
+        3,
+        13.5
+      ],
+      "to": [
+        16,
+        4,
+        14.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.75,
+            6.875,
+            7.75,
+            7.0
+          ],
+          "texture": "#plaque"
+        },
+        "down": {
+          "uv": [
+            1.75,
+            9.5,
+            3.75,
+            9.5625
+          ],
+          "texture": "#plaque"
+        }
+      }
+    },
+    {
+      "name": "bevel_1",
+      "from": [
+        0,
+        4,
+        13.5
+      ],
+      "to": [
+        16,
+        5,
+        14.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.75,
+            6.75,
+            7.75,
+            6.875
+          ],
+          "texture": "#plaque"
+        }
+      }
+    },
+    {
+      "name": "bevel_2",
+      "from": [
+        0,
+        5,
+        13.5
+      ],
+      "to": [
+        16,
+        6,
+        14.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.75,
+            6.625,
+            7.75,
+            6.75
+          ],
+          "texture": "#plaque"
+        }
+      }
+    },
+    {
+      "name": "bevel_3",
+      "from": [
+        0,
+        6,
+        13.5
+      ],
+      "to": [
+        16,
+        7,
+        14.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.75,
+            6.5,
+            7.75,
+            6.625
+          ],
+          "texture": "#plaque"
+        }
+      }
+    },
+    {
+      "name": "bevel_4",
+      "from": [
+        0,
+        7,
+        13.5
+      ],
+      "to": [
+        16,
+        9,
+        14.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.75,
+            6.25,
+            7.75,
+            6.5
+          ],
+          "texture": "#plaque"
+        }
+      }
+    },
+    {
+      "name": "bevel_5",
+      "from": [
+        0,
+        9,
+        13.5
+      ],
+      "to": [
+        16,
+        16,
+        14.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.75,
+            5.375,
+            7.75,
+            6.25
+          ],
+          "texture": "#plaque"
+        }
+      }
+    },
+    {
+      "name": "field_0",
+      "from": [
+        0,
+        10,
+        13.0
+      ],
+      "to": [
+        16,
+        11,
+        13.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.25,
+            9.0,
+            7.25,
+            9.125
+          ],
+          "texture": "#plaque"
+        },
+        "down": {
+          "uv": [
+            1.25,
+            9.5,
+            3.25,
+            9.5625
+          ],
+          "texture": "#plaque"
+        }
+      }
+    },
+    {
+      "name": "field_1",
+      "from": [
+        0,
+        11,
+        13.0
+      ],
+      "to": [
+        16,
+        12,
+        13.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.25,
+            8.875,
+            7.25,
+            9.0
+          ],
+          "texture": "#plaque"
+        }
+      }
+    },
+    {
+      "name": "field_2",
+      "from": [
+        0,
+        12,
+        13.0
+      ],
+      "to": [
+        16,
+        13,
+        13.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.25,
+            8.75,
+            7.25,
+            8.875
+          ],
+          "texture": "#plaque"
+        }
+      }
+    },
+    {
+      "name": "field_3",
+      "from": [
+        0,
+        13,
+        13.0
+      ],
+      "to": [
+        16,
+        16,
+        13.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.25,
+            8.375,
+            7.25,
+            8.75
+          ],
+          "texture": "#plaque"
+        }
+      }
+    }
+  ]
+}

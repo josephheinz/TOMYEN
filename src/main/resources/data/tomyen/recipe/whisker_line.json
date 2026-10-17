@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tomyen:catfish_whisker",
+    "tomyen:catfish_whisker",
+    "tomyen:fish_oil"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tomyen:whisker_line"
+  }
+}

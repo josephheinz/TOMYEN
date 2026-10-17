@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "MMM",
+    "PBP"
+  ],
+  "key": {
+    "M": [
+      "tomyen:oak_fish_mount",
+      "tomyen:spruce_fish_mount",
+      "tomyen:dark_oak_fish_mount"
+    ],
+    "P": "tomyen:steel_plate",
+    "B": "minecraft:gold_ingot"
+  },
+  "result": {
+    "count": 1,
+    "id": "tomyen:giant_fish_mount"
+  }
+}
