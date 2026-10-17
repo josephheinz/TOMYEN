@@ -1,4 +1,4 @@
-"""The mod icon: a flaming meteor and a UFO over a grass block, with TOMYEN on the dirt.
+"""The mod icon: TOM stacked on YEN in big block letters, with a flaming meteor and a UFO behind them over a grass block.
 
 Drawn on a 64x64 pixel grid and scaled up with nearest-neighbour, so it reads like Minecraft art. Writes the 128x128 icon
 the game and Mod Menu use, plus a 512x512 copy in dist/ for the CurseForge project avatar.
@@ -33,7 +33,7 @@ DIRT, DIRT_DARK, DIRT_LIT = hexc("#8a5a3a"), hexc("#6e452c"), hexc("#a06b46")
 TEXT_TOP, TEXT_MID, TEXT_LOW, TEXT_BOTTOM = hexc("#fff3a0"), hexc("#ffcc3a"), hexc("#ff9a2a"), hexc("#f0682a")
 OUTLINE, SHADOW = hexc("#1a0e14"), hexc("#3a2218")
 
-GROUND_Y = 46
+GROUND_Y = 54
 
 FONT = {
     "T": ["#######", "#######", "..###..", "..###..", "..###..", "..###..", "..###..", "..###..", "..###.."],
@@ -54,18 +54,18 @@ def sky(img):
         band = SKY[min(len(SKY) - 1, y * len(SKY) // GROUND_Y)]
         for x in range(N):
             img[y][x] = band
-    for x, y in ((5, 26), (9, 38), (31, 6), (38, 15), (55, 30), (60, 40), (44, 38), (3, 3), (24, 3), (34, 42)):
+    for x, y in ((3, 22), (60, 50), (26, 9), (60, 22), (3, 37), (36, 7), (50, 52), (25, 52), (3, 3), (44, 2)):
         img[y][x] = STAR_DIM
-    for x, y in ((28, 13), (50, 4), (6, 31), (58, 22), (40, 27)):
+    for x, y in ((31, 4), (58, 30), (5, 30), (59, 15)):
         img[y][x] = STAR
         for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             img[y + dy][x + dx] = STAR_DIM
 
 
 def meteor(img):
-    hx, hy, head = 25.5, 30.5, 5.5
+    hx, hy, head = 44.5, 7.5, 3.6
     dx, dy = 1 / math.sqrt(2), -1 / math.sqrt(2)
-    length = 48.0
+    length = 26.0
     for y in range(GROUND_Y):
         for x in range(N):
             px, py = x + 0.5 - hx, y + 0.5 - hy
@@ -73,7 +73,7 @@ def meteor(img):
             d = abs(px * -dy + py * dx)              # distance off the trail's centre line
             if t < -head - 1.5 or t > length:
                 continue
-            width = (head + 2.5) * (1 - max(0.0, t) / length) if t >= 0 else math.sqrt(max(0.0, (head + 2.5) ** 2 - t * t))
+            width = (head + 1.8) * (1 - max(0.0, t) / length) if t >= 0 else math.sqrt(max(0.0, (head + 1.8) ** 2 - t * t))
             if width <= 0 or d > width:
                 continue
             r = d / width
@@ -94,12 +94,12 @@ def meteor(img):
                 img[y][x] = ROCK_DARK
             else:
                 img[y][x] = ROCK
-    for x, y in ((24, 30), (25, 31), (27, 29), (23, 32)):
+    for x, y in ((44, 7), (43, 8)):
         img[y][x] = LAVA
 
 
 def ufo(img):
-    cx, cy = 13, 13
+    cx, cy = 12, 6
     # Dome
     for y in range(cy - 5, cy + 1):
         for x in range(cx - 5, cx + 6):
@@ -133,37 +133,43 @@ def ground(img):
         for y in range(GROUND_Y + 4, N):
             img[y][x] = DIRT
     # Even, deliberate dirt specks rather than noise.
-    for x, y in ((3, 52), (12, 61), (20, 50), (33, 62), (41, 51), (50, 61), (58, 52), (8, 57), (27, 56), (46, 57), (61, 58)):
+    for x, y in ((3, 59), (12, 62), (20, 59), (33, 62), (41, 59), (50, 62), (58, 59), (27, 61), (46, 60)):
         img[y][x] = DIRT_DARK
         if x + 1 < N:
             img[y][x + 1] = DIRT_DARK
-    for x, y in ((5, 60), (16, 54), (37, 54), (54, 55), (29, 51)):
+    for x, y in ((6, 61), (16, 60), (37, 61), (54, 61)):
         img[y][x] = DIRT_LIT
 
 
-def text(img, word="TOMYEN", top=51):
-    width = len(word) * 7 + (len(word) - 1) * 1
-    left = (N - width) // 2
-    mask = set()
-    for i, ch in enumerate(word):
-        for row, line in enumerate(FONT[ch]):
-            for col, c in enumerate(line):
-                if c == "#":
-                    mask.add((left + i * 8 + col, top + row))
-    # Drop shadow, then outline, then the fiery fill.
-    for x, y in mask:
-        for ox, oy in ((1, 1), (0, 2), (1, 2)):
-            if 0 <= x + ox < N and 0 <= y + oy < N and (x + ox, y + oy) not in mask:
-                img[y + oy][x + ox] = SHADOW
-    for x, y in mask:
+def text(img, lines=("TOM", "YEN"), scale=2, top=13, gap=3):
+    """Each line in the 7x9 block font at double size, centred, with a dark outline, a drop shadow and a fiery fill."""
+    height = 9 * scale
+    mask = {}
+    for n, word in enumerate(lines):
+        width = len(word) * 7 * scale + (len(word) - 1) * 2
+        left = (N - width) // 2
+        y0 = top + n * (height + gap)
+        for i, ch in enumerate(word):
+            for row, line in enumerate(FONT[ch]):
+                for col, c in enumerate(line):
+                    if c != "#":
+                        continue
+                    for sy in range(scale):
+                        for sx in range(scale):
+                            mask[(left + i * (7 * scale + 2) + col * scale + sx, y0 + row * scale + sy)] = row * scale + sy
+    for (x, y) in mask:
+        for ox, oy in ((1, 1), (2, 2), (1, 2), (2, 1)):
+            p = (x + ox, y + oy)
+            if 0 <= p[0] < N and 0 <= p[1] < N and p not in mask:
+                img[p[1]][p[0]] = SHADOW
+    for (x, y) in mask:
         for ox in (-1, 0, 1):
             for oy in (-1, 0, 1):
                 p = (x + ox, y + oy)
                 if p not in mask and 0 <= p[0] < N and 0 <= p[1] < N:
                     img[p[1]][p[0]] = OUTLINE
-    for x, y in mask:
-        row = y - top
-        img[y][x] = TEXT_TOP if row < 2 else TEXT_MID if row < 5 else TEXT_LOW if row < 7 else TEXT_BOTTOM
+    for (x, y), row in mask.items():
+        img[y][x] = TEXT_TOP if row < 4 else TEXT_MID if row < 9 else TEXT_LOW if row < 14 else TEXT_BOTTOM
 
 
 def round_corners(img, r=5):
