@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -75,6 +76,16 @@ public class RodItem extends FishingRodItem {
 
 	public RodModifiers modifiers() {
 		return modifiers;
+	}
+
+	/** Difficulty steps every fight on this rod goes up by (a hexed rod's fish fight harder). */
+	public int fightPenalty() {
+		return 0;
+	}
+
+	/** Server side: a fish just landed on this rod, about to fly to the angler. What actually comes up (a hexed rod curses it). */
+	public ItemStack landed(ServerLevel level, ServerPlayer angler, ItemStack caught) {
+		return caught;
 	}
 
 	@Override

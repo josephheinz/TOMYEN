@@ -30,12 +30,12 @@ public abstract class WhipHeldItemMixin {
 			target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"))
 	private void tomyen$holdWhip(ArmedEntityRenderState state, ItemStackRenderState item, ItemStack stack, HumanoidArm arm,
 			PoseStack poseStack, SubmitNodeCollector collector, int light, CallbackInfo ci) {
-		if (!(stack.getItem() instanceof NoseHairWhipItem)) {
+		if (!(stack.getItem() instanceof NoseHairWhipItem whip)) {
 			return;
 		}
 		WhipMotion motion = WhipMotion.of(state, arm);
 		WhipPoses.applyWrist(poseStack, motion);
 		int id = state instanceof AvatarRenderState avatar ? avatar.id : -1;
-		WhipHandles.capture(poseStack.last(), item, id, arm == state.mainArm, motion, state.ageInTicks);
+		WhipHandles.capture(poseStack.last(), item, id, arm == state.mainArm, motion, state.ageInTicks, whip);
 	}
 }

@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:giant_catfish",
+    "tomyen:grapple_claw"
+  ],
+  "result": "tomyen:whiskerline_rod",
+  "station": "pond",
+  "tier": 1
+}

@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:gravedigger_shovel",
+    "tomyen:steel_drill"
+  ],
+  "result": "tomyen:grave_auger",
+  "station": "pond",
+  "tier": 1
+}

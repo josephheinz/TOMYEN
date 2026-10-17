@@ -176,6 +176,7 @@ public final class Fusions {
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> PondFusions.releaseAll());
 		MurderCrows.initialize();
 		FusionHints.initialize();
+		com.jheinz.tomyen.fusion.tools.FusionTools.initialize();
 
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COMBAT).register(output -> {
 			output.insertAfter(Items.NETHERITE_SWORD, SWORDFISH_SWORD, FISH_FISH_FISH);

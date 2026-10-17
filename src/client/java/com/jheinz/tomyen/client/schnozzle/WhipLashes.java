@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -34,7 +33,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import com.jheinz.tomyen.ModNetworking;
-import com.jheinz.tomyen.MyMod;
 import com.jheinz.tomyen.schnozzle.NoseHairWhipItem;
 
 /**
@@ -44,12 +42,11 @@ import com.jheinz.tomyen.schnozzle.NoseHairWhipItem;
  *
  * <p>The lash leaves the handle along the handle and bends from there, tapering to the tip. A crack streams it out
  * behind the hand on the wind-up; on the snap it turns over in a loop that rolls out along it, the tip whipping past
- * the hand and cracking straight out at whatever is within {@value NoseHairWhipItem#ATTACK_REACH} blocks along the line
+ * the hand and cracking straight out at whatever is within the whip's reach ({@link NoseHairWhipItem#attackReach}) along the line
  * of sight, then it slackens and falls back to hang. A snag ({@link ModNetworking.WhipLash}, from the server, with the
  * point it caught) is thrown the same way, holds taut while it pulls and is yanked back.
  */
 public final class WhipLashes {
-	private static final Identifier TEXTURE = MyMod.id("textures/entity/nose_hair_whip_lash.png");
 	private static final int SEGMENTS = 32;
 	/** A snag's whole throw, hold and yank, in ticks. */
 	private static final float SNAG_TICKS = 11.0f;
@@ -120,9 +117,9 @@ public final class WhipLashes {
 			Vec3 tip = handle.tip().add(cameraPos);
 			Player player = handle.mainHand() && handle.motion().active() && level.getEntity(handle.entityId()) instanceof Player p ? p : null;
 			if (player != null && lashing.add(player.getId())) {
-				lash(context, level, cameraPos, player, tip, handle.along(), handle.motion(), handle.ageInTicks(), partialTick);
+				lash(context, level, cameraPos, player, handle.whip(), tip, handle.along(), handle.motion(), handle.ageInTicks(), partialTick);
 			} else {
-				draw(context, level, cameraPos, shape(tip, handle.along(), null, WhipMotion.RESTING, handle.ageInTicks()));
+				draw(context, level, cameraPos, shape(tip, handle.along(), null, WhipMotion.RESTING, handle.ageInTicks()), handle.whip());
 			}
 		}
 
@@ -137,9 +134,10 @@ public final class WhipLashes {
 				}
 				Vec3 tip = handle.tip().add(cameraPos);
 				if (handle.mainHand() && handle.motion().active() && lashing.add(minecraft.player.getId())) {
-					lash(context, level, cameraPos, minecraft.player, tip, handle.along(), handle.motion(), handle.ageInTicks(), partialTick);
+					lash(context, level, cameraPos, minecraft.player, handle.whip(), tip, handle.along(), handle.motion(), handle.ageInTicks(),
+							partialTick);
 				} else {
-					draw(context, level, cameraPos, shape(tip, handle.along(), null, WhipMotion.RESTING, handle.ageInTicks()));
+					draw(context, level, cameraPos, shape(tip, handle.along(), null, WhipMotion.RESTING, handle.ageInTicks()), handle.whip());
 				}
 			}
 		}
@@ -154,19 +152,19 @@ public final class WhipLashes {
 			float snag = snagProgress(player.getId(), age);
 			WhipMotion motion = snag >= 0.0f ? new WhipMotion(WhipMotion.Kind.SNAG, snag)
 					: WhipMotion.crack(player.getCurrentSwing(), player.getSwingAnimation(partialTick));
-			if (motion.active()) {
-				lash(context, level, cameraPos, player, estimatedHand(player, partialTick), player.getViewVector(partialTick), motion, age,
+			if (motion.active() && player.getMainHandItem().getItem() instanceof NoseHairWhipItem whip) {
+				lash(context, level, cameraPos, player, whip, estimatedHand(player, partialTick), player.getViewVector(partialTick), motion, age,
 						partialTick);
 			}
 		}
 	}
 
 	/** A crack or snag from this handle tip. */
-	private static void lash(LevelRenderContext context, ClientLevel level, Vec3 cameraPos, Player player, Vec3 tip, Vec3 along,
-			WhipMotion motion, float age, float partialTick) {
+	private static void lash(LevelRenderContext context, ClientLevel level, Vec3 cameraPos, Player player, NoseHairWhipItem whip, Vec3 tip,
+			Vec3 along, WhipMotion motion, float age, float partialTick) {
 		Snag snag = SNAGS.get(player.getId());
-		Vec3 target = motion.kind() == WhipMotion.Kind.SNAG && snag != null ? snag.to : attackTip(player, partialTick);
-		draw(context, level, cameraPos, shape(tip, along, target, motion, age));
+		Vec3 target = motion.kind() == WhipMotion.Kind.SNAG && snag != null ? snag.to : attackTip(player, partialTick, whip.attackReach());
+		draw(context, level, cameraPos, shape(tip, along, target, motion, age), whip);
 	}
 
 	/** About where a player's whip hand is, for when their arm isn't drawn. */
@@ -178,9 +176,9 @@ public final class WhipLashes {
 	}
 
 	/** What an attack lash reaches: the first creature or block along the line of sight, else full reach. */
-	private static Vec3 attackTip(Player player, float partialTick) {
+	private static Vec3 attackTip(Player player, float partialTick, float reach) {
 		Vec3 start = player.getEyePosition(partialTick);
-		Vec3 end = start.add(player.getViewVector(partialTick).scale(NoseHairWhipItem.ATTACK_REACH));
+		Vec3 end = start.add(player.getViewVector(partialTick).scale(reach));
 		end = player.level().clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player)).getLocation();
 		EntityHitResult entity = ProjectileUtil.getEntityHitResult(player, start, end, new AABB(start, end).inflate(1.0),
 				target -> !target.isSpectator() && target.isPickable(), start.distanceToSqr(end));
@@ -314,14 +312,14 @@ public final class WhipLashes {
 		return points;
 	}
 
-	private static void draw(LevelRenderContext context, ClientLevel level, Vec3 cameraPos, Vec3[] points) {
+	private static void draw(LevelRenderContext context, ClientLevel level, Vec3 cameraPos, Vec3[] points, NoseHairWhipItem whip) {
 		Vector3f[] relative = new Vector3f[points.length];
 		int[] light = new int[points.length];
 		for (int i = 0; i < points.length; i++) {
 			relative[i] = points[i].subtract(cameraPos).toVector3f();
 			light[i] = LightCoordsUtil.getLightCoords(level, BlockPos.containing(points[i]));
 		}
-		context.submitNodeCollector().submitCustomGeometry(context.poseStack(), RenderTypes.entityCutout(TEXTURE),
+		context.submitNodeCollector().submitCustomGeometry(context.poseStack(), RenderTypes.entityCutout(whip.lashTexture()),
 				(pose, buffer) -> ribbon(pose, buffer, relative, light));
 	}
 
