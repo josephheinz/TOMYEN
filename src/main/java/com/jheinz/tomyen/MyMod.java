@@ -44,6 +44,7 @@ import com.jheinz.tomyen.magmasteel.Magmasteel;
 import com.jheinz.tomyen.mech.Mechs;
 import com.jheinz.tomyen.shotgun.Shotguns;
 import com.jheinz.tomyen.shoddy.ShoddyGuns;
+import com.jheinz.tomyen.shrimp.Shrimps;
 import com.jheinz.tomyen.gunsmith.Gunsmith;
 import com.jheinz.tomyen.powerarmor.PowerArmors;
 import com.jheinz.tomyen.schnozzle.Schnozzles;
@@ -145,6 +146,7 @@ public class MyMod implements ModInitializer {
 		FishGuns.initialize();
 		LeafBlowers.initialize();
 		Trombones.initialize();
+		Shrimps.initialize();
 		linkBlockItems();
 	}
 

@@ -1,0 +1,1430 @@
+{
+  "credit": "tomyen shrimp_pistol - generated",
+  "texture_size": [
+    64,
+    64
+  ],
+  "textures": {
+    "shrimp_pistol": "tomyen:item/shrimp_pistol",
+    "particle": "tomyen:item/shrimp_pistol"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        -0.09,
+        3.19
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        -0.09,
+        3.19
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -6,
+        0
+      ],
+      "translation": [
+        -0.497,
+        3.266,
+        -1.215
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -6,
+        0
+      ],
+      "translation": [
+        -0.497,
+        3.266,
+        -1.215
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        -6.447,
+        0.336,
+        0.0
+      ],
+      "scale": [
+        1.17,
+        1.17,
+        1.17
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        2.144,
+        2.755
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        -8.381,
+        0.437,
+        0.0
+      ],
+      "scale": [
+        1.521,
+        1.521,
+        1.521
+      ]
+    }
+  },
+  "elements": [
+    {
+      "name": "barrel",
+      "from": [
+        7.25,
+        9.6893,
+        -3.3
+      ],
+      "to": [
+        8.75,
+        10.3107,
+        1.5
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            2.25,
+            0.25,
+            2.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            2.25,
+            0.25,
+            2.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "from": [
+        7.6893,
+        9.25,
+        -3.29
+      ],
+      "to": [
+        8.3107,
+        10.75,
+        1.49
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0.25,
+            0.25,
+            0.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            4.25,
+            0.25,
+            4.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "from": [
+        7.25,
+        9.6893,
+        -3.28
+      ],
+      "to": [
+        8.75,
+        10.3107,
+        1.48
+      ],
+      "rotation": {
+        "angle": 45.0,
+        "axis": "z",
+        "origin": [
+          8,
+          10.0,
+          -3.3
+        ]
+      },
+      "faces": {
+        "east": {
+          "uv": [
+            1.25,
+            0.25,
+            1.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "from": [
+        7.25,
+        9.6893,
+        -3.27
+      ],
+      "to": [
+        8.75,
+        10.3107,
+        1.47
+      ],
+      "rotation": {
+        "angle": -45.0,
+        "axis": "z",
+        "origin": [
+          8,
+          10.0,
+          -3.3
+        ]
+      },
+      "faces": {
+        "east": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            1.25,
+            0.25,
+            1.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "muzzle",
+      "from": [
+        6.95,
+        9.5651,
+        -3.9
+      ],
+      "to": [
+        9.05,
+        10.4349,
+        -3.3
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            10.25,
+            0.25,
+            10.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            11.25,
+            0.25,
+            11.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            10.25,
+            0.25,
+            10.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            11.25,
+            0.25,
+            11.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "from": [
+        7.5651,
+        8.95,
+        -3.89
+      ],
+      "to": [
+        8.4349,
+        11.05,
+        -3.31
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            10.25,
+            0.25,
+            10.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            10.25,
+            0.25,
+            10.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            9.25,
+            0.25,
+            9.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            13.25,
+            0.25,
+            13.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "from": [
+        6.95,
+        9.5651,
+        -3.88
+      ],
+      "to": [
+        9.05,
+        10.4349,
+        -3.32
+      ],
+      "rotation": {
+        "angle": 45.0,
+        "axis": "z",
+        "origin": [
+          8,
+          10.0,
+          -3.9
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            10.25,
+            0.25,
+            10.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            10.25,
+            0.25,
+            10.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            10.25,
+            0.25,
+            10.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            12.25,
+            0.25,
+            12.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "from": [
+        6.95,
+        9.5651,
+        -3.87
+      ],
+      "to": [
+        9.05,
+        10.4349,
+        -3.33
+      ],
+      "rotation": {
+        "angle": -45.0,
+        "axis": "z",
+        "origin": [
+          8,
+          10.0,
+          -3.9
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            10.25,
+            0.25,
+            10.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            12.25,
+            0.25,
+            12.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            10.25,
+            0.25,
+            10.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            10.25,
+            0.25,
+            10.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "bore",
+      "from": [
+        7.05,
+        9.05,
+        -3.92
+      ],
+      "to": [
+        8.95,
+        10.95,
+        -3.91
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            13.0,
+            3.0,
+            15.0,
+            5.0
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "front_sight",
+      "from": [
+        7.82,
+        11.0,
+        -3.8
+      ],
+      "to": [
+        8.18,
+        11.6,
+        -3.4
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.3
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.3
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.3
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.3
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            6.0,
+            0.0,
+            6.25,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "frame",
+      "from": [
+        7.1,
+        8.0,
+        -1.4
+      ],
+      "to": [
+        8.9,
+        9.35,
+        6.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.0,
+            0.0,
+            5.9,
+            0.675
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            5.0,
+            0.0,
+            5.9,
+            0.675
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "guard",
+      "from": [
+        7.86,
+        6.9,
+        2.3
+      ],
+      "to": [
+        8.14,
+        7.15,
+        4.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            14.0,
+            0.0,
+            14.25,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            14.0,
+            0.0,
+            15.0,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            14.0,
+            0.0,
+            14.25,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            14.0,
+            0.0,
+            15.0,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            0.0,
+            1.0,
+            0.25,
+            2.0
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            12.25,
+            0.25,
+            12.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "guard",
+      "from": [
+        7.86,
+        7.15,
+        2.3
+      ],
+      "to": [
+        8.14,
+        8.0,
+        2.55
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            14.0,
+            0.0,
+            14.25,
+            0.425
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            14.0,
+            0.0,
+            14.25,
+            0.425
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            14.0,
+            0.0,
+            14.25,
+            0.425
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            14.0,
+            0.0,
+            14.25,
+            0.425
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            0.0,
+            1.0,
+            0.25,
+            1.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            12.25,
+            0.25,
+            12.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "trigger",
+      "from": [
+        7.89,
+        7.3,
+        3.45
+      ],
+      "to": [
+        8.11,
+        8.0,
+        3.7
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.35
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.35
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.35
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.35
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            6.0,
+            0.0,
+            6.25,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "grip",
+      "from": [
+        7.2,
+        3.6913,
+        4.6936
+      ],
+      "to": [
+        8.8,
+        8.2913,
+        7.3936
+      ],
+      "rotation": {
+        "angle": -15.0,
+        "axis": "x",
+        "origin": [
+          8.0,
+          5.9913,
+          6.0436
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            9.0,
+            2.0,
+            9.8,
+            4.3
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            9.0,
+            2.0,
+            10.35,
+            4.3
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            9.0,
+            2.0,
+            9.8,
+            4.3
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            9.0,
+            2.0,
+            10.35,
+            4.3
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            4.25,
+            1.25,
+            4.75,
+            1.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            6.25,
+            1.25,
+            6.75,
+            1.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "rope",
+      "from": [
+        7.15,
+        5.4964,
+        4.6824
+      ],
+      "to": [
+        8.85,
+        6.1964,
+        7.4824
+      ],
+      "rotation": {
+        "angle": -15.0,
+        "axis": "x",
+        "origin": [
+          8.0,
+          5.8464,
+          6.0824
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            12.0,
+            1.0,
+            12.85,
+            1.35
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            12.0,
+            1.0,
+            13.0,
+            1.35
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            12.0,
+            1.0,
+            12.85,
+            1.35
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            12.0,
+            1.0,
+            13.0,
+            1.35
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "grip_cap",
+      "from": [
+        7.1,
+        3.4748,
+        5.2277
+      ],
+      "to": [
+        8.9,
+        3.7748,
+        8.1277
+      ],
+      "rotation": {
+        "angle": -15.0,
+        "axis": "x",
+        "origin": [
+          8.0,
+          3.6248,
+          6.6777
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            14.0,
+            0.0,
+            14.9,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            14.0,
+            0.0,
+            15.0,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            14.0,
+            0.0,
+            14.9,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            14.0,
+            0.0,
+            15.0,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            0.0,
+            1.0,
+            0.9,
+            2.0
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            12.25,
+            0.25,
+            12.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "slide",
+      "from": [
+        6.9,
+        9.35,
+        0.0
+      ],
+      "to": [
+        9.1,
+        11.4,
+        7.2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2.25,
+            0.25,
+            2.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            8.0,
+            7.0,
+            10.0
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            0.0,
+            6.0,
+            7.0,
+            8.0
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            6.0,
+            0.0,
+            7.1,
+            1.0
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "gate",
+      "from": [
+        7.5,
+        11.4,
+        2.6
+      ],
+      "to": [
+        8.5,
+        11.75,
+        4.2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            14.0,
+            0.0,
+            14.5,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            14.0,
+            0.0,
+            14.8,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            14.0,
+            0.0,
+            14.5,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            14.0,
+            0.0,
+            14.8,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            0.0,
+            1.0,
+            0.5,
+            1.8
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            12.25,
+            0.25,
+            12.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "rear_sight",
+      "from": [
+        7.35,
+        11.4,
+        6.3
+      ],
+      "to": [
+        7.75,
+        11.95,
+        6.75
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.275
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.275
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.275
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.275
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            6.0,
+            0.0,
+            6.25,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "rear_sight",
+      "from": [
+        8.25,
+        11.4,
+        6.3
+      ],
+      "to": [
+        8.65,
+        11.95,
+        6.75
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.275
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.275
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.275
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            5.0,
+            0.0,
+            5.25,
+            0.275
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            6.0,
+            0.0,
+            6.25,
+            0.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            3.25,
+            0.25,
+            3.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    },
+    {
+      "name": "knob",
+      "from": [
+        7.6,
+        9.9,
+        7.2
+      ],
+      "to": [
+        8.4,
+        10.9,
+        7.7
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            14.0,
+            0.0,
+            14.4,
+            0.5
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "east": {
+          "uv": [
+            14.0,
+            0.0,
+            14.25,
+            0.5
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "south": {
+          "uv": [
+            14.0,
+            0.0,
+            14.4,
+            0.5
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "west": {
+          "uv": [
+            14.0,
+            0.0,
+            14.25,
+            0.5
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "up": {
+          "uv": [
+            0.0,
+            1.0,
+            0.4,
+            1.25
+          ],
+          "texture": "#shrimp_pistol"
+        },
+        "down": {
+          "uv": [
+            12.25,
+            0.25,
+            12.75,
+            0.75
+          ],
+          "texture": "#shrimp_pistol"
+        }
+      }
+    }
+  ]
+}
