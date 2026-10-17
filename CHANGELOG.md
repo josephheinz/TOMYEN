@@ -1,3 +1,17 @@
+# Unreleased
+
+## The Isle of the Damned
+- **Die and your belongings go to the Isle,** a foggy death dimension. A gravestone marks where you fell: sneak and hold right-click on it for 5 seconds (or offer a holy or soul item) to go down after them.
+- **Your Revenant,** a ghostly copy of you in your death gear, guards your loot. Beat it for a Soul Cache and a rift home, or leave by the Lantern of Return. Die on the Isle and your loot sinks a depth: Shore, Hollows, Abyss.
+- **Shades and the Soul Tide:** notable mobs that died come back as ghostly shades, and routine kills (mob farms) feed a tide that sends bigger waves. Shades drop Ectoplasm and Soul Charges.
+
+## Item fusing
+- Throw two items and a Fae Dust into a fae pond to fuse them (70% chance; bad pairs are spat back), or use the Exotic-tier **Fusion Reactor**, which never fails. Fairies and villagers drop riddles about what fuses.
+- 21 fusions: Swordfish Sword, Fish Fish Fish, Rocket Boots, Murder Wings, Stormcrow Rig, Barbel Lash, Grave Auger, Hexed Rod, Whiskerline Rod, Writ of Absolution, Slide Hammer, Antler Pike, Tuskaxe, Moonblade, Pufferblade, Gnome Lance, Leviathan Blade, Phantasmal Chestplate, Wolfhide Carrier, Astral Visor and Revenant Mail (once a day, dying in it keeps your gear off the Isle).
+
+## Vehicles
+- **Bathtub Boat:** a clawfoot tub with an outboard motor. Twice as fast as a boat on kerosene, rows when the tank is empty, waddles on land, and has a rubber duck horn (H).
+
 # TOMYEN 0.2.0: Creature Feature
 
 Ten new mobs, a river boss and a fish called Fish Fish. This is still an early alpha, so back up your worlds before updating.

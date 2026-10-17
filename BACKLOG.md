@@ -25,14 +25,10 @@ Mutated by uranium:
 
 ## Vehicles, structures and big systems
 - **Hogfire air force.** Rocket-saddle any animal: cow bombers, chicken interceptors, a horse with a minigun.
-- **Bathtub boat.** A fast speedboat made from a bathtub and an outboard motor that runs on kerosene.
 - **Abandoned shopping mall structure.** Vending mimics, mannequins that move when you aren't looking, and a food court full of loot. We might base the building on an existing structure, e.g. from Planet Minecraft (check the license and give credit).
 - **Dance-off.** Villagers challenge you to a rhythm minigame that reuses the fishing QTE system.
 - **Slot machine block.** Eats emeralds. The jackpot is guaranteed trophy-class bait (plus other prizes).
-- **Item fusing (in progress).** Throw two items plus Fae Dust into a fae pond (70% success; bad pairs are spat back), or use the Exotic-tier Fusion Reactor (never fails, needed for reactor-only and tier-2 fusions). Hints come from villager rumours, fairy riddles and a tooltip shimmer. Fusions are real upgrades. Being built: the framework plus Swordfish Sword, Fish Fish Fish (deliberately weak, 10% chance to turn a mob into a Fish Fish), Rocket Boots, Murder Wings and Stormcrow Rig. Approved but not built yet:
-  - Pond: Fish Gun + Remington 870 → Chum Cannon; Trombone + Iron Long Sword → Slide Hammer; Nose Hair Whip + Catfish Whisker → Barbel Lash; Grapple Claw + Harpoon Gun → Harpoon Hookshot; Gravedigger's Shovel + Steel Drill → Grave Auger; Tusk Spear + Moose Antler → Antler Pike; Werewolf Pelt + Plate Carrier → Wolfhide Carrier; Hag Charm + Fae Rod → Hexed Rod; Boar Tusk + Bloom Steel Axe → Tuskaxe; Moonscale Koi + Fae Silver Sword → Moonblade; Ember Puffer + Magmasteel Sword → Pufferblade (tentative); Extension Form + Crucifix → Writ of Absolution; Garden Gnome + Tusk Spear → Gnome Lance; Giant Catfish + Grapple Claw → Whiskerline Rod; Shrimp Pistol + Crow Feather → Feather Duster.
-  - Reactor: Leaf Blower + Soul Vacuum → Soul Gale; Crucifix + Ray Gun → Holy Ray; Cathode TV Helmet + Starlight Lens → Astral Visor; Ectoplasm + Holy Silver Chestplate → Phantasmal Chestplate.
-  - Tier 2 (reactor): Swordfish Sword + Moonblade → Leviathan Blade; Phantasmal Chestplate + Wolfhide Carrier → Revenant Mail (once a day, dying keeps your gear instead of sending it to the Isle).
+- **Item fusing: the ranged batch.** Fusing is built (pond, reactor, hints) with 21 fusions in. Still to build, paused partway with unfinished work in `.claude/worktrees/agent-ac00d875ed4ca8956`: Fish Gun + Remington 870 → Chum Cannon (pond); Grapple Claw + Harpoon Gun → Harpoon Hookshot (pond); Crucifix + Ray Gun → Holy Ray (reactor); Shrimp Pistol + Crow Feather → Feather Duster (pond); Leaf Blower + Soul Vacuum → Soul Gale (reactor). Their recipes and riddles are already in `tools/fusion_data.py`.
   - Rejected, don't pitch again: banana bomb, pistol shrimp blaster, comet launcher, snot rocket launcher, olfactory Neuralink module, Skullcrane rig, Sea Monster Mortar, Exorcist.
 
 ## Cosmic and Feywild
