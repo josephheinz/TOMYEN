@@ -77,6 +77,7 @@ import com.jheinz.tomyen.tvhelmet.TvHelmets;
 import com.jheinz.tomyen.trombone.Trombones;
 import com.jheinz.tomyen.gravedigger.GraveDiggers;
 import com.jheinz.tomyen.fusion.Fusions;
+import com.jheinz.tomyen.fusion.gear.FusionGear;
 
 public class MyMod implements ModInitializer {
 	public static final String MOD_ID = "tomyen";
@@ -170,6 +171,7 @@ public class MyMod implements ModInitializer {
 		GiantCatfishes.initialize();
 		Bathtubs.initialize();
 		Fusions.initialize();
+		FusionGear.initialize();
 		linkBlockItems();
 	}
 

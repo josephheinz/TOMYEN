@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:phantasmal_chestplate",
+    "tomyen:wolfhide_carrier"
+  ],
+  "result": "tomyen:revenant_mail",
+  "station": "reactor",
+  "tier": 2
+}

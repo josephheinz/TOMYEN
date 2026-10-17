@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    "tomyen:werewolf_pelt",
+    "tomyen:plate_carrier"
+  ],
+  "result": "tomyen:wolfhide_carrier",
+  "station": "pond",
+  "tier": 1
+}

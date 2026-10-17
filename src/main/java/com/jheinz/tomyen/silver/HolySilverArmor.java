@@ -34,6 +34,8 @@ import com.jheinz.tomyen.holy.HolyLight;
 public final class HolySilverArmor {
 	/** Damage types that are evil whoever deals them. */
 	public static final TagKey<DamageType> EVIL_DAMAGE = TagKey.create(Registries.DAMAGE_TYPE, MyMod.id("evil"));
+	/** Other armor that counts as a piece of holy silver (the Phantasmal Chestplate and the Revenant Mail). */
+	public static final TagKey<Item> COUNTS_AS_HOLY_SILVER = TagKey.create(Registries.ITEM, MyMod.id("counts_as_holy_silver"));
 	public static final float REDUCTION_PER_PIECE = 0.25f;
 	public static final int FULL_SET = 4;
 	/** Holy damage an evil creature takes for striking the full set in melee (tripled on the holy-vulnerable). */
@@ -61,7 +63,7 @@ public final class HolySilverArmor {
 	public static boolean isPiece(ItemStack stack) {
 		Item item = stack.getItem();
 		return item == Silver.HOLY_SILVER_HELMET || item == Silver.HOLY_SILVER_CHESTPLATE || item == Silver.HOLY_SILVER_LEGGINGS
-				|| item == Silver.HOLY_SILVER_BOOTS;
+				|| item == Silver.HOLY_SILVER_BOOTS || stack.is(COUNTS_AS_HOLY_SILVER);
 	}
 
 	/** How many pieces the entity wears, worn or socketed in an exoskeleton. */

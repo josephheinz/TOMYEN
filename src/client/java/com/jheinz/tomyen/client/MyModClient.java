@@ -95,6 +95,7 @@ import com.jheinz.tomyen.client.tvhelmet.TvHelmetClient;
 import com.jheinz.tomyen.client.trombone.TromboneClient;
 import com.jheinz.tomyen.client.gravedigger.GraveDiggerClient;
 import com.jheinz.tomyen.client.fusion.FusionClient;
+import com.jheinz.tomyen.client.fusion.gear.FusionGearClient;
 
 public class MyModClient implements ClientModInitializer {
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(MyMod.id("weapons"));
@@ -214,5 +215,6 @@ public class MyModClient implements ClientModInitializer {
 		GiantCatfishClient.initialize();
 		BathtubClient.initialize();
 		FusionClient.initialize();
+		FusionGearClient.initialize();
 	}
 }

@@ -49,6 +49,7 @@
 		"VillagerHostilesSensorWerewolfMixin",
 		"LivingEntityInfusionMixin",
 		"PlayerInfusionMixin",
+		"PlayerRevenantMailMixin",
 		"EnchantmentHelperInfusionMixin",
 		"ItemStackInfusionMixin"
 	],
